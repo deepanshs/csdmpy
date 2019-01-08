@@ -1,6 +1,8 @@
 {
-  "datasets": [
+  "uncontrolled_variables": [
     {
+      "encoding": "none",
+      "numeric_type": "complex64",
       "components": [
         [
           182.26953125,
@@ -12292,24 +12294,26 @@
           407.0703125,
           162.24716186523438
         ]
-      ],
-      "numeric_type": "complex64"
+      ]
     }
   ],
-  "dimensions": [
+  "controlled_variables": [
     {
-      "label": "t$_2$",
-      "number_of_points": 1024,
-      "quantity": "time",
       "reciprocal": {
         "origin_offset": "79578822.26202029 Hz",
-        "quantity": "frequency",
-        "reverse": true
+        "reverse": true,
+        "quantity": "frequency"
       },
+      "number_of_points": 1024,
+      "sampling_interval": "8e-05 s",
       "reference_offset": "0.04104 s",
-      "sampling_interval": "8e-05 s"
+      "quantity": "time",
+      "label": "t$_2$"
     },
     {
+      "reciprocal": {
+        "quantity": "frequency"
+      },
       "coordinates": [
         "1.0 s",
         "5.0 s",
@@ -12318,9 +12322,9 @@
         "40.0 s",
         "80.0 s"
       ],
-      "label": "t$_1$",
-      "quantity": "time"
+      "quantity": "time",
+      "label": "t$_1$"
     }
   ],
-  "version": "0.1"
+  "version": "1.0"
 }

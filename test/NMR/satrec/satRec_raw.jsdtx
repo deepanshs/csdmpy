@@ -1,11 +1,12 @@
 {
-  "datasets": [
+  "uncontrolled_variables": [
     {
       "components_url": "satRec_raw_0.dat",
-      "numeric_type": "complex64"
+      "numeric_type": "complex64",
+      "encoding": "raw"
     }
   ],
-  "dimensions": [
+  "controlled_variables": [
     {
       "label": "t$_2$",
       "number_of_points": 1024,
@@ -31,5 +32,5 @@
       "quantity": "time"
     }
   ],
-  "version": "0.1"
+  "version": "1.0"
 }
