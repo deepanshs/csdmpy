@@ -242,23 +242,29 @@ class dataModel:
         return pack
 
     def __str__(self):
-        for i in range(len(self.controlled_variables)):
-            print ('controlled variable', str(i))
-            print (self.controlled_variables[i])
-        for i in range(len(self.uncontrolled_variables)):
-            print ('uncontrolled variable', str(i))
-            print (self.uncontrolled_variables[i])
-        return ('')
+        dictionary = self._getPythonDictonary()
+        # for i in range(len(self.controlled_variables)):
+        #     print ('controlled variable', str(i))
+        #     print (self.controlled_variables[i])
+        # for i in range(len(self.uncontrolled_variables)):
+        #     print ('uncontrolled variable', str(i))
+        #     print (self.uncontrolled_variables[i])
+        return (str(dictionary))
 
+    def _getPythonDictonary(self):
+        dictionary = {}
+        dictionary["uncontrolled_variables"] = []
+        dictionary["controlled_variables"] = []
+        dictionary["version"] = "1.0"
+        for i in range(len(self.controlled_variables)):
+            dictionary["controlled_variables"].append( \
+                        self.controlled_variables[i]._getPythonDictonary())
+        for i in range(len(self.uncontrolled_variables)):
+            dictionary["uncontrolled_variables"].append( \
+                        self.uncontrolled_variables[i]._getPythonDictonary('', i))
+        return dictionary
 
     def save(self, filename):
-        d = {}
-        d["uncontrolled_variables"] = []
-        d["controlled_variables"] = []
-        d["version"] = "1.0"
-        for i in range(len(self.controlled_variables)):
-            d["controlled_variables"].append(self.controlled_variables[i].getJsonDictionary())
-        for i in range(len(self.uncontrolled_variables)):
-            d["uncontrolled_variables"].append(self.uncontrolled_variables[i].getJsonDictionary(filename, i))
+        dictionary = self._getPythonDictonary()
         with open(filename, 'w') as outfile:
-            json.dump(d, outfile, sort_keys=False, indent=2)
+            json.dump(dictionary, outfile, sort_keys=False, indent=2)
