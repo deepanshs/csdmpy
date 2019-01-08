@@ -1,0 +1,20 @@
+{
+  "uncontrolled_variables": [
+    {
+      "components_url": "xyinc2_raw_Vanadyl in Amanita muscaria.dat",
+      "component_labels": ["Arbitrary"],
+      "name": "Vanadyl in Amanita muscaria",
+      "encoding": "raw",
+      "numeric_type": "float32"
+    }
+  ],
+  "controlled_variables": [
+    {
+      "number_of_points": 298,
+      "quantity": "magnetic flux density",
+      "reference_offset": "-2750.0 G",
+      "sampling_interval": "4.0 G"
+    }
+  ],
+  "version": "1.0"
+}

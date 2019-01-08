@@ -1,0 +1,23 @@
+{
+  "uncontrolled_variables": [
+    {
+      "components_url": "blochDecay_raw_0.dat",
+      "numeric_type": "complex64",
+      "encoding": "raw"
+    }
+  ],
+  "controlled_variables": [
+    {
+      "number_of_points": 4096,
+      "quantity": "time",
+      "reciprocal": {
+        "origin_offset": "75.426328864 MHz",
+        "reference_offset": "-3.005363 kHz",
+        "quantity": "frequency",
+        "reverse": true
+      },
+      "sampling_interval": "0.1 ms"
+    }
+  ],
+  "version": "1.0"
+}

@@ -1,0 +1,25 @@
+{
+  "uncontrolled_variables": [
+    {
+      "components_url": "benzeneVapour_raw_Vapour of Benzene.dat",
+      "component_labels": ["Absorbance"],
+      "name": "Vapour of Benzene",
+      "numeric_type": "float32",
+      "encoding": "raw"
+    }
+  ],
+  "controlled_variables": [
+    {
+      "label": "wavelength",
+      "number_of_points": 4001,
+      "quantity": "length",
+      "reciprocal": {
+        "quantity": "wavenumber"
+      },
+      "reference_offset": "-230.0 nm",
+      "reverse": true,
+      "sampling_interval": "0.01 nm"
+    }
+  ],
+  "version": "1.0"
+}

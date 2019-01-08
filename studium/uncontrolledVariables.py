@@ -1,5 +1,5 @@
 from __future__ import print_function, division
-import base64
+import base64, json
 import os
 import numpy as np
 from ._studium import (_assignAndCheckUnitConsistency, 
@@ -59,8 +59,7 @@ class _unControlledVariable:
 
         self.setAttribute('_encoding', _checkFileFormat(_encoding))
         _va = _assignAndCheckUnitConsistency(_unit, None)
-        self.setAttribute('_unit', _va)
-        self.setAttribute('_unit', self.scaling_factor.unit)
+        self.setAttribute('_unit', _va.unit)
         self.setAttribute('_name', str(_name))
         self.setAttribute('_quantity', _checkQuantity(_quantity, self.unit))
         _va, npType = _checkNumericType(_numeric_type)
@@ -273,7 +272,7 @@ class _unControlledVariable:
 
     def __str__(self):
         dictionary = self._getPythonDictonary()
-        return (str(dictionary))
+        return (json.dumps(dictionary, sort_keys=False, indent=2))
 
     def scale(self, value):
         value = _assignAndCheckUnitConsistency(value, self.unit)

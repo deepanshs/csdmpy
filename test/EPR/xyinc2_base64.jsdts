@@ -1,0 +1,24 @@
+{
+  "uncontrolled_variables": [
+    {
+      "name": "Vanadyl in Amanita muscaria",
+      "component_labels": [
+        "Arbitrary"
+      ],
+      "encoding": "base64",
+      "numeric_type": "float32",
+      "components": [
+        "TDeJPZZDCz7+1Hg+7FG4Pg4tEj/helQ/CKycP5qZ6T8pXC9A9ih8QKAao0B9P6VAheuBQJqZKUDb+c4/I9t5P5Ht/D7D9Sg+CtcjPFCNF73Jdr69vp8avhkEVr5WDq2+bxLDvs3MTL7HSze+GQRWvoGVA7/dJGa/30+tv+F61L/sUfi/arykv7Kdb76ynW8/6SbRPyGwwj9U44U/4XrUPk5iED5cj8I9jZeuPphukj6q8VI+w/XoPgwCaz9xPbo/ke0MQBsvNUDTTYZAJQbJQMUgBkHHSwtBHVrcQBfZkkB56S5ArkexP1YOLT8X2c49MQjsvhBYib/FIOC/dZP4v9NNGsBYORTAZmamv1yPIj8QWLk/FK63PxBYiT8Sg2A/f2r8PjVeOj4lBgE+SOE6P8/3Uz89Cjc/uB5lP76fmj+wcqg/pHCtP/Yo3D+amSFAxSBYQNV4iUCR7axAd76zQCuHfkAlBoG9hxYBwAIrB0C+nyRBGy+fQQaB5UHn++hB2/mHQTm0yD5/ak7B/KmGwdEiWcH6fhDBzcycwMP1mL/Zztc/fT9FQGZm5j4tsinByXbZwQAABMK8dNDBaJGFwUoMFMFWDmXAiUGgP2iRzUD2KEpBObSjQS/d1UFg5chByXZ+QUa2B0EK16NAK4c+QJzEQD+oxqu/GQQuwM/3M8Dl0IK/Xrp5QAaBF0FSuAZB46UbvXWT3MDwpxrBZDstwUSLRsGe71/B+FNPwSuHEMGF64HAqvFSP1g5tEACKydBlkMxQWIQoEAK17O/YhCAwAAAjMAK13PAvHRDwHNoIcBI4eq/mG4yv8uhZT8CKzdAFK6zQDeJC0EtsiNBWmTTQMuhxT4bLx3AYhBAwIXrYcCamWHAL900wCUGEcBoka2/IbByvmZmRj8xCAxA9P2YQNejCEFiEDxBO98tQWIQaEDHS3/Anu/nwOOlBcEMAhHBxSAewYGVG8HNzPzAF9nCwB1aoMDl0JLAYhBYwPCnRsCYbjrAx0svwMdLx7/BygG/+FOjPpMYJD+mm8Q9IbCyPvT91D0pXA++0SKbvg4tMr+4HiW/Di3yvpZDC783iSG/YOUwvyPbeb2PwnU9y6GFvlYOLb5g5VC+qvEyv3e+H76oxsu+pHCdv3NoMb9g5ZC/becbwAAA4L8MAru/XroBwM/3o7/2KHy/fT8dwJzEGMDNzJy/Sgzyv9Ei278xCCy+tMh2vjm0aL8OLRK//KlxvjMzM74SgwC/pptEvekmUT8CKwe+Gy8dv5ZDiz0v3QS/2/mOv7bz/b4j23k+g8DKvSPbub9KDLK/9ihcvxfZLr8X2c6+lkOLPbx0Ez+mm8Q+vp+aPhBYiT9WDs0/6SYxP/ypsb5aZDs+oBovP1K4nr76fkq/pptEvgIrB74AAKC/mG7Sv8l2vr8QWAnAL90swMl23r83iUG/46V7v9ejcL+4HoW9JzEIvuXQIr9xPQq+7FG4PqRwPb74U2O+aJFtPq5HYb0bL52+MzMzPoPASj6uR2G+5dAiPp7vJz7jpRu+nu+nPX9qPL0QWDm+Gy/dPaabRLsK16M7I9t5PexROL0pXA+9ukkMvg=="
+      ]
+    }
+  ],
+  "controlled_variables": [
+    {
+      "number_of_points": 298,
+      "sampling_interval": "4.0 G",
+      "reference_offset": "-2750.0 G",
+      "quantity": "magnetic flux density"
+    }
+  ],
+  "version": "1.0"
+}

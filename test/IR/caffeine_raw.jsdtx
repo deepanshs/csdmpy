@@ -1,0 +1,24 @@
+{
+  "uncontrolled_variables": [
+    {
+      "components_url": "caffeine_raw_Caffeine.dat",
+      "component_labels": ["Transmittance"],
+      "name": "Caffeine",
+      "numeric_type": "float32",
+      "encoding": "raw"
+    }
+  ],
+  "controlled_variables": [
+    {
+      "number_of_points": 1842,
+      "quantity": "wavenumber",
+      "reciprocal": {
+        "quantity": "length"
+      },
+      "reference_offset": "-449.41 cm^-1",
+      "reverse": true,
+      "sampling_interval": "1.930548614883216 cm^-1"
+    }
+  ],
+  "version": "1.0"
+}

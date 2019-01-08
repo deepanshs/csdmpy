@@ -1,5 +1,6 @@
 from __future__ import print_function, division
 import numpy as np
+import json
 from unit import stringToQuantity, quantityFormat, unitToLatex, _ppm
 from ._studium import (_assignAndCheckUnitConsistency, 
                       _checkAndAssignBool,
@@ -550,7 +551,7 @@ class _linearQuantitativeControlledVariable:
 ### ------------- Public Methods ------------------ ###
     def __str__(self):
         dictionary = self._getPythonDictonary()
-        return (str(dictionary))
+        return (json.dumps(dictionary, sort_keys=False, indent=2))
 
     def to(self, unit):
         unit2 = unit

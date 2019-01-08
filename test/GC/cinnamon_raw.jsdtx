@@ -1,0 +1,22 @@
+{
+  "uncontrolled_variables": [
+    {
+      "components_url": "cinnamon_raw_cinnamon stick.dat",
+      "component_labels": ["Arbitrary"],
+      "name": "cinnamon stick",
+      "numeric_type": "float32",
+      "encoding": "raw"
+    }
+  ],
+  "controlled_variables": [
+    {
+      "number_of_points": 6001,
+      "quantity": "time",
+      "reciprocal": {
+        "quantity": "frequency"
+      },
+      "sampling_interval": "0.0034 min"
+    }
+  ],
+  "version": "1.0"
+}

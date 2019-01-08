@@ -171,7 +171,7 @@ class dataModel:
 
     def addUncontrolledVariable(self, *arg, **kwargs):
         default = {'name': '',
-                   'scaling_factor' : '1',
+                   'unit' : '',
                    'quantity' : None,
                    'component_labels': None,
                    'encoding': None,
@@ -205,7 +205,7 @@ class dataModel:
         super(dataModel, self).__setattr__('uncontrolled_variables', 
                 self.uncontrolled_variables + (uv(
                                 _name = default['name'],
-                                _scaling_factor = default['scaling_factor'],
+                                _unit = default['unit'],
                                 _quantity = default['quantity'], 
                                 _encoding = default['encoding'],
                                 _numeric_type = default['numeric_type'],
@@ -222,7 +222,7 @@ class dataModel:
             (self.uncontrolled_variables[0].components[index])
 
 
-    def info(self):
+    def _info(self):
         x =['sampling_type',\
             'quantitative',\
             'number_of_points',\
@@ -243,7 +243,7 @@ class dataModel:
 
     def __str__(self):
         dictionary = self._getPythonDictonary()
-        return (str(dictionary))
+        return (json.dumps(dictionary, sort_keys=False, indent=2))
 
     def _getPythonDictonary(self):
         dictionary = {}
