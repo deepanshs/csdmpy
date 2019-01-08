@@ -1,8 +1,53 @@
 from ._studium import Dimension, _nusDimensionObject
 import numpy as np
 
-class dimensions:
+class Dimensions:
+    """
+        `Dimensions` class represents the dimension object.
 
+    Parameters
+    ----------
+
+- number_of_points : integer. The number of points along the uniformaly sampled dimension.
+
+- periodic: boolean. The default is false. Specify whether the dimension is treated as periodic.
+
+- quantity: string. The default is ''. The physical quantity name specifying the dimension.
+
+- unit: The unit associated with the dimension.
+
+    - label
+    - reverse
+    - reference_offset
+    - origin_offset
+    - sampling_interval
+    - made_dimensionless
+    - inverse_label
+    - inverse_reverse
+    - inverse_reference_offset
+    - inverse_origin_offset
+    - inverse_sampling_interval
+    - inverse_made_dimensionless
+
+    Attributes
+    ----------
+
+        keys : returns a list of acceptable keys in creating a dimension object.
+
+        shape : returns the shape of the coordinate grid 
+
+        size : return the size, i.e., the total number of dimension objects 
+
+    - getJsonDictionary()
+        Returns the dimension object as a jaon object
+
+
+    Method
+    ------
+
+        addDimension(*arg, **kwargs)
+
+    """
     __slots__ = ['_keywords', '_stopDimensions', 'dimension', '_shape']
 
     def __init__(self):
@@ -25,10 +70,10 @@ class dimensions:
                 'inverse_quantity', 
                 'inverse_label',
                 'inverse_periodic')
-        super(dimensions, self).__setattr__('_keywords', _key)
-        super(dimensions, self).__setattr__('_stopDimensions', 0)
-        super(dimensions, self).__setattr__('dimension', ())
-        super(dimensions, self).__setattr__('_shape', ())
+        super(Dimensions, self).__setattr__('_keywords', _key)
+        # super(Dimensions, self).__setattr__('_stopDimensions', 0)
+        super(Dimensions, self).__setattr__('dimension', ())
+        super(Dimensions, self).__setattr__('_shape', ())
 
     def __delattr__(self, name):
         if name in __class__.__slots__ :
@@ -39,6 +84,10 @@ class dimensions:
             raise AttributeError("attribute '{0}' cannot be modified".format(name))
         else:
             raise AttributeError("'dimensions' object has no attribute '{0}'".format(name))
+
+    def __len__(self):
+        return len(self.dimension)
+
 
     @property
     def keys(self):
@@ -106,7 +155,7 @@ class dimensions:
             raise Exception("either 'number_of_points' or 'coordinates' key is required.")
 
         if default['coordinates'] is not None:
-            super(dimensions, self).__setattr__('dimension', \
+            super(Dimensions, self).__setattr__('dimension', \
                     self.dimension + (_nusDimensionObject( \
                         _coordinates            = default['coordinates'], \
                         _reference_offset        = default['reference_offset'],  \
@@ -116,9 +165,9 @@ class dimensions:
                         _periodic               = default['periodic'], \
                         _quantity               = default['quantity'], \
                         _label                  = default['label']), ) )
-            super(dimensions, self).__setattr__('_stopDimensions', self._stopDimensions +1)
+            # super(Dimensions, self).__setattr__('_stopDimensions', self._stopDimensions +1)
             # print ('length',  len(default['coordinates']))
-            super(dimensions, self).__setattr__('_shape', self._shape + (len(default['coordinates']), ) )
+            super(Dimensions, self).__setattr__('_shape', self._shape + (len(default['coordinates']), ) )
             return
 
         
@@ -126,7 +175,7 @@ class dimensions:
             default['sampling_interval'] = '1'
 
         if default['number_of_points'] is not None and default['sampling_interval'] is not None:
-            super(dimensions, self).__setattr__('dimension', \
+            super(Dimensions, self).__setattr__('dimension', \
                     self.dimension + (Dimension(
                         _number_of_points       = default['number_of_points'], 
                         _sampling_interval      = default['sampling_interval'], 
@@ -146,18 +195,26 @@ class dimensions:
                         _inverse_quantity        = default['reciprocal']['quantity'],
                         _inverse_periodic        = default['reciprocal']['periodic'],
                         _inverse_label           = default['reciprocal']['label']), ) )
-            super(dimensions, self).__setattr__('_stopDimensions', self._stopDimensions +1)
-            super(dimensions, self).__setattr__('_shape', self._shape + (default['number_of_points'], ) )
+            # super(Dimensions, self).__setattr__('_stopDimensions', self._stopDimensions +1)
+            super(Dimensions, self).__setattr__('_shape', self._shape + (default['number_of_points'], ) )
 
             # print (self._shape)
             return 
 
     def __getitem__(self, i):
-        length = self._stopDimensions
-        while i < 0:
-            i += length
-        if 0 <= i < length:
-            return self.dimension[i]._coordinates
+        # length = len(self.dimension)
+        # while i < 0:
+        #     i += length
+
+        # while j < 0:
+        #     i += length
+
+        # if 0 <= i < length and 0 <= j < length:
+        return [item._coordinates for item in self.dimension[i]]
+
+        
+        # if 0 <= i < length:
+        #     return self.dimension[i]._coordinates
         raise IndexError('Index out of range: {}'.format(i))
 
     def info(self):
