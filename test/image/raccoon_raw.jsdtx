@@ -1,0 +1,27 @@
+{
+  "uncontrolled_variables": [
+    {
+      "components_url": "raccoon_raw.dat",
+      "dataset_type": "RGB",
+      "component_labels": [
+        "red",
+        "green",
+        "blue"
+      ],
+      "name": "raccoon face",
+      "numeric_type": "uint8",
+      "encoding": "raw"
+    }
+  ],
+  "controlled_variables": [
+    {
+      "number_of_points": 1024,
+      "sampling_interval": "1.0 "
+    },
+    {
+      "number_of_points": 768,
+      "sampling_interval": "1.0 "
+    }
+  ],
+  "version": "1.0"
+}

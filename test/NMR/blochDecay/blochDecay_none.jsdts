@@ -1,6 +1,8 @@
 {
   "uncontrolled_variables": [
     {
+      "encoding": "none",
+      "numeric_type": "complex64",
       "components": [
         [
           0.03344306722283363,
@@ -8196,23 +8198,22 @@
           0.0,
           0.0
         ]
-      ],
-      "numeric_type": "complex64",
-      "encoding": "none"
+      ]
     }
   ],
   "controlled_variables": [
     {
-      "number_of_points": 4096,
-      "quantity": "time",
       "reciprocal": {
-        "origin_offset": "75.426328864 MHz",
-        "reference_offset": "-3.005363 kHz",
-        "quantity": "frequency",
-        "reverse": true
+        "quantity": "time"
       },
-      "sampling_interval": "0.1 ms"
+      "number_of_points": 4096,
+      "sampling_interval": "0.00244140625 ms^-1",
+      "reference_offset": "-3005.363 Hz",
+      "origin_offset": "75426328.864 Hz",
+      "reverse": true,
+      "fft_output_order": true,
+      "quantity": "frequency"
     }
   ],
-  "version": "0.1"
+  "version": "1.0"
 }
