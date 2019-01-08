@@ -1,0 +1,35 @@
+{
+  "datasets": [
+    {
+      "components_url": "electric_field_raw_Electric field vector.dat",
+      "dataset_type": "vector_2",
+      "name": "Electric field vector",
+      "numeric_type": "float32",
+      "quantity": "electrical field strength",
+      "unit": "N / C"
+    }
+  ],
+  "dimensions": [
+    {
+      "label": "x",
+      "number_of_points": 64,
+      "quantity": "length",
+      "reciprocal": {
+        "quantity": "wavenumber"
+      },
+      "reference_offset": "2.0 cm",
+      "sampling_interval": "0.0625 cm"
+    },
+    {
+      "label": "y",
+      "number_of_points": 64,
+      "quantity": "length",
+      "reciprocal": {
+        "quantity": "wavenumber"
+      },
+      "reference_offset": "2.0 cm",
+      "sampling_interval": "0.0625 cm"
+    }
+  ],
+  "version": "0.1"
+}

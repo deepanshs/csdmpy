@@ -1,16 +1,13 @@
 from __future__ import print_function, division
 import numpy as np
 import json
-from unit import stringToQuantity, quantityFormat, unitToLatex, _ppm
-from ._studium import (_assignAndCheckUnitConsistency, 
-                      _checkAndAssignBool,
-                      _checkQuantity,
-                      _checkAssignmentAndThenCheckUnitConsistency)
+from unit import unitToLatex
+from ._studium import _checkAndAssignBool
 
 class _nonQuantitativeControlledVariable:
 
     __slots__ = ['_sampling_type',
-                 '_quantitative',
+                 '_non_quantitative',
                  '_number_of_points',
                  '_coordinates', 
                  '_reverse',
@@ -19,12 +16,12 @@ class _nonQuantitativeControlledVariable:
 
     def __init__(self,  _coordinates, 
                         _sampling_type='grid',
-                        _quantitative=False,
+                        _non_quantitative=True,
                         _reverse=False, 
                         _label=''):
 
         self.setAttribute('_sampling_type', _sampling_type)
-        self.setAttribute('_quantitative', False)
+        self.setAttribute('_non_quantitative', _non_quantitative)
 
         self.setAttribute('_number_of_points', len(_coordinates))
 
@@ -61,10 +58,10 @@ class _nonQuantitativeControlledVariable:
     def sampling_type(self):
         return self._sampling_type
 
-    ## quantitative
+    ## non_quantitative
     @property
-    def quantitative(self):
-        return self._quantitative
+    def non_quantitative(self):
+        return self._non_quantitative
 
     ## label
     @property
@@ -101,33 +98,17 @@ class _nonQuantitativeControlledVariable:
 
     def _info(self):
         _response =[self.sampling_type,
-                    self.quantitative,
+                    self.non_quantitative,
                     self.number_of_points,
                     self.reverse,
                     str(self._label)]
         return _response
-        
-    # def __str__(self):
-        
-    #     block = ['\tsampling_type \t\t= {0}\n', \
-    #              '\tquantitative \t\t= {1}\n', \
-    #              '\tnumber_of_points \t= {2}\n',\
-    #              '\treverse \t\t= {3}\n', \
-    #              '\tlabel \t\t\t= {4}\n']
-
-    #     string = ''.join(block).format(self.sampling_type,
-    #                                 self.quantitative,
-    #                                 self.number_of_points,
-    #                                 self.reverse,
-    #                                 self._label,
-    #                                 )
-    #     return string
 
     def _getPythonDictonary(self):
         dictionary = {}
 
         dictionary['coordinates'] = self.coordinates.tolist()
-
+        dictionary['non_quantitative'] = True
         if self.reverse is True:
             dictionary['reverse'] = True
 

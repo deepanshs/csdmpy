@@ -56,7 +56,7 @@ class dataModel:
     def addControlledVariable(self, *arg, **kwargs):
 
         default = {'sampling_type':"grid",
-                   'quantitative': True,
+                   'non_quantitative': False,
                    'number_of_points':None, 
                    'sampling_interval':None, 
                    'coordinates':None, 
@@ -64,7 +64,7 @@ class dataModel:
                    'origin_offset':None, 
                    'made_dimensionless':False, 
                    'reverse':False, 'fft_output_order':False, 
-                   'periodic':False, 
+                   'periodicity':None, 
                    'quantity':None, 'label':'',
                    'reciprocal':{
                         'sampling_interval':None, 
@@ -72,7 +72,7 @@ class dataModel:
                         'origin_offset':None, 
                         'made_dimensionless':False, 
                         'reverse':False, 
-                        'periodic':False,
+                        'periodicity':None,
                         'quantity':None, 
                         'label':''}
                     }
@@ -99,30 +99,30 @@ class dataModel:
                 else:
                     default[key]=inputDict[key]
 
-        if not default['quantitative']:
+        if default['non_quantitative']:
             if default['coordinates'] is None:
                 raise Exception("'coordinates' key is required.")
             else:
                 super(dataModel, self).__setattr__('controlled_variables', \
                     self.controlled_variables + (nQCV( \
                         _sampling_type          = default['sampling_type'], \
-                        _quantitative           = default['quantitative'], \
+                        _non_quantitative           = default['non_quantitative'], \
 
                         _coordinates            = default['coordinates'], \
                         _reverse                = default['reverse'], \
                         _label                  = default['label'] ), ))
 
-        if default['quantitative']:
+        if not default['non_quantitative']:
             if default['number_of_points'] is None and \
                     default['sampling_interval'] is None and \
                     default['coordinates'] is None:
                 raise Exception("either 'number_of_points/sampling_interval' or 'coordinates' key is required.")
 
-        if default['quantitative'] and default['coordinates'] is not None:
+        if not default['non_quantitative'] and default['coordinates'] is not None:
             super(dataModel, self).__setattr__('controlled_variables', \
                     self.controlled_variables + (nlQCV( \
                         _sampling_type          = default['sampling_type'], \
-                        _quantitative           = default['quantitative'], \
+                        _non_quantitative           = default['non_quantitative'], \
 
                         _coordinates            = default['coordinates'], \
                         _reference_offset       = default['reference_offset'],  \
@@ -130,24 +130,24 @@ class dataModel:
                         _quantity               = default['quantity'], \
                         _reverse                = default['reverse'], \
                         _label                  = default['label'], \
-                        _periodic               = default['periodic'], \
+                        _periodicity            = default['periodicity'], \
                         _made_dimensionless     = default['made_dimensionless'], \
 
                         _reciprocal_reference_offset    = default['reciprocal']['reference_offset'], 
                         _reciprocal_origin_offset       = default['reciprocal']['origin_offset'],
                         _reciprocal_quantity            = default['reciprocal']['quantity'],
                         _reciprocal_reverse             = default['reciprocal']['reverse'],
-                        _reciprocal_periodic            = default['reciprocal']['periodic'],
+                        _reciprocal_periodicity         = default['reciprocal']['periodicity'],
                         _reciprocal_label               = default['reciprocal']['label'],
                         _reciprocal_made_dimensionless  = default['reciprocal']['made_dimensionless']), ))
 
-        if default['quantitative'] and \
+        if not default['non_quantitative'] and \
                 default['number_of_points'] is not None and \
                 default['sampling_interval'] is not None:
             super(dataModel, self).__setattr__('controlled_variables', \
                     self.controlled_variables + (lQCV(
                         _sampling_type          = default['sampling_type'], \
-                        _quantitative           = default['quantitative'], \
+                        _non_quantitative           = default['non_quantitative'], \
 
                         _number_of_points       = default['number_of_points'], 
                         _sampling_interval      = default['sampling_interval'], 
@@ -156,7 +156,7 @@ class dataModel:
                         _quantity               = default['quantity'], 
                         _reverse                = default['reverse'], 
                         _label                  = default['label'],
-                        _periodic               = default['periodic'], 
+                        _periodicity            = default['periodicity'], 
                         _fft_output_order       = default['fft_output_order'], 
                         _made_dimensionless     = default['made_dimensionless'],
 
@@ -165,7 +165,7 @@ class dataModel:
                         _reciprocal_origin_offset       = default['reciprocal']['origin_offset'],
                         _reciprocal_quantity            = default['reciprocal']['quantity'],
                         _reciprocal_reverse             = default['reciprocal']['reverse'],
-                        _reciprocal_periodic            = default['reciprocal']['periodic'],
+                        _reciprocal_periodicity         = default['reciprocal']['periodicity'],
                         _reciprocal_label               = default['reciprocal']['label'],
                         _reciprocal_made_dimensionless  = default['reciprocal']['made_dimensionless']), ))
 
@@ -224,7 +224,7 @@ class dataModel:
 
     def _info(self):
         x =['sampling_type',\
-            'quantitative',\
+            'non_quantitative',\
             'number_of_points',\
             'sampling_interval', \
             'reference_offset', \
@@ -234,7 +234,7 @@ class dataModel:
             'quantity', \
             'label', \
             'ftFlag', \
-            'periodic']
+            'periodicity']
         y = []
         for i in range(len(self.controlled_variables)):
             y.append(self.controlled_variables[i].info())

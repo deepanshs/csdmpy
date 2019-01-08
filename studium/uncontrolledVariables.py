@@ -4,9 +4,9 @@ import os
 import numpy as np
 from ._studium import (_assignAndCheckUnitConsistency, 
                        _checkQuantity,
-                       _checkFileFormat,
+                       _checkEncoding,
                        _checkNumericType,
-                       _checkDataType, SequenceProxy)
+                       _checkDatasetType)
 
 class _unControlledVariable:
     """
@@ -30,7 +30,6 @@ class _unControlledVariable:
                  '_components_url', 
                  '_sampling_schedule',
 
-                 '_unit',
                  '_npType',
                  '_channels',
                  '_filename']
@@ -57,7 +56,7 @@ class _unControlledVariable:
         # if _components != None and _encoding is None: _encoding = 'none'
         # elif _components_url != None and _encoding is None: _encoding = 'raw'
 
-        self.setAttribute('_encoding', _checkFileFormat(_encoding))
+        self.setAttribute('_encoding', _checkEncoding(_encoding))
         _va = _assignAndCheckUnitConsistency(_unit, None)
         self.setAttribute('_unit', _va.unit)
         self.setAttribute('_name', str(_name))
@@ -65,7 +64,7 @@ class _unControlledVariable:
         _va, npType = _checkNumericType(_numeric_type)
         
         self.setAttribute('_numeric_type', _va)
-        _va, total_components = _checkDataType(_dataset_type)
+        _va, total_components = _checkDatasetType(_dataset_type)
         self.setAttribute('_dataset_type', _va)
         self.setAttribute('_component_labels', _component_labels)
         
@@ -148,7 +147,7 @@ class _unControlledVariable:
         return self._encoding
     @encoding.setter
     def encoding(self, value):
-        value = _checkFileFormat(value)
+        value = _checkEncoding(value)
         self.setAttribute('_encoding', value)
     
     @property
@@ -167,7 +166,7 @@ class _unControlledVariable:
         return self._dataset_type
     @dataset_type.setter
     def dataset_type(self, value):
-        value = _checkDataType(value)
+        value = _checkDatasetType(value)
         self.setAttribute('_dataset_type', value)
 
     @property

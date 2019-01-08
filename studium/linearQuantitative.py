@@ -1,17 +1,17 @@
 from __future__ import print_function, division
 import numpy as np
 import json
-from unit import stringToQuantity, quantityFormat, unitToLatex, _ppm
+from unit import valueObjectFormat, unitToLatex, _ppm
 from ._studium import (_assignAndCheckUnitConsistency, 
                       _checkAndAssignBool,
                       _checkQuantity,
-                      _checkAssignmentAndThenCheckUnitConsistency)
+                      _checkValueObject)
 
 
 class _linearQuantitativeControlledVariable:
 
     __slots__ = ['_sampling_type', 
-                 '_quantitative', 
+                 '_non_quantitative', 
                  '_quantity', 
                  '_number_of_points', 
                  '_sampling_interval', 
@@ -19,7 +19,7 @@ class _linearQuantitativeControlledVariable:
                  '_reference_offset', 
                  '_reverse',
                  '_label',
-                 '_periodic',
+                 '_periodicity',
                  '_fft_output_order',
                  '_made_dimensionless',
 
@@ -30,7 +30,7 @@ class _linearQuantitativeControlledVariable:
                  '_reciprocal_reference_offset', 
                  '_reciprocal_reverse',
                  '_reciprocal_label',
-                 '_reciprocal_periodic',
+                 '_reciprocal_periodicity',
                  '_reciprocal_made_dimensionless',
 
                  '_coordinates', 
@@ -49,12 +49,12 @@ class _linearQuantitativeControlledVariable:
                         _quantity = None, 
                         _reverse = False, 
                         _label='',
-                        _periodic = False, 
+                        _periodicity = None, 
                         _fft_output_order = False, 
                         _made_dimensionless = False,
 
                         _sampling_type = "grid",
-                        _quantitative = True,
+                        _non_quantitative = False,
                         
                         _reciprocal_sampling_interval = None,
                         _reciprocal_reference_offset = None, 
@@ -62,11 +62,11 @@ class _linearQuantitativeControlledVariable:
                         _reciprocal_quantity = None,
                         _reciprocal_reverse = False, 
                         _reciprocal_label='',
-                        _reciprocal_periodic = False,
+                        _reciprocal_periodicity = None,
                         _reciprocal_made_dimensionless = False):
 
         self.setAttribute('_sampling_type', _sampling_type)
-        self.setAttribute('_quantitative', _quantitative)
+        self.setAttribute('_non_quantitative', _non_quantitative)
 
         self.setAttribute('_number_of_points', _number_of_points)
         self.setAttribute('_reciprocal_number_of_points', _number_of_points)
@@ -87,15 +87,15 @@ class _linearQuantitativeControlledVariable:
         self.setAttribute('_reciprocal_sampling_interval', _value)
         
         ## reference Offset
-        _value = _checkAssignmentAndThenCheckUnitConsistency(_reference_offset, _unit)
+        _value = _checkValueObject(_reference_offset, _unit)
         self.setAttribute('_reference_offset', _value)
-        _value = _checkAssignmentAndThenCheckUnitConsistency(_reciprocal_reference_offset, _reciprocal_unit)
+        _value = _checkValueObject(_reciprocal_reference_offset, _reciprocal_unit)
         self.setAttribute('_reciprocal_reference_offset', _value)
         
         ## origin offset
-        _value = _checkAssignmentAndThenCheckUnitConsistency(_origin_offset, _unit)
+        _value = _checkValueObject(_origin_offset, _unit)
         self.setAttribute('_origin_offset', _value)
-        _value =  _checkAssignmentAndThenCheckUnitConsistency(_reciprocal_origin_offset, _reciprocal_unit)
+        _value =  _checkValueObject(_reciprocal_origin_offset, _reciprocal_unit)
         self.setAttribute('_reciprocal_origin_offset', _value)
 
         ### made dimensionless
@@ -113,11 +113,11 @@ class _linearQuantitativeControlledVariable:
         _value = _checkAndAssignBool(_fft_output_order)
         self.setAttribute('_fft_output_order', _value)
 
-        ### periodic
-        _value = _checkAndAssignBool(_periodic)
-        self.setAttribute('_periodic', _value)
-        _value = _checkAndAssignBool(_reciprocal_periodic)
-        self.setAttribute('_reciprocal_periodic', _value)
+        ### periodicity
+        _value = _checkValueObject(_periodicity, _unit)
+        self.setAttribute('_periodicity', _value)
+        _value = _checkValueObject(_reciprocal_periodicity, _reciprocal_unit)
+        self.setAttribute('_reciprocal_periodicity', _value)
 
         ## quantity
         _value = _checkQuantity(_quantity, _unit)
@@ -157,26 +157,27 @@ class _linearQuantitativeControlledVariable:
     def sampling_type(self):
         return self._sampling_type
 
-    ## quantitative
+    ## non_quantitative
     @property
-    def quantitative(self):
-        return self._quantitative
+    def non_quantitative(self):
+        return self._non_quantitative
 
-    ## Periodic
+    ## Periodicity
     @property
-    def periodic(self):
-        return self._periodic
-    @periodic.setter
-    def periodic(self, value = True):
-        self.setAttribute('_periodic', _checkAndAssignBool(value))
+    def periodicity(self):
+        return self._periodicity
+    @periodicity.setter
+    def periodicity(self, value = True):
+        self.setAttribute('_periodicity', _checkValueObject(value, self.unit))
 
-    ## reciprocal Periodic
+    ## reciprocal Periodicity
     @property
-    def reciprocal_periodic(self):
-        return self._reciprocal_periodic
-    @reciprocal_periodic.setter
-    def reciprocal_periodic(self, value = True):
-        self.setAttribute('_reciprocal_periodic', _checkAndAssignBool(value))
+    def reciprocal_periodicity(self):
+        return self._reciprocal_periodicity
+    @reciprocal_periodicity.setter
+    def reciprocal_periodicity(self, value = True):
+        self.setAttribute('_reciprocal_periodicity', \
+                _checkValueObject(value, self.reciprocal_unit))
     
     ## Quantity
     @property
@@ -393,7 +394,7 @@ class _linearQuantitativeControlledVariable:
 
     def _info(self):
         _response =[self.sampling_type,
-                    self.quantitative,
+                    self.non_quantitative,
                     self.number_of_points, 
                     str(self.sampling_interval),
                     str(self.reference_offset),
@@ -403,13 +404,13 @@ class _linearQuantitativeControlledVariable:
                     self.quantity,
                     str(self._label),
                     self.fft_output_order,
-                    self.periodic]
+                    self.periodicity]
         return _response
 
     # def __str__(self):
         
     #     block = ['\tsampling_type \t\t= {10}\n', \
-    #              '\tquantitative \t\t= {11}\n', \
+    #              '\tnon_quantitative \t\t= {11}\n', \
     #              '\tnumber_of_points \t= {0}\n',\
     #              '\tsampling_interval \t= {1}\n', \
     #              '\treference_offset \t= {2}\n', \
@@ -417,7 +418,7 @@ class _linearQuantitativeControlledVariable:
     #              '\tquantity \t\t= {6}\n', \
     #              '\treverse \t\t= {5}\n', \
     #              '\tlabel \t\t\t= {7}\n', \
-    #              '\tperiodic \t\t= {9}\n',
+    #              '\tperiodicity \t\t= {9}\n',
     #              '\tftt_order_output \t= {8}\n', \
     #              '\tmade_dimensionless \t= {4}\n', ]
 
@@ -430,9 +431,9 @@ class _linearQuantitativeControlledVariable:
     #                                 self.quantity,
     #                                 self._label,
     #                                 self.fft_output_order,
-    #                                 self.periodic,
+    #                                 self.periodicity,
     #                                 self.sampling_type,
-    #                                 self.quantitative)
+    #                                 self.non_quantitative)
 
     #     return string
 
@@ -494,26 +495,25 @@ class _linearQuantitativeControlledVariable:
 
         self._swapValues('_quantity', '_reciprocal_quantity')
         self._swapValues('_label', '_reciprocal_label')
-        self._swapValues('_periodic', '_reciprocal_periodic')
+        self._swapValues('_periodicity', '_reciprocal_periodicity')
         self._swapValues('_coordinates', '_reciprocal_coordinates')
 
     def _getPythonDictonary(self):
         dictionary = {}
         dictionary['reciprocal'] = {}
         dictionary['number_of_points'] = self.number_of_points
-        dictionary['sampling_interval'] = quantityFormat(self.sampling_interval)
+        dictionary['sampling_interval'] = valueObjectFormat(self.sampling_interval)
 
-        if self.reference_offset is not None and self.reference_offset.value != 0:
-            dictionary['reference_offset'] = quantityFormat(self.reference_offset)
-        if self.reciprocal_reference_offset is not None and self.reciprocal_reference_offset.value != 0:
-            dictionary['reciprocal']['reference_offset'] = quantityFormat(self.reciprocal_reference_offset)
+        if self.reference_offset is not None and self.reference_offset.value != 0.0:
+            dictionary['reference_offset'] = valueObjectFormat(self.reference_offset)
+        if self.reciprocal_reference_offset is not None and self.reciprocal_reference_offset.value != 0.0:
+            dictionary['reciprocal']['reference_offset'] = valueObjectFormat(self.reciprocal_reference_offset)
 
 
-        if self.origin_offset is not None and self.origin_offset.value != 0:
-            dictionary['origin_offset'] = quantityFormat(self.origin_offset)
-
-        if self.reciprocal_origin_offset is not None and self.reciprocal_origin_offset.value != 0:
-            dictionary['reciprocal']['origin_offset'] = quantityFormat(self.reciprocal_origin_offset)
+        if self.origin_offset is not None and self.origin_offset.value != 0.0:
+            dictionary['origin_offset'] = valueObjectFormat(self.origin_offset)
+        if self.reciprocal_origin_offset is not None and self.reciprocal_origin_offset.value != 0.0:
+            dictionary['reciprocal']['origin_offset'] = valueObjectFormat(self.reciprocal_origin_offset)
 
         # if self._made_dimensionless is True:
         #     d['made_dimensionless'] = True
@@ -528,10 +528,10 @@ class _linearQuantitativeControlledVariable:
         if self.fft_output_order is True:
             dictionary['fft_output_order'] = True
 
-        if self.periodic is True:
-            dictionary['periodic'] = True
-        if self.reciprocal_periodic is True:
-            dictionary['reciprocal']['periodic'] = True
+        if self.periodicity.value not in [0.0, np.inf, None]:
+            dictionary['periodicity'] = valueObjectFormat(self.periodicity)
+        if self.reciprocal_periodicity.value not in [0.0, np.inf, None]:
+            dictionary['reciprocal']['periodicity'] = valueObjectFormat(self.reciprocal_periodicity)
 
         if self.quantity not in [None, "unknown", "dimensionless"]:
             dictionary['quantity'] = self.quantity

@@ -1,7 +1,7 @@
 from __future__ import print_function
 import numpy as np
 # from astropy import units as u
-from unit import stringToQuantity, quantityFormat, unitToLatex, _ppm
+from unit import stringToQuantity
 import os
 import collections
 
@@ -29,6 +29,9 @@ def _is_numeric(element):
 def _is_physical_quantity(element):
     pass
 
+def _checkValueObject(element, unit):
+    return _checkAssignmentAndThenCheckUnitConsistency(element, unit)
+
 def _defaultUnits(element):
     # print (element.unit.physical_type)
     if element.unit.physical_type == 'frequency':
@@ -36,7 +39,7 @@ def _defaultUnits(element):
     return element
 
 
-def _checkFileFormat(element):
+def _checkEncoding(element):
 
     lst = ['base64', 'none', 'raw']
     if element in lst:
@@ -45,7 +48,7 @@ def _checkFileFormat(element):
         options = ''.join(["'"+item+"', " for item in lst[:-1]])
         raise Exception("Invalid 'encoding'. Available options are "+ options+"and '"+lst[-1]+"'.")
 
-def _checkDataType(element):
+def _checkDatasetType(element):
     lst = ['RGB', 'RGBA', 'scalar', 'vector', 'matrix', 'symmetric_matrix']
     listValues = element.strip().split('_')
 

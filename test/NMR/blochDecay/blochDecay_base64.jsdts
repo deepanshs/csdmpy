@@ -11,15 +11,14 @@
   "controlled_variables": [
     {
       "reciprocal": {
-        "quantity": "time"
+        "reference_offset": "-3005.363 Hz",
+        "origin_offset": "75426328.864 Hz",
+        "reverse": true,
+        "quantity": "frequency"
       },
       "number_of_points": 4096,
-      "sampling_interval": "0.00244140625 ms^-1",
-      "reference_offset": "-3005.363 Hz",
-      "origin_offset": "75426328.864 Hz",
-      "reverse": true,
-      "fft_output_order": true,
-      "quantity": "frequency"
+      "sampling_interval": "0.1 ms",
+      "quantity": "time"
     }
   ],
   "version": "1.0"

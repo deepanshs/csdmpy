@@ -68,7 +68,7 @@ def stringToQuantity(string, dtype=float):
     except BaseException as e:
         raise BaseException(e)
 
-def quantityFormat(quantity):
+def valueObjectFormat(quantity):
     # mode = 'fits'
     string = quantity.unit.to_string('fits').strip()
     # print ('string', string)
@@ -148,5 +148,5 @@ if __name__ == '__main__':
     print (timer() - start)
     print (a)
     # print (type(a.unit), a.unit.physical_type)
-    print (quantityFormat(a))
+    print (valueObjectFormat(a))
     print (unitToLatex(a.unit))
