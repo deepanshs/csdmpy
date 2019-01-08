@@ -196,11 +196,8 @@ class _unControlledVariable:
     
 
 
-###--------------Methods------------------###
-
-
-
-    def info(self):
+###--------------Private Methods------------------###
+    def _info(self):
         _response =[self.components_url, 
                     self.name,
                     str(self.unit),
@@ -211,78 +208,28 @@ class _unControlledVariable:
                     self.dataset_type]
         return _response
 
-
-    # def _channelMethod(self, i):
-    #     return self._components[...,i]
-
-    def scale(self, value):
-        value = _assignAndCheckUnitConsistency(value, self.unit)
-        value = value.to(self.unit).value
-        self.setAttribute('_components',self.components*value)
-
-    def to(self, unit):
-        self.components = self.components.to(unit)
-
-    def reshape(self, shape):
-        shape = (self._channels,) + tuple(shape)
-        nptype = self._npType
-        self.setAttribute('_components', \
-            np.asarray(self.components.reshape(shape), dtype=nptype))
-
-
-    # def __getattr__(self, name):
-    #     if name == 'component':
-    #         return SequenceProxy(self._channelMethod, self._channel)
-        # if name == 'component':
-            # return self.channel
-
-        # length = self._stopDataset
-        # while i < 0:
-        #     i += length
-        # if 0 <= i < length:
-        #     return self._values[...,i]
-        # raise IndexError('Index out of range: {}'.format(i))
-
-
-    #def __str__(self):
-    #    return( str(self._values) + ' '+ str(self._unit))
-        # block = ['\turl \t= {0}\n',\
-        #          '\tformat \t= {1}\n', \
-        #          '\tdtype \t= {2}\n', \
-        #          '\tname \t\t= {3}\n', \
-        #          '\tmade_dimensionless \t= {4}\n', \
-        #          '\treverse \t\t= {5}\n', \
-        #          '\tquantity \t\t= {6}\n', \
-        #          '\tlabel \t\t\t= {7}\n', \
-        #          '\tftFlag \t\t\t= {8}\n', \
-        #          '\tperiodic \t\t= {9}\n']
-
-
-
-    def getJsonDictionary(self, filename, datasetIndex):
-        d = {}
+    def _getPythonDictonary(self, filename, datasetIndex):
+        dictionary = {}
         if self.name.strip() != '' and self.name is not None:
-            d['name'] = self.name
+            dictionary['name'] = self.name
 
         if str(self.unit) != '':
-            d['unit'] = str(self.unit)
+            dictionary['unit'] = str(self.unit)
 
         if self.quantity != 'dimensionless' and \
                     self.quantity != 'unknown' and \
                     self.quantity is not None:
-            d['quantity'] = self.quantity
+            dictionary['quantity'] = self.quantity
 
         if self.component_labels is not None:
-            d['component_labels'] = self.component_labels
+            dictionary['component_labels'] = self.component_labels
 
-        # if self.encoding not in ['none', 'raw', None]:
-        d['encoding'] = str(self.encoding)
+        dictionary['encoding'] = str(self.encoding)
 
-        # if self._numeric_type != 'float32':
-        d['numeric_type'] = str(self.numeric_type)
+        dictionary['numeric_type'] = str(self.numeric_type)
 
         if self.dataset_type != 'scalar':
-            d['dataset_type'] = self.dataset_type
+            dictionary['dataset_type'] = self.dataset_type
         
         size = self.components[0].size
         if self.numeric_type[:7] == 'complex':
@@ -301,9 +248,9 @@ class _unControlledVariable:
 
         # print (c)
         if self.encoding == 'none':
-            d['components'] = c.tolist()
+            dictionary['components'] = c.tolist()
         if self.encoding == 'base64':
-            d['components'] = [base64.b64encode(item).decode("utf-8") \
+            dictionary['components'] = [base64.b64encode(item).decode("utf-8") \
                             for item in c]
 
         print ("_studium", self.encoding)
@@ -315,9 +262,29 @@ class _unControlledVariable:
 
             splt = os.path.split(filename)
             fname = os.path.splitext(splt[1])[0]
-            d['components_url'] = fname + '_' + index + '.dat'
-            c.ravel().tofile( os.path.join(splt[0], d['components_url'] ))
+            dictionary['components_url'] = fname + '_' + index + '.dat'
+            c.ravel().tofile( os.path.join(splt[0], dictionary['components_url'] ))
 
         c = None
         del c               
-        return d
+        return dictionary
+
+### ------------- Public Methods ------------------ ###
+
+    def __str__(self):
+        dictionary = self._getPythonDictonary()
+        return (str(dictionary))
+
+    def scale(self, value):
+        value = _assignAndCheckUnitConsistency(value, self.unit)
+        value = value.to(self.unit).value
+        self.setAttribute('_components',self.components*value)
+
+    def to(self, unit):
+        self.components = self.components.to(unit)
+
+    def reshape(self, shape):
+        shape = (self._channels,) + tuple(shape)
+        nptype = self._npType
+        self.setAttribute('_components', \
+            np.asarray(self.components.reshape(shape), dtype=nptype))

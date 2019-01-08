@@ -243,12 +243,6 @@ class dataModel:
 
     def __str__(self):
         dictionary = self._getPythonDictonary()
-        # for i in range(len(self.controlled_variables)):
-        #     print ('controlled variable', str(i))
-        #     print (self.controlled_variables[i])
-        # for i in range(len(self.uncontrolled_variables)):
-        #     print ('uncontrolled variable', str(i))
-        #     print (self.uncontrolled_variables[i])
         return (str(dictionary))
 
     def _getPythonDictonary(self):

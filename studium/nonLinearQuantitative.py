@@ -311,7 +311,7 @@ class _nonLinearQuantitativeControlledVariable:
     def reciprocal_absolute_coordinates(self):
         return self._reciprocal_absolute_coordinates
 
-###--------------Methods------------------###
+###--------------Private Methods------------------###
 
     def _dimensionlessConversion(self, unit, _oldValue):
         denominator = (self.origin_offset + self.reference_offset)
@@ -342,30 +342,30 @@ class _nonLinearQuantitativeControlledVariable:
                     self.periodic]
         return _response
         
-    def __str__(self):
+    # def __str__(self):
         
-        block = ['\tsampling_type \t\t= {0}\n', \
-                 '\tquantitative \t\t= {1}\n', \
-                 '\tnumber_of_points \t= {2}\n',\
-                 '\treference_offset \t= {3}\n', \
-                 '\torigin_offset \t\t= {4}\n', \
-                 '\tmade_dimensionless \t= {5}\n', \
-                 '\treverse \t\t= {6}\n', \
-                 '\tquantity \t\t= {7}\n', \
-                 '\tlabel \t\t\t= {8}\n', \
-                 '\tperiodic \t\t= {9}\n']
+    #     block = ['\tsampling_type \t\t= {0}\n', \
+    #              '\tquantitative \t\t= {1}\n', \
+    #              '\tnumber_of_points \t= {2}\n',\
+    #              '\treference_offset \t= {3}\n', \
+    #              '\torigin_offset \t\t= {4}\n', \
+    #              '\tmade_dimensionless \t= {5}\n', \
+    #              '\treverse \t\t= {6}\n', \
+    #              '\tquantity \t\t= {7}\n', \
+    #              '\tlabel \t\t\t= {8}\n', \
+    #              '\tperiodic \t\t= {9}\n']
 
-        string = ''.join(block).format(self.sampling_type,
-                                    self.quantitative,
-                                    self.number_of_points, 
-                                    self.reference_offset,
-                                    self.origin_offset,
-                                    self.made_dimensionless,
-                                    self.reverse,
-                                    self.quantity,
-                                    self._label,
-                                    self.periodic)
-        return string
+    #     string = ''.join(block).format(self.sampling_type,
+    #                                 self.quantitative,
+    #                                 self.number_of_points, 
+    #                                 self.reference_offset,
+    #                                 self.origin_offset,
+    #                                 self.made_dimensionless,
+    #                                 self.reverse,
+    #                                 self.quantity,
+    #                                 self._label,
+    #                                 self.periodic)
+    #     return string
 
     def _getCoordinates(self):
         _unit = self.unit
@@ -377,53 +377,57 @@ class _nonLinearQuantitativeControlledVariable:
             # _value = _value.to(_ppm)
         self.setAttribute('_coordinates', _value)
         self.setAttribute('_absolute_coordinates', _value + _origin_offset)
-### ------------- Public Methods ------------------ ###
 
-    def getJsonDictionary(self):
-        d = {}
-        d['reciprocal'] = {}
+    def _getPythonDictonary(self):
+        dictionary = {}
+        dictionary['reciprocal'] = {}
 
-        d['coordinates'] = [quantityFormat(item) for item in self.coordinates]
+        dictionary['coordinates'] = [quantityFormat(item) for item in self.coordinates]
 
         if self.reference_offset is not None and self.reference_offset.value != 0:
-            d['reference_offset'] = quantityFormat(self.reference_offset)
+            dictionary['reference_offset'] = quantityFormat(self.reference_offset)
         if self.reciprocal_reference_offset is not None and self.reciprocal_reference_offset.value != 0:
-            d['reciprocal']['reference_offset'] = quantityFormat(self.reciprocal_reference_offset)
+            dictionary['reciprocal']['reference_offset'] = quantityFormat(self.reciprocal_reference_offset)
 
         if self.origin_offset is not None and self.origin_offset.value != 0:
-            d['origin_offset'] = quantityFormat(self.origin_offset)
+            dictionary['origin_offset'] = quantityFormat(self.origin_offset)
         if self.reciprocal_origin_offset is not None and self.reciprocal_origin_offset.value != 0:
-            d['reciprocal']['origin_offset'] = quantityFormat(self.reciprocal_origin_offset)
+            dictionary['reciprocal']['origin_offset'] = quantityFormat(self.reciprocal_origin_offset)
 
         # if self.made_dimensionless is True:
         #     d['made_dimensionless'] = True
     
         if self.reverse is True:
-            d['reverse'] = True
+            dictionary['reverse'] = True
         if self.reciprocal_reverse is True:
-            d['reciprocal']['reverse'] = True
+            dictionary['reciprocal']['reverse'] = True
 
 
         if self.periodic is True:
-            d['periodic'] = True
+            dictionary['periodic'] = True
         if self.reciprocal_periodic is True:
-            d['reciprocal']['periodic'] = True
+            dictionary['reciprocal']['periodic'] = True
 
 
         if self.quantity is not None:
-            d['quantity'] = self.quantity
+            dictionary['quantity'] = self.quantity
         if self.reciprocal_quantity not in [None, "unknown", "dimensionless"]:
-            d['reciprocal']['quantity'] = self.reciprocal_quantity
+            dictionary['reciprocal']['quantity'] = self.reciprocal_quantity
 
         if self._label.strip() != "":
-            d['label'] = self._label
+            dictionary['label'] = self._label
         if self.reciprocal_label.strip() != "":
-            d['reciprocal']['label'] = self.reciprocal_label
+            dictionary['reciprocal']['label'] = self.reciprocal_label
 
-        if d['reciprocal'] == {}:
-            del d['reciprocal']
+        if dictionary['reciprocal'] == {}:
+            del dictionary['reciprocal']
 
-        return d
+        return dictionary
+
+### ------------- Public Methods ------------------ ###
+    def __str__(self):
+        dictionary = self._getPythonDictonary()
+        return (str(dictionary))
 
     def to(self, unit):
         _values = self.coordinates.to(unit)

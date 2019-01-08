@@ -370,7 +370,7 @@ class _linearQuantitativeControlledVariable:
     # def fft_ouput_order(self, value):
     #     self.setAttribute('_fft_ouput_order', value)
 
-###--------------Methods------------------###
+###--------------Private Methods------------------###
 
     def _dimensionlessConversion(self, unit, _oldValue):
         denominator = (self.origin_offset + self.reference_offset)
@@ -405,35 +405,35 @@ class _linearQuantitativeControlledVariable:
                     self.periodic]
         return _response
 
-    def __str__(self):
+    # def __str__(self):
         
-        block = ['\tsampling_type \t\t= {10}\n', \
-                 '\tquantitative \t\t= {11}\n', \
-                 '\tnumber_of_points \t= {0}\n',\
-                 '\tsampling_interval \t= {1}\n', \
-                 '\treference_offset \t= {2}\n', \
-                 '\torigin_offset \t\t= {3}\n', \
-                 '\tquantity \t\t= {6}\n', \
-                 '\treverse \t\t= {5}\n', \
-                 '\tlabel \t\t\t= {7}\n', \
-                 '\tperiodic \t\t= {9}\n',
-                 '\tftt_order_output \t= {8}\n', \
-                 '\tmade_dimensionless \t= {4}\n', ]
+    #     block = ['\tsampling_type \t\t= {10}\n', \
+    #              '\tquantitative \t\t= {11}\n', \
+    #              '\tnumber_of_points \t= {0}\n',\
+    #              '\tsampling_interval \t= {1}\n', \
+    #              '\treference_offset \t= {2}\n', \
+    #              '\torigin_offset \t\t= {3}\n', \
+    #              '\tquantity \t\t= {6}\n', \
+    #              '\treverse \t\t= {5}\n', \
+    #              '\tlabel \t\t\t= {7}\n', \
+    #              '\tperiodic \t\t= {9}\n',
+    #              '\tftt_order_output \t= {8}\n', \
+    #              '\tmade_dimensionless \t= {4}\n', ]
 
-        string = ''.join(block).format(self.number_of_points, 
-                                    self.sampling_interval,
-                                    self.reference_offset,
-                                    self.origin_offset,
-                                    self.made_dimensionless,
-                                    self.reverse,
-                                    self.quantity,
-                                    self._label,
-                                    self.fft_output_order,
-                                    self.periodic,
-                                    self.sampling_type,
-                                    self.quantitative)
+    #     string = ''.join(block).format(self.number_of_points, 
+    #                                 self.sampling_interval,
+    #                                 self.reference_offset,
+    #                                 self.origin_offset,
+    #                                 self.made_dimensionless,
+    #                                 self.reverse,
+    #                                 self.quantity,
+    #                                 self._label,
+    #                                 self.fft_output_order,
+    #                                 self.periodic,
+    #                                 self.sampling_type,
+    #                                 self.quantitative)
 
-        return string
+    #     return string
 
     def _getCoordinates(self):
         _unit = self.unit
@@ -496,25 +496,23 @@ class _linearQuantitativeControlledVariable:
         self._swapValues('_periodic', '_reciprocal_periodic')
         self._swapValues('_coordinates', '_reciprocal_coordinates')
 
-### ------------- Public Methods ------------------ ###
-
-    def getJsonDictionary(self):
-        d = {}
-        d['reciprocal'] = {}
-        d['number_of_points'] = self.number_of_points
-        d['sampling_interval'] = quantityFormat(self.sampling_interval)
+    def _getPythonDictonary(self):
+        dictionary = {}
+        dictionary['reciprocal'] = {}
+        dictionary['number_of_points'] = self.number_of_points
+        dictionary['sampling_interval'] = quantityFormat(self.sampling_interval)
 
         if self.reference_offset is not None and self.reference_offset.value != 0:
-            d['reference_offset'] = quantityFormat(self.reference_offset)
+            dictionary['reference_offset'] = quantityFormat(self.reference_offset)
         if self.reciprocal_reference_offset is not None and self.reciprocal_reference_offset.value != 0:
-            d['reciprocal']['reference_offset'] = quantityFormat(self.reciprocal_reference_offset)
+            dictionary['reciprocal']['reference_offset'] = quantityFormat(self.reciprocal_reference_offset)
 
 
         if self.origin_offset is not None and self.origin_offset.value != 0:
-                d['origin_offset'] = quantityFormat(self.origin_offset)
+            dictionary['origin_offset'] = quantityFormat(self.origin_offset)
 
         if self.reciprocal_origin_offset is not None and self.reciprocal_origin_offset.value != 0:
-                d['reciprocal']['origin_offset'] = quantityFormat(self.reciprocal_origin_offset)
+            dictionary['reciprocal']['origin_offset'] = quantityFormat(self.reciprocal_origin_offset)
 
         # if self._made_dimensionless is True:
         #     d['made_dimensionless'] = True
@@ -522,32 +520,37 @@ class _linearQuantitativeControlledVariable:
         #     d['reciprocal_made_dimensionless'] = True
 
         if self.reverse is True:
-            d['reverse'] = True
+            dictionary['reverse'] = True
         if self.reciprocal_reverse is True:
-            d['reciprocal']['reverse'] = True
+            dictionary['reciprocal']['reverse'] = True
 
         if self.fft_output_order is True:
-            d['fft_output_order'] = True
+            dictionary['fft_output_order'] = True
 
         if self.periodic is True:
-            d['periodic'] = True
+            dictionary['periodic'] = True
         if self.reciprocal_periodic is True:
-            d['reciprocal']['periodic'] = True
+            dictionary['reciprocal']['periodic'] = True
 
         if self.quantity not in [None, "unknown", "dimensionless"]:
-            d['quantity'] = self.quantity
+            dictionary['quantity'] = self.quantity
         if self.reciprocal_quantity not in [None, "unknown", "dimensionless"]:
-            d['reciprocal']['quantity'] = self.reciprocal_quantity
+            dictionary['reciprocal']['quantity'] = self.reciprocal_quantity
 
         if self._label.strip() != "":
-            d['label'] = self._label
+            dictionary['label'] = self._label
         if self.reciprocal_label.strip() != "":
-            d['reciprocal']['label'] = self.reciprocal_label
+            dictionary['reciprocal']['label'] = self.reciprocal_label
 
-        if d['reciprocal'] == {}:
-            del d['reciprocal']
+        if dictionary['reciprocal'] == {}:
+            del dictionary['reciprocal']
 
-        return d
+        return dictionary
+
+### ------------- Public Methods ------------------ ###
+    def __str__(self):
+        dictionary = self._getPythonDictonary()
+        return (str(dictionary))
 
     def to(self, unit):
         unit2 = unit

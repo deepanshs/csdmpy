@@ -97,7 +97,7 @@ class _nonQuantitativeControlledVariable:
         return self._coordinates
 
 
-###--------------Methods------------------###
+###--------------Private Methods------------------###
 
     def _info(self):
         _response =[self.sampling_type,
@@ -107,33 +107,37 @@ class _nonQuantitativeControlledVariable:
                     str(self._label)]
         return _response
         
-    def __str__(self):
+    # def __str__(self):
         
-        block = ['\tsampling_type \t\t= {0}\n', \
-                 '\tquantitative \t\t= {1}\n', \
-                 '\tnumber_of_points \t= {2}\n',\
-                 '\treverse \t\t= {3}\n', \
-                 '\tlabel \t\t\t= {4}\n']
+    #     block = ['\tsampling_type \t\t= {0}\n', \
+    #              '\tquantitative \t\t= {1}\n', \
+    #              '\tnumber_of_points \t= {2}\n',\
+    #              '\treverse \t\t= {3}\n', \
+    #              '\tlabel \t\t\t= {4}\n']
 
-        string = ''.join(block).format(self.sampling_type,
-                                    self.quantitative,
-                                    self.number_of_points,
-                                    self.reverse,
-                                    self._label,
-                                    )
-        return string
+    #     string = ''.join(block).format(self.sampling_type,
+    #                                 self.quantitative,
+    #                                 self.number_of_points,
+    #                                 self.reverse,
+    #                                 self._label,
+    #                                 )
+    #     return string
+
+    def _getPythonDictonary(self):
+        dictionary = {}
+
+        dictionary['coordinates'] = self.coordinates
+
+        if self.reverse is True:
+            dictionary['reverse'] = True
+
+        if self._label.strip() != "":
+            dictionary['label'] = self._label
+
+        return dictionary
 
 ### ------------- Public Methods ------------------ ###
 
-    def getJsonDictionary(self):
-        d = {}
-
-        d['coordinates'] = self.coordinates
-
-        if self.reverse is True:
-            d['reverse'] = True
-
-        if self._label.strip() != "":
-            d['label'] = self._label
-
-        return d
+    def __str__(self):
+        dictionary = self._getPythonDictonary()
+        return (str(dictionary))
