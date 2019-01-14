@@ -221,9 +221,6 @@ class _unControlledVariable:
     def schedule(self):
         return self._sampling_schedule
 
-    @property
-    def unit(self):
-        return self._unit
     
 
 

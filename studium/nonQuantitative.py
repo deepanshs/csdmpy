@@ -66,10 +66,7 @@ class _nonQuantitativeControlledVariable:
     ## label
     @property
     def label(self):
-        if self._label.strip() == '':
-            return self.quantity + ' / ' + unitToLatex(self.coordinates.unit)
-        else:
-            return self._label + ' / ' + unitToLatex(self.coordinates.unit)
+        return self._label
     @label.setter
     def label(self, label=''):
         self.setAttribute('_label', label)
