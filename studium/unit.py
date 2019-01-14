@@ -3,6 +3,9 @@ from astropy import units as u
 
 # cds.enable()
 
+_ppm = u.def_unit('ppm', 1e-6*u.Unit(1))
+_tr = u.def_unit(['tr', 'turn', 'cycle', 'revolution'], 1*u.Unit(1))
+
 convert = {
     "Å" : "Angstrom",
     "°C" : "deg_C",
@@ -11,15 +14,13 @@ convert = {
     "µ" : "u",
     "ℏ" : "/h",
     "Ω" : "Ohm",
+    # "ppm" : _ppm,
 }
 
 
-_ppm = u.def_unit('ppm', 1e-6*u.Unit(1))
+
 
 def stringToQuantity(string, dtype=float):
-
-    for key in convert:
-        string = string.replace(key, convert[key])
 
     numeric = '0123456789-+.eE*/j^ ()'
     string = string.strip()+' '
@@ -52,9 +53,14 @@ def stringToQuantity(string, dtype=float):
     unit = string[index:].strip()
     if unit != '' and unit != '()':
         if unit[0] == '(' and unit[-1] == ')': unit = unit[1:-1]
-    unit = unit.replace("µ", "u")
+    # unit = unit.replace("µ", "u")
 
+    for key in convert:
+        unit = unit.replace(key, convert[key])
 
+    # unit_list = unit.split(' ')
+    # for item in unit_list:
+    #     numerator, denominator = item.split('/')
     try:
         unitQt = u.Unit(unit)
         # print (unit, unitQt)
@@ -68,7 +74,7 @@ def stringToQuantity(string, dtype=float):
     except BaseException as e:
         raise BaseException(e)
 
-def quantityFormat(quantity):
+def valueObjectFormat(quantity):
     # mode = 'fits'
     string = quantity.unit.to_string('fits').strip()
     # print ('string', string)
@@ -141,12 +147,12 @@ if __name__ == '__main__':
     # import numpy as np
     from timeit import default_timer as timer
     start = timer()
-    s = "4 Å kg m µs^-2 K^-1 ppm"
+    s = "4 ppm"
     # s = '5 cm^-1 µs °'
     # print (s, type(s))
     a = stringToQuantity(s)#, dtype=np.float32)
     print (timer() - start)
     print (a)
     # print (type(a.unit), a.unit.physical_type)
-    print (quantityFormat(a))
-    print (unitToLatex(a.unit))
+    # print (valueObjectFormat(a))
+    # print (unitToLatex(a.unit))
