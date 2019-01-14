@@ -1,11 +1,12 @@
 from __future__ import print_function, division
 import numpy as np
 import json
-from unit import valueObjectFormat, unitToLatex, _ppm
+from .unit import valueObjectFormat, unitToLatex, _ppm
 from ._studium import (_assignAndCheckUnitConsistency, 
                       _checkAndAssignBool,
                       _checkQuantity,
-                      _checkValueObject)
+                      _checkValueObject,
+                      _defaultUnits)
 
 
 class _linearQuantitativeControlledVariable:
@@ -37,10 +38,14 @@ class _linearQuantitativeControlledVariable:
                  '_reciprocal_coordinates',
 
                  '_unit', 
+                 '_dimensionless_unit',
                  '_reciprocal_unit',
+                 '_reciprocal_dimensionless_unit',
                  
                  '_absolute_coordinates',
-                 '_reciprocal_absolute_coordinates']
+                 '_reciprocal_absolute_coordinates',
+                 
+                 '_type']
 
     def __init__(self,  _number_of_points, 
                         _sampling_interval, 
@@ -67,6 +72,7 @@ class _linearQuantitativeControlledVariable:
 
         self.setAttribute('_sampling_type', _sampling_type)
         self.setAttribute('_non_quantitative', _non_quantitative)
+        self.setAttribute('_type', 'linear')
 
         self.setAttribute('_number_of_points', _number_of_points)
         self.setAttribute('_reciprocal_number_of_points', _number_of_points)
@@ -75,10 +81,12 @@ class _linearQuantitativeControlledVariable:
         self.setAttribute('_sampling_interval', _value)
 
         _unit = self.sampling_interval.unit
-        _reciprocal_unit = _unit**-1
+        _reciprocal_unit =  _unit**-1 #_defaultUnits(1.0*_unit**-1).unit
 
         self.setAttribute('_unit', _unit)
         self.setAttribute('_reciprocal_unit', _reciprocal_unit)
+        self.setAttribute('_dimensionless_unit', '')
+        self.setAttribute('_reciprocal_dimensionless_unit', '')
 
         if _reciprocal_sampling_interval is None:
             _value = (1/(_number_of_points*self.sampling_interval.value)) * _reciprocal_unit
@@ -197,20 +205,29 @@ class _linearQuantitativeControlledVariable:
 
     @property
     def unit(self):
-        return self._unit
+        if self._made_dimensionless:
+            unit = self._dimensionless_unit
+        else:
+            unit = self._unit
+        return unit
 
     @property
     def reciprocal_unit(self):
-        return self._reciprocal_unit
+        if self._reciprocal_made_dimensionless:
+            unit = self._reciprocal_dimensionless_unit
+        else:
+            unit = self._reciprocal_unit
+        return unit
 
     ## label
     @property
     def label(self):
-        # print (unitToLatex(self._coordinates.unit))
-        if self._label.strip() == '':
-            return self._quantity + ' / ' + unitToLatex(self.coordinates[0].unit)
-        else:
-            return self._label + ' / ' + unitToLatex(self.coordinates[0].unit)
+        return self._label
+        # if self._label.strip() == '':
+        #     return self._quantity + ' / ' + unitToLatex(self.unit)
+        # else:
+        #     return self._label + ' / ' + unitToLatex(self.unit)
+
     @label.setter
     def label(self, label=''):
         self.setAttribute('_label', label)
@@ -230,10 +247,11 @@ class _linearQuantitativeControlledVariable:
         return self._made_dimensionless
     @made_dimensionless.setter
     def made_dimensionless(self, value=False):
-        _oldValue = self._made_dimensionless
-        _value = _checkAndAssignBool(value)
-        self.setAttribute('_made_dimensionless', _value)
-        self._dimensionlessConversion(self.unit, _oldValue)
+        if value:
+            denominator = (self.origin_offset + self.reference_offset)
+            if denominator.value == 0:
+                raise ZeroDivisionError("Dimension cannot be made dimensionsless with \n'origin_offset' {0} and 'reference_offset' {1}. No changes made.".format(self.origin_offset, self.reference_offset))
+        self.setAttribute('_made_dimensionless', value)
 
     ## reciprocal made dimensionless
     @property
@@ -241,11 +259,11 @@ class _linearQuantitativeControlledVariable:
         return self._reciprocal_made_dimensionless
     @reciprocal_made_dimensionless.setter
     def reciprocal_made_dimensionless(self, value=False):
-        _oldValue = self._reciprocal_made_dimensionless
-        _value = _checkAndAssignBool(value)
-        self.setAttribute('_reciprocal_made_dimensionless', _value)
-        # self._dimensionlessConversion(self._reciprocal_unit, _oldValue)
-
+        if value:
+            denominator = (self.reciprocal_origin_offset + self.reciprocal_reference_offset)
+            if denominator.value == 0:
+                raise ZeroDivisionError("Dimension cannot be made dimensionsless with \n'origin_offset' {0} and 'reference_offset' {1}. No changes made.".format(self.origin_offset, self.reference_offset))
+        self.setAttribute('_reciprocal_made_dimensionless', value)
 
     ## reverse
     @property
@@ -347,7 +365,10 @@ class _linearQuantitativeControlledVariable:
     ## coordinates
     @property
     def coordinates(self):
-        return self._coordinates
+        _value = 1.0
+        if self._made_dimensionless:
+            _value=(self._origin_offset + self._reference_offset)
+        return (self._coordinates/_value).to(self.unit)
 
     ## absolute_coordinates
     @property
@@ -357,7 +378,10 @@ class _linearQuantitativeControlledVariable:
     ## reciprocal_coordinates
     @property
     def reciprocal_coordinates(self):
-        return self._reciprocal_coordinates
+        _value = 1.0
+        if self._reciprocal_made_dimensionless:
+            _value=(self._reciprocal_origin_offset + self._reciprocal_reference_offset)
+        return (self._reciprocal_coordinates/_value).to(self.reciprocal_unit)
 
     ## reciprocal_absolute_coordinates
     @property
@@ -374,23 +398,23 @@ class _linearQuantitativeControlledVariable:
 
 ###--------------Private Methods------------------###
 
-    def _dimensionlessConversion(self, unit, _oldValue):
-        denominator = (self.origin_offset + self.reference_offset)
-        # print (denominator)
-        # print (self._coordinates, unit, denominator)
-        if denominator.value != 0:
-            if self.made_dimensionless and _oldValue: return
-            if not self.made_dimensionless and not _oldValue: return
-            if self.made_dimensionless and not _oldValue:
-                _value = (self.coordinates / denominator)#.to(_ppm)
-                self.setAttribute('_coordinates', _value)
-                return
-            if not self.made_dimensionless and _oldValue:
-                _value = (self.coordinates * denominator).to(unit)
-                self.setAttribute('_coordinates', _value)
-        else:
-            self.setAttribute('_made_dimensionless', _oldValue)
-            raise ZeroDivisionError("Dimension cannot be made dimensionsless with \n'origin_offset' {0} and 'reference_offset' {1}. No changes made.".format(self.origin_offset, self.reference_offset))
+    # def _dimensionlessConversion(self, unit, _oldValue):
+    #     denominator = (self.origin_offset + self.reference_offset)
+    #     # print (denominator)
+    #     # print (self._coordinates, unit, denominator)
+    #     if denominator.value != 0:
+    #         if self.made_dimensionless and _oldValue: return
+    #         if not self.made_dimensionless and not _oldValue: return
+    #         if self.made_dimensionless and not _oldValue:
+    #             _value = (self.coordinates / denominator)#.to(_ppm)
+    #             self.setAttribute('_coordinates', _value)
+    #             return
+    #         if not self.made_dimensionless and _oldValue:
+    #             _value = (self.coordinates * denominator).to(unit)
+    #             self.setAttribute('_coordinates', _value)
+    #     else:
+    #         self.setAttribute('_made_dimensionless', _oldValue)
+    #         raise ZeroDivisionError("Dimension cannot be made dimensionsless with \n'origin_offset' {0} and 'reference_offset' {1}. No changes made.".format(self.origin_offset, self.reference_offset))
 
     def _info(self):
         _response =[self.sampling_type,
@@ -438,7 +462,7 @@ class _linearQuantitativeControlledVariable:
     #     return string
 
     def _getCoordinates(self):
-        _unit = self.unit
+        _unit = self._unit
         _number_of_points = self.number_of_points
         _sampling_interval = self.sampling_interval.to(_unit)
         _reference_offset = self.reference_offset.to(_unit)
@@ -449,26 +473,26 @@ class _linearQuantitativeControlledVariable:
         else:
             _value = ( np.arange(_number_of_points, dtype=np.float64)* _sampling_interval \
                             - _reference_offset )
-        if self.made_dimensionless:
-            _value/=(_origin_offset + _reference_offset)
-            _value = _value.to(_ppm)
+        # if self.made_dimensionless:
+        #     _value/=(_origin_offset + _reference_offset)
+        #     _value = _value.to(_ppm)
         self.setAttribute('_coordinates', _value)
         self.setAttribute('_absolute_coordinates', _value + _origin_offset)
 
     def _getreciprocalCoordinates(self):
-        _unit = self.reciprocal_unit
+        _unit = self._reciprocal_unit
         _number_of_points = self.number_of_points
         _sampling_interval = self.reciprocal_sampling_interval.to(_unit)
         _reference_offset = self.reciprocal_reference_offset.to(_unit)
         _origin_offset = self.reciprocal_origin_offset.to(_unit)
+
+        # print (_unit, _number_of_points, _sampling_interval, _reference_offset, _origin_offset)
         if not self.fft_output_order:
             _value = ( np.arange(_number_of_points, dtype=np.float64)* _sampling_interval \
                             - (0.5*_sampling_interval*_number_of_points) - _reference_offset)
         else:
             _value = ( np.arange(_number_of_points, dtype=np.float64)* _sampling_interval \
                             - _reference_offset )
-        if self.reciprocal_made_dimensionless:
-            _value/=(_origin_offset + _reference_offset)
         self.setAttribute('_reciprocal_coordinates', _value)
         self.setAttribute('_reciprocal_absolute_coordinates', _value + _origin_offset)
 
@@ -515,11 +539,6 @@ class _linearQuantitativeControlledVariable:
         if self.reciprocal_origin_offset is not None and self.reciprocal_origin_offset.value != 0.0:
             dictionary['reciprocal']['origin_offset'] = valueObjectFormat(self.reciprocal_origin_offset)
 
-        # if self._made_dimensionless is True:
-        #     d['made_dimensionless'] = True
-        # if self._reciprocal_made_dimensionless is True:
-        #     d['reciprocal_made_dimensionless'] = True
-
         if self.reverse is True:
             dictionary['reverse'] = True
         if self.reciprocal_reverse is True:
@@ -538,8 +557,8 @@ class _linearQuantitativeControlledVariable:
         if self.reciprocal_quantity not in [None, "unknown", "dimensionless"]:
             dictionary['reciprocal']['quantity'] = self.reciprocal_quantity
 
-        if self._label.strip() != "":
-            dictionary['label'] = self._label
+        if self.label.strip() != "":
+            dictionary['label'] = self.label
         if self.reciprocal_label.strip() != "":
             dictionary['reciprocal']['label'] = self.reciprocal_label
 
@@ -554,10 +573,10 @@ class _linearQuantitativeControlledVariable:
         return (json.dumps(dictionary, sort_keys=False, indent=2))
 
     def to(self, unit):
-        unit2 = unit
-        if unit2.strip() == 'ppm': 
-            unit2 = _ppm
-        self.setAttribute('_coordinates', self.coordinates.to(unit2))
+        if unit.strip() == 'ppm': 
+            self.setAttribute('_dimensionless_unit', _ppm)
+        else:
+            self.setAttribute('_unit', _assignAndCheckUnitConsistency(1.0,unit).unit)
         return self.coordinates
 
     def __iadd__(self, other):

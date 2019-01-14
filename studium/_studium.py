@@ -1,26 +1,26 @@
 from __future__ import print_function
 import numpy as np
-# from astropy import units as u
-from unit import stringToQuantity
+import warnings
+from .unit import stringToQuantity
 import os
 import collections
 
 # cds.enable()
 
-class SequenceProxy(collections.Sequence):
-    """Proxy class to make something appear to be an (immutable) sized iterable
-       container based on just the two functions (or bound methods) provided to
-       the constructor.
-    """
-    def __init__(self, item_getter, length_getter):
-        self._item_getter = item_getter
-        self._get_length = length_getter
+# class SequenceProxy(collections.Sequence):
+#     """Proxy class to make something appear to be an (immutable) sized iterable
+#        container based on just the two functions (or bound methods) provided to
+#        the constructor.
+#     """
+#     def __init__(self, item_getter, length_getter):
+#         self._item_getter = item_getter
+#         self._get_length = length_getter
 
-    def __getitem__(self, index):
-        return self._item_getter(index)
+#     def __getitem__(self, index):
+#         return self._item_getter(index)
 
-    def __len__(self):
-        return self._get_length()
+#     def __len__(self):
+#         return self._get_length()
 
 
 def _is_numeric(element):
@@ -127,9 +127,12 @@ def _checkQuantity(element, unit):
     if element == None:
         element = unit.physical_type
         return element
-    else:
-        if element != unit.physical_type:
-            raise Exception("The physical quantity name '{0}' is not consistent with the unit '{1}'".format(element, str(unit)) )
-        else:
-            element = unit.physical_type
-            return element
+    
+    if unit.physical_type == 'unknown':
+        warnings.warn("The quantity name associated with the unit, {0}, is not defined in astropy.units package. Continuing with '{1}' as the quantity name.".format(str(unit), element))
+        return element
+    
+    if element.lower() != unit.physical_type:
+        raise Exception("The physical quantity name '{0}' is not consistent with the unit '{1}'".format(element, str(unit)) )
+    
+    return element.lower()

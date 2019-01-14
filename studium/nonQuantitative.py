@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 import numpy as np
 import json
-from unit import unitToLatex
+from .unit import unitToLatex
 from ._studium import _checkAndAssignBool
 
 class _nonQuantitativeControlledVariable:
