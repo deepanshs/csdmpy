@@ -1,12 +1,48 @@
 from __future__ import print_function, division
 import base64, json, warnings, os
-from urllib.request import urlopen
 import numpy as np
 from ._studium import (_assignAndCheckUnitConsistency, 
                        _checkQuantity,
                        _checkEncoding,
                        _checkNumericType,
                        _checkDatasetType)
+import os
+from urllib.request import urlopen
+from urllib.parse import urlparse
+
+def _getAbsoluteLocalDataAddress(data_path, file):
+    _data_abs_path = os.path.abspath(data_path)
+    _file_abs_path = os.path.abspath(file)
+    _common_path = os.path.commonpath([_data_abs_path, _file_abs_path])
+
+    if (_common_path != os.path.abspath(_file_abs_path[:-len(file)])):
+        raise Exception("invalid file path '{0}'".format(_file_abs_path))
+
+    _relative_path_to_file = os.path.split(file)[0]
+    _relative_path_to_data = _data_abs_path[len(_common_path)+1:]
+    _path = os.path.join(_common_path, _relative_path_to_file, _relative_path_to_data)
+    return 'file:'+_path
+
+def _getRelativeLocalDataAddress(data_absolute_uri, file):
+    res = urlparse(data_absolute_uri)
+    _data_abs_path = os.path.abspath(res.path)
+    _file_abs_path = os.path.abspath(file)
+
+    print (_data_abs_path)
+    print (_file_abs_path)
+    _common_path = os.path.commonpath([_data_abs_path, _file_abs_path])
+    print (_common_path)
+    _data_rel_path = _data_abs_path[len(_common_path)+1:]
+    return 'file:./'+_data_rel_path
+
+def _checkURIPath(uri, file):
+    res = urlparse(uri)
+    path = uri
+    if res.scheme in ['file', '']:
+        if res.netloc == '':  
+              path = _getAbsoluteLocalDataAddress(res.path, file)
+    return path
+
 
 class _unControlledVariable:
     """
@@ -74,20 +110,11 @@ class _unControlledVariable:
         if _components is not None:
             _components = self._decodeComponents(_components)
 
-
+        _absolute_URI = ''
         if _components_URI is not None : 
-            _components = urlopen(_components_URI).read() 
+            _absolute_URI = _checkURIPath(_components_URI, _filename)
+            _components = urlopen(_absolute_URI).read() 
             _components = self._decodeComponents(_components)
-
-            # if self.encoding == 'raw':
-            #     splt = os.path.split(_filename)
-            #     # print (splt)
-            #     _components = np.fromfile( os.path.join(splt[0], _components_URI), dtype=npType)
-            #     _components = _components.reshape(total_components, \
-            #                         int(_components.size/total_components))#*self.unit
-            # else:
-            #     raise Exception("'{0}' is an invalid data 'encoding'.".format(self.encoding))
-
 
         if _component_labels is None:
             self.setAttribute('_component_labels', ['' for i in range(total_components)])
@@ -103,7 +130,7 @@ class _unControlledVariable:
 
         # _components = np.asarray(_components, dtype=npType).swapaxes(0,-1)
         self.setAttribute('_components', _components)
-        self.setAttribute('_components_URI', _components_URI)
+        self.setAttribute('_components_URI', _absolute_URI)
 
         self.setAttribute('_sampling_schedule', _sampling_schedule)
 

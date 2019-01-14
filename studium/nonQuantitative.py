@@ -71,6 +71,10 @@ class _nonQuantitativeControlledVariable:
     def label(self, label=''):
         self.setAttribute('_label', label)
     
+    @property
+    def axis_label(self):
+        return self.label
+        
     ## reverse
     @property
     def reverse(self):
