@@ -408,7 +408,7 @@ class _nonLinearQuantitativeControlledVariable:
         self.setAttribute('_coordinates', _value)
         self.setAttribute('_absolute_coordinates', _value + _origin_offset)
 
-    def _getPythonDictonary(self):
+    def _getPythonDictonary(self, version):
         dictionary = {}
         dictionary['reciprocal'] = {}
 

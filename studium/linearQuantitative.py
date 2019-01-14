@@ -527,7 +527,7 @@ class _linearQuantitativeControlledVariable:
         self._swapValues('_periodicity', '_reciprocal_periodicity')
         self._swapValues('_coordinates', '_reciprocal_coordinates')
 
-    def _getPythonDictonary(self):
+    def _getPythonDictonary(self, version):
         dictionary = {}
         dictionary['reciprocal'] = {}
         dictionary['number_of_points'] = self.number_of_points

@@ -74,7 +74,7 @@ class _nonQuantitativeControlledVariable:
     @property
     def axis_label(self):
         return self.label
-        
+
     ## reverse
     @property
     def reverse(self):
@@ -105,7 +105,7 @@ class _nonQuantitativeControlledVariable:
                     str(self._label)]
         return _response
 
-    def _getPythonDictonary(self):
+    def _getPythonDictonary(self, version):
         dictionary = {}
 
         dictionary['coordinates'] = self.coordinates.tolist()
