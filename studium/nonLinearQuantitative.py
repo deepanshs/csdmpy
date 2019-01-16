@@ -20,7 +20,7 @@ class _nonLinearQuantitativeControlledVariable:
                  '_origin_offset', 
                  '_reverse',
                  '_label',
-                 '_periodicity',
+                 '_period',
                  '_made_dimensionless',
 
                  '_reciprocal_coordinates',
@@ -30,7 +30,7 @@ class _nonLinearQuantitativeControlledVariable:
                  '_reciprocal_reference_offset', 
                  '_reciprocal_reverse',
                  '_reciprocal_label',
-                 '_reciprocal_periodicity',
+                 '_reciprocal_period',
                  '_reciprocal_made_dimensionless',
 
                  '_unit',
@@ -49,7 +49,7 @@ class _nonLinearQuantitativeControlledVariable:
                         _quantity=None, 
                         _reverse=False, 
                         _label='',
-                        _periodicity=None,
+                        _period=None,
                         _made_dimensionless = False,
                          
                         _sampling_type = 'grid',
@@ -60,7 +60,7 @@ class _nonLinearQuantitativeControlledVariable:
                         _reciprocal_quantity = None,
                         _reciprocal_reverse = False, 
                         _reciprocal_label='',
-                        _reciprocal_periodicity = None,
+                        _reciprocal_period = None,
                         _reciprocal_made_dimensionless = False):
 
         self.setAttribute('_sampling_type', _sampling_type)
@@ -102,11 +102,11 @@ class _nonLinearQuantitativeControlledVariable:
         _value = _checkAndAssignBool(_reciprocal_reverse)
         self.setAttribute('_reciprocal_reverse', _value)
 
-        ## periodicity
-        _value = _checkValueObject(_periodicity, _unit)
-        self.setAttribute('_periodicity', _value)
-        _value = _checkValueObject(_reciprocal_periodicity, _reciprocal_unit)
-        self.setAttribute('_reciprocal_periodicity', _value)
+        ## period
+        _value = _checkValueObject(_period, _unit)
+        self.setAttribute('_period', _value)
+        _value = _checkValueObject(_reciprocal_period, _reciprocal_unit)
+        self.setAttribute('_reciprocal_period', _value)
 
         ## quantity
         _value = _checkQuantity(_quantity, _unit)
@@ -155,21 +155,21 @@ class _nonLinearQuantitativeControlledVariable:
     def non_quantitative(self):
         return self._non_quantitative
 
-    ## Periodicity
+    ## period
     @property
-    def periodicity(self):
-        return self._periodicity
-    @periodicity.setter
-    def periodicity(self, value):
-        self.setAttribute('_periodicity', _checkValueObject(value, self.unit))
+    def period(self):
+        return self._period
+    @period.setter
+    def period(self, value):
+        self.setAttribute('_period', _checkValueObject(value, self.unit))
     
-    ## reciprocal Periodicity
+    ## reciprocal period
     @property
-    def reciprocal_periodicity(self):
-        return self._reciprocal_periodicity
-    @reciprocal_periodicity.setter
-    def reciprocal_periodicity(self, value):
-        self.setAttribute('_reciprocal_periodicity', \
+    def reciprocal_period(self):
+        return self._reciprocal_period
+    @reciprocal_period.setter
+    def reciprocal_period(self, value):
+        self.setAttribute('_reciprocal_period', \
                         _checkValueObject(value, self.reciprocal_unit))
 
     ## Quantity
@@ -364,7 +364,7 @@ class _nonLinearQuantitativeControlledVariable:
                     self.reverse,
                     self.quantity,
                     str(self._label),
-                    self.periodicity]
+                    self.period]
         return _response
         
     # def __str__(self):
@@ -378,7 +378,7 @@ class _nonLinearQuantitativeControlledVariable:
     #              '\treverse \t\t= {6}\n', \
     #              '\tquantity \t\t= {7}\n', \
     #              '\tlabel \t\t\t= {8}\n', \
-    #              '\tperiodicity \t\t= {9}\n']
+    #              '\tperiod \t\t= {9}\n']
 
     #     string = ''.join(block).format(self.sampling_type,
     #                                 self.non_quantitative,
@@ -389,7 +389,7 @@ class _nonLinearQuantitativeControlledVariable:
     #                                 self.reverse,
     #                                 self.quantity,
     #                                 self._label,
-    #                                 self.periodicity)
+    #                                 self.period)
     #     return string
 
     def _getCoordinates(self):
@@ -427,10 +427,10 @@ class _nonLinearQuantitativeControlledVariable:
         if self.reciprocal_reverse is True:
             dictionary['reciprocal']['reverse'] = True
 
-        if self.periodicity.value not in [0.0, np.inf, None]:
-            dictionary['periodicity'] = valueObjectFormat(self.periodicity)
-        if self.reciprocal_periodicity.value not in [0.0, np.inf, None]:
-            dictionary['reciprocal']['periodicity'] = valueObjectFormat(self.reciprocal_periodicity)
+        if self.period.value not in [0.0, np.inf, None]:
+            dictionary['period'] = valueObjectFormat(self.period)
+        if self.reciprocal_period.value not in [0.0, np.inf, None]:
+            dictionary['reciprocal']['period'] = valueObjectFormat(self.reciprocal_period)
 
         if self.quantity is not None:
             dictionary['quantity'] = self.quantity

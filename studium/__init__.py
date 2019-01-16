@@ -69,7 +69,7 @@ class dataModel:
                    'origin_offset':None, 
                    'made_dimensionless':False, 
                    'reverse':False, 'fft_output_order':False, 
-                   'periodicity':None, 
+                   'period':None, 
                    'quantity':None, 'label':'',
                    'reciprocal':{
                         'sampling_interval':None, 
@@ -77,7 +77,7 @@ class dataModel:
                         'origin_offset':None, 
                         'made_dimensionless':False, 
                         'reverse':False, 
-                        'periodicity':None,
+                        'period':None,
                         'quantity':None, 
                         'label':''}
                     }
@@ -135,14 +135,14 @@ class dataModel:
                         _quantity               = default['quantity'], \
                         _reverse                = default['reverse'], \
                         _label                  = default['label'], \
-                        _periodicity            = default['periodicity'], \
+                        _period                 = default['period'], \
                         _made_dimensionless     = default['made_dimensionless'], \
 
                         _reciprocal_reference_offset    = default['reciprocal']['reference_offset'], 
                         _reciprocal_origin_offset       = default['reciprocal']['origin_offset'],
                         _reciprocal_quantity            = default['reciprocal']['quantity'],
                         _reciprocal_reverse             = default['reciprocal']['reverse'],
-                        _reciprocal_periodicity         = default['reciprocal']['periodicity'],
+                        _reciprocal_period              = default['reciprocal']['period'],
                         _reciprocal_label               = default['reciprocal']['label'],
                         _reciprocal_made_dimensionless  = default['reciprocal']['made_dimensionless']), ))
 
@@ -161,7 +161,7 @@ class dataModel:
                         _quantity               = default['quantity'], 
                         _reverse                = default['reverse'], 
                         _label                  = default['label'],
-                        _periodicity            = default['periodicity'], 
+                        _period                 = default['period'], 
                         _fft_output_order       = default['fft_output_order'], 
                         _made_dimensionless     = default['made_dimensionless'],
 
@@ -170,7 +170,7 @@ class dataModel:
                         _reciprocal_origin_offset       = default['reciprocal']['origin_offset'],
                         _reciprocal_quantity            = default['reciprocal']['quantity'],
                         _reciprocal_reverse             = default['reciprocal']['reverse'],
-                        _reciprocal_periodicity         = default['reciprocal']['periodicity'],
+                        _reciprocal_period              = default['reciprocal']['period'],
                         _reciprocal_label               = default['reciprocal']['label'],
                         _reciprocal_made_dimensionless  = default['reciprocal']['made_dimensionless']), ))
 
@@ -242,7 +242,7 @@ class dataModel:
             'quantity', \
             'label', \
             'ftFlag', \
-            'periodicity']
+            'period']
         y = []
         for i in range(len(self.controlled_variables)):
             y.append(self.controlled_variables[i].info())

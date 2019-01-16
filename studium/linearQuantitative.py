@@ -20,7 +20,7 @@ class _linearQuantitativeControlledVariable:
                  '_reference_offset', 
                  '_reverse',
                  '_label',
-                 '_periodicity',
+                 '_period',
                  '_fft_output_order',
                  '_made_dimensionless',
 
@@ -31,7 +31,7 @@ class _linearQuantitativeControlledVariable:
                  '_reciprocal_reference_offset', 
                  '_reciprocal_reverse',
                  '_reciprocal_label',
-                 '_reciprocal_periodicity',
+                 '_reciprocal_period',
                  '_reciprocal_made_dimensionless',
 
                  '_coordinates', 
@@ -54,7 +54,7 @@ class _linearQuantitativeControlledVariable:
                         _quantity = None, 
                         _reverse = False, 
                         _label='',
-                        _periodicity = None, 
+                        _period = None, 
                         _fft_output_order = False, 
                         _made_dimensionless = False,
 
@@ -67,7 +67,7 @@ class _linearQuantitativeControlledVariable:
                         _reciprocal_quantity = None,
                         _reciprocal_reverse = False, 
                         _reciprocal_label='',
-                        _reciprocal_periodicity = None,
+                        _reciprocal_period = None,
                         _reciprocal_made_dimensionless = False):
 
         self.setAttribute('_sampling_type', _sampling_type)
@@ -121,11 +121,11 @@ class _linearQuantitativeControlledVariable:
         _value = _checkAndAssignBool(_fft_output_order)
         self.setAttribute('_fft_output_order', _value)
 
-        ### periodicity
-        _value = _checkValueObject(_periodicity, _unit)
-        self.setAttribute('_periodicity', _value)
-        _value = _checkValueObject(_reciprocal_periodicity, _reciprocal_unit)
-        self.setAttribute('_reciprocal_periodicity', _value)
+        ### period
+        _value = _checkValueObject(_period, _unit)
+        self.setAttribute('_period', _value)
+        _value = _checkValueObject(_reciprocal_period, _reciprocal_unit)
+        self.setAttribute('_reciprocal_period', _value)
 
         ## quantity
         _value = _checkQuantity(_quantity, _unit)
@@ -170,21 +170,21 @@ class _linearQuantitativeControlledVariable:
     def non_quantitative(self):
         return self._non_quantitative
 
-    ## Periodicity
+    ## period
     @property
-    def periodicity(self):
-        return self._periodicity
-    @periodicity.setter
-    def periodicity(self, value = True):
-        self.setAttribute('_periodicity', _checkValueObject(value, self.unit))
+    def period(self):
+        return self._period
+    @period.setter
+    def period(self, value = True):
+        self.setAttribute('_period', _checkValueObject(value, self.unit))
 
-    ## reciprocal Periodicity
+    ## reciprocal period
     @property
-    def reciprocal_periodicity(self):
-        return self._reciprocal_periodicity
-    @reciprocal_periodicity.setter
-    def reciprocal_periodicity(self, value = True):
-        self.setAttribute('_reciprocal_periodicity', \
+    def reciprocal_period(self):
+        return self._reciprocal_period
+    @reciprocal_period.setter
+    def reciprocal_period(self, value = True):
+        self.setAttribute('_reciprocal_period', \
                 _checkValueObject(value, self.reciprocal_unit))
     
     ## Quantity
@@ -428,7 +428,7 @@ class _linearQuantitativeControlledVariable:
                     self.quantity,
                     str(self._label),
                     self.fft_output_order,
-                    self.periodicity]
+                    self.period]
         return _response
 
     # def __str__(self):
@@ -442,7 +442,7 @@ class _linearQuantitativeControlledVariable:
     #              '\tquantity \t\t= {6}\n', \
     #              '\treverse \t\t= {5}\n', \
     #              '\tlabel \t\t\t= {7}\n', \
-    #              '\tperiodicity \t\t= {9}\n',
+    #              '\tperiod \t\t= {9}\n',
     #              '\tftt_order_output \t= {8}\n', \
     #              '\tmade_dimensionless \t= {4}\n', ]
 
@@ -455,7 +455,7 @@ class _linearQuantitativeControlledVariable:
     #                                 self.quantity,
     #                                 self._label,
     #                                 self.fft_output_order,
-    #                                 self.periodicity,
+    #                                 self.period,
     #                                 self.sampling_type,
     #                                 self.non_quantitative)
 
@@ -519,7 +519,7 @@ class _linearQuantitativeControlledVariable:
 
         self._swapValues('_quantity', '_reciprocal_quantity')
         self._swapValues('_label', '_reciprocal_label')
-        self._swapValues('_periodicity', '_reciprocal_periodicity')
+        self._swapValues('_period', '_reciprocal_period')
         self._swapValues('_coordinates', '_reciprocal_coordinates')
 
     def _getPythonDictonary(self):
@@ -547,10 +547,10 @@ class _linearQuantitativeControlledVariable:
         if self.fft_output_order is True:
             dictionary['fft_output_order'] = True
 
-        if self.periodicity.value not in [0.0, np.inf, None]:
-            dictionary['periodicity'] = valueObjectFormat(self.periodicity)
-        if self.reciprocal_periodicity.value not in [0.0, np.inf, None]:
-            dictionary['reciprocal']['periodicity'] = valueObjectFormat(self.reciprocal_periodicity)
+        if self.period.value not in [0.0, np.inf, None]:
+            dictionary['period'] = valueObjectFormat(self.period)
+        if self.reciprocal_period.value not in [0.0, np.inf, None]:
+            dictionary['reciprocal']['period'] = valueObjectFormat(self.reciprocal_period)
 
         if self.quantity not in [None, "unknown", "dimensionless"]:
             dictionary['quantity'] = self.quantity
