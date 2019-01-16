@@ -22,6 +22,19 @@ import collections
 #     def __len__(self):
 #         return self._get_length()
 
+def axis_label(label, unit, made_dimensionless, dimensionless_unit):
+    if made_dimensionless:
+        if dimensionless_unit != '':
+            return label + ' / ' + dimensionless_unit
+        else:
+            return label
+    if not made_dimensionless:
+        if unit != '':
+            return label + ' / ' + unit
+        else:
+            return label
+
+
 
 def _is_numeric(element):
     return element.isnumeric()

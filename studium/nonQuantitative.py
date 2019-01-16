@@ -66,14 +66,15 @@ class _nonQuantitativeControlledVariable:
     ## label
     @property
     def label(self):
-        if self._label.strip() == '':
-            return self.quantity + ' / ' + unitToLatex(self.coordinates.unit)
-        else:
-            return self._label + ' / ' + unitToLatex(self.coordinates.unit)
+        return self._label
     @label.setter
     def label(self, label=''):
         self.setAttribute('_label', label)
     
+    @property
+    def axis_label(self):
+        return self.label
+
     ## reverse
     @property
     def reverse(self):
@@ -104,7 +105,7 @@ class _nonQuantitativeControlledVariable:
                     str(self._label)]
         return _response
 
-    def _getPythonDictonary(self):
+    def _getPythonDictonary(self, version):
         dictionary = {}
 
         dictionary['coordinates'] = self.coordinates.tolist()

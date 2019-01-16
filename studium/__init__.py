@@ -253,24 +253,28 @@ class dataModel:
         dictionary = self._getPythonDictonary(self.filename, print_function=True)
         return (json.dumps(dictionary, sort_keys=False, indent=2))
 
-    def _getPythonDictonary(self, filename, print_function=False):
+    def _getPythonDictonary(self, filename, print_function=False, version='1.0.0'):
         dictionary = {}
         dictionary["uncontrolled_variables"] = []
         dictionary["controlled_variables"] = []
-        dictionary["version"] = "1.0"
+        dictionary["version"] = version
         for i in range(len(self.controlled_variables)):
             dictionary["controlled_variables"].append( \
-                        self.controlled_variables[i]._getPythonDictonary())
+                    self.controlled_variables[i]._getPythonDictonary(version=version))
         
         _length_of_uncontrolled_variables =  len(self.uncontrolled_variables)
         for i in range(_length_of_uncontrolled_variables):
             dictionary["uncontrolled_variables"].append( \
-                    self.uncontrolled_variables[i]._getPythonDictonary(filename, i, \
-                                                _length_of_uncontrolled_variables, print_function))
+                    self.uncontrolled_variables[i]._getPythonDictonary(
+                                filename = filename,
+                                dataset_index = i, 
+                                number_of_components = _length_of_uncontrolled_variables, 
+                                for_display = print_function, 
+                                version = version))
         return dictionary
 
-    def save(self, filename):
-        dictionary = self._getPythonDictonary(filename)
+    def save(self, filename, version='1.0.0'):
+        dictionary = self._getPythonDictonary(filename, version=version)
         with open(filename, 'w') as outfile:
             json.dump(dictionary, outfile, sort_keys=False, indent=2)
 

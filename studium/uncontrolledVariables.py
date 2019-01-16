@@ -1,12 +1,44 @@
 from __future__ import print_function, division
 import base64, json, warnings, os
-from urllib.request import urlopen
 import numpy as np
 from ._studium import (_assignAndCheckUnitConsistency, 
                        _checkQuantity,
                        _checkEncoding,
                        _checkNumericType,
                        _checkDatasetType)
+import os
+from urllib.request import urlopen
+from urllib.parse import urlparse
+
+def _getAbsoluteLocalDataAddress(data_path, file):
+    _data_abs_path = os.path.abspath(data_path)
+    _file_abs_path = os.path.abspath(file)
+    _common_path = os.path.commonpath([_data_abs_path, _file_abs_path])
+
+    if (_common_path != os.path.abspath(_file_abs_path[:-len(file)])):
+        raise Exception("invalid path to external data file, '{0}'".format(_data_abs_path))
+
+    _relative_path_to_file = os.path.split(file)[0]
+    _relative_path_to_data = _data_abs_path[len(_common_path)+1:]
+    _path = os.path.join(_common_path, _relative_path_to_file, _relative_path_to_data)
+    return 'file:'+_path
+
+def _getRelativeLocalDataAddress(data_absolute_uri, file):
+    res = urlparse(data_absolute_uri)
+    _data_abs_path = os.path.abspath(res.path)
+    _file_abs_path = os.path.abspath(file)
+    _common_path = os.path.commonpath([_data_abs_path, _file_abs_path])
+    _data_rel_path = _data_abs_path[len(_common_path)+1:]
+    return 'file:./'+_data_rel_path
+
+def _getAbsoluteURIPath(uri, file):
+    res = urlparse(uri)
+    path = uri
+    if res.scheme in ['file', '']:
+        if res.netloc == '':  
+              path = _getAbsoluteLocalDataAddress(res.path, file)
+    return path
+
 
 class _unControlledVariable:
     """
@@ -48,7 +80,7 @@ class _unControlledVariable:
                 _filename = ''):
 
         if _components is None and _components_URI is None:
-            raise ValueError("No uncontrolled-variables found.")
+            raise ValueError("Either '{0}' or '{1}' is not present.".format('components', 'components_URI'))
 
         if _encoding is None:
             raise ValueError("Encoding type not specified.")
@@ -74,20 +106,10 @@ class _unControlledVariable:
         if _components is not None:
             _components = self._decodeComponents(_components)
 
-
         if _components_URI is not None : 
-            _components = urlopen(_components_URI).read() 
+            _absolute_URI = _getAbsoluteURIPath(_components_URI, _filename)
+            _components = urlopen(_absolute_URI).read() 
             _components = self._decodeComponents(_components)
-
-            # if self.encoding == 'raw':
-            #     splt = os.path.split(_filename)
-            #     # print (splt)
-            #     _components = np.fromfile( os.path.join(splt[0], _components_URI), dtype=npType)
-            #     _components = _components.reshape(total_components, \
-            #                         int(_components.size/total_components))#*self.unit
-            # else:
-            #     raise Exception("'{0}' is an invalid data 'encoding'.".format(self.encoding))
-
 
         if _component_labels is None:
             self.setAttribute('_component_labels', ['' for i in range(total_components)])
@@ -221,9 +243,6 @@ class _unControlledVariable:
     def schedule(self):
         return self._sampling_schedule
 
-    @property
-    def unit(self):
-        return self._unit
     
 
 
@@ -239,7 +258,9 @@ class _unControlledVariable:
                     self.dataset_type]
         return _response
 
-    def _getPythonDictonary(self, filename, dataset_index=None, number_of_components=None, for_display=True):
+    def _getPythonDictonary(self, filename, dataset_index=None, 
+                            number_of_components=None, for_display=True,
+                            version='1.0.0'):
         dictionary = {}
         if self.name.strip() != '' and self.name is not None:
             dictionary['name'] = self.name
@@ -295,24 +316,39 @@ class _unControlledVariable:
                 dictionary['components'] = [base64.b64encode(item).decode("utf-8") \
                                 for item in c]
 
+            # print ('before raw')
             if self.encoding == 'raw':
-                if self.name == '': 
-                    index = str(dataset_index)
-                else:
-                    index = self.name
+                # print ('in raw')
+                index = str(dataset_index)
+                file_save_path_abs = _getAbsoluteURIPath('', filename)
 
-                splt = os.path.split(filename)
-                fname = os.path.splitext(splt[1])[0]
 
-                if number_of_components > 1:
-                    directory = os.path.join(splt[0], fname)
-                    if not os.path.exists(directory):
-                        os.makedirs(directory)
-                    filepath = ''.join([ fname, '/', index, '.dat'])
-                else:
-                    filepath = ''.join([ fname, '_', index, '.dat'])
-                dictionary['components_URI'] = filepath
-                c.ravel().tofile( os.path.join(splt[0], dictionary['components_URI'] ))
+                print ('abs URI', self.components_URI)
+                print ('rel filename', filename)
+                data_path_relative = os.path.join('file:.', 
+                                        os.path.splitext( \
+                                        os.path.split(filename)[1])[0] +
+                                                    '_' + index + '.dat')
+
+
+                print ('relative path', data_path_relative)
+                # splt = os.path.split(filename)
+                # fname = os.path.splitext(splt[1])[0]
+
+                # if number_of_components > 1:
+                #     directory = os.path.join(splt[0], fname)
+                #     if not os.path.exists(directory):
+                #         os.makedirs(directory)
+                #     filepath = ''.join([ fname, '/', index, '.dat'])
+                # else:
+                #     filepath = ''.join([ fname, '_', index, '.dat'])
+                dictionary['components_URI'] = data_path_relative
+
+                data_path_absolute = os.path.abspath(urlparse( \
+                                        os.path.join(file_save_path_abs, \
+                                        urlparse(data_path_relative).path)).path)
+                print (data_path_absolute)                        
+                c.ravel().tofile( data_path_absolute )
 
             c = None
             del c               

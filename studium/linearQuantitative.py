@@ -3,10 +3,13 @@ import numpy as np
 import json
 from .unit import valueObjectFormat, unitToLatex, _ppm
 from ._studium import (_assignAndCheckUnitConsistency, 
+                      _checkUnitConsistency,
                       _checkAndAssignBool,
                       _checkQuantity,
                       _checkValueObject,
-                      _defaultUnits)
+                      _defaultUnits,
+                      stringToQuantity,
+                      axis_label)
 
 
 class _linearQuantitativeControlledVariable:
@@ -223,14 +226,16 @@ class _linearQuantitativeControlledVariable:
     @property
     def label(self):
         return self._label
-        # if self._label.strip() == '':
-        #     return self._quantity + ' / ' + unitToLatex(self.unit)
-        # else:
-        #     return self._label + ' / ' + unitToLatex(self.unit)
-
     @label.setter
     def label(self, label=''):
         self.setAttribute('_label', label)
+
+    @property
+    def axis_label(self):
+        return axis_label(self.label, 
+                    self._unit,
+                    self.made_dimensionless,
+                    self._dimensionless_unit)
     
     ## reciprocalLabel
     @property
@@ -522,7 +527,7 @@ class _linearQuantitativeControlledVariable:
         self._swapValues('_period', '_reciprocal_period')
         self._swapValues('_coordinates', '_reciprocal_coordinates')
 
-    def _getPythonDictonary(self):
+    def _getPythonDictonary(self, version):
         dictionary = {}
         dictionary['reciprocal'] = {}
         dictionary['number_of_points'] = self.number_of_points
@@ -576,7 +581,7 @@ class _linearQuantitativeControlledVariable:
         if unit.strip() == 'ppm': 
             self.setAttribute('_dimensionless_unit', _ppm)
         else:
-            self.setAttribute('_unit', _assignAndCheckUnitConsistency(1.0,unit).unit)
+            self.setAttribute('_unit', _checkUnitConsistency(stringToQuantity('1 '+unit), self.unit).unit)
         return self.coordinates
 
     def __iadd__(self, other):

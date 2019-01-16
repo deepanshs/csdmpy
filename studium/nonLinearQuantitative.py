@@ -3,11 +3,13 @@ import numpy as np
 import json
 from .unit import valueObjectFormat, unitToLatex, _ppm
 from ._studium import (_assignAndCheckUnitConsistency, 
+                      _checkUnitConsistency,
                       _checkAndAssignBool,
                       _checkQuantity,
                       _checkValueObject,
-                      _defaultUnits)
-
+                      _defaultUnits,
+                      stringToQuantity,
+                      axis_label)
 
 class _nonLinearQuantitativeControlledVariable:
 
@@ -209,13 +211,16 @@ class _nonLinearQuantitativeControlledVariable:
     @property
     def label(self):
         return self._label
-        # if self._label.strip() == '':
-        #     return self.quantity + ' / ' + unitToLatex(self.coordinates.unit)
-        # else:
-        #     return self._label + ' / ' + unitToLatex(self.coordinates.unit)
     @label.setter
     def label(self, label=''):
         self.setAttribute('_label', label)
+
+    @property
+    def axis_label(self):
+        return axis_label(self.label, 
+                           self._unit,
+                           self.made_dimensionless,
+                           self._dimensionless_unit)
     
     ## reciprocalLabel
     @property
@@ -403,7 +408,7 @@ class _nonLinearQuantitativeControlledVariable:
         self.setAttribute('_coordinates', _value)
         self.setAttribute('_absolute_coordinates', _value + _origin_offset)
 
-    def _getPythonDictonary(self):
+    def _getPythonDictonary(self, version):
         dictionary = {}
         dictionary['reciprocal'] = {}
 
@@ -456,7 +461,7 @@ class _nonLinearQuantitativeControlledVariable:
         if unit.strip() == 'ppm': 
             self.setAttribute('_dimensionless_unit', _ppm)
         else:
-            self.setAttribute('_unit', _assignAndCheckUnitConsistency(1.0,unit).unit)
+            self.setAttribute('_unit', _checkUnitConsistency(stringToQuantity('1 '+unit), self.unit).unit)
         return self.coordinates
 
     def __iadd__(self, other):
