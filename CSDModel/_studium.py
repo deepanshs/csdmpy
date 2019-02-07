@@ -22,7 +22,7 @@ import collections
 #     def __len__(self):
 #         return self._get_length()
 
-def axis_label(label, unit, made_dimensionless, dimensionless_unit):
+def _axis_label(label, unit, made_dimensionless, dimensionless_unit):
     if made_dimensionless:
         if dimensionless_unit != '':
             return label + ' / ' + dimensionless_unit

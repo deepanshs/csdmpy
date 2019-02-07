@@ -19,6 +19,7 @@ class dataModel:
     __slots__ = [ 
                  'controlled_variables', 
                  'uncontrolled_variables',
+                 'version',
                  'filename'
                  ]
 
@@ -30,10 +31,11 @@ class dataModel:
 
         if filename != '':
             dictionary = _importJson(filename)
-            for dim in dictionary['controlled_variables']:
+            super(dataModel, self).__setattr__('version', dictionary['CSDM']['version'])
+            for dim in dictionary['CSDM']['controlled_variables']:
                 self.addControlledVariable(dim)
 
-            for dat in dictionary['uncontrolled_variables']:
+            for dat in dictionary['CSDM']['uncontrolled_variables']:
                 self.addUncontrolledVariable(dat, filename)
 
         _type = [(item.sampling_type == 'grid') for item in self.controlled_variables]
@@ -271,7 +273,9 @@ class dataModel:
                                 number_of_components = _length_of_uncontrolled_variables, 
                                 for_display = print_function, 
                                 version = version))
-        return dictionary
+        csdm = {}
+        csdm['CSDM'] = dictionary
+        return csdm
 
     def save(self, filename, version='1.0.0'):
         dictionary = self._getPythonDictonary(filename, version=version)
