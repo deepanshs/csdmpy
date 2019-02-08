@@ -1,95 +1,156 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Welcome to CSDM’s documentation! &#8212; CSDM 0.1.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to CSDMpy’s documentation! &mdash; CSDM 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Importing csdfpy and subpackages" href="CSDMObject.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
 
-  </head><body>
-  
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+            <a href="#" class="icon icon-home"> CSDM
+          
+
+          
+          </a>
+
+          
             
-  <div class="section" id="welcome-to-csdm-s-documentation">
-<h1>Welcome to CSDM’s documentation!<a class="headerlink" href="#welcome-to-csdm-s-documentation" title="Permalink to this headline">¶</a></h1>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="CSDMObject.html">Importing csdfpy and subpackages</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">CSDM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Welcome to CSDMpy’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-csdmpy-s-documentation">
+<h1>Welcome to CSDMpy’s documentation!<a class="headerlink" href="#welcome-to-csdmpy-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-</div>
-</div>
-<div class="section" id="module-CSDModel.CSDModel">
-<span id="core-scientific-dataset-model-csdm"></span><h1>Core Scientific Dataset Model (CSDM)<a class="headerlink" href="#module-CSDModel.CSDModel" title="Permalink to this headline">¶</a></h1>
-<p>The core scientific dataset (CSD) model, is a <em>light-weight</em>, 
-<em>versatile</em>, <em>standalone</em>.
-we set forth four objectives that influenced our decision-making process. 
-Our first objective is creating a  {it light-weight} model, that is, 
-it should only encapsulate the {it data values} and {it minimum metadata}, 
-to accurately describe the data coordinates and coordinates metadata.
-The model is not intended to encapsulate any information on how the data might be acquired, 
-processed or visualized. As an example, the CSD model will accurately place 
-the responses of a spin-lattice relaxation experiment on the coordinate grid—typically 
-rectilinear—however the model is not intended to specify whether those came from the 
-nuclear magnetic resonance spectroscopy, electron paramagnetic resonance spectroscopy, 
-or any other type of relaxation measurement. In our opinion, such dataset-origin specific 
-metadata best belong in the Augmentation Layer such as the one describing the field-specific 
-experimental parameters.</p>
-<p>The second objective is to design a model which is {it versatile} in allowing many 
-use cases for any number of experiments from most spectroscopy, diffraction, and imaging measurements.
-As such the CSD model supports datasets associated with continuous physical quantities 
-that are discretely sampled in a multi-dimensional space associated with other carefully 
-controlled continuous physical quantities, for e.g., a mass as a function of temperature, 
-a current as a function of voltage and time, a signal voltage as a function of magnetic 
-field gradient strength, etc.</p>
-<p>The CSD model also supports datasets associated with multi-component data values. 
-For example, the left and right audio components as a function of time, a color 
-image with a red, green, and blue (RBG) light intensity components as a function 
-of two independent spatial dimensions, and the six components of the symmetric 
-second-rank diffusion tensor MRI as a function of three independent spatial dimensions. 
-Additionally, the CSD model also supports multiple datasets when identically 
-sampled over the same set of controlled variables. For instance, the current 
-and voltage as a function of time where current and voltage are two datasets 
-sampled over the same temporal coordinates.  Another example would be the air 
-temperature, pressure, wind velocity, and solar-flux as a function of Earth’s 
-latitude and longitude coordinates.</p>
-<p>The third objective is to design a {it standalone} model. As a result, the CSD model is 
-independent of the hardware, operating system, application software, programming language, 
-and object-oriented file-serialization format used in writing the CSD model to the file. 
-Out of numerous file-serialization formats, such as XML, JSON, property list, etc. we adopt 
-the data-exchange oriented JSON (JavaScript Object Notation) file-serialization formatcite{ecma_json_2017}  
-because it satisfies our last objective—the model should be {it easy} for human understanding 
-as well as {it easily integrable} with any number of programming languages and field 
-related application-software.</p>
-<div class="section" id="module-CSDModel.CSDModel.__init__">
-<span id="csdm-object"></span><h2>CSDM object<a class="headerlink" href="#module-CSDModel.CSDModel.__init__" title="Permalink to this headline">¶</a></h2>
-<p>A function just for me.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">param filename:</th><td class="field-body">The first of my arguments.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">returns:</th><td class="field-body">A CSDM object.</td>
-</tr>
-</tbody>
-</table>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="CSDMObject.html">Importing csdfpy and subpackages</a></li>
+</ul>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
@@ -102,59 +163,60 @@ related application-software.</p>
 </div>
 
 
+           </div>
+           
           </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="CSDMObject.html" class="btn btn-neutral float-right" title="Importing csdfpy and subpackages" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Deepansh J. Srivastava
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">CSDM</a></h1>
+
+    </section>
+
+  </div>
+  
 
 
-
-
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="#">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2019, Deepansh J. Srivastava.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-      |
-      <a href="_sources/index.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
+  
 
     
-
     
-  </body>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>

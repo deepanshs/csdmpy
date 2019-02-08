@@ -10,7 +10,7 @@ import os
 from urllib.request import urlopen
 from urllib.parse import urlparse
 
-def _getAbsoluteLocalDataAddress(data_path, file):
+def _get_absolute_data_address(data_path, file):
     _data_abs_path = os.path.abspath(data_path)
     _file_abs_path = os.path.abspath(file)
     _common_path = os.path.commonpath([_data_abs_path, _file_abs_path])
@@ -23,7 +23,7 @@ def _getAbsoluteLocalDataAddress(data_path, file):
     _path = os.path.join(_common_path, _relative_path_to_file, _relative_path_to_data)
     return 'file:'+_path
 
-def _getRelativeLocalDataAddress(data_absolute_uri, file):
+def _get_relative_data_address(data_absolute_uri, file):
     res = urlparse(data_absolute_uri)
     _data_abs_path = os.path.abspath(res.path)
     _file_abs_path = os.path.abspath(file)
@@ -31,12 +31,12 @@ def _getRelativeLocalDataAddress(data_absolute_uri, file):
     _data_rel_path = _data_abs_path[len(_common_path)+1:]
     return 'file:./'+_data_rel_path
 
-def _getAbsoluteURIPath(uri, file):
+def _get_absolute_URI_path(uri, file):
     res = urlparse(uri)
     path = uri
     if res.scheme in ['file', '']:
         if res.netloc == '':  
-              path = _getAbsoluteLocalDataAddress(res.path, file)
+              path = _get_absolute_data_address(res.path, file)
     return path
 
 
@@ -107,7 +107,7 @@ class _unControlledVariable:
             _components = self._decodeComponents(_components)
 
         if _components_URI is not None : 
-            _absolute_URI = _getAbsoluteURIPath(_components_URI, _filename)
+            _absolute_URI = _get_absolute_URI_path(_components_URI, _filename)
             _components = urlopen(_absolute_URI).read() 
             _components = self._decodeComponents(_components)
 
@@ -258,7 +258,7 @@ class _unControlledVariable:
                     self.dataset_type]
         return _response
 
-    def _getPythonDictonary(self, filename, dataset_index=None, 
+    def _get_python_dictonary(self, filename, dataset_index=None, 
                             number_of_components=None, for_display=True,
                             version='0.1.0'):
         dictionary = {}
@@ -289,7 +289,8 @@ class _unControlledVariable:
         
         if for_display:
             if self.encoding in ['none', 'base64']:
-                dictionary['components'] = str(self.components).replace('\n','') #'To avoid large ouput display, components array is not printed.'
+                _string = str(self.components).replace('\n','')
+                dictionary['components'] =  ''.join([_string[:20], ' ... ', _string[20:]]) #'To avoid large ouput display, components array is not printed.'
             if self.encoding in ['raw']:
                 dictionary['components_URI'] = self.components_URI
                 
@@ -320,7 +321,7 @@ class _unControlledVariable:
             if self.encoding == 'raw':
                 # print ('in raw')
                 index = str(dataset_index)
-                file_save_path_abs = _getAbsoluteURIPath('', filename)
+                file_save_path_abs = _get_absolute_URI_path('', filename)
 
 
                 print ('abs URI', self.components_URI)
@@ -357,7 +358,7 @@ class _unControlledVariable:
 ### ------------- Public Methods ------------------ ###
 
     def __str__(self):
-        dictionary = self._getPythonDictonary()
+        dictionary = self._get_python_dictonary()
         return (json.dumps(dictionary, sort_keys=False, indent=2))
 
     def scale(self, value):

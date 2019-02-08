@@ -1,0 +1,13 @@
+CSDM object
+************
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+   
+.. automodule:: CSDModel.CSDModel.__init__
+   :members:
+
+
+.. automodule:: CSDModel.linearQuantitative._linearQuantitativeControlledVariable
+   :members:

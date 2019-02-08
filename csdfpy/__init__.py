@@ -1,16 +1,26 @@
 from __future__ import print_function, division
-from .linearQuantitative import _linearQuantitativeControlledVariable as lQCV
-from .nonLinearQuantitative import _nonLinearQuantitativeControlledVariable as nlQCV
-from .nonQuantitative import _nonQuantitativeControlledVariable as nQCV
+from .linearQuantitative import _linearQuantitativeControlledVariable as lqcv
+from .nonLinearQuantitative import _nonLinearQuantitativeControlledVariable as nlqcv
+from .nonQuantitative import _nonQuantitativeControlledVariable as nqcv
 from .uncontrolledVariables import _unControlledVariable as uv
 import numpy as np
 import json
 from scipy.fftpack import fft, fftshift
+import os
 
 
+script_path = os.path.dirname(os.path.abspath(__file__))
+# print (script_path)
 
-def _importJson(filename):
-    with open(filename, "rb") as f:
+test_file = {
+    "test01": script_path+'/testFiles/test01.csdf'
+    }
+
+
+open_py = open
+
+def _import_json(filename):
+    with open_py(filename, "rb") as f:
         content = f.read()
         return (json.loads(str(content,encoding = "UTF-8")))
 
@@ -20,81 +30,120 @@ def _importJson(filename):
 
 """
 
+
+def open(filename):
+    # print (filename)
+    if filename is None:
+        raise Exception("'open' method requires an address to the data file.")
+    try:
+        dictionary = _import_json(filename)
+    except Exception as e:
+        raise Exception(e)
+    
+
+    ### Create the CSDModel and populate the attribures
+
+    _version = dictionary['CSDM']['version']
+
+    csdm = CSDModel(_version, filename)
+
+
+    for dim in dictionary['CSDM']['controlled_variables']:
+        csdm.add_controlled_variable(dim)
+
+    for dat in dictionary['CSDM']['uncontrolled_variables']:
+        csdm.add_uncontrolled_variable(dat, filename)
+
+    _type = [(item.sampling_type == 'grid') for item in csdm.controlled_variables]
+
+    if np.all(_type):
+        npts = [item.number_of_points for item in csdm.controlled_variables]
+        [item.reshape(npts[::-1]) for item in csdm.uncontrolled_variables]
+    else:
+        _type = [(item.sampling_type == 'scatter') for item in csdm.controlled_variables]
+        if not np.all(_type):
+            raise Exception("controlled_variables can be either be all grid or all scatter type. \
+                            Type mixing is not supported.")
+
+
+    ### Create the augmentation layer model ###
+    
+    return csdm
+
+
 class CSDModel:
 
-    """
-    The core scientific dataset (CSD) model, is a *light-weight*, *portable*, 
-    *versatile* and *standalone* scientific data model. The model only encapsulates 
-    data values and minimum metadata to accurately describe the data coordinates 
-    and coordinates metadata. The model is not intended to encapsulate any 
-    information on how the data might be acquired, processed or visualized. The
-    data model is versatile in allowing many use cases for any number of experiments 
-    from most spectroscopy, diffraction, and imaging measurements. As such the CSD model 
-    supports datasets associated with continuous physical quantities 
-    that are discretely sampled in a multi-dimensional space associated with other carefully 
-    controlled continuous physical quantities, for e.g., a mass as a function of temperature, 
-    a current as a function of voltage and time, a signal voltage as a function of magnetic 
-    field gradient strength, etc. It also supports datasets associated with multi-component data values. 
-    For example, the left and right audio components as a function of time, a color 
-    image with a red, green, and blue (RBG) light intensity components as a function 
-    of two independent spatial dimensions, and the six components of the symmetric 
-    second-rank diffusion tensor MRI as a function of three independent spatial dimensions. 
-    Additionally, the CSD model also supports multiple datasets when identically 
-    sampled over the same set of controlled variables. For instance, the current 
-    and voltage as a function of time where current and voltage are two datasets 
-    sampled over the same temporal coordinates. It is independent of the hardware, 
-    operating system, application software, programming language, 
-    and object-oriented file-serialization format used in writing the CSD model to the file. 
+    current_version = '0.1.0'
+    _old_compatible_versions = ('0.1.0')
+    _old_incompatible_versions = ('1.0.0')
 
-    
-    The serialized data model is *easily* human readable and easily integrable
+    """
+
+    The core scientific dataset (CSD) model is designed to be *light-weight*, 
+    *portable*, *versatile*, and *standalone*. The CSD model only encapsulates 
+    data values and minimum metadata, to accurately describe the data coordinates 
+    and coordinates metadata. The model is not intended to encapsulate any 
+    information on how the data might be acquired, processed or visualized. 
+    The data model is versatile in allowing many use cases for any number of 
+    experiments from most spectroscopy, diffraction, and imaging measurements. 
+    As such the CSD model supports datasets associated with continuous physical 
+    quantities that are discretely sampled in a multi-dimensional space associated 
+    with other carefully controlled continuous physical quantities, for e.g., a mass 
+    as a function of temperature, a current as a function of voltage and time, a 
+    signal voltage as a function of magnetic field gradient strength, etc. It also 
+    supports datasets associated with multi-component data values. For example, the 
+    left and right audio components as a function of time, a color image with a red, 
+    green, and blue (RBG) light intensity components as a function of two independent 
+    spatial dimensions, and the six components of the symmetric second-rank diffusion 
+    tensor MRI as a function of three independent spatial dimensions. Additionally, 
+    the CSD model also supports multiple datasets when identically sampled over the 
+    same set of controlled variables. For instance, the current and voltage as a 
+    function of time where current and voltage are two datasets sampled over the 
+    same temporal coordinates. 
+
+    The CSD model is independent of the hardware, operating system, application 
+    software, programming language, and object-oriented file-serialization format 
+    used in writing the CSD model to the file.
+    The serialized data file is easily human readable and also easily integrable 
     with any number of programming languages and field related application-software.
-    
 
     """
     __slots__ = [ 
                  'controlled_variables', 
                  'uncontrolled_variables',
                  'version',
-                 'filename'
+                 'filename',
                  ]
 
-    def __init__(self, filename=''):
+    def __init__(self, version=None, filename=''):
         """
-        A function just for me.
+        The CSDM object 
 
-        :param filename: The first of my arguments.
+        ..function::  __init__(self) 
+        :param filename: A string containing the address to the data file.
+
+        :attribute: controlled_variables
+        :attribute: uncontrolled_variables
+        :attribute: version
 
         :returns: A CSDM object.
 
-        """
+        """ 
+
+        if version is None: version = CSDModel.current_version
+        if version in CSDModel._old_incompatible_versions:
+            raise Exception("Files created with version {0} of the CSD model are no longer supported.".format([version]))
+
         super(CSDModel, self).__setattr__('controlled_variables', ())
         super(CSDModel, self).__setattr__('uncontrolled_variables', ())
+        super(CSDModel, self).__setattr__('version', version)
         super(CSDModel, self).__setattr__('filename', filename)
 
-        if filename != '':
-            dictionary = _importJson(filename)
-            super(CSDModel, self).__setattr__('version', dictionary['CSDM']['version'])
-            for dim in dictionary['CSDM']['controlled_variables']:
-                self.addControlledVariable(dim)
-
-            for dat in dictionary['CSDM']['uncontrolled_variables']:
-                self.addUncontrolledVariable(dat, filename)
-
-        _type = [(item.sampling_type == 'grid') for item in self.controlled_variables]
-        # print (npts, _type, np.all(_type))
-        if np.all(_type):
-            npts = [item.number_of_points for item in self.controlled_variables]
-            [item.reshape(npts[::-1]) for item in self.uncontrolled_variables]
-        else:
-            _type = [(item.sampling_type == 'scatter') for item in self.controlled_variables]
-            if not np.all(_type):
-                raise Exception("controlled_variables can be either be all grid or all scatter type. \
-                                Type mixing is not supported.")
 
     def __delattr__(self, name):
         if name in __class__.__slots__ :
             raise AttributeError("attribute '{0}' cannot be deleted.".format(name))
+
 
     def __setattr__(self, name, value):
         if name in __class__.__slots__:
@@ -102,8 +151,11 @@ class CSDModel:
         else:
             raise AttributeError("'dimensions' object has no attribute '{0}'".format(name))
 
+
+
 ### ----------- Public Methods -------------- ###
-    def addControlledVariable(self, *arg, **kwargs):
+
+    def add_controlled_variable(self, *arg, **kwargs):
 
         default = {'sampling_type':"grid",
                    'non_quantitative': False,
@@ -126,37 +178,37 @@ class CSDModel:
                         'quantity':None, 
                         'label':''}
                     }
-        defaultKeys = default.keys()
+        default_keys = default.keys()
 
         if arg != ():
             if type(arg[0]) == dict:
-                inputDict = arg[0]
+                input_dict = arg[0]
             else:
-                errorString = ''.join(['The arguament must be a dictionary with allowed keywords or keyword arguaments.',
+                error_string = ''.join(['The arguament must be a dictionary with allowed keywords or keyword arguaments.',
                                   '\nUse keys() method of dimensions object to find the list of allowed keywords'])
-                raise Exception(errorString)
+                raise Exception(error_string)
         else:
-            inputDict = kwargs
+            input_dict = kwargs
 
-        inputKeys = inputDict.keys()
-        if 'reciprocal' in inputKeys:
-            inputSubKeys = inputDict['reciprocal'].keys()
-        for key in inputKeys:
-            if key in defaultKeys:
+        input_keys = input_dict.keys()
+        if 'reciprocal' in input_keys:
+            input_subkeys = input_dict['reciprocal'].keys()
+        for key in input_keys:
+            if key in default_keys:
                 if key == 'reciprocal':
-                    for subkey in inputSubKeys:
-                        default[key][subkey]=inputDict[key][subkey]
+                    for subkey in input_subkeys:
+                        default[key][subkey]=input_dict[key][subkey]
                 else:
-                    default[key]=inputDict[key]
+                    default[key]=input_dict[key]
 
         if default['non_quantitative']:
             if default['coordinates'] is None:
                 raise Exception("'coordinates' key is required.")
             else:
                 super(CSDModel, self).__setattr__('controlled_variables', \
-                    self.controlled_variables + (nQCV( \
+                    self.controlled_variables + (nqcv( \
                         _sampling_type          = default['sampling_type'], \
-                        _non_quantitative           = default['non_quantitative'], \
+                        _non_quantitative       = default['non_quantitative'], \
 
                         _coordinates            = default['coordinates'], \
                         _reverse                = default['reverse'], \
@@ -170,9 +222,9 @@ class CSDModel:
 
         if not default['non_quantitative'] and default['coordinates'] is not None:
             super(CSDModel, self).__setattr__('controlled_variables', \
-                    self.controlled_variables + (nlQCV( \
+                    self.controlled_variables + (nlqcv( \
                         _sampling_type          = default['sampling_type'], \
-                        _non_quantitative           = default['non_quantitative'], \
+                        _non_quantitative       = default['non_quantitative'], \
 
                         _coordinates            = default['coordinates'], \
                         _reference_offset       = default['reference_offset'],  \
@@ -195,9 +247,9 @@ class CSDModel:
                 default['number_of_points'] is not None and \
                 default['sampling_interval'] is not None:
             super(CSDModel, self).__setattr__('controlled_variables', \
-                    self.controlled_variables + (lQCV(
+                    self.controlled_variables + (lqcv(
                         _sampling_type          = default['sampling_type'], \
-                        _non_quantitative           = default['non_quantitative'], \
+                        _non_quantitative       = default['non_quantitative'], \
 
                         _number_of_points       = default['number_of_points'], 
                         _sampling_interval      = default['sampling_interval'], 
@@ -219,7 +271,9 @@ class CSDModel:
                         _reciprocal_label               = default['reciprocal']['label'],
                         _reciprocal_made_dimensionless  = default['reciprocal']['made_dimensionless']), ))
 
-    def addUncontrolledVariable(self, *arg, **kwargs):
+
+
+    def add_uncontrolled_variable(self, *arg, **kwargs):
         default = {'name': '',
                    'unit' : '',
                    'quantity' : None,
@@ -231,26 +285,26 @@ class CSDModel:
                    'components_URI' : None,
                    'sampling_schedule' : None}
 
-        defaultKeys = default.keys()
+        default_keys = default.keys()
 
         if arg != ():
             if type(arg[0]) == dict:
-                inputDict = arg[0]
+                input_dict = arg[0]
                 if (len(arg) >= 2):
                     filename = arg[1]
                 else:
                     filename = ''
             else:
-                errorString = ''.join(['This method only accept keyword arguaments or a dictionary with keywords.',
+                error_string = ''.join(['This method only accept keyword arguaments or a dictionary with keywords.',
                                   '\nUse keys() method of dimensions object to find the list of allowed keywords'])
-                raise Exception(errorString)
+                raise Exception(error_string)
         else:
-            inputDict = kwargs
+            input_dict = kwargs
 
-        inputKeys = inputDict.keys()
-        for key in inputKeys:
-            if key in defaultKeys:
-                default[key]=inputDict[key]
+        input_keys = input_dict.keys()
+        for key in input_keys:
+            if key in default_keys:
+                default[key]=input_dict[key]
 
         # if default['coordinates'] is None and default['sampling_interval'] is None:
         #     raise Exception("The method either requires input '{0}' or '{1}'.".format('sampling_interval', 'coordinate'))
@@ -275,6 +329,7 @@ class CSDModel:
     #         (self.uncontrolled_variables[0].components[index])
 
 
+
     def _info(self):
         x =['sampling_type',\
             'non_quantitative',\
@@ -294,23 +349,25 @@ class CSDModel:
         pack = np.asarray(y).T, x, ['dimension '+str(i) for i in range(len(self.controlled_variables))]
         return pack
 
+
     def __str__(self):
-        dictionary = self._getPythonDictonary(self.filename, print_function=True)
+        dictionary = self._get_python_dictonary(self.filename, print_function=True)
         return (json.dumps(dictionary, sort_keys=False, indent=2))
 
-    def _getPythonDictonary(self, filename, print_function=False, version='1.0.0'):
+
+    def _get_python_dictonary(self, filename, print_function=False, version=CSDModel.current_version):
         dictionary = {}
         dictionary["uncontrolled_variables"] = []
         dictionary["controlled_variables"] = []
         dictionary["version"] = version
         for i in range(len(self.controlled_variables)):
             dictionary["controlled_variables"].append( \
-                    self.controlled_variables[i]._getPythonDictonary(version=version))
+                    self.controlled_variables[i]._get_python_dictonary(version=version))
         
         _length_of_uncontrolled_variables =  len(self.uncontrolled_variables)
         for i in range(_length_of_uncontrolled_variables):
             dictionary["uncontrolled_variables"].append( \
-                    self.uncontrolled_variables[i]._getPythonDictonary(
+                    self.uncontrolled_variables[i]._get_python_dictonary(
                                 filename = filename,
                                 dataset_index = i, 
                                 number_of_components = _length_of_uncontrolled_variables, 
@@ -320,10 +377,12 @@ class CSDModel:
         csdm['CSDM'] = dictionary
         return csdm
 
-    def save(self, filename, version='1.0.0'):
-        dictionary = self._getPythonDictonary(filename, version=version)
+
+    def save(self, filename, version=CSDModel.current_version):
+        dictionary = self._get_python_dictonary(filename, version=version)
         with open(filename, 'w') as outfile:
             json.dump(dictionary, outfile, sort_keys=False, indent=2)
+
 
     def fft(self, dimension=0):
         if self.controlled_variables[dimension].non_quantitative:
@@ -338,9 +397,9 @@ class CSDModel:
         phase = np.exp(1j * 2*np.pi* self.controlled_variables[dimension].reference_offset * cs)
 
         for i in range(len(self.uncontrolled_variables)):
-            signalFT = fftshift(fft(self.uncontrolled_variables[i].components, \
+            signal_ft = fftshift(fft(self.uncontrolled_variables[i].components, \
                                     axis=-dimension-1), axes=-dimension-1)*phase
-            self.uncontrolled_variables[i].setAttribute('_components', signalFT)
+            self.uncontrolled_variables[i].setAttribute('_components', signal_ft)
         self.controlled_variables[dimension]._reciprocal()
         
 

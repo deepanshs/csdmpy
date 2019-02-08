@@ -74,84 +74,84 @@ class _linearQuantitativeControlledVariable:
                         _reciprocal_period = None,
                         _reciprocal_made_dimensionless = False):
 
-        self.setAttribute('_sampling_type', _sampling_type)
-        self.setAttribute('_non_quantitative', _non_quantitative)
-        self.setAttribute('_type', 'linear')
+        self.set_attribute('_sampling_type', _sampling_type)
+        self.set_attribute('_non_quantitative', _non_quantitative)
+        self.set_attribute('_type', 'linear')
 
-        self.setAttribute('_number_of_points', _number_of_points)
-        self.setAttribute('_reciprocal_number_of_points', _number_of_points)
+        self.set_attribute('_number_of_points', _number_of_points)
+        self.set_attribute('_reciprocal_number_of_points', _number_of_points)
 
         _value = _assignAndCheckUnitConsistency(_sampling_interval, None)
-        self.setAttribute('_sampling_interval', _value)
+        self.set_attribute('_sampling_interval', _value)
 
         _unit = self.sampling_interval.unit
         _reciprocal_unit =  _unit**-1 #_defaultUnits(1.0*_unit**-1).unit
 
         ### Unit assignment
-        self.setAttribute('_unit', _unit)
-        self.setAttribute('_reciprocal_unit', _reciprocal_unit)
-        self.setAttribute('_dimensionless_unit', '')
-        self.setAttribute('_reciprocal_dimensionless_unit', '')
+        self.set_attribute('_unit', _unit)
+        self.set_attribute('_reciprocal_unit', _reciprocal_unit)
+        self.set_attribute('_dimensionless_unit', '')
+        self.set_attribute('_reciprocal_dimensionless_unit', '')
 
         ### Inverse sampling interval is calculated assuming a Fourier inverse.
         if _reciprocal_sampling_interval is None:
             _value = (1/(_number_of_points*self.sampling_interval.value)) * _reciprocal_unit
         else:
             _value = _assignAndCheckUnitConsistency(_reciprocal_sampling_interval, _reciprocal_unit)
-        self.setAttribute('_reciprocal_sampling_interval', _value)
+        self.set_attribute('_reciprocal_sampling_interval', _value)
         
         ### reference Offset
         _value = _checkValueObject(_reference_offset, _unit)
-        self.setAttribute('_reference_offset', _value)
+        self.set_attribute('_reference_offset', _value)
         _value = _checkValueObject(_reciprocal_reference_offset, _reciprocal_unit)
-        self.setAttribute('_reciprocal_reference_offset', _value)
+        self.set_attribute('_reciprocal_reference_offset', _value)
         
         ### origin offset
         _value = _checkValueObject(_origin_offset, _unit)
-        self.setAttribute('_origin_offset', _value)
+        self.set_attribute('_origin_offset', _value)
         _value =  _checkValueObject(_reciprocal_origin_offset, _reciprocal_unit)
-        self.setAttribute('_reciprocal_origin_offset', _value)
+        self.set_attribute('_reciprocal_origin_offset', _value)
 
         ### made dimensionless, specific to NMR datasets
         _value = _checkAndAssignBool(_made_dimensionless)
-        self.setAttribute('_made_dimensionless', _value)
+        self.set_attribute('_made_dimensionless', _value)
         _value = _checkAndAssignBool(_reciprocal_made_dimensionless)
-        self.setAttribute('_reciprocal_made_dimensionless', _value)
+        self.set_attribute('_reciprocal_made_dimensionless', _value)
 
         ### reverse
         _value = _checkAndAssignBool(_reverse)
-        self.setAttribute('_reverse', _value)
+        self.set_attribute('_reverse', _value)
         _value = _checkAndAssignBool(_reciprocal_reverse)
-        self.setAttribute('_reciprocal_reverse', _value)
+        self.set_attribute('_reciprocal_reverse', _value)
 
         ### fft_ouput_order
         _value = _checkAndAssignBool(_fft_output_order)
-        self.setAttribute('_fft_output_order', _value)
+        self.set_attribute('_fft_output_order', _value)
 
         ### period
         _value = _checkValueObject(_period, _unit)
-        self.setAttribute('_period', _value)
+        self.set_attribute('_period', _value)
         _value = _checkValueObject(_reciprocal_period, _reciprocal_unit)
-        self.setAttribute('_reciprocal_period', _value)
+        self.set_attribute('_reciprocal_period', _value)
 
         ### quantity
         _value = _checkQuantity(_quantity, _unit)
-        self.setAttribute('_quantity', _value)
+        self.set_attribute('_quantity', _value)
         _value = _checkQuantity(_reciprocal_quantity, _reciprocal_unit)
-        self.setAttribute('_reciprocal_quantity', _value)
+        self.set_attribute('_reciprocal_quantity', _value)
 
         ### label
-        self.setAttribute('_label', _label)
-        self.setAttribute('_reciprocal_label', _reciprocal_label)
+        self.set_attribute('_label', _label)
+        self.set_attribute('_reciprocal_label', _reciprocal_label)
 
         ### coordinates along the dimension
-        self.setAttribute('_coordinates', None)
-        self.setAttribute('_reciprocal_coordinates', None)
-        self._getCoordinates()
-        self._getreciprocalCoordinates()
+        self.set_attribute('_coordinates', None)
+        self.set_attribute('_reciprocal_coordinates', None)
+        self._get_coordinates()
+        self._get_reciprocal_coordinates()
 
 
-    def setAttribute(self, name, value):
+    def set_attribute(self, name, value):
         super(_linearQuantitativeControlledVariable, self).__setattr__(name, value)
 
     def __delattr__(self, name):
@@ -162,15 +162,15 @@ class _linearQuantitativeControlledVariable:
         if name in __class__.__slots__:
             raise AttributeError("attribute '{0}' cannot be modified".format(name))
         elif name in __class__.__dict__.keys():
-            return self.setAttribute(name, value)
+            return self.set_attribute(name, value)
         else:
             raise AttributeError("'{0}' object has no attribute '{1}'".format(__class__.__name__, name))
 
 
 ### --------------- Class Attributes ------------------ ###
-    ## sampling_type
     @property
     def sampling_type(self):
+
         return self._sampling_type
 
     ## non_quantitative
@@ -184,7 +184,7 @@ class _linearQuantitativeControlledVariable:
         return self._period
     @period.setter
     def period(self, value = True):
-        self.setAttribute('_period', _checkValueObject(value, self.unit))
+        self.set_attribute('_period', _checkValueObject(value, self.unit))
 
     ## reciprocal period
     @property
@@ -192,7 +192,7 @@ class _linearQuantitativeControlledVariable:
         return self._reciprocal_period
     @reciprocal_period.setter
     def reciprocal_period(self, value = True):
-        self.setAttribute('_reciprocal_period', \
+        self.set_attribute('_reciprocal_period', \
                 _checkValueObject(value, self.reciprocal_unit))
     
     ## Quantity
@@ -202,7 +202,7 @@ class _linearQuantitativeControlledVariable:
     @quantity.setter
     def quantity(self, string = ''):
         ## To do: add a check for quantity
-        self.setAttribute('_quantity', string)
+        self.set_attribute('_quantity', string)
 
     ## reciprocal Quantity
     @property
@@ -211,7 +211,7 @@ class _linearQuantitativeControlledVariable:
     @reciprocal_quantity.setter
     def reciprocal_quantity(self, string = ''):
         ## To do: add a check for reciprocal quantity
-        self.setAttribute('_reciprocal_quantity', string)
+        self.set_attribute('_reciprocal_quantity', string)
 
     @property
     def unit(self):
@@ -235,7 +235,7 @@ class _linearQuantitativeControlledVariable:
         return self._label
     @label.setter
     def label(self, label=''):
-        self.setAttribute('_label', label)
+        self.set_attribute('_label', label)
 
     @property
     def axis_label(self):
@@ -250,7 +250,7 @@ class _linearQuantitativeControlledVariable:
         return self._reciprocal_label
     @reciprocal_label.setter
     def reciprocal_label(self, label=''):
-        self.setAttribute('_reciprocal_label', label)
+        self.set_attribute('_reciprocal_label', label)
 
 
     ## made dimensionless
@@ -263,7 +263,7 @@ class _linearQuantitativeControlledVariable:
             denominator = (self.origin_offset + self.reference_offset)
             if denominator.value == 0:
                 raise ZeroDivisionError("Dimension cannot be made dimensionsless with \n'origin_offset' {0} and 'reference_offset' {1}. No changes made.".format(self.origin_offset, self.reference_offset))
-        self.setAttribute('_made_dimensionless', value)
+        self.set_attribute('_made_dimensionless', value)
 
     ## reciprocal made dimensionless
     @property
@@ -275,7 +275,7 @@ class _linearQuantitativeControlledVariable:
             denominator = (self.reciprocal_origin_offset + self.reciprocal_reference_offset)
             if denominator.value == 0:
                 raise ZeroDivisionError("Dimension cannot be made dimensionsless with \n'origin_offset' {0} and 'reference_offset' {1}. No changes made.".format(self.origin_offset, self.reference_offset))
-        self.setAttribute('_reciprocal_made_dimensionless', value)
+        self.set_attribute('_reciprocal_made_dimensionless', value)
 
     ## reverse
     @property
@@ -284,7 +284,7 @@ class _linearQuantitativeControlledVariable:
     @reverse.setter
     def reverse(self, value=False):
         _value = _checkAndAssignBool(value)
-        self.setAttribute('_reverse', _value)
+        self.set_attribute('_reverse', _value)
 
 
     ## reciprocal reverse
@@ -294,7 +294,7 @@ class _linearQuantitativeControlledVariable:
     @reciprocal_reverse.setter
     def reciprocal_reverse(self, value=False):
         _value = _checkAndAssignBool(value)
-        self.setAttribute('_reciprocal_reverse', _value)
+        self.set_attribute('_reciprocal_reverse', _value)
 
 
     ### Modifying the following attributes triggers an update of 
@@ -307,8 +307,8 @@ class _linearQuantitativeControlledVariable:
     @reference_offset.setter
     def reference_offset(self, value):
         _value = _assignAndCheckUnitConsistency(value, self.unit)
-        self.setAttribute('_reference_offset', _value)
-        self._getCoordinates()
+        self.set_attribute('_reference_offset', _value)
+        self._get_coordinates()
 
 
     ## reciprocal reference offset
@@ -318,8 +318,8 @@ class _linearQuantitativeControlledVariable:
     @reciprocal_reference_offset.setter
     def reciprocal_reference_offset(self, value):
         _value = _assignAndCheckUnitConsistency(value, self.reciprocal_unit)
-        self.setAttribute('_reciprocal_reference_offset', _value)
-        self._getreciprocalCoordinates()
+        self.set_attribute('_reciprocal_reference_offset', _value)
+        self._get_reciprocal_coordinates()
 
 
     ## origin offset
@@ -329,8 +329,8 @@ class _linearQuantitativeControlledVariable:
     @origin_offset.setter
     def origin_offset(self, value):
         _value = _assignAndCheckUnitConsistency(value, self.unit)
-        self.setAttribute('_origin_offset', _value)
-        self._getCoordinates()
+        self.set_attribute('_origin_offset', _value)
+        self._get_coordinates()
 
 
     ## reciprocal origin offset
@@ -340,8 +340,8 @@ class _linearQuantitativeControlledVariable:
     @reciprocal_origin_offset.setter
     def reciprocal_origin_offset(self, value):
         _value = _assignAndCheckUnitConsistency(value, self.reciprocal_unit)
-        self.setAttribute('_reciprocal_origin_offset', _value)
-        self._getreciprocalCoordinates()
+        self.set_attribute('_reciprocal_origin_offset', _value)
+        self._get_reciprocal_coordinates()
 
 
     ## sampling interval
@@ -351,11 +351,11 @@ class _linearQuantitativeControlledVariable:
     @sampling_interval.setter
     def sampling_interval(self, value):
         _value = _assignAndCheckUnitConsistency(value, self.unit)
-        self.setAttribute('_sampling_interval', _value)
+        self.set_attribute('_sampling_interval', _value)
         ### Reciprocal sampling interval is calculated assuming a Fourier inverse 
         super(_linearQuantitativeControlledVariable, self).__setattr__("_reciprocal_sampling_interval", \
                                                                     1/(_value*self.number_of_points))
-        self._getCoordinates()
+        self._get_coordinates()
 
 
     ## reciprocal sampling interval
@@ -365,12 +365,12 @@ class _linearQuantitativeControlledVariable:
     @reciprocal_sampling_interval.setter
     def reciprocal_sampling_interval(self, value):
         _value = _assignAndCheckUnitConsistency(value, self.reciprocal_unit)
-        self.setAttribute('_reciprocal_sampling_interval', _value)
+        self.set_attribute('_reciprocal_sampling_interval', _value)
         ### Sampling interval is calculated assuming a Fourier inverse 
         super(_linearQuantitativeControlledVariable, self).__setattr__("sampling_interval", \
                                                                     1/(_value*self.number_of_points))
         # self.sampling_interval = 1/(_value*self.number_of_points)
-        self._getreciprocalCoordinates()
+        self._get_reciprocal_coordinates()
 
     ## number_of_points
     @property
@@ -379,8 +379,8 @@ class _linearQuantitativeControlledVariable:
     @number_of_points.setter
     def number_of_points(self, value):
         if isinstance(value, int):
-            self.setAttribute('_number_of_points', value)
-        self._getCoordinates()
+            self.set_attribute('_number_of_points', value)
+        self._get_coordinates()
 
     ### The following properties will control the order of the 
     ### controlled variable coordinates
@@ -428,8 +428,8 @@ class _linearQuantitativeControlledVariable:
         return self._fft_output_order
     @fft_output_order.setter
     def fft_output_order(self, value):
-        self.setAttribute('_fft_output_order', value)
-        self._getCoordinates()
+        self.set_attribute('_fft_output_order', value)
+        self._get_coordinates()
 
 
 
@@ -451,13 +451,13 @@ class _linearQuantitativeControlledVariable:
     #         if not self.made_dimensionless and not _oldValue: return
     #         if self.made_dimensionless and not _oldValue:
     #             _value = (self.coordinates / denominator)#.to(_ppm)
-    #             self.setAttribute('_coordinates', _value)
+    #             self.set_attribute('_coordinates', _value)
     #             return
     #         if not self.made_dimensionless and _oldValue:
     #             _value = (self.coordinates * denominator).to(unit)
-    #             self.setAttribute('_coordinates', _value)
+    #             self.set_attribute('_coordinates', _value)
     #     else:
-    #         self.setAttribute('_made_dimensionless', _oldValue)
+    #         self.set_attribute('_made_dimensionless', _oldValue)
     #         raise ZeroDivisionError("Dimension cannot be made dimensionsless with \n'origin_offset' {0} and 'reference_offset' {1}. No changes made.".format(self.origin_offset, self.reference_offset))
 
     def _info(self):
@@ -505,7 +505,7 @@ class _linearQuantitativeControlledVariable:
 
     #     return string
 
-    def _getCoordinates(self):
+    def _get_coordinates(self):
         _unit = self._unit
         _number_of_points = self.number_of_points
         _sampling_interval = self.sampling_interval.to(_unit)
@@ -523,10 +523,10 @@ class _linearQuantitativeControlledVariable:
         # if self.made_dimensionless:
         #     _value/=(_origin_offset + _reference_offset)
         #     _value = _value.to(_ppm)
-        self.setAttribute('_coordinates', _value)
-        # self.setAttribute('_absolute_coordinates', _value + _origin_offset)
+        self.set_attribute('_coordinates', _value)
+        # self.set_attribute('_absolute_coordinates', _value + _origin_offset)
 
-    def _getreciprocalCoordinates(self):
+    def _get_reciprocal_coordinates(self):
         _unit = self._reciprocal_unit
         _number_of_points = self.number_of_points
         _sampling_interval = self.reciprocal_sampling_interval.to(_unit)
@@ -542,13 +542,13 @@ class _linearQuantitativeControlledVariable:
                 _index -= (_number_of_points-1)/2.0
         _value =  _index * _sampling_interval - _reference_offset 
 
-        self.setAttribute('_reciprocal_coordinates', _value)
-        # self.setAttribute('_reciprocal_absolute_coordinates', _value + _origin_offset)
+        self.set_attribute('_reciprocal_coordinates', _value)
+        # self.set_attribute('_reciprocal_absolute_coordinates', _value + _origin_offset)
 
     def _swapValues(self, a, b):
         temp = self.__getattribute__(a)
-        self.setAttribute(a, self.__getattribute__(b))
-        self.setAttribute(b, temp)
+        self.set_attribute(a, self.__getattribute__(b))
+        self.set_attribute(b, temp)
         temp = None
         del temp
 
@@ -563,16 +563,16 @@ class _linearQuantitativeControlledVariable:
         self._swapValues('_reciprocal_unit', '_reciprocal_dimensionless_unit')
 
         if self.fft_output_order:
-            self.setAttribute('_fft_output_order', False)
+            self.set_attribute('_fft_output_order', False)
         else:
-            self.setAttribute('_fft_output_order', True)
+            self.set_attribute('_fft_output_order', True)
 
         self._swapValues('_quantity', '_reciprocal_quantity')
         self._swapValues('_label', '_reciprocal_label')
         self._swapValues('_period', '_reciprocal_period')
         self._swapValues('_coordinates', '_reciprocal_coordinates')
 
-    def _getPythonDictonary(self, version):
+    def _get_python_dictonary(self, version):
         dictionary = {}
         dictionary['reciprocal'] = {}
         dictionary['number_of_points'] = self.number_of_points
@@ -625,14 +625,14 @@ class _linearQuantitativeControlledVariable:
 
 ### ------------- Public Methods ------------------ ###
     def __str__(self):
-        dictionary = self._getPythonDictonary()
+        dictionary = self._get_python_dictonary()
         return (json.dumps(dictionary, sort_keys=False, indent=2))
 
     def to(self, unit):
         if unit.strip() == 'ppm': 
-            self.setAttribute('_dimensionless_unit', _ppm)
+            self.set_attribute('_dimensionless_unit', _ppm)
         else:
-            self.setAttribute('_unit', _checkUnitConsistency(stringToQuantity('1 '+unit), self.unit).unit)
+            self.set_attribute('_unit', _checkUnitConsistency(stringToQuantity('1 '+unit), self.unit).unit)
         return self.coordinates
 
     def __iadd__(self, other):

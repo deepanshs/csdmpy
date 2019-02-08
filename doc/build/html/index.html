@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Welcome to CSDM’s documentation! &#8212; CSDM 0.1.0 documentation</title>
+    <title>Welcome to CSDMpy’s documentation! &#8212; CSDM 0.1.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -30,67 +30,34 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="welcome-to-csdm-s-documentation">
-<h1>Welcome to CSDM’s documentation!<a class="headerlink" href="#welcome-to-csdm-s-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-</div>
-</div>
-<div class="section" id="core-scientific-dataset-model-csdm">
-<h1>Core Scientific Dataset Model (CSDM)<a class="headerlink" href="#core-scientific-dataset-model-csdm" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="module-CSDModel.CSDModel"></span><p>The core scientific dataset (CSD) model, is a <em>light-weight</em>, 
-<em>versatile</em>, <em>standalone</em>.
-we set forth four objectives that influenced our decision-making process. 
-Our first objective is creating a  {it light-weight} model, that is, 
-it should only encapsulate the {it data values} and {it minimum metadata}, 
-to accurately describe the data coordinates and coordinates metadata.
-The model is not intended to encapsulate any information on how the data might be acquired, 
-processed or visualized. As an example, the CSD model will accurately place 
-the responses of a spin-lattice relaxation experiment on the coordinate grid—typically 
-rectilinear—however the model is not intended to specify whether those came from the 
-nuclear magnetic resonance spectroscopy, electron paramagnetic resonance spectroscopy, 
-or any other type of relaxation measurement. In our opinion, such dataset-origin specific 
-metadata best belong in the Augmentation Layer such as the one describing the field-specific 
-experimental parameters.</p>
-<p>The second objective is to design a model which is {it versatile} in allowing many 
-use cases for any number of experiments from most spectroscopy, diffraction, and imaging measurements.
-As such the CSD model supports datasets associated with continuous physical quantities 
-that are discretely sampled in a multi-dimensional space associated with other carefully 
-controlled continuous physical quantities, for e.g., a mass as a function of temperature, 
-a current as a function of voltage and time, a signal voltage as a function of magnetic 
-field gradient strength, etc.</p>
-<p>The CSD model also supports datasets associated with multi-component data values. 
-For example, the left and right audio components as a function of time, a color 
-image with a red, green, and blue (RBG) light intensity components as a function 
-of two independent spatial dimensions, and the six components of the symmetric 
-second-rank diffusion tensor MRI as a function of three independent spatial dimensions. 
-Additionally, the CSD model also supports multiple datasets when identically 
-sampled over the same set of controlled variables. For instance, the current 
-and voltage as a function of time where current and voltage are two datasets 
-sampled over the same temporal coordinates.  Another example would be the air 
-temperature, pressure, wind velocity, and solar-flux as a function of Earth’s 
-latitude and longitude coordinates.</p>
-<p>The third objective is to design a {it standalone} model. As a result, the CSD model is 
-independent of the hardware, operating system, application software, programming language, 
-and object-oriented file-serialization format used in writing the CSD model to the file. 
-Out of numerous file-serialization formats, such as XML, JSON, property list, etc. we adopt 
-the data-exchange oriented JSON (JavaScript Object Notation) file-serialization formatcite{ecma_json_2017}  
-because it satisfies our last objective—the model should be {it easy} for human understanding 
-as well as {it easily integrable} with any number of programming languages and field 
-related application-software.</p>
-<div class="section" id="module-CSDModel.CSDModel.__init__">
-<span id="csdm-object"></span><h2>CSDM object<a class="headerlink" href="#module-CSDModel.CSDModel.__init__" title="Permalink to this headline">¶</a></h2>
-<p>A function just for me.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">param filename:</th><td class="field-body">The first of my arguments.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">returns:</th><td class="field-body">A CSDM object.</td>
-</tr>
-</tbody>
-</table>
-</div>
+  <div class="section" id="welcome-to-csdmpy-s-documentation">
+<h1>Welcome to CSDMpy’s documentation!<a class="headerlink" href="#welcome-to-csdmpy-s-documentation" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-CSDModel.CSDModel"></span><p>The core scientific dataset (CSD) model is designed to be <em>light-weight</em>, 
+<em>portable</em>, <em>versatile</em>, and <em>standalone</em>. The CSD model only encapsulates 
+data values and minimum metadata, to accurately describe the data coordinates 
+and coordinates metadata. The model is not intended to encapsulate any 
+information on how the data might be acquired, processed or visualized. 
+The data model is versatile in allowing many use cases for any number of 
+experiments from most spectroscopy, diffraction, and imaging measurements. 
+As such the CSD model supports datasets associated with continuous physical 
+quantities that are discretely sampled in a multi-dimensional space associated 
+with other carefully controlled continuous physical quantities, for e.g., a mass 
+as a function of temperature, a current as a function of voltage and time, a 
+signal voltage as a function of magnetic field gradient strength, etc. It also 
+supports datasets associated with multi-component data values. For example, the 
+left and right audio components as a function of time, a color image with a red, 
+green, and blue (RBG) light intensity components as a function of two independent 
+spatial dimensions, and the six components of the symmetric second-rank diffusion 
+tensor MRI as a function of three independent spatial dimensions. Additionally, 
+the CSD model also supports multiple datasets when identically sampled over the 
+same set of controlled variables. For instance, the current and voltage as a 
+function of time where current and voltage are two datasets sampled over the 
+same temporal coordinates.</p>
+<p>The CSD model is independent of the hardware, operating system, application 
+software, programming language, and object-oriented file-serialization format 
+used in writing the CSD model to the file.
+The serialized data file is easily human readable and also easily integrable 
+with any number of programming languages and field related application-software.</p>
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
