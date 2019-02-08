@@ -2,14 +2,14 @@ from __future__ import print_function, division
 import numpy as np
 import json
 from .unit import valueObjectFormat, unitToLatex, _ppm
-from ._studium import (_assignAndCheckUnitConsistency, 
+from ._csdmChecks import (_assignAndCheckUnitConsistency, 
                       _checkUnitConsistency,
                       _checkAndAssignBool,
                       _checkQuantity,
                       _checkValueObject,
                       _defaultUnits,
                       stringToQuantity,
-                      axis_label)
+                      _axis_label)
 
 class _nonLinearQuantitativeControlledVariable:
 
@@ -217,7 +217,7 @@ class _nonLinearQuantitativeControlledVariable:
 
     @property
     def axis_label(self):
-        return axis_label(self.label, 
+        return _axis_label(self.label, 
                            self._unit,
                            self.made_dimensionless,
                            self._dimensionless_unit)

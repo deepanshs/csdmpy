@@ -1,8 +1,9 @@
 from __future__ import print_function, division
 import numpy as np
 import json
+from scipy.fftpack import fftshift
 from .unit import valueObjectFormat, unitToLatex, _ppm
-from ._studium import (_assignAndCheckUnitConsistency, 
+from ._csdmChecks import (_assignAndCheckUnitConsistency, 
                       _checkUnitConsistency,
                       _checkAndAssignBool,
                       _checkQuantity,
@@ -352,7 +353,8 @@ class _linearQuantitativeControlledVariable:
         _value = _assignAndCheckUnitConsistency(value, self.unit)
         self.setAttribute('_sampling_interval', _value)
         ### Reciprocal sampling interval is calculated assuming a Fourier inverse 
-        self.reciprocal_sampling_interval = 1/(_value*self.number_of_points)
+        super(_linearQuantitativeControlledVariable, self).__setattr__("_reciprocal_sampling_interval", \
+                                                                    1/(_value*self.number_of_points))
         self._getCoordinates()
 
 
@@ -365,7 +367,9 @@ class _linearQuantitativeControlledVariable:
         _value = _assignAndCheckUnitConsistency(value, self.reciprocal_unit)
         self.setAttribute('_reciprocal_sampling_interval', _value)
         ### Sampling interval is calculated assuming a Fourier inverse 
-        self.sampling_interval = 1/(_value*self.number_of_points)
+        super(_linearQuantitativeControlledVariable, self).__setattr__("sampling_interval", \
+                                                                    1/(_value*self.number_of_points))
+        # self.sampling_interval = 1/(_value*self.number_of_points)
         self._getreciprocalCoordinates()
 
     ## number_of_points
@@ -387,40 +391,54 @@ class _linearQuantitativeControlledVariable:
         coordinates = self._coordinates
         if self._made_dimensionless:
             _value=(self._origin_offset + self._reference_offset)
-        coordinates = (self._coordinates/_value).to(self.unit)
+        coordinates = (coordinates/_value).to(self.unit)
         if self.reverse:
             coordinates = coordinates[::-1]
+        # if self.fft_output_order:
+        #     coordinates = fftshift(coordinates)
         return coordinates
 
     ## absolute_coordinates
     @property
     def absolute_coordinates(self):
-        return self._absolute_coordinates
+        return self.coordinates + self.origin_offset
 
 
     ## reciprocal_coordinates
     @property
     def reciprocal_coordinates(self):
         _value = 1.0
+        reciprocal_coordinates = self._reciprocal_coordinates
         if self._reciprocal_made_dimensionless:
             _value=(self._reciprocal_origin_offset + self._reciprocal_reference_offset)
-            return (self._reciprocal_coordinates/_value).to(self.reciprocal_unit)
+        reciprocal_coordinates = (reciprocal_coordinates/_value).to(self.reciprocal_unit)
         if self.reciprocal_reverse:
-            return self._reciprocal_coordinates[::-1]
+            reciprocal_coordinates = reciprocal_coordinates[::-1]
+        return reciprocal_coordinates
 
 
     ## reciprocal_absolute_coordinates
     @property
     def reciprocal_absolute_coordinates(self):
-        return self._reciprocal_absolute_coordinates
+        return self.reciprocal_coordinates + self.reciprocal_origin_offset
 
     ## fft_ouput_order
     @property
     def fft_output_order(self):
         return self._fft_output_order
-    # @fft_ouput_order.setter
-    # def fft_ouput_order(self, value):
-    #     self.setAttribute('_fft_ouput_order', value)
+    @fft_output_order.setter
+    def fft_output_order(self, value):
+        self.setAttribute('_fft_output_order', value)
+        self._getCoordinates()
+
+
+
+
+
+
+
+
+
 
 ###--------------Private Methods------------------###
 
@@ -493,20 +511,20 @@ class _linearQuantitativeControlledVariable:
         _sampling_interval = self.sampling_interval.to(_unit)
         _reference_offset = self.reference_offset.to(_unit)
         _origin_offset = self.origin_offset.to(_unit)
+
+        _index = np.arange(_number_of_points, dtype=np.float64)
         if self.fft_output_order:
             if _number_of_points%2 == 0:
-                _index = np.arange(_number_of_points, dtype=np.float64) - _number_of_points/2.0
+                _index -= _number_of_points/2.0
             else:
-                _index = np.arange(_number_of_points, dtype=np.float64) - (_number_of_points-1)/2.0
-        else:
-            _index = np.arange(_number_of_points, dtype=np.float64)
+                _index -= (_number_of_points-1)/2.0            
         _value = _index * _sampling_interval - _reference_offset
 
         # if self.made_dimensionless:
         #     _value/=(_origin_offset + _reference_offset)
         #     _value = _value.to(_ppm)
         self.setAttribute('_coordinates', _value)
-        self.setAttribute('_absolute_coordinates', _value + _origin_offset)
+        # self.setAttribute('_absolute_coordinates', _value + _origin_offset)
 
     def _getreciprocalCoordinates(self):
         _unit = self._reciprocal_unit
@@ -516,17 +534,16 @@ class _linearQuantitativeControlledVariable:
         _origin_offset = self.reciprocal_origin_offset.to(_unit)
 
         # print (_unit, _number_of_points, _sampling_interval, _reference_offset, _origin_offset)
+        _index = np.arange(_number_of_points, dtype=np.float64)
         if not self.fft_output_order:
             if _number_of_points%2 == 0:
-                _index = np.arange(_number_of_points, dtype=np.float64) - _number_of_points/2.0
+                _index -= _number_of_points/2.0
             else:
-                _index = np.arange(_number_of_points, dtype=np.float64) - (_number_of_points-1)/2.0
-        else:
-            _index = np.arange(_number_of_points, dtype=np.float64)
+                _index -= (_number_of_points-1)/2.0
         _value =  _index * _sampling_interval - _reference_offset 
 
         self.setAttribute('_reciprocal_coordinates', _value)
-        self.setAttribute('_reciprocal_absolute_coordinates', _value + _origin_offset)
+        # self.setAttribute('_reciprocal_absolute_coordinates', _value + _origin_offset)
 
     def _swapValues(self, a, b):
         temp = self.__getattribute__(a)
@@ -543,6 +560,7 @@ class _linearQuantitativeControlledVariable:
         self._swapValues('_made_dimensionless', '_reciprocal_made_dimensionless')
         self._swapValues('_reverse', '_reciprocal_reverse')
         self._swapValues('_unit', '_reciprocal_unit')
+        self._swapValues('_reciprocal_unit', '_reciprocal_dimensionless_unit')
 
         if self.fft_output_order:
             self.setAttribute('_fft_output_order', False)
@@ -598,6 +616,12 @@ class _linearQuantitativeControlledVariable:
             del dictionary['reciprocal']
 
         return dictionary
+
+
+
+
+
+
 
 ### ------------- Public Methods ------------------ ###
     def __str__(self):

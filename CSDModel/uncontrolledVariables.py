@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 import base64, json, warnings, os
 import numpy as np
-from ._studium import (_assignAndCheckUnitConsistency, 
+from ._csdmChecks import (_assignAndCheckUnitConsistency, 
                        _checkQuantity,
                        _checkEncoding,
                        _checkNumericType,
@@ -260,7 +260,7 @@ class _unControlledVariable:
 
     def _getPythonDictonary(self, filename, dataset_index=None, 
                             number_of_components=None, for_display=True,
-                            version='1.0.0'):
+                            version='0.1.0'):
         dictionary = {}
         if self.name.strip() != '' and self.name is not None:
             dictionary['name'] = self.name
@@ -289,7 +289,7 @@ class _unControlledVariable:
         
         if for_display:
             if self.encoding in ['none', 'base64']:
-                dictionary['components'] = 'To avoid large ouput display, components array is not printed.'
+                dictionary['components'] = str(self.components).replace('\n','') #'To avoid large ouput display, components array is not printed.'
             if self.encoding in ['raw']:
                 dictionary['components_URI'] = self.components_URI
                 

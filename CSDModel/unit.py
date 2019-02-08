@@ -17,7 +17,7 @@ convert = {
     # "ppm" : _ppm,
 }
 
-
+# dimensionless_frequency_ratio = [(u.Hz, _ppm, lambda x: 1000.0 * x, lambda x: x / 1000.0)]
 
 
 def stringToQuantity(string, dtype=float):

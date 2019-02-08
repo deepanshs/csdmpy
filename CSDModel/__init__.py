@@ -14,8 +14,44 @@ def _importJson(filename):
         content = f.read()
         return (json.loads(str(content,encoding = "UTF-8")))
 
-class dataModel:
+"""A test doc
 
+.. moduleauthor:: Deepansh J. Srivastava <srivastava.89@osu.edu>
+
+"""
+
+class CSDModel:
+
+    """
+    The core scientific dataset (CSD) model, is a *light-weight*, *portable*, 
+    *versatile* and *standalone* scientific data model. The model only encapsulates 
+    data values and minimum metadata to accurately describe the data coordinates 
+    and coordinates metadata. The model is not intended to encapsulate any 
+    information on how the data might be acquired, processed or visualized. The
+    data model is versatile in allowing many use cases for any number of experiments 
+    from most spectroscopy, diffraction, and imaging measurements. As such the CSD model 
+    supports datasets associated with continuous physical quantities 
+    that are discretely sampled in a multi-dimensional space associated with other carefully 
+    controlled continuous physical quantities, for e.g., a mass as a function of temperature, 
+    a current as a function of voltage and time, a signal voltage as a function of magnetic 
+    field gradient strength, etc. It also supports datasets associated with multi-component data values. 
+    For example, the left and right audio components as a function of time, a color 
+    image with a red, green, and blue (RBG) light intensity components as a function 
+    of two independent spatial dimensions, and the six components of the symmetric 
+    second-rank diffusion tensor MRI as a function of three independent spatial dimensions. 
+    Additionally, the CSD model also supports multiple datasets when identically 
+    sampled over the same set of controlled variables. For instance, the current 
+    and voltage as a function of time where current and voltage are two datasets 
+    sampled over the same temporal coordinates. It is independent of the hardware, 
+    operating system, application software, programming language, 
+    and object-oriented file-serialization format used in writing the CSD model to the file. 
+
+    
+    The serialized data model is *easily* human readable and easily integrable
+    with any number of programming languages and field related application-software.
+    
+
+    """
     __slots__ = [ 
                  'controlled_variables', 
                  'uncontrolled_variables',
@@ -24,14 +60,21 @@ class dataModel:
                  ]
 
     def __init__(self, filename=''):
+        """
+        A function just for me.
 
-        super(dataModel, self).__setattr__('controlled_variables', ())
-        super(dataModel, self).__setattr__('uncontrolled_variables', ())
-        super(dataModel, self).__setattr__('filename', filename)
+        :param filename: The first of my arguments.
+
+        :returns: A CSDM object.
+
+        """
+        super(CSDModel, self).__setattr__('controlled_variables', ())
+        super(CSDModel, self).__setattr__('uncontrolled_variables', ())
+        super(CSDModel, self).__setattr__('filename', filename)
 
         if filename != '':
             dictionary = _importJson(filename)
-            super(dataModel, self).__setattr__('version', dictionary['CSDM']['version'])
+            super(CSDModel, self).__setattr__('version', dictionary['CSDM']['version'])
             for dim in dictionary['CSDM']['controlled_variables']:
                 self.addControlledVariable(dim)
 
@@ -110,7 +153,7 @@ class dataModel:
             if default['coordinates'] is None:
                 raise Exception("'coordinates' key is required.")
             else:
-                super(dataModel, self).__setattr__('controlled_variables', \
+                super(CSDModel, self).__setattr__('controlled_variables', \
                     self.controlled_variables + (nQCV( \
                         _sampling_type          = default['sampling_type'], \
                         _non_quantitative           = default['non_quantitative'], \
@@ -126,7 +169,7 @@ class dataModel:
                 raise Exception("either 'number_of_points/sampling_interval' or 'coordinates' key is required.")
 
         if not default['non_quantitative'] and default['coordinates'] is not None:
-            super(dataModel, self).__setattr__('controlled_variables', \
+            super(CSDModel, self).__setattr__('controlled_variables', \
                     self.controlled_variables + (nlQCV( \
                         _sampling_type          = default['sampling_type'], \
                         _non_quantitative           = default['non_quantitative'], \
@@ -151,7 +194,7 @@ class dataModel:
         if not default['non_quantitative'] and \
                 default['number_of_points'] is not None and \
                 default['sampling_interval'] is not None:
-            super(dataModel, self).__setattr__('controlled_variables', \
+            super(CSDModel, self).__setattr__('controlled_variables', \
                     self.controlled_variables + (lQCV(
                         _sampling_type          = default['sampling_type'], \
                         _non_quantitative           = default['non_quantitative'], \
@@ -212,7 +255,7 @@ class dataModel:
         # if default['coordinates'] is None and default['sampling_interval'] is None:
         #     raise Exception("The method either requires input '{0}' or '{1}'.".format('sampling_interval', 'coordinate'))
 
-        super(dataModel, self).__setattr__('uncontrolled_variables', 
+        super(CSDModel, self).__setattr__('uncontrolled_variables', 
                 self.uncontrolled_variables + (uv(
                                 _name = default['name'],
                                 _unit = default['unit'],
@@ -227,9 +270,9 @@ class dataModel:
                                 _filename = filename), ) )
 
 
-    def datum(self, index):
-        for i in range(len(self.uncontrolled_variables[0])):
-            (self.uncontrolled_variables[0].components[index])
+    # def datum(self, index):
+    #     for i in range(len(self.uncontrolled_variables[0])):
+    #         (self.uncontrolled_variables[0].components[index])
 
 
     def _info(self):

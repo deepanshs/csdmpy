@@ -106,13 +106,18 @@ def _checkNumericType(element):
 
 def _checkUnitConsistency(element, unit):
     if element.unit.physical_type != unit.physical_type:
-        raise Exception("The unit of '{0}' ({1}) is inconsistent with unit '{2}' ({3}).".format(
-                    str(element), str(element.unit.physical_type), str(unit), unit.physical_type))
+        # try: element.unit.to(unit)
+        # except Exception as e:
+        #     raise Exception(e)
+        raise Exception("The unit '{0}' ({1}) is inconsistent with the unit '{2}' ({3}).".format(
+                str(element.unit), str(element.unit.physical_type), str(unit), unit.physical_type))
     else:
         return element
 
 def _assignAndCheckUnitConsistency(element, unit):
     element = _defaultUnits(stringToQuantity(str(element)))
+    _fitsUnitFormat = element.unit.to_string('fits').strip()
+    element = element.to(_fitsUnitFormat)
     if unit is not None:
         return _checkUnitConsistency(element, unit)
     else:
