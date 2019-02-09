@@ -11,46 +11,17 @@ The module is imported as ::
 To load a ``.csdf`` or a ``.csdfx`` file, use the ``open`` method of the ``csdfpy`` module.
 In the following example, we use a sample test file. ::
 
-    >>> filename = csdf.test_file['test01'] # Replace this with the file address
-    >>> testdata1 = csdf.open(filename) # doctest: +SKIP
+    >>> filename = csdfpy.test_file['test01'] # Replace this with the file address
+    >>> testdata1 = csdfpy.open(filename) # doctest: +SKIP
 
 Here, ``testdata1`` is an instance of the ``CSDModel`` class. 
-The print function will display a python dictonary with keywords describing
-the contents ``testdata1``. ::
-
-    >>> print (testdata1) # doctest: +SKIP
-
-    {
-    "CSDM": {
-        "uncontrolled_variables": [
-            {
-                "encoding": "none",
-                "numeric_type": "float32",
-                "components": "[[ 0.0000000e+00  5. ... -01 -5.8778524e-01]]"
-            }
-        ],
-        "controlled_variables": [
-            {
-                "reciprocal": {
-                    "quantity": "frequency"
-                },
-                "number_of_points": 10,
-                "sampling_interval": "0.1 s",
-                "quantity": "time"
-            }
-        ],
-        "version": "0.1.0"
-        }
-    }
-
-
 To access the uncontrolled and uncontrolled variables, use the ``uncontrolled_variables`` 
-and the ``controlled_variables`` attribure of the ``testdata1`` instance, ::
+and the ``controlled_variables`` attributes of the ``testdata1`` instance, ::
 
     >>> x = testdata1.controlled_variables
     >>> y = testdata1.uncontrolled_variables
 
-where ``x`` and ``y`` are tuples of controlled and uncontrolled variables objects. 
+where ``x`` and ``y`` are the tuples of controlled and uncontrolled variables objects. 
 In the above example, both ``x`` and ``y`` are tuples with a single object ::
 
     >>> print ('x', len(x), type(x))
@@ -58,7 +29,7 @@ In the above example, both ``x`` and ``y`` are tuples with a single object ::
     x 1 <class 'tuple'>
     y 1 <class 'tuple'>
 
-The list of controlled variable coordinates are accessed throught the ``coordinates``
+The list of controlled variable coordinates is accessed through the ``coordinates``
 attribute of the controlled variable object. In the above example, the controlled
 variable coordinates are ::
 
@@ -66,23 +37,20 @@ variable coordinates are ::
     [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s
 
 .. note::
-    ``x[0].coordinates`` returns an instance of Quantity calss from Astropy.
-    ``csdfpy`` used the astropy units library to handle physical quantities.
-    The value and the unit of the physical quantity can be accessed from the 
-    Quantity instance using the ``value``and the ``unit`` attributes. The 
-    ``value`` attributes return a numpy array.
+    ``x[0].coordinates`` return an instance of the 
+    `Quantity <http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity>`_
+    class from 
+    `Astropy <http://docs.astropy.org/en/stable/units/>`_ module.
+    The ``csdfpy`` module uses the units library from the astropy module to handle 
+    the physical quantities.
+    The value and the unit of the physical quantity are accessed through the 
+    Quantity instance, using the ``value`` and the ``unit`` attributes. The 
+    ``value`` attributes returns a 
+    `numpy array <https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.ndarray.html>`_.
 
->>> coordinate = x[0].coordinates.value
->>> unit = x[0].coordinates.unit
->>> print (coordinate)
->>> print (type(coordinate))
->>> print (unit)
-    [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]
-    <class 'numpy.ndarray'>
-    s
 
-Similarly, the list of uncontrolled variables are accessed through the ``components`` attribute
-of the uncontrolled valiable object. This returns a numpy array. ::
+The list of uncontrolled variables is accessed through the ``components`` attribute
+of the uncontrolled variable object. This returns a numpy array. ::
 
     >>> print (y[0].components) 
     >>> print (type( y[0].components ))  # doctest: +SKIP
@@ -102,15 +70,5 @@ is ::
     >>> print (y[0].components.shape)  # doctest: +SKIP
     (1, 10)
 
-where the first element, ``1``, is the number of components of uncontrolled variable.
-
-    >>> print ('old number of points = ', x[0].number_of_points)
-    >>> x[0].number_of_points = 5
-    >>> print ('new number of points = ', x[0].number_of_points)
-    >>> print ('new coordinates = ', x[0].coordinates) # doctest: +SKIP
-
-    old number of points =  10
-    new number of points =  5
-    new coordinates =  [0.  0.1 0.2 0.3 0.4] s
-    
-    """
+where the first element of the shape tuple, ``(1,10)``, is the number of components of 
+the uncontrolled variable. In this case, the number of components is one.
