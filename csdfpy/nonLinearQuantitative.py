@@ -408,7 +408,7 @@ class _nonLinearQuantitativeControlledVariable:
         self.setAttribute('_coordinates', _value)
         self.setAttribute('_absolute_coordinates', _value + _origin_offset)
 
-    def _getPythonDictonary(self, version):
+    def _get_python_dictonary(self):
         dictionary = {}
         dictionary['reciprocal'] = {}
 
@@ -454,7 +454,7 @@ class _nonLinearQuantitativeControlledVariable:
 
 ### ------------- Public Methods ------------------ ###
     def __str__(self):
-        dictionary = self._getPythonDictonary()
+        dictionary = self._get_python_dictonary()
         return (json.dumps(dictionary, sort_keys=False, indent=2))
 
     def to(self, unit):

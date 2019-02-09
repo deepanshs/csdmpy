@@ -289,8 +289,21 @@ class _unControlledVariable:
         
         if for_display:
             if self.encoding in ['none', 'base64']:
-                _string = str(self.components).replace('\n','')
-                dictionary['components'] =  ''.join([_string[:20], ' ... ', _string[20:]]) #'To avoid large ouput display, components array is not printed.'
+                _str = ''
+                for i in range(len(self.components)):
+                    temp = self.components[i].ravel()
+                    _string = ''.join(['[ ', str(temp[0]), ',  ', str(temp[1]), 
+                                        ' ...... ', str(temp[-2]), ',  ', 
+                                        str(temp[-1]), ' ], ' ])
+                    _str = _str + _string
+                        
+                temp = None
+
+                dictionary['components'] =  _str[:-2] #'To avoid large ouput display, components array is not printed.'
+
+                _str = None
+                del temp, _str
+
             if self.encoding in ['raw']:
                 dictionary['components_URI'] = self.components_URI
                 

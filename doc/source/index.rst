@@ -3,17 +3,21 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to CSDMpy's documentation!
+Welcome to csdfpy's documentation!
 ====================================
 
-.. automodule:: CSDModel.CSDModel
+.. automodule:: csdfpy.CSDModel
 
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
+    :caption: Table of Contents
+    :name: mastertoc
+    :numbered:
 
-   CSDMObject
+    installation
+    requirement
+    CSDMObject
 
 
 

@@ -13,7 +13,7 @@ from ._csdmChecks import (_assignAndCheckUnitConsistency,
                       _axis_label)
 
 
-class _linearQuantitativeControlledVariable:
+class _linearlySampledGrid:
 
     __slots__ = ['_sampling_type', 
                  '_non_quantitative', 
@@ -152,7 +152,7 @@ class _linearQuantitativeControlledVariable:
 
 
     def set_attribute(self, name, value):
-        super(_linearQuantitativeControlledVariable, self).__setattr__(name, value)
+        super(_linearlySampledGrid, self).__setattr__(name, value)
 
     def __delattr__(self, name):
         if name in __class__.__slots__:
@@ -353,7 +353,7 @@ class _linearQuantitativeControlledVariable:
         _value = _assignAndCheckUnitConsistency(value, self.unit)
         self.set_attribute('_sampling_interval', _value)
         ### Reciprocal sampling interval is calculated assuming a Fourier inverse 
-        super(_linearQuantitativeControlledVariable, self).__setattr__("_reciprocal_sampling_interval", \
+        super(_linearlySampledGrid, self).__setattr__("_reciprocal_sampling_interval", \
                                                                     1/(_value*self.number_of_points))
         self._get_coordinates()
 
@@ -367,7 +367,7 @@ class _linearQuantitativeControlledVariable:
         _value = _assignAndCheckUnitConsistency(value, self.reciprocal_unit)
         self.set_attribute('_reciprocal_sampling_interval', _value)
         ### Sampling interval is calculated assuming a Fourier inverse 
-        super(_linearQuantitativeControlledVariable, self).__setattr__("sampling_interval", \
+        super(_linearlySampledGrid, self).__setattr__("sampling_interval", \
                                                                     1/(_value*self.number_of_points))
         # self.sampling_interval = 1/(_value*self.number_of_points)
         self._get_reciprocal_coordinates()
@@ -572,7 +572,7 @@ class _linearQuantitativeControlledVariable:
         self._swapValues('_period', '_reciprocal_period')
         self._swapValues('_coordinates', '_reciprocal_coordinates')
 
-    def _get_python_dictonary(self, version):
+    def _get_python_dictonary(self):
         dictionary = {}
         dictionary['reciprocal'] = {}
         dictionary['number_of_points'] = self.number_of_points

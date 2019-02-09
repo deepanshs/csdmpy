@@ -1,13 +1,70 @@
-CSDM object
-************
+---------------------------------
+Importing csdfpy and subpackages
+---------------------------------
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-   
-.. automodule:: CSDModel.CSDModel.__init__
-   :members:
+We have put together a set of guidelines for importing ``csdfpy`` module and related functionality.
+We encourage the users to follow these guidelines to promote consistency amongst other users. 
+The module is imported as ::
+
+    >>> from MRData import csdfpy # doctest: +SKIP
+
+To load a ``.csdf`` or a ``.csdfx`` file, use the ``open`` method of the ``csdfpy`` module.
+In the following example, we use a sample test file. ::
+
+    >>> filename = csdf.test_file['test01'] # Replace this with the file address
+    >>> testdata1 = csdf.open(filename) # doctest: +SKIP
+
+Here ``testdata1`` is an instance of the ``CSDModel`` class. 
+The print function will display a python dictonary with keywords describing the content of data file. ::
+
+    >>> print (testdata1) # doctest: +SKIP
+
+    {
+    "CSDM": {
+        "uncontrolled_variables": [
+            {
+                "encoding": "none",
+                "numeric_type": "float32",
+                "components": "[[ 0.0000000e+00  5. ... -01 -5.8778524e-01]]"
+            }
+        ],
+        "controlled_variables": [
+            {
+                "reciprocal": {
+                    "quantity": "frequency"
+                },
+                "number_of_points": 10,
+                "sampling_interval": "0.1 s",
+                "quantity": "time"
+            }
+        ],
+        "version": "0.1.0"
+        }
+    }
 
 
-.. automodule:: CSDModel.linearQuantitative._linearQuantitativeControlledVariable
-   :members:
+To access the uncontrolled and uncontrolled variables, use the ``uncontrolled_variables`` 
+and the ``controlled_variables`` attribure of the ``testdata1`` instance, ::
+
+    >>> x = testdata1.controlled_variables
+    >>> y = testdata1.uncontrolled_variables
+
+where ``x`` and ``y`` are the list of controlled and uncontrolled variables objects. 
+In the above example, ``x`` is a list with a single object ::
+
+    >>> print (len(x), type(x)) # doctest: +SKIP
+    1 <class 'tuple'>
+
+The list of coordinates from a controlled variable is accessed by the ``coordinates``
+attribute of the controlled valiable object. ::
+
+    >>> print ('old number of points = ', x[0].number_of_points)
+    >>> x[0].number_of_points = 5
+    >>> print ('new number of points = ', x[0].number_of_points)
+    >>> print ('new coordinates = ', x[0].coordinates) # doctest: +SKIP
+
+    old number of points =  10
+    new number of points =  5
+    new coordinates =  [0.  0.1 0.2 0.3 0.4] s
+    
+    """

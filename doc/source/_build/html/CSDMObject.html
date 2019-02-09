@@ -1,245 +1,216 @@
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Importing csdfpy and subpackages &mdash; CSDM 0.1.0 documentation</title>
-  
-
-  
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>2. Importing csdfpy &#8212; CSDM 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Welcome to CSDMpy’s documentation!" href="index.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
-</head>
-
-<body class="wy-body-for-nav">
-
+    <link rel="prev" title="1. The requirements for csdfpy" href="requirement.html" />
    
-  <div class="wy-grid-for-nav">
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-    
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
+  </head><body>
+  
 
-          
-            <a href="index.html" class="icon icon-home"> CSDM
-          
-
-          
-          </a>
-
-          
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
             
-            
-          
+  <div class="section" id="importing-csdfpy">
+<h1>2. Importing csdfpy<a class="headerlink" href="#importing-csdfpy" title="Permalink to this headline">¶</a></h1>
+<p>We have put together a set of guidelines for importing <code class="docutils literal notranslate"><span class="pre">csdfpy</span></code> module and related functionality.
+We encourage the users to follow these guidelines to promote consistency amongst other users.
+The module is imported as</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MRData</span> <span class="k">import</span> <span class="n">csdfpy</span> 
+</pre></div>
+</div>
+<p>To load a <code class="docutils literal notranslate"><span class="pre">.csdf</span></code> or a <code class="docutils literal notranslate"><span class="pre">.csdfx</span></code> file, use the <code class="docutils literal notranslate"><span class="pre">open</span></code> method of the <code class="docutils literal notranslate"><span class="pre">csdfpy</span></code> module.
+In the following example, we use a sample test file.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="n">csdf</span><span class="o">.</span><span class="n">test_file</span><span class="p">[</span><span class="s1">&#39;test01&#39;</span><span class="p">]</span> <span class="c1"># Replace this with the file address</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">testdata1</span> <span class="o">=</span> <span class="n">csdf</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">testdata1</span></code> is an instance of the <code class="docutils literal notranslate"><span class="pre">CSDModel</span></code> class.
+The print function will display a python dictonary with keywords describing
+the contents <code class="docutils literal notranslate"><span class="pre">testdata1</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="n">testdata1</span><span class="p">)</span> 
 
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+<span class="go">{</span>
+<span class="go">&quot;CSDM&quot;: {</span>
+<span class="go">    &quot;uncontrolled_variables&quot;: [</span>
+<span class="go">        {</span>
+<span class="go">            &quot;encoding&quot;: &quot;none&quot;,</span>
+<span class="go">            &quot;numeric_type&quot;: &quot;float32&quot;,</span>
+<span class="go">            &quot;components&quot;: &quot;[[ 0.0000000e+00  5. ... -01 -5.8778524e-01]]&quot;</span>
+<span class="go">        }</span>
+<span class="go">    ],</span>
+<span class="go">    &quot;controlled_variables&quot;: [</span>
+<span class="go">        {</span>
+<span class="go">            &quot;reciprocal&quot;: {</span>
+<span class="go">                &quot;quantity&quot;: &quot;frequency&quot;</span>
+<span class="go">            },</span>
+<span class="go">            &quot;number_of_points&quot;: 10,</span>
+<span class="go">            &quot;sampling_interval&quot;: &quot;0.1 s&quot;,</span>
+<span class="go">            &quot;quantity&quot;: &quot;time&quot;</span>
+<span class="go">        }</span>
+<span class="go">    ],</span>
+<span class="go">    &quot;version&quot;: &quot;0.1.0&quot;</span>
+<span class="go">    }</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>To access the uncontrolled and uncontrolled variables, use the <code class="docutils literal notranslate"><span class="pre">uncontrolled_variables</span></code>
+and the <code class="docutils literal notranslate"><span class="pre">controlled_variables</span></code> attribure of the <code class="docutils literal notranslate"><span class="pre">testdata1</span></code> instance,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">testdata1</span><span class="o">.</span><span class="n">controlled_variables</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">testdata1</span><span class="o">.</span><span class="n">uncontrolled_variables</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> are tuples of controlled and uncontrolled variables objects.
+In the above example, both <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> are tuples with a single object</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>  
+<span class="go">x 1 &lt;class &#39;tuple&#39;&gt;</span>
+<span class="go">y 1 &lt;class &#39;tuple&#39;&gt;</span>
+</pre></div>
+</div>
+<p>The list of controlled variable coordinates are accessed throught the <code class="docutils literal notranslate"><span class="pre">coordinates</span></code>
+attribute of the controlled variable object. In the above example, the controlled
+variable coordinates are</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span> 
+<span class="go">[0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">x[0].coordinates</span></code> returns an instance of Quantity calss from Astropy.
+<code class="docutils literal notranslate"><span class="pre">csdfpy</span></code> used the astropy units library to handle physical quantities.
+The value and the unit of the physical quantity can be accessed from the
+Quantity instance using the <code class="docutils literal notranslate"><span class="pre">value``and</span> <span class="pre">the</span> <span class="pre">``unit</span></code> attributes. The
+<code class="docutils literal notranslate"><span class="pre">value</span></code> attributes return a numpy array.</p>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coordinate</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">value</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unit</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">unit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="n">coordinate</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">coordinate</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+<span class="go">    [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]</span>
+<span class="go">    &lt;class &#39;numpy.ndarray&#39;&gt;</span>
+<span class="go">    s</span>
+</pre></div>
+</div>
+<p>Similarly, the list of uncontrolled variables are accessed through the <code class="docutils literal notranslate"><span class="pre">components</span></code> attribute
+of the uncontrolled valiable object. This returns a numpy array.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">components</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">components</span> <span class="p">))</span>  
+<span class="go">[[ 0.0000000e+00  5.8778524e-01  9.5105654e-01  9.5105654e-01</span>
+<span class="go">5.8778524e-01  1.2246469e-16 -5.8778524e-01 -9.5105654e-01</span>
+<span class="go">-9.5105654e-01 -5.8778524e-01]]</span>
+<span class="go">&lt;class &#39;numpy.ndarray&#39;&gt;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The numpy array from the <code class="docutils literal notranslate"><span class="pre">components</span></code> attribute has M+1 dimensions,
+where M is the number of controlled variables.</p>
+</div>
+<p>In the above example, there is only one controlled variable object. The shape of <code class="docutils literal notranslate"><span class="pre">y</span></code>
+is</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  
+<span class="go">(1, 10)</span>
+</pre></div>
+</div>
+<p>where the first element, <code class="docutils literal notranslate"><span class="pre">1</span></code>, is the number of components of uncontrolled variable.</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;old number of points = &#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">number_of_points</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">number_of_points</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;new number of points = &#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">number_of_points</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;new coordinates = &#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span> <span class="c1"># doctest: +SKIP</span>
+</pre></div>
+</div>
+<p>old number of points =  10
+new number of points =  5
+new coordinates =  [0.  0.1 0.2 0.3 0.4] s</p>
+<p>“”“</p>
+</div></blockquote>
 </div>
 
-          
-        </div>
 
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">CSDM</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Importing csdfpy and subpackages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirement.html">1. The requirements for csdfpy</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. Importing csdfpy</a></li>
 </ul>
 
-            
-          
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">CSDM</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-      <li>Importing csdfpy and subpackages</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-            
-            <a href="_sources/CSDMObject.rst.txt" rel="nofollow"> View page source</a>
-          
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="requirement.html" title="previous chapter">1. The requirements for csdfpy</a></li>
+  </ul></li>
+</ul>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-            
-  <div class="section" id="importing-csdfpy-and-subpackages">
-<h1>Importing csdfpy and subpackages<a class="headerlink" href="#importing-csdfpy-and-subpackages" title="Permalink to this headline">¶</a></h1>
-<p>We have put together a set of guidelines for importing <code class="docutils literal notranslate"><span class="pre">csdfpy</span></code> module and related functionality.
-We encourage the users to follow these guidelines to promote consistency amongst other users.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MRData</span> <span class="k">import</span> <span class="n">csdf</span>
-</pre></div>
-</div>
-<p>To load a <code class="docutils literal notranslate"><span class="pre">.csdf</span></code> or a <code class="docutils literal notranslate"><span class="pre">.csdfx</span></code> file, use the <code class="docutils literal notranslate"><span class="pre">open</span></code> method of the <code class="docutils literal notranslate"><span class="pre">csdf</span></code> module.
-In the following example, we use the sample test file.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="n">csdf</span><span class="o">.</span><span class="n">test_file</span><span class="p">[</span><span class="s1">&#39;test01&#39;</span><span class="p">]</span> <span class="c1"># Replace this with the file address</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">testdata1</span> <span class="o">=</span> <span class="n">csdf</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Here <code class="docutils literal notranslate"><span class="pre">testdata1</span></code> is an instance of the <code class="docutils literal notranslate"><span class="pre">CSDModel</span></code> class.
-The print function will display a python dictonary with keywords describing the content of data file.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="n">testdata1</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<p>To access the uncontrolled variables and uncontrolled variables, use the <code class="docutils literal notranslate"><span class="pre">uncontrolled_variables</span></code>
-and the <code class="docutils literal notranslate"><span class="pre">controlled_variables</span></code> attribure of the
-.. testcode:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">dO</span><span class="o">.</span><span class="n">controlled_variables</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">dO</span><span class="o">.</span><span class="n">uncontrolled_variables</span>
-</pre></div>
-</div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; print (&#39;old number of points = &#39;, x[0].number_of_points)
-&gt;&gt;&gt; x[0].number_of_points = 5
-&gt;&gt;&gt; print (&#39;new number of points = &#39;, x[0].number_of_points)
-&gt;&gt;&gt; print (&#39;new coordinates = &#39;, x[0].coordinates)
-old number of points =  10
-new number of points =  5
-new coordinates =  [0.  0.1 0.2 0.3 0.4] s
-
-&quot;&quot;&quot;
-</pre></div>
-</div>
-</div>
-
-
-           </div>
-           
-          </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-      
-        <a href="index.html" class="btn btn-neutral" title="Welcome to CSDMpy’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
     </div>
-  
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
-        &copy; Copyright 2019, Deepansh J. Srivastava
-
-    </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
-
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
-
-    </section>
-
-  </div>
-  
-
-
-  
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Deepansh J. Srivastava.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/CSDMObject.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
 
     
+
     
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+  </body>
 </html>

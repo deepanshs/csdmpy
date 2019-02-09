@@ -1,5 +1,5 @@
 from __future__ import print_function, division
-from .linearQuantitative import _linearQuantitativeControlledVariable as lqcv
+from .controlled_variables import _linearlySampledGrid as lsg
 from .nonLinearQuantitative import _nonLinearQuantitativeControlledVariable as nlqcv
 from .nonQuantitative import _nonQuantitativeControlledVariable as nqcv
 from .uncontrolledVariables import _unControlledVariable as uv
@@ -247,7 +247,7 @@ class CSDModel:
                 default['number_of_points'] is not None and \
                 default['sampling_interval'] is not None:
             super(CSDModel, self).__setattr__('controlled_variables', \
-                    self.controlled_variables + (lqcv(
+                    self.controlled_variables + (lsg(
                         _sampling_type          = default['sampling_type'], \
                         _non_quantitative       = default['non_quantitative'], \
 
@@ -355,14 +355,14 @@ class CSDModel:
         return (json.dumps(dictionary, sort_keys=False, indent=2))
 
 
-    def _get_python_dictonary(self, filename, print_function=False, version=CSDModel.current_version):
+    def _get_python_dictonary(self, filename, print_function=False, version=current_version):
         dictionary = {}
         dictionary["uncontrolled_variables"] = []
         dictionary["controlled_variables"] = []
         dictionary["version"] = version
         for i in range(len(self.controlled_variables)):
             dictionary["controlled_variables"].append( \
-                    self.controlled_variables[i]._get_python_dictonary(version=version))
+                    self.controlled_variables[i]._get_python_dictonary())
         
         _length_of_uncontrolled_variables =  len(self.uncontrolled_variables)
         for i in range(_length_of_uncontrolled_variables):
@@ -378,7 +378,7 @@ class CSDModel:
         return csdm
 
 
-    def save(self, filename, version=CSDModel.current_version):
+    def save(self, filename, version=current_version):
         dictionary = self._get_python_dictonary(filename, version=version)
         with open(filename, 'w') as outfile:
             json.dump(dictionary, outfile, sort_keys=False, indent=2)

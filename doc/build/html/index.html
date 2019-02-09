@@ -6,16 +6,19 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Welcome to CSDMpy’s documentation! &#8212; CSDM 0.1.0 documentation</title>
+    <title>Welcome to csdfpy’s documentation! &#8212; CSDM 0.1.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="1. The requirements for csdfpy" href="requirement.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -30,34 +33,15 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="welcome-to-csdmpy-s-documentation">
-<h1>Welcome to CSDMpy’s documentation!<a class="headerlink" href="#welcome-to-csdmpy-s-documentation" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="module-CSDModel.CSDModel"></span><p>The core scientific dataset (CSD) model is designed to be <em>light-weight</em>, 
-<em>portable</em>, <em>versatile</em>, and <em>standalone</em>. The CSD model only encapsulates 
-data values and minimum metadata, to accurately describe the data coordinates 
-and coordinates metadata. The model is not intended to encapsulate any 
-information on how the data might be acquired, processed or visualized. 
-The data model is versatile in allowing many use cases for any number of 
-experiments from most spectroscopy, diffraction, and imaging measurements. 
-As such the CSD model supports datasets associated with continuous physical 
-quantities that are discretely sampled in a multi-dimensional space associated 
-with other carefully controlled continuous physical quantities, for e.g., a mass 
-as a function of temperature, a current as a function of voltage and time, a 
-signal voltage as a function of magnetic field gradient strength, etc. It also 
-supports datasets associated with multi-component data values. For example, the 
-left and right audio components as a function of time, a color image with a red, 
-green, and blue (RBG) light intensity components as a function of two independent 
-spatial dimensions, and the six components of the symmetric second-rank diffusion 
-tensor MRI as a function of three independent spatial dimensions. Additionally, 
-the CSD model also supports multiple datasets when identically sampled over the 
-same set of controlled variables. For instance, the current and voltage as a 
-function of time where current and voltage are two datasets sampled over the 
-same temporal coordinates.</p>
-<p>The CSD model is independent of the hardware, operating system, application 
-software, programming language, and object-oriented file-serialization format 
-used in writing the CSD model to the file.
-The serialized data file is easily human readable and also easily integrable 
-with any number of programming languages and field related application-software.</p>
+  <div class="section" id="module-csdfpy.CSDModel">
+<span id="welcome-to-csdfpy-s-documentation"></span><h1>Welcome to csdfpy’s documentation!<a class="headerlink" href="#module-csdfpy.CSDModel" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound" id="mastertoc">
+<p class="caption"><span class="caption-text">Table of Contents</span><a class="headerlink" href="#mastertoc" title="Permalink to this toctree">¶</a></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="requirement.html">1. The requirements for csdfpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CSDMObject.html">2. Importing csdfpy and subpackages</a></li>
+</ul>
+</div>
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
@@ -84,11 +68,17 @@ with any number of programming languages and field related application-software.
 
 
 <h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="requirement.html">1. The requirements for csdfpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CSDMObject.html">2. Importing csdfpy and subpackages</a></li>
+</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="requirement.html" title="next chapter">1. The requirements for csdfpy</a></li>
   </ul></li>
 </ul>
 </div>

@@ -105,7 +105,7 @@ class _nonQuantitativeControlledVariable:
                     str(self._label)]
         return _response
 
-    def _getPythonDictonary(self, version):
+    def _get_python_dictonary(self):
         dictionary = {}
 
         dictionary['coordinates'] = self.coordinates.tolist()
@@ -121,5 +121,5 @@ class _nonQuantitativeControlledVariable:
 ### ------------- Public Methods ------------------ ###
 
     def __str__(self):
-        dictionary = self._getPythonDictonary()
+        dictionary = self._get_python_dictonary()
         return (json.dumps(dictionary, sort_keys=False, indent=2))
