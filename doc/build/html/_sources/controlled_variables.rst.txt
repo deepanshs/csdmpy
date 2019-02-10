@@ -1,0 +1,40 @@
+
+Controlled variables
+====================
+
+Based on the type of samplings and the types of coordinates, 
+there are three types of controlled variable coordinates.
+
+    * Linearly sampled quantitative grid dimension
+    * Arbitrarily sampled quantitative grid dimension
+    * Non-quantitative dimensions
+
+
+
+
+Linearly sampled grid dimension
+-------------------------------
+
+
+For example, 
+
+    >>> from MRData import csdfpy
+    >>> filename = csdfpy.test_file['test01']
+    >>> testdata1 = csdfpy.open(filename)
+
+    creates ``testdata1`` as an instance of the ``CSDModel`` object.
+    The instance of the ``_linearlySampledGrid`` class is accessed, 
+
+    >>> x = testdata1.controlled_variables
+    >>> print(x)
+    (<MRData.csdfpy.controlled_variables._linearlySampledGrid object at 0xa0bc86150>,)
+
+
+    >>> print ('number of points = ', x[0].number_of_points)
+    
+This can also be used to assign/update the sampling
+interval of the dimension.
+
+    >>> x[0].number_of_points = 5
+    >>> print ('new number of points = ', x[0].number_of_points)
+    >>> print ('new coordinates = ', x[0].coordinates)

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to csdfpy’s documentation! &mdash;  0.1.0 documentation</title>
+  <title>Welcome to csdfpy’s documentation! &mdash; csdfpy 0.1.0 documentation</title>
   
 
   
@@ -48,7 +48,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> 
+            <a href="#" class="icon icon-home"> csdfpy
           
 
           
@@ -59,6 +59,10 @@
 
           
             
+            
+              <div class="version">
+                0.1
+              </div>
             
           
 
@@ -84,7 +88,10 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="requirement.html">1. The requirements for csdfpy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CSDMObject.html">2. Importing csdfpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CSDModel.html">2. The core scientific dataset model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importing_csdfpy.html">3. Importing csdfpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="controlled_variables.html">4. Controlled variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="referenceAPI.html">5. Reference/API</a></li>
 </ul>
 
             
@@ -99,7 +106,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#"></a>
+          <a href="#">csdfpy</a>
         
       </nav>
 
@@ -149,13 +156,51 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-csdfpy.CSDModel">
-<span id="welcome-to-csdfpy-s-documentation"></span><h1>Welcome to csdfpy’s documentation!<a class="headerlink" href="#module-csdfpy.CSDModel" title="Permalink to this headline">¶</a></h1>
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="welcome-to-csdfpy-s-documentation">
+<h1>Welcome to csdfpy’s documentation!<a class="headerlink" href="#welcome-to-csdfpy-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound" id="mastertoc">
 <p class="caption"><span class="caption-text">Table of Contents</span><a class="headerlink" href="#mastertoc" title="Permalink to this toctree">¶</a></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="requirement.html">1. The requirements for csdfpy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CSDMObject.html">2. Importing csdfpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CSDModel.html">2. The core scientific dataset model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importing_csdfpy.html">3. Importing csdfpy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Importing_csdfpy.html#accessing-controlled-and-uncontrolled-variables">3.1. Accessing controlled and uncontrolled variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Importing_csdfpy.html#plotting-the-data">3.2. Plotting the data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Importing_csdfpy.html#see-also">3.3. See also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="controlled_variables.html">4. Controlled variables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="controlled_variables.html#linearly-sampled-grid-dimension">4.1. Linearly sampled grid dimension</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="referenceAPI.html">5. Reference/API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="referenceAPI.html#controlled-variable-object">5.1. Controlled Variable object</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -213,6 +258,8 @@
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
         <script type="text/javascript" src="_static/copybutton.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
 
   

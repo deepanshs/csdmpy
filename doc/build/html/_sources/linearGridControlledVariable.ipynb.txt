@@ -1,0 +1,556 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from MRData import csdfpy\n",
+    "import numpy as np"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "filename = csdfpy.test_file['test01']\n",
+    "testdata1 = csdfpy.open(filename)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "x = testdata1.controlled_variables\n",
+    "y = testdata1.uncontrolled_variables"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Attributes and methods of linearly sampled grid controlled variables "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Accessing the controlled variable coordinates along the $k^\\text{th}$ dimension\n",
+    "syntax\n",
+    "\n",
+    "x[k].coordinate - Returns a quantity object. A quantity object has two attributes: value and unit. The value is a numpy array and the unit is the astropy.unit object."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "quantity array =  [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s\n",
+      "numpy array =  [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]\n",
+      "astropy.unit object =  s\n"
+     ]
+    }
+   ],
+   "source": [
+    "quantity_array = x[0].coordinates\n",
+    "print ('quantity array = ', quantity_array)\n",
+    "\n",
+    "# To access the numpy array object\n",
+    "numpy_array = x[0].coordinates.value\n",
+    "print ('numpy array = ', numpy_array)\n",
+    "\n",
+    "# To access the astropy.unit object\n",
+    "astropy_unit = x[0].coordinates.unit\n",
+    "print ('astropy.unit object = ', astropy_unit)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Attributes of linear grid controlled variable object"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### 1) number_of_points\n",
+    "syntax \n",
+    "\n",
+    "x[k].number_of_points = Integer"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "old number of points =  10\n",
+      "new number of points =  5\n",
+      "new coordinates =  [0.  0.1 0.2 0.3 0.4] s\n"
+     ]
+    }
+   ],
+   "source": [
+    "print ('old number of points = ', x[0].number_of_points)\n",
+    "x[0].number_of_points = 5\n",
+    "print ('new number of points = ', x[0].number_of_points)\n",
+    "print ('new coordinates = ', x[0].coordinates)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### 2) sampling_interval\n",
+    "syntax \n",
+    "\n",
+    "x[k].sampling_interval = \"value object\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "old sampling interval =  0.1 s\n",
+      "new sampling interval =  10.0 s\n",
+      "new coordinates =  [ 0. 10. 20. 30. 40.] s\n"
+     ]
+    }
+   ],
+   "source": [
+    "print ('old sampling interval = ', x[0].sampling_interval)\n",
+    "x[0].sampling_interval = \"10 s\"\n",
+    "print ('new sampling interval = ', x[0].sampling_interval)\n",
+    "print ('new coordinates = ', x[0].coordinates)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### 3) reference_offset\n",
+    "syntax \n",
+    "\n",
+    "x[k].reference_offset = \"value object\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "old reference offset =  0.0 s\n",
+      "new reference offset =  -1.0 s\n",
+      "new coordinates =  [ 1. 11. 21. 31. 41.] s\n"
+     ]
+    }
+   ],
+   "source": [
+    "print ('old reference offset = ', x[0].reference_offset)\n",
+    "x[0].reference_offset = \"-1 s\"\n",
+    "print ('new reference offset = ', x[0].reference_offset)\n",
+    "print ('new coordinates = ', x[0].coordinates)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### 4) origin_offset\n",
+    "syntax \n",
+    "\n",
+    "x[k].origin_offset = \"value object\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "old origin offset =  0.0 s\n",
+      "new origin offset =  1.0 d\n",
+      "new coordinates =  [ 1. 11. 21. 31. 41.] s\n",
+      "absolute coordinates =  [86401. 86411. 86421. 86431. 86441.] s\n"
+     ]
+    }
+   ],
+   "source": [
+    "print ('old origin offset = ', x[0].origin_offset)\n",
+    "x[0].origin_offset = \"1 day\"\n",
+    "print ('new origin offset = ', x[0].origin_offset)\n",
+    "print ('new coordinates = ', x[0].coordinates)\n",
+    "\n",
+    "## The attribure 'coordinates' return the reference variable coordinate. \n",
+    "## Absolute coordinates are accessed by 'absolute_coordinates' attribute\n",
+    "print ('absolute coordinates = ', x[0].absolute_coordinates)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### 5) reverse\n",
+    "syntax \n",
+    "\n",
+    "x[k].reverse = Boolean"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "reverse is True =  [41. 31. 21. 11.  1.] s\n",
+      "reverse is True =  [86441. 86431. 86421. 86411. 86401.] s\n",
+      "reverse is False =  [ 1. 11. 21. 31. 41.] s\n",
+      "reverse is False =  [86401. 86411. 86421. 86431. 86441.] s\n"
+     ]
+    }
+   ],
+   "source": [
+    "x[0].reverse = True\n",
+    "print ('reverse is True = ', x[0].coordinates)\n",
+    "print ('reverse is True = ', x[0].absolute_coordinates)\n",
+    "\n",
+    "x[0].reverse = False\n",
+    "print ('reverse is False = ', x[0].coordinates)\n",
+    "print ('reverse is False = ', x[0].absolute_coordinates)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### 6) label\n",
+    "syntax \n",
+    "\n",
+    "x[k].label = String"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "old label =  time\n",
+      "new label =  t1\n"
+     ]
+    }
+   ],
+   "source": [
+    "print ('old label = ', x[0].label)\n",
+    "x[0].label = 't1'\n",
+    "print ('new label = ', x[0].label)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### 7) period\n",
+    "syntax \n",
+    "\n",
+    "x[k].period = \"Value object\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "old period =  0.0 s\n",
+      "new period =  10.0 s\n"
+     ]
+    }
+   ],
+   "source": [
+    "print ('old period = ', x[0].period)\n",
+    "x[0].period = '10 s'\n",
+    "print ('new period = ', x[0].period)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### 8) fft output order mapping\n",
+    "syntax \n",
+    "\n",
+    "x[k].fft_output_mapping = Boolean"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "old coordinates =  [ 1. 11. 21. 31. 41.] s\n",
+      "new coordinates =  [-19.  -9.   1.  11.  21.] s\n"
+     ]
+    }
+   ],
+   "source": [
+    "print ('old coordinates = ', x[0].coordinates)\n",
+    "x[0].fft_output_order = True\n",
+    "print ('new coordinates = ', x[0].coordinates)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Methods of linearly sampled ontrolled variable object"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### to('unit')\n",
+    "syntax \n",
+    "\n",
+    "x[k].to('valid unit')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "old unit =  s\n",
+      "old coordinates =  [-19.  -9.   1.  11.  21.] s\n",
+      "new unit =  min\n",
+      "new coordinates =  [-0.31666667 -0.15        0.01666667  0.18333333  0.35      ] min\n"
+     ]
+    }
+   ],
+   "source": [
+    "print ('old unit = ', x[0].unit)\n",
+    "print ('old coordinates = ', x[0].coordinates)\n",
+    "x[0].to('min')\n",
+    "print ('new unit = ', x[0].unit)\n",
+    "print ('new coordinates = ', x[0].coordinates)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "old unit =  min\n",
+      "old coordinates =  [-0.31666667 -0.15        0.01666667  0.18333333  0.35      ] min\n"
+     ]
+    },
+    {
+     "ename": "Exception",
+     "evalue": "The unit 'km / s' (speed) is inconsistent with the unit 'min' (time).",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mException\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-14-589aad5e0992>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m \u001b[0;31m## An error will be raised when the dimensionality of the units are different\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 5\u001b[0;31m \u001b[0mx\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m0\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mto\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'km/s'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      6\u001b[0m \u001b[0mprint\u001b[0m \u001b[0;34m(\u001b[0m\u001b[0;34m'new unit = '\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mx\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m0\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0munit\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      7\u001b[0m \u001b[0mprint\u001b[0m \u001b[0;34m(\u001b[0m\u001b[0;34m'new coordinates = '\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mx\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m0\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcoordinates\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m~/Dropbox/NMRgit/MRData/MRData/csdfpy/controlled_variables.py\u001b[0m in \u001b[0;36mto\u001b[0;34m(self, unit)\u001b[0m\n\u001b[1;32m    858\u001b[0m             \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mset_attribute\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'_dimensionless_unit'\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0m_ppm\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    859\u001b[0m         \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 860\u001b[0;31m             \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mset_attribute\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'_unit'\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0m_checkUnitConsistency\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mstringToQuantity\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'1 '\u001b[0m\u001b[0;34m+\u001b[0m\u001b[0munit\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0munit\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0munit\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    861\u001b[0m         \u001b[0;32mreturn\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcoordinates\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    862\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m~/Dropbox/NMRgit/MRData/MRData/csdfpy/_csdmChecks.py\u001b[0m in \u001b[0;36m_checkUnitConsistency\u001b[0;34m(element, unit)\u001b[0m\n\u001b[1;32m    111\u001b[0m         \u001b[0;31m#     raise Exception(e)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    112\u001b[0m         raise Exception(\"The unit '{0}' ({1}) is inconsistent with the unit '{2}' ({3}).\".format(\n\u001b[0;32m--> 113\u001b[0;31m                 str(element.unit), str(element.unit.physical_type), str(unit), unit.physical_type))\n\u001b[0m\u001b[1;32m    114\u001b[0m     \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    115\u001b[0m         \u001b[0;32mreturn\u001b[0m \u001b[0melement\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mException\u001b[0m: The unit 'km / s' (speed) is inconsistent with the unit 'min' (time)."
+     ]
+    }
+   ],
+   "source": [
+    "print ('old unit = ', x[0].unit)\n",
+    "print ('old coordinates = ', x[0].coordinates)\n",
+    "\n",
+    "## An error will be raised when the dimensionality of the units are different \n",
+    "x[0].to('km/s')\n",
+    "print ('new unit = ', x[0].unit)\n",
+    "print ('new coordinates = ', x[0].coordinates)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "  C_CONTIGUOUS : True\n",
+      "  F_CONTIGUOUS : True\n",
+      "  OWNDATA : False\n",
+      "  WRITEABLE : True\n",
+      "  ALIGNED : True\n",
+      "  WRITEBACKIFCOPY : False\n",
+      "  UPDATEIFCOPY : False\n",
+      "[ 0.0000000e+00  5.8778524e-01  9.5105654e-01  9.5105654e-01\n",
+      "  5.8778524e-01  1.2246469e-16 -5.8778524e-01 -9.5105654e-01\n",
+      " -9.5105654e-01 -5.8778524e-01]\n",
+      "[-5.8778524e-01 -9.5105654e-01 -9.5105654e-01 -5.8778524e-01\n",
+      "  1.2246469e-16  5.8778524e-01  9.5105654e-01  9.5105654e-01\n",
+      "  5.8778524e-01  0.0000000e+00]\n",
+      "[ 0.0000000e+00  5.8778524e-01  9.5105654e-01  9.5105654e-01\n",
+      "  5.8778524e-01  1.2246469e-16 -5.8778524e-01 -9.5105654e-01\n",
+      " -9.5105654e-01 -5.8778524e-01]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print (y[0].components[0].flags)\n",
+    "print (y[0].components[0])\n",
+    "y[0].components[0] = y[0].components[0][::-1]\n",
+    "print (testdata1.uncontrolled_variables[0].components[0])\n",
+    "testdata1.uncontrolled_variables[0].components[0] = testdata1.uncontrolled_variables[0].components[0][::-1]\n",
+    "print (testdata1.uncontrolled_variables[0].components[0])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Accessing the reciprocal controlled variable coordinates along the $k^\\text{th}$ dimension\n",
+    "syntax\n",
+    "\n",
+    "x[k].reciprocal_coordinate - Returns a quantity object. A quantity object has two attributes: value and unit. The value is a numpy array and the unit is the astropy.unit object."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "quantity array =  [-0.79577472 -0.63661977 -0.47746483 -0.31830989 -0.15915494  0.\n",
+      "  0.15915494  0.31830989  0.47746483  0.63661977] 1 / s\n",
+      "numpy array =  [-0.79577472 -0.63661977 -0.47746483 -0.31830989 -0.15915494  0.\n",
+      "  0.15915494  0.31830989  0.47746483  0.63661977]\n",
+      "astropy.unit object =  1 / s\n"
+     ]
+    }
+   ],
+   "source": [
+    "quantity_array = x[0].reciprocal_coordinates\n",
+    "print ('quantity array = ', quantity_array)\n",
+    "\n",
+    "# To access the numpy array object\n",
+    "numpy_array = x[0].reciprocal_coordinates.value\n",
+    "print ('numpy array = ', numpy_array)\n",
+    "\n",
+    "# To access the astropy.unit object\n",
+    "astropy_unit = x[0].reciprocal_coordinates.unit\n",
+    "print ('astropy.unit object = ', astropy_unit)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

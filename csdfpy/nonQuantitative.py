@@ -20,23 +20,23 @@ class _nonQuantitativeControlledVariable:
                         _reverse=False, 
                         _label=''):
 
-        self.setAttribute('_sampling_type', _sampling_type)
-        self.setAttribute('_non_quantitative', _non_quantitative)
+        self.set_attribute('_sampling_type', _sampling_type)
+        self.set_attribute('_non_quantitative', _non_quantitative)
 
-        self.setAttribute('_number_of_points', len(_coordinates))
+        self.set_attribute('_number_of_points', len(_coordinates))
 
         ### reverse
         _value = _checkAndAssignBool(_reverse)
-        self.setAttribute('_reverse', _value)
+        self.set_attribute('_reverse', _value)
 
         ## label
-        self.setAttribute('_label', _label)
+        self.set_attribute('_label', _label)
 
         # print (_value)
         _value = np.asarray(_coordinates)
-        self.setAttribute('_coordinates', _value)
+        self.set_attribute('_coordinates', _value)
 
-    def setAttribute(self, name, value):
+    def set_attribute(self, name, value):
         super(_nonQuantitativeControlledVariable, self).__setattr__(name, value)
 
     def __delattr__(self, name):
@@ -47,7 +47,7 @@ class _nonQuantitativeControlledVariable:
         if name in __class__.__slots__:
             raise AttributeError("attribute '{0}' cannot be modified".format(name))
         elif name in __class__.__dict__.keys():
-            return self.setAttribute(name, value)
+            return self.set_attribute(name, value)
         else:
             raise AttributeError("'{0}' object has no attribute '{1}'".format(__class__.__name__, name))
 
@@ -69,7 +69,7 @@ class _nonQuantitativeControlledVariable:
         return self._label
     @label.setter
     def label(self, label=''):
-        self.setAttribute('_label', label)
+        self.set_attribute('_label', label)
     
     @property
     def axis_label(self):
@@ -82,7 +82,7 @@ class _nonQuantitativeControlledVariable:
     @reverse.setter
     def reverse(self, value=False):
         _value = _checkAndAssignBool(value)
-        self.setAttribute('_reverse', _value)
+        self.set_attribute('_reverse', _value)
 
     ## number_of_points
     @property

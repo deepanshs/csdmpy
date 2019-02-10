@@ -1,0 +1,618 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>csdfpy &mdash; csdfpy 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> csdfpy
+          
+
+          
+            
+            <img src="../_static/csdfpy.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../requirement.html">1. The requirements for csdfpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CSDModel.html">2. The core scientific dataset model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Importing_csdfpy.html">3. Importing csdfpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../controlled_variables.html">4. Controlled variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../referenceAPI.html">5. Reference/API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">csdfpy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>csdfpy</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for csdfpy</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">.controlled_variables</span> <span class="k">import</span> <span class="n">_linearlySampledGrid</span> <span class="k">as</span> <span class="n">lsg</span>
+<span class="kn">from</span> <span class="nn">.controlled_variables</span> <span class="k">import</span> <span class="n">_arbitrarilySampledGridDimension</span> <span class="k">as</span> <span class="n">asg</span>
+<span class="kn">from</span> <span class="nn">.nonQuantitative</span> <span class="k">import</span> <span class="n">_nonQuantitativeControlledVariable</span> <span class="k">as</span> <span class="n">nqcv</span>
+<span class="kn">from</span> <span class="nn">.uncontrolledVariables</span> <span class="k">import</span> <span class="n">_unControlledVariable</span> <span class="k">as</span> <span class="n">uv</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">scipy.fftpack</span> <span class="k">import</span> <span class="n">fft</span><span class="p">,</span> <span class="n">fftshift</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<span class="n">script_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<span class="c1"># print (script_path)</span>
+
+<span class="n">test_file</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;test01&quot;</span><span class="p">:</span> <span class="n">script_path</span><span class="o">+</span><span class="s1">&#39;/testFiles/test01.csdf&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;test02&quot;</span><span class="p">:</span> <span class="n">script_path</span><span class="o">+</span><span class="s1">&#39;/testFiles/test02.csdf&#39;</span>
+    <span class="p">}</span>
+
+
+<span class="n">open_py</span> <span class="o">=</span> <span class="nb">open</span>
+
+<span class="k">def</span> <span class="nf">_import_json</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">open_py</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">content</span><span class="p">,</span><span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;UTF-8&quot;</span><span class="p">)))</span>
+
+<span class="sd">&quot;&quot;&quot;A test doc</span>
+
+<span class="sd">.. moduleauthor:: Deepansh J. Srivastava &lt;srivastava.89@osu.edu&gt;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="c1"># print (filename)</span>
+    <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;open&#39; method requires an address to the data file.&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="n">_import_json</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    
+
+    <span class="c1">### Create the CSDModel and populate the attribures</span>
+
+    <span class="n">_version</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;CSDM&#39;</span><span class="p">][</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+
+    <span class="n">csdm</span> <span class="o">=</span> <span class="n">CSDModel</span><span class="p">(</span><span class="n">_version</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+
+    <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;CSDM&#39;</span><span class="p">][</span><span class="s1">&#39;controlled_variables&#39;</span><span class="p">]:</span>
+        <span class="n">csdm</span><span class="o">.</span><span class="n">add_controlled_variable</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">dat</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;CSDM&#39;</span><span class="p">][</span><span class="s1">&#39;uncontrolled_variables&#39;</span><span class="p">]:</span>
+        <span class="n">csdm</span><span class="o">.</span><span class="n">add_uncontrolled_variable</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+    <span class="n">_type</span> <span class="o">=</span> <span class="p">[(</span><span class="n">item</span><span class="o">.</span><span class="n">sampling_type</span> <span class="o">==</span> <span class="s1">&#39;grid&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">csdm</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">_type</span><span class="p">):</span>
+        <span class="n">npts</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">number_of_points</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">csdm</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">]</span>
+        <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">npts</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">csdm</span><span class="o">.</span><span class="n">uncontrolled_variables</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_type</span> <span class="o">=</span> <span class="p">[(</span><span class="n">item</span><span class="o">.</span><span class="n">sampling_type</span> <span class="o">==</span> <span class="s1">&#39;scatter&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">csdm</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">_type</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;controlled_variables can be either be all grid or all scatter type. </span><span class="se">\</span>
+<span class="s2">                            Type mixing is not supported.&quot;</span><span class="p">)</span>
+
+
+    <span class="c1">### Create the augmentation layer model ###</span>
+    
+    <span class="k">return</span> <span class="n">csdm</span>
+
+
+<div class="viewcode-block" id="CSDModel"><a class="viewcode-back" href="../index.html#csdfpy.CSDModel">[docs]</a><span class="k">class</span> <span class="nc">CSDModel</span><span class="p">:</span>
+
+    <span class="n">current_version</span> <span class="o">=</span> <span class="s1">&#39;0.1.0&#39;</span>
+    <span class="n">_old_compatible_versions</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;0.1.0&#39;</span><span class="p">)</span>
+    <span class="n">_old_incompatible_versions</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;1.0.0&#39;</span><span class="p">)</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    The core scientific dataset (CSD) model is designed to be *light-weight*, </span>
+<span class="sd">    *portable*, *versatile*, and *standalone*. The CSD model only encapsulates </span>
+<span class="sd">    data values and minimum metadata, to accurately describe the data coordinates </span>
+<span class="sd">    and coordinates metadata. The model is not intended to encapsulate any </span>
+<span class="sd">    information on how the data might be acquired, processed or visualized. </span>
+<span class="sd">    The data model is versatile in allowing many use cases for any number of </span>
+<span class="sd">    experiments from most spectroscopy, diffraction, and imaging measurements. </span>
+<span class="sd">    As such the CSD model supports datasets associated with continuous physical </span>
+<span class="sd">    quantities that are discretely sampled in a multi-dimensional space associated </span>
+<span class="sd">    with other carefully controlled continuous physical quantities, for e.g., a mass </span>
+<span class="sd">    as a function of temperature, a current as a function of voltage and time, a </span>
+<span class="sd">    signal voltage as a function of magnetic field gradient strength, etc. It also </span>
+<span class="sd">    supports datasets associated with multi-component data values. For example, the </span>
+<span class="sd">    left and right audio components as a function of time, a color image with a red, </span>
+<span class="sd">    green, and blue (RBG) light intensity components as a function of two independent </span>
+<span class="sd">    spatial dimensions, and the six components of the symmetric second-rank diffusion </span>
+<span class="sd">    tensor MRI as a function of three independent spatial dimensions. Additionally, </span>
+<span class="sd">    the CSD model also supports multiple datasets when identically sampled over the </span>
+<span class="sd">    same set of controlled variables. For instance, the current and voltage as a </span>
+<span class="sd">    function of time where current and voltage are two datasets sampled over the </span>
+<span class="sd">    same temporal coordinates. </span>
+
+<span class="sd">    The CSD model is independent of the hardware, operating system, application </span>
+<span class="sd">    software, programming language, and object-oriented file-serialization format </span>
+<span class="sd">    used in writing the CSD model to the file.</span>
+<span class="sd">    The serialized data file is easily human readable and also easily integrable </span>
+<span class="sd">    with any number of programming languages and field related application-software.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span> 
+                 <span class="s1">&#39;controlled_variables&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;uncontrolled_variables&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;version&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;filename&#39;</span><span class="p">,</span>
+                 <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The CSDM object </span>
+
+<span class="sd">        ..function::  __init__(self) </span>
+<span class="sd">        :param filename: A string containing the address to the data file.</span>
+
+<span class="sd">        :attribute: controlled_variables</span>
+<span class="sd">        :attribute: uncontrolled_variables</span>
+<span class="sd">        :attribute: version</span>
+
+<span class="sd">        :returns: A CSDM object.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span> 
+
+        <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">version</span> <span class="o">=</span> <span class="n">CSDModel</span><span class="o">.</span><span class="n">current_version</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="ow">in</span> <span class="n">CSDModel</span><span class="o">.</span><span class="n">_old_incompatible_versions</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Files created with version </span><span class="si">{0}</span><span class="s2"> of the CSD model are no longer supported.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">([</span><span class="n">version</span><span class="p">]))</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">CSDModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s1">&#39;controlled_variables&#39;</span><span class="p">,</span> <span class="p">())</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CSDModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s1">&#39;uncontrolled_variables&#39;</span><span class="p">,</span> <span class="p">())</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CSDModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CSDModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">__delattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__slots__</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;attribute &#39;</span><span class="si">{0}</span><span class="s2">&#39; cannot be deleted.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+
+    <span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__slots__</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;attribute &#39;</span><span class="si">{0}</span><span class="s2">&#39; cannot be modified&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;dimensions&#39; object has no attribute &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+
+
+<span class="c1">### ----------- Public Methods -------------- ###</span>
+
+    <span class="k">def</span> <span class="nf">add_controlled_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sampling_type&#39;</span><span class="p">:</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span>
+                   <span class="s1">&#39;non_quantitative&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                   <span class="s1">&#39;number_of_points&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+                   <span class="s1">&#39;sampling_interval&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+                   <span class="s1">&#39;coordinates&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+                   <span class="s1">&#39;reference_offset&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="s1">&#39;origin_offset&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+                   <span class="s1">&#39;made_dimensionless&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span> 
+                   <span class="s1">&#39;reverse&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;fft_output_order&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span> 
+                   <span class="s1">&#39;period&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+                   <span class="s1">&#39;quantity&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;reciprocal&#39;</span><span class="p">:{</span>
+                        <span class="s1">&#39;sampling_interval&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+                        <span class="s1">&#39;reference_offset&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+                        <span class="s1">&#39;origin_offset&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+                        <span class="s1">&#39;made_dimensionless&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span> 
+                        <span class="s1">&#39;reverse&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span> 
+                        <span class="s1">&#39;period&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="s1">&#39;quantity&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+                        <span class="s1">&#39;label&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">}</span>
+                    <span class="p">}</span>
+        <span class="n">default_keys</span> <span class="o">=</span> <span class="n">default</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">arg</span> <span class="o">!=</span> <span class="p">():</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+                <span class="n">input_dict</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">error_string</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;The arguament must be a dictionary with allowed keywords or keyword arguaments.&#39;</span><span class="p">,</span>
+                                  <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Use keys() method of dimensions object to find the list of allowed keywords&#39;</span><span class="p">])</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">error_string</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">input_dict</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+        <span class="n">input_keys</span> <span class="o">=</span> <span class="n">input_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s1">&#39;reciprocal&#39;</span> <span class="ow">in</span> <span class="n">input_keys</span><span class="p">:</span>
+            <span class="n">input_subkeys</span> <span class="o">=</span> <span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">input_keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">default_keys</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;reciprocal&#39;</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">subkey</span> <span class="ow">in</span> <span class="n">input_subkeys</span><span class="p">:</span>
+                        <span class="n">default</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">subkey</span><span class="p">]</span><span class="o">=</span><span class="n">input_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">subkey</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">default</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">=</span><span class="n">input_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;non_quantitative&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;coordinates&#39; key is required.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">super</span><span class="p">(</span><span class="n">CSDModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s1">&#39;controlled_variables&#39;</span><span class="p">,</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span> <span class="o">+</span> <span class="p">(</span><span class="n">nqcv</span><span class="p">(</span> \
+                        <span class="n">_sampling_type</span>          <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;sampling_type&#39;</span><span class="p">],</span> \
+                        <span class="n">_non_quantitative</span>       <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;non_quantitative&#39;</span><span class="p">],</span> \
+
+                        <span class="n">_coordinates</span>            <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">],</span> \
+                        <span class="n">_reverse</span>                <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reverse&#39;</span><span class="p">],</span> \
+                        <span class="n">_label</span>                  <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="p">),</span> <span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;non_quantitative&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;number_of_points&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> \
+                    <span class="n">default</span><span class="p">[</span><span class="s1">&#39;sampling_interval&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> \
+                    <span class="n">default</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;either &#39;number_of_points/sampling_interval&#39; or &#39;coordinates&#39; key is required.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;non_quantitative&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">CSDModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s1">&#39;controlled_variables&#39;</span><span class="p">,</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span> <span class="o">+</span> <span class="p">(</span><span class="n">asg</span><span class="p">(</span> \
+                        <span class="n">_sampling_type</span>          <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;sampling_type&#39;</span><span class="p">],</span> \
+                        <span class="n">_non_quantitative</span>       <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;non_quantitative&#39;</span><span class="p">],</span> \
+
+                        <span class="n">_coordinates</span>            <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">],</span> \
+                        <span class="n">_reference_offset</span>       <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reference_offset&#39;</span><span class="p">],</span>  \
+                        <span class="n">_origin_offset</span>          <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;origin_offset&#39;</span><span class="p">],</span> \
+                        <span class="n">_quantity</span>               <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;quantity&#39;</span><span class="p">],</span> \
+                        <span class="n">_reverse</span>                <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reverse&#39;</span><span class="p">],</span> \
+                        <span class="n">_label</span>                  <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span> \
+                        <span class="n">_period</span>                 <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;period&#39;</span><span class="p">],</span> \
+                        <span class="n">_made_dimensionless</span>     <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;made_dimensionless&#39;</span><span class="p">],</span> \
+
+                        <span class="n">_reciprocal_reference_offset</span>    <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;reference_offset&#39;</span><span class="p">],</span> 
+                        <span class="n">_reciprocal_origin_offset</span>       <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;origin_offset&#39;</span><span class="p">],</span>
+                        <span class="n">_reciprocal_quantity</span>            <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;quantity&#39;</span><span class="p">],</span>
+                        <span class="n">_reciprocal_reverse</span>             <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;reverse&#39;</span><span class="p">],</span>
+                        <span class="n">_reciprocal_period</span>              <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;period&#39;</span><span class="p">],</span>
+                        <span class="n">_reciprocal_label</span>               <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">],</span>
+                        <span class="n">_reciprocal_made_dimensionless</span>  <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;made_dimensionless&#39;</span><span class="p">]),</span> <span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;non_quantitative&#39;</span><span class="p">]</span> <span class="ow">and</span> \
+                <span class="n">default</span><span class="p">[</span><span class="s1">&#39;number_of_points&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
+                <span class="n">default</span><span class="p">[</span><span class="s1">&#39;sampling_interval&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">CSDModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s1">&#39;controlled_variables&#39;</span><span class="p">,</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span> <span class="o">+</span> <span class="p">(</span><span class="n">lsg</span><span class="p">(</span>
+                        <span class="n">_sampling_type</span>          <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;sampling_type&#39;</span><span class="p">],</span> \
+                        <span class="n">_non_quantitative</span>       <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;non_quantitative&#39;</span><span class="p">],</span> \
+
+                        <span class="n">_number_of_points</span>       <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;number_of_points&#39;</span><span class="p">],</span> 
+                        <span class="n">_sampling_interval</span>      <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;sampling_interval&#39;</span><span class="p">],</span> 
+                        <span class="n">_reference_offset</span>       <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reference_offset&#39;</span><span class="p">],</span> 
+                        <span class="n">_origin_offset</span>          <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;origin_offset&#39;</span><span class="p">],</span> 
+                        <span class="n">_quantity</span>               <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;quantity&#39;</span><span class="p">],</span> 
+                        <span class="n">_reverse</span>                <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reverse&#39;</span><span class="p">],</span> 
+                        <span class="n">_label</span>                  <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span>
+                        <span class="n">_period</span>                 <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;period&#39;</span><span class="p">],</span> 
+                        <span class="n">_fft_output_order</span>       <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;fft_output_order&#39;</span><span class="p">],</span> 
+                        <span class="n">_made_dimensionless</span>     <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;made_dimensionless&#39;</span><span class="p">],</span>
+
+                        <span class="n">_reciprocal_sampling_interval</span>   <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;sampling_interval&#39;</span><span class="p">],</span>
+                        <span class="n">_reciprocal_reference_offset</span>    <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;reference_offset&#39;</span><span class="p">],</span> 
+                        <span class="n">_reciprocal_origin_offset</span>       <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;origin_offset&#39;</span><span class="p">],</span>
+                        <span class="n">_reciprocal_quantity</span>            <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;quantity&#39;</span><span class="p">],</span>
+                        <span class="n">_reciprocal_reverse</span>             <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;reverse&#39;</span><span class="p">],</span>
+                        <span class="n">_reciprocal_period</span>              <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;period&#39;</span><span class="p">],</span>
+                        <span class="n">_reciprocal_label</span>               <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">],</span>
+                        <span class="n">_reciprocal_made_dimensionless</span>  <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;reciprocal&#39;</span><span class="p">][</span><span class="s1">&#39;made_dimensionless&#39;</span><span class="p">]),</span> <span class="p">))</span>
+
+
+
+    <span class="k">def</span> <span class="nf">add_uncontrolled_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;unit&#39;</span> <span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;quantity&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="s1">&#39;component_labels&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="s1">&#39;encoding&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="s1">&#39;numeric_type&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="s1">&#39;dataset_type&#39;</span><span class="p">:</span> <span class="s1">&#39;scalar&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;components&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="s1">&#39;components_URI&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="s1">&#39;sampling_schedule&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+
+        <span class="n">default_keys</span> <span class="o">=</span> <span class="n">default</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">arg</span> <span class="o">!=</span> <span class="p">():</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+                <span class="n">input_dict</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">):</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">error_string</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;This method only accept keyword arguaments or a dictionary with keywords.&#39;</span><span class="p">,</span>
+                                  <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Use keys() method of dimensions object to find the list of allowed keywords&#39;</span><span class="p">])</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">error_string</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">input_dict</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+        <span class="n">input_keys</span> <span class="o">=</span> <span class="n">input_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">input_keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">default_keys</span><span class="p">:</span>
+                <span class="n">default</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">=</span><span class="n">input_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="c1"># if default[&#39;coordinates&#39;] is None and default[&#39;sampling_interval&#39;] is None:</span>
+        <span class="c1">#     raise Exception(&quot;The method either requires input &#39;{0}&#39; or &#39;{1}&#39;.&quot;.format(&#39;sampling_interval&#39;, &#39;coordinate&#39;))</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">CSDModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s1">&#39;uncontrolled_variables&#39;</span><span class="p">,</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">uncontrolled_variables</span> <span class="o">+</span> <span class="p">(</span><span class="n">uv</span><span class="p">(</span>
+                                <span class="n">_name</span> <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                                <span class="n">_unit</span> <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">],</span>
+                                <span class="n">_quantity</span> <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;quantity&#39;</span><span class="p">],</span> 
+                                <span class="n">_encoding</span> <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;encoding&#39;</span><span class="p">],</span>
+                                <span class="n">_numeric_type</span> <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;numeric_type&#39;</span><span class="p">],</span>
+                                <span class="n">_dataset_type</span> <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;dataset_type&#39;</span><span class="p">],</span>
+                                <span class="n">_component_labels</span> <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;component_labels&#39;</span><span class="p">],</span>
+                                <span class="n">_components</span> <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;components&#39;</span><span class="p">],</span>
+                                <span class="n">_components_URI</span> <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;components_URI&#39;</span><span class="p">],</span> 
+                                <span class="n">_sampling_schedule</span> <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="s1">&#39;sampling_schedule&#39;</span><span class="p">],</span>
+                                <span class="n">_filename</span> <span class="o">=</span> <span class="n">filename</span><span class="p">),</span> <span class="p">)</span> <span class="p">)</span>
+
+
+    <span class="c1"># def datum(self, index):</span>
+    <span class="c1">#     for i in range(len(self.uncontrolled_variables[0])):</span>
+    <span class="c1">#         (self.uncontrolled_variables[0].components[index])</span>
+
+
+
+    <span class="k">def</span> <span class="nf">_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span><span class="p">[</span><span class="s1">&#39;sampling_type&#39;</span><span class="p">,</span>\
+            <span class="s1">&#39;non_quantitative&#39;</span><span class="p">,</span>\
+            <span class="s1">&#39;number_of_points&#39;</span><span class="p">,</span>\
+            <span class="s1">&#39;sampling_interval&#39;</span><span class="p">,</span> \
+            <span class="s1">&#39;reference_offset&#39;</span><span class="p">,</span> \
+            <span class="s1">&#39;origin_offset&#39;</span><span class="p">,</span> \
+            <span class="s1">&#39;made_dimensionless&#39;</span><span class="p">,</span> \
+            <span class="s1">&#39;reverse&#39;</span><span class="p">,</span> \
+            <span class="s1">&#39;quantity&#39;</span><span class="p">,</span> \
+            <span class="s1">&#39;label&#39;</span><span class="p">,</span> \
+            <span class="s1">&#39;ftFlag&#39;</span><span class="p">,</span> \
+            <span class="s1">&#39;period&#39;</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">)):</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">info</span><span class="p">())</span>
+        <span class="n">pack</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;dimension &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">))]</span>
+        <span class="k">return</span> <span class="n">pack</span>
+
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_python_dictonary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">print_function</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+
+
+    <span class="k">def</span> <span class="nf">_get_python_dictonary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">print_function</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">current_version</span><span class="p">):</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">dictionary</span><span class="p">[</span><span class="s2">&quot;uncontrolled_variables&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dictionary</span><span class="p">[</span><span class="s2">&quot;controlled_variables&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dictionary</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">)):</span>
+            <span class="n">dictionary</span><span class="p">[</span><span class="s2">&quot;controlled_variables&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">_get_python_dictonary</span><span class="p">())</span>
+        
+        <span class="n">_length_of_uncontrolled_variables</span> <span class="o">=</span>  <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uncontrolled_variables</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_length_of_uncontrolled_variables</span><span class="p">):</span>
+            <span class="n">dictionary</span><span class="p">[</span><span class="s2">&quot;uncontrolled_variables&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">uncontrolled_variables</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">_get_python_dictonary</span><span class="p">(</span>
+                                <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="p">,</span>
+                                <span class="n">dataset_index</span> <span class="o">=</span> <span class="n">i</span><span class="p">,</span> 
+                                <span class="n">number_of_components</span> <span class="o">=</span> <span class="n">_length_of_uncontrolled_variables</span><span class="p">,</span> 
+                                <span class="n">for_display</span> <span class="o">=</span> <span class="n">print_function</span><span class="p">,</span> 
+                                <span class="n">version</span> <span class="o">=</span> <span class="n">version</span><span class="p">))</span>
+        <span class="n">csdm</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">csdm</span><span class="p">[</span><span class="s1">&#39;CSDM&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dictionary</span>
+        <span class="k">return</span> <span class="n">csdm</span>
+
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">current_version</span><span class="p">):</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_python_dictonary</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">open_py</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">fft</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">[</span><span class="n">dimension</span><span class="p">]</span><span class="o">.</span><span class="n">non_quantitative</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Non-quantitative dimensions cannot be Fourier transformed.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">[</span><span class="n">dimension</span><span class="p">]</span><span class="o">.</span><span class="n">_type</span> <span class="o">==</span> <span class="s1">&#39;non-linear&#39;</span> <span class="ow">or</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">[</span><span class="n">dimension</span><span class="p">]</span><span class="o">.</span><span class="n">sampling_type</span> <span class="o">==</span> <span class="s1">&#39;scatter&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Fourier transform of non-linear or scattered dimensions is not yet implemented.&#39;</span><span class="p">)</span>
+
+
+        <span class="n">cs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">[</span><span class="n">dimension</span><span class="p">]</span><span class="o">.</span><span class="n">reciprocal_coordinates</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">[</span><span class="n">dimension</span><span class="p">]</span><span class="o">.</span><span class="n">reciprocal_reference_offset</span>
+        <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">[</span><span class="n">dimension</span><span class="p">]</span><span class="o">.</span><span class="n">reference_offset</span> <span class="o">*</span> <span class="n">cs</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uncontrolled_variables</span><span class="p">)):</span>
+            <span class="n">signal_ft</span> <span class="o">=</span> <span class="n">fftshift</span><span class="p">(</span><span class="n">fft</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uncontrolled_variables</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">components</span><span class="p">,</span> \
+                                    <span class="n">axis</span><span class="o">=-</span><span class="n">dimension</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">axes</span><span class="o">=-</span><span class="n">dimension</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">phase</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">uncontrolled_variables</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_attribute</span><span class="p">(</span><span class="s1">&#39;_components&#39;</span><span class="p">,</span> <span class="n">signal_ft</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">controlled_variables</span><span class="p">[</span><span class="n">dimension</span><span class="p">]</span><span class="o">.</span><span class="n">_reciprocal</span><span class="p">()</span></div>
+        
+
+        
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Deepansh J. Srivastava
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script type="text/javascript" src="../_static/copybutton.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

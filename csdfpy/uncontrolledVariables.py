@@ -88,19 +88,19 @@ class _unControlledVariable:
         # if _components != None and _encoding is None: _encoding = 'none'
         # elif _components_URI != None and _encoding is None: _encoding = 'raw'
 
-        self.setAttribute('_encoding', _checkEncoding(_encoding))
+        self.set_attribute('_encoding', _checkEncoding(_encoding))
         _va = _assignAndCheckUnitConsistency(_unit, None)
-        self.setAttribute('_unit', _va.unit)
-        self.setAttribute('_name', str(_name))
-        self.setAttribute('_quantity', _checkQuantity(_quantity, self.unit))
+        self.set_attribute('_unit', _va.unit)
+        self.set_attribute('_name', str(_name))
+        self.set_attribute('_quantity', _checkQuantity(_quantity, self.unit))
 
         _va, npType = _checkNumericType(_numeric_type)
-        self.setAttribute('_numeric_type', _va)
-        self.setAttribute('_npType', npType)
+        self.set_attribute('_numeric_type', _va)
+        self.set_attribute('_npType', npType)
 
         _va, total_components = _checkDatasetType(_dataset_type)
-        self.setAttribute('_dataset_type', _va)        
-        self.setAttribute('_channels', total_components)
+        self.set_attribute('_dataset_type', _va)        
+        self.set_attribute('_channels', total_components)
         
 
         if _components is not None:
@@ -112,32 +112,32 @@ class _unControlledVariable:
             _components = self._decodeComponents(_components)
 
         if _component_labels is None:
-            self.setAttribute('_component_labels', ['' for i in range(total_components)])
+            self.set_attribute('_component_labels', ['' for i in range(total_components)])
         elif len(_component_labels) != total_components:
             warnings.warn('number of component labels, {0}, is not equal to the number of components, {1}. Inconsistency is resolved by appropriate truncation or entry string padding.'.format(len(_component_labels), total_components))
             _lables = ['' for i in range(total_components)]
             for i in range(len(_component_labels)):
                 _lables[i] = _component_labels[i]
         else:
-            self.setAttribute('_component_labels', _component_labels)
+            self.set_attribute('_component_labels', _component_labels)
 
         
 
         # _components = np.asarray(_components, dtype=npType).swapaxes(0,-1)
-        self.setAttribute('_components', _components)
-        self.setAttribute('_components_URI', _components_URI)
+        self.set_attribute('_components', _components)
+        self.set_attribute('_components_URI', _components_URI)
 
-        self.setAttribute('_sampling_schedule', _sampling_schedule)
+        self.set_attribute('_sampling_schedule', _sampling_schedule)
 
 
-    def setAttribute(self, name, value):
+    def set_attribute(self, name, value):
         super(_unControlledVariable, self).__setattr__(name, value)
 
     def __setattr__(self, name, value):
         if name in __class__.__slots__:
             raise AttributeError("attribute '{0}' cannot be modified".format(name))
         elif name in __class__.__dict__.keys():
-            return self.setAttribute(name, value)
+            return self.set_attribute(name, value)
         else:
             raise AttributeError("'{0}' object has no attribute '{1}'".format(__class__.__name__, name))
 
@@ -155,6 +155,7 @@ class _unControlledVariable:
             self._checkNumberOfComponentsAndEncodingKey(_val_len)
             _components = np.asarray([np.fromstring(base64.b64decode(item), \
                             dtype=self._npType) for item in _components])
+            _components.setflags(write=1)
             return _components
 
         if self.encoding == 'none':
@@ -165,12 +166,14 @@ class _unControlledVariable:
             else:
                 _components = np.asarray([np.asarray(item) \
                             for item in _components])
+            _components.setflags(write=1)
             return _components
         
         if self.encoding == 'raw':
             _components = np.frombuffer(_components, dtype=self._npType)
             _components = _components.reshape(self._channels, \
                                 int(_components.size/self._channels))
+            _components.setflags(write=1)
             return _components
 
         raise Exception("'{0}' is an invalid data 'encoding'.".format(self.encoding))
@@ -182,7 +185,7 @@ class _unControlledVariable:
         return self._name
     @name.setter
     def name(self, value):
-        self.setAttribute('_name', value)
+        self.set_attribute('_name', value)
     
     @property
     def unit(self):
@@ -190,7 +193,7 @@ class _unControlledVariable:
     @unit.setter
     def unit(self, value):
         _va = _assignAndCheckUnitConsistency(value, None)
-        self.setAttribute('_unit', _va)
+        self.set_attribute('_unit', _va)
         self.quantity = _va.unit.physical_type
 
     @property
@@ -203,7 +206,7 @@ class _unControlledVariable:
     @encoding.setter
     def encoding(self, value):
         value = _checkEncoding(value)
-        self.setAttribute('_encoding', value)
+        self.set_attribute('_encoding', value)
     
     @property
     def numeric_type(self):
@@ -211,9 +214,9 @@ class _unControlledVariable:
     @numeric_type.setter
     def numeric_type(self, value):
         _va, npType = _checkNumericType(value)
-        self.setAttribute('_numeric_type', value)
-        self.setAttribute('_npType', npType)
-        self.setAttribute('_components', \
+        self.set_attribute('_numeric_type', value)
+        self.set_attribute('_npType', npType)
+        self.set_attribute('_components', \
                 np.asarray(self.components, dtype=npType))*self.unit
 
     @property
@@ -222,14 +225,14 @@ class _unControlledVariable:
     @dataset_type.setter
     def dataset_type(self, value):
         value = _checkDatasetType(value)
-        self.setAttribute('_dataset_type', value)
+        self.set_attribute('_dataset_type', value)
 
     @property
     def component_labels(self):
         return self._component_labels
     @component_labels.setter
     def component_labels(self, value):
-        self.setAttribute('_label', value)
+        self.set_attribute('_label', value)
 
     @property
     def components(self):
@@ -376,17 +379,17 @@ class _unControlledVariable:
 
     def scale(self, value):
         value = _assignAndCheckUnitConsistency(value, None)
-        self.setAttribute('_unit', self._unit*value.unit)
+        self.set_attribute('_unit', self._unit*value.unit)
         value = self._unit*value.value
-        self.setAttribute('_components',self.components*value)
+        self.set_attribute('_components',self.components*value)
 
     def to(self, unit):
         factor = self.unit.to(unit)
-        self.setAttribute('_components', self.components*factor)
-        self.setAttribute('_unit', unit)
+        self.set_attribute('_components', self.components*factor)
+        self.set_attribute('_unit', unit)
 
     def reshape(self, shape):
         shape = (self._channels,) + tuple(shape)
         nptype = self._npType
-        self.setAttribute('_components', \
+        self.set_attribute('_components', \
             np.asarray(self.components.reshape(shape), dtype=nptype))

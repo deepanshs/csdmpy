@@ -1,6 +1,6 @@
------------------
+=================
 Importing csdfpy 
------------------
+=================
 
 We have put together a set of guidelines for importing ``csdfpy`` module and related functionality.
 We encourage the users to follow these guidelines to promote consistency amongst other users. 
@@ -15,6 +15,12 @@ In the following example, we use a sample test file. ::
     >>> testdata1 = csdfpy.open(filename) # doctest: +SKIP
 
 Here, ``testdata1`` is an instance of the ``CSDModel`` class. 
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Accessing controlled and uncontrolled variables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 To access the uncontrolled and uncontrolled variables, use the ``uncontrolled_variables`` 
 and the ``controlled_variables`` attributes of the ``testdata1`` instance, ::
 
@@ -44,8 +50,8 @@ variable coordinates are ::
     The ``csdfpy`` module uses the units library from the astropy module to handle 
     the physical quantities.
     The value and the unit of the physical quantity are accessed through the 
-    Quantity instance, using the ``value`` and the ``unit`` attributes. The 
-    ``value`` attributes returns a 
+    Quantity instance, using the ``value`` and the ``unit`` attributes. In ``csdfpy``,
+    the ``value`` attribute is always a 
     `numpy array <https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.ndarray.html>`_.
 
 
@@ -64,11 +70,36 @@ of the uncontrolled variable object. This returns a numpy array. ::
     where M is the number of controlled variables.
 
 
-In the above example, there is only one controlled variable object. The shape of ``y``
-is ::
+In the above example, there is only one controlled variable object, therefore
+``y[0].components`` holds a two dimensional array of shape ::
 
     >>> print (y[0].components.shape)  # doctest: +SKIP
     (1, 10)
 
-where the first element of the shape tuple, ``(1,10)``, is the number of components of 
+The first element of the shape tuple, ``(1,10)``, is the number of components of 
 the uncontrolled variable. In this case, the number of components is one.
+
+
+^^^^^^^^^^^^^^^^^
+Plotting the data
+^^^^^^^^^^^^^^^^^
+
+We show the plot using python's Matplotlib library, however, the users may 
+use their favorite plotting library.  :: 
+
+    >>> import matplotlib.pyplot as plt
+    >>> plt.plot(x[0].coordinates, y[0].components[0])
+    >>> plt.xlabel(x[0].label)
+    >>> plt.ylabel(y[0].component_labels[0])
+    >>> plt.title(y[0].name)
+    >>> plt.show()
+
+.. image:: /resource/test.pdf
+
+
+^^^^^^^^
+See also
+^^^^^^^^
+
+* controlled_variables
+* uncontrolled_variables

@@ -23,12 +23,12 @@ curr_dir = os.path.abspath(os.path.dirname(__file__))
 path_to_static = os.path.join(curr_dir, '_build', 'html', '_static')
 # -- Project information -----------------------------------------------------
 
-project = ''
+project = 'csdfpy'
 copyright = '2019, Deepansh J. Srivastava'
 author = 'Deepansh J. Srivastava'
 
 # The short X.Y version
-version = ''
+version = '0.1'
 # The full version, including alpha/beta/rc tags
 release = '0.1.0'
 
@@ -49,6 +49,7 @@ extensions = [
     'IPython.sphinxext.ipython_console_highlighting',
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
+    'sphinx.ext.graphviz',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
@@ -57,6 +58,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.inheritance_diagram',
+    'nbsphinx',
     # 'rinoh.frontend.sphinx',
 ]
 
@@ -82,7 +84,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+exclude_patterns = ['_build', '**.ipynb_checkpoints']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = None

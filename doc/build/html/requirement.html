@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1. The requirements for csdfpy &mdash;  0.1.0 documentation</title>
+  <title>1. The requirements for csdfpy &mdash; csdfpy 0.1.0 documentation</title>
   
 
   
@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="2. Importing csdfpy" href="CSDMObject.html" />
+    <link rel="next" title="2. The core scientific dataset model" href="CSDModel.html" />
     <link rel="prev" title="Welcome to csdfpy’s documentation!" href="index.html" /> 
 
   
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> 
+            <a href="index.html" class="icon icon-home"> csdfpy
           
 
           
@@ -60,6 +60,10 @@
 
           
             
+            
+              <div class="version">
+                0.1
+              </div>
             
           
 
@@ -85,7 +89,10 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">1. The requirements for csdfpy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CSDMObject.html">2. Importing csdfpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CSDModel.html">2. The core scientific dataset model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importing_csdfpy.html">3. Importing csdfpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="controlled_variables.html">4. Controlled variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="referenceAPI.html">5. Reference/API</a></li>
 </ul>
 
             
@@ -100,7 +107,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html"></a>
+          <a href="index.html">csdfpy</a>
         
       </nav>
 
@@ -150,7 +157,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="the-requirements-for-csdfpy">
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="the-requirements-for-csdfpy">
 <h1>1. The requirements for csdfpy<a class="headerlink" href="#the-requirements-for-csdfpy" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li>Python</li>
@@ -168,7 +199,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="CSDMObject.html" class="btn btn-neutral float-right" title="2. Importing csdfpy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="CSDModel.html" class="btn btn-neutral float-right" title="2. The core scientific dataset model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral" title="Welcome to csdfpy’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -207,6 +238,8 @@
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
         <script type="text/javascript" src="_static/copybutton.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
 
   

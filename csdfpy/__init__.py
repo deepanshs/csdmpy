@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 from .controlled_variables import _linearlySampledGrid as lsg
-from .nonLinearQuantitative import _nonLinearQuantitativeControlledVariable as nlqcv
+from .controlled_variables import _arbitrarilySampledGridDimension as asg
 from .nonQuantitative import _nonQuantitativeControlledVariable as nqcv
 from .uncontrolledVariables import _unControlledVariable as uv
 import numpy as np
@@ -13,7 +13,8 @@ script_path = os.path.dirname(os.path.abspath(__file__))
 # print (script_path)
 
 test_file = {
-    "test01": script_path+'/testFiles/test01.csdf'
+    "test01": script_path+'/testFiles/test01.csdf',
+    "test02": script_path+'/testFiles/test02.csdf'
     }
 
 
@@ -222,7 +223,7 @@ class CSDModel:
 
         if not default['non_quantitative'] and default['coordinates'] is not None:
             super(CSDModel, self).__setattr__('controlled_variables', \
-                    self.controlled_variables + (nlqcv( \
+                    self.controlled_variables + (asg( \
                         _sampling_type          = default['sampling_type'], \
                         _non_quantitative       = default['non_quantitative'], \
 
@@ -380,7 +381,7 @@ class CSDModel:
 
     def save(self, filename, version=current_version):
         dictionary = self._get_python_dictonary(filename, version=version)
-        with open(filename, 'w') as outfile:
+        with open_py(filename, 'w') as outfile:
             json.dump(dictionary, outfile, sort_keys=False, indent=2)
 
 
@@ -399,7 +400,7 @@ class CSDModel:
         for i in range(len(self.uncontrolled_variables)):
             signal_ft = fftshift(fft(self.uncontrolled_variables[i].components, \
                                     axis=-dimension-1), axes=-dimension-1)*phase
-            self.uncontrolled_variables[i].setAttribute('_components', signal_ft)
+            self.uncontrolled_variables[i].set_attribute('_components', signal_ft)
         self.controlled_variables[dimension]._reciprocal()
         
 
