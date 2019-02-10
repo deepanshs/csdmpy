@@ -92,7 +92,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">2. The core scientific dataset model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Importing_csdfpy.html">3. Importing csdfpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="controlled_variables.html">4. Controlled variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="referenceAPI.html">5. Reference/API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="referenceAPI.html">5. Reference/API documentation</a></li>
 </ul>
 
             
@@ -144,7 +144,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/CSDModel.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/CSDModel.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -183,8 +183,36 @@
 </style>
 <div class="section" id="the-core-scientific-dataset-model">
 <h1>2. The core scientific dataset model<a class="headerlink" href="#the-core-scientific-dataset-model" title="Permalink to this headline">¶</a></h1>
-<div class="graphviz"><img src="_images/inheritance-1e2f4c2283039b0730b16e4f6543fffc0b73568f.png" alt="Inheritance diagram of csdfpy" class="inheritance graphviz" /></div>
-</div>
+<p>The core scientific dataset (CSD) model is a <em>light-weight</em>,
+<em>portable</em>, <em>versatile</em>, and <em>standalone</em> data model. The CSD model only encapsulates
+data values and minimum metadata, to accurately describe the data coordinates
+and coordinates metadata. The model is not intended to encapsulate any
+information on how the data might be acquired, processed or visualized.
+The data model is versatile in allowing many use cases for any number of
+experiments from most spectroscopy, diffraction, and imaging measurements.
+As such the CSD model supports datasets associated with continuous physical
+quantities that are discretely sampled in a multi-dimensional space associated
+with other carefully controlled continuous physical quantities, for e.g., a mass
+as a function of temperature, a current as a function of voltage and time, a
+signal voltage as a function of magnetic field gradient strength, etc. It also
+supports datasets associated with multi-component data values. For example, the
+left and right audio components as a function of time, a color image with a red,
+green, and blue (RBG) light intensity components as a function of two independent
+spatial dimensions, and the six components of the symmetric second-rank diffusion
+tensor MRI as a function of three independent spatial dimensions. Additionally,
+the CSD model also supports multiple datasets when identically sampled over the
+same set of controlled variables. For instance, the current and voltage as a
+function of time where current and voltage are two datasets sampled over the
+same temporal coordinates.</p>
+<p>The CSD model is independent of the hardware, operating system, application
+software, programming language, and object-oriented file-serialization format
+used in writing the CSD model to the file.
+The serialized data file is easily human readable and also easily integrable
+with any number of programming languages and field related application-software.</p>
+<div class="graphviz"><img src="_images/inheritance-b07d969046f7a7c699232b3540159c7c1fcd9d72.png" alt="Inheritance diagram of csdfpy" usemap="#inheritance8cc0067523" class="inheritance graphviz" /></div>
+<map id="inheritance8cc0067523" name="inheritance8cc0067523">
+<area shape="rect" id="node1" href="api/csdfpy.CSDModel.html#csdfpy.CSDModel" target="_top" title="csdfpy.CSDModel" alt="" coords="5,5,132,29"/>
+</map></div>
 
 
            </div>

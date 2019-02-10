@@ -2,24 +2,111 @@ from __future__ import print_function, division
 import numpy as np
 import json
 from scipy.fftpack import fftshift
-from .unit import valueObjectFormat, unitToLatex, _ppm
-from ._csdmChecks import (_assignAndCheckUnitConsistency, 
-                      _checkUnitConsistency,
-                      _checkAndAssignBool,
-                      _checkQuantity,
-                      _checkValueObject,
-                      _defaultUnits,
-                      stringToQuantity,
+from .unit import valueObjectFormat, unitToLatex, _ppm, string_to_quantity
+from ._csdmChecks import (_assign_and_check_unit_consistency, 
+                      _check_unit_consistency,
+                      _check_and_assign_bool,
+                      _check_quantity,
+                      _check_value_object,
+                    #   _default_units,
                       _axis_label)
 
+# class gcvObject:
+#     def __init__(self, dictionary):
 
-class _linearlySampledGrid:
+
+
+#     def assign_correct_gcv_object(self, dictionary)
+#         if dictionary['non_quantitative']:
+#             if dictionary['coordinates'] is None:
+#                 raise Exception("'coordinates' key is required.")
+#             else:
+#                 return _nonQuantitativeGridDimension( \
+#                         _sampling_type          = dictionary['sampling_type'], \
+#                         _non_quantitative       = dictionary['non_quantitative'], \
+
+#                         _coordinates            = dictionary['coordinates'], \
+#                         _reverse                = dictionary['reverse'], \
+#                         _label                  = dictionary['label'] )
+
+#         if not dictionary['non_quantitative']:
+#             if dictionary['number_of_points'] is None and \
+#                     dictionary['sampling_interval'] is None and \
+#                     dictionary['coordinates'] is None:
+#                 raise Exception("either 'number_of_points/sampling_interval' or 'coordinates' key is required.")
+
+#         if not dictionary['non_quantitative'] and dictionary['coordinates'] is not None:
+#             return _arbitrarilySampledGridDimension( \
+#                     _sampling_type          = dictionary['sampling_type'], \
+#                     _non_quantitative       = dictionary['non_quantitative'], \
+
+#                     _coordinates            = dictionary['coordinates'], \
+#                     _reference_offset       = dictionary['reference_offset'],  \
+#                     _origin_offset          = dictionary['origin_offset'], \
+#                     _quantity               = dictionary['quantity'], \
+#                     _reverse                = dictionary['reverse'], \
+#                     _label                  = dictionary['label'], \
+#                     _period                 = dictionary['period'], \
+#                     _made_dimensionless     = dictionary['made_dimensionless'], \
+
+#                     _reciprocal_reference_offset    = dictionary['reciprocal']['reference_offset'], 
+#                     _reciprocal_origin_offset       = dictionary['reciprocal']['origin_offset'],
+#                     _reciprocal_quantity            = dictionary['reciprocal']['quantity'],
+#                     _reciprocal_reverse             = dictionary['reciprocal']['reverse'],
+#                     _reciprocal_period              = dictionary['reciprocal']['period'],
+#                     _reciprocal_label               = dictionary['reciprocal']['label'],
+#                     _reciprocal_made_dimensionless  = dictionary['reciprocal']['made_dimensionless'])
+
+#         if not dictionary['non_quantitative'] and \
+#                 dictionary['number_of_points'] is not None and \
+#                 dictionary['sampling_interval'] is not None:
+#             return _linearlySampledGridDimension(
+#                 _sampling_type          = dictionary['sampling_type'], \
+#                 _non_quantitative       = dictionary['non_quantitative'], \
+
+#                 _number_of_points       = dictionary['number_of_points'], 
+#                 _sampling_interval      = dictionary['sampling_interval'], 
+#                 _reference_offset       = dictionary['reference_offset'], 
+#                 _origin_offset          = dictionary['origin_offset'], 
+#                 _quantity               = dictionary['quantity'], 
+#                 _reverse                = dictionary['reverse'], 
+#                 _label                  = dictionary['label'],
+#                 _period                 = dictionary['period'], 
+#                 _fft_output_order       = dictionary['fft_output_order'], 
+#                 _made_dimensionless     = dictionary['made_dimensionless'],
+
+#                 _reciprocal_sampling_interval   = dictionary['reciprocal']['sampling_interval'],
+#                 _reciprocal_reference_offset    = dictionary['reciprocal']['reference_offset'], 
+#                 _reciprocal_origin_offset       = dictionary['reciprocal']['origin_offset'],
+#                 _reciprocal_quantity            = dictionary['reciprocal']['quantity'],
+#                 _reciprocal_reverse             = dictionary['reciprocal']['reverse'],
+#                 _reciprocal_period              = dictionary['reciprocal']['period'],
+#                 _reciprocal_label               = dictionary['reciprocal']['label'],
+#                 _reciprocal_made_dimensionless  = dictionary['reciprocal']['made_dimensionless'])
+
+
+
+class _linearlySampledGridDimension:
 
     """
-    This class creates a quantitative linearly sampled grid dimension.  
-    This class should not be used directly. Instead, 
-    use the instance of the ``CSDModel`` to access the features of this
-    class. See example ref???
+    .. warning :: 
+        This class should not be used directly. Instead, 
+        use the ``CSDModel`` object to access the attributes
+        and methods of this class. See example ref???
+        
+    The class returns an object which represents a controlled variable.
+    The corresponding dimension is quantitative and sampled linearly. 
+    Given the sampling interval as `m_k`, number of points as `N_k`,
+    reference offset as `c_k` and the origin offset as `o_k` for the
+    `k^{th}` dimension, the coordinates along this dimension is
+
+    .. math ::
+        x_k^{ref} = [m_k j ]_{j=0}^{N_k-1} - c_k
+    .. math ::
+        x_k^{abs} = x_k^{ref} + o_k
+
+    where :math:`x_k^{ref}` is an array of the ``coordinates`` and :math:`x_k^{abs}`
+    is an array of the ``absolute_coordinate``.
     """
 
     __slots__ = ['_sampling_type', 
@@ -88,11 +175,11 @@ class _linearlySampledGrid:
         self.set_attribute('_number_of_points', _number_of_points)
         self.set_attribute('_reciprocal_number_of_points', _number_of_points)
 
-        _value = _assignAndCheckUnitConsistency(_sampling_interval, None)
+        _value = _assign_and_check_unit_consistency(_sampling_interval, None)
         self.set_attribute('_sampling_interval', _value)
 
         _unit = self.sampling_interval.unit
-        _reciprocal_unit =  _unit**-1 #_defaultUnits(1.0*_unit**-1).unit
+        _reciprocal_unit =  _unit**-1 #_default_units(1.0*_unit**-1).unit
 
         ### Unit assignment
         self.set_attribute('_unit', _unit)
@@ -104,47 +191,47 @@ class _linearlySampledGrid:
         if _reciprocal_sampling_interval is None:
             _value = (1/(_number_of_points*self.sampling_interval.value)) * _reciprocal_unit
         else:
-            _value = _assignAndCheckUnitConsistency(_reciprocal_sampling_interval, _reciprocal_unit)
+            _value = _assign_and_check_unit_consistency(_reciprocal_sampling_interval, _reciprocal_unit)
         self.set_attribute('_reciprocal_sampling_interval', _value)
         
         ### reference Offset
-        _value = _checkValueObject(_reference_offset, _unit)
+        _value = _check_value_object(_reference_offset, _unit)
         self.set_attribute('_reference_offset', _value)
-        _value = _checkValueObject(_reciprocal_reference_offset, _reciprocal_unit)
+        _value = _check_value_object(_reciprocal_reference_offset, _reciprocal_unit)
         self.set_attribute('_reciprocal_reference_offset', _value)
         
         ### origin offset
-        _value = _checkValueObject(_origin_offset, _unit)
+        _value = _check_value_object(_origin_offset, _unit)
         self.set_attribute('_origin_offset', _value)
-        _value =  _checkValueObject(_reciprocal_origin_offset, _reciprocal_unit)
+        _value =  _check_value_object(_reciprocal_origin_offset, _reciprocal_unit)
         self.set_attribute('_reciprocal_origin_offset', _value)
 
         ### made dimensionless, specific to NMR datasets
-        _value = _checkAndAssignBool(_made_dimensionless)
+        _value = _check_and_assign_bool(_made_dimensionless)
         self.set_attribute('_made_dimensionless', _value)
-        _value = _checkAndAssignBool(_reciprocal_made_dimensionless)
+        _value = _check_and_assign_bool(_reciprocal_made_dimensionless)
         self.set_attribute('_reciprocal_made_dimensionless', _value)
 
         ### reverse
-        _value = _checkAndAssignBool(_reverse)
+        _value = _check_and_assign_bool(_reverse)
         self.set_attribute('_reverse', _value)
-        _value = _checkAndAssignBool(_reciprocal_reverse)
+        _value = _check_and_assign_bool(_reciprocal_reverse)
         self.set_attribute('_reciprocal_reverse', _value)
 
         ### fft_ouput_order
-        _value = _checkAndAssignBool(_fft_output_order)
+        _value = _check_and_assign_bool(_fft_output_order)
         self.set_attribute('_fft_output_order', _value)
 
         ### period
-        _value = _checkValueObject(_period, _unit)
+        _value = _check_value_object(_period, _unit)
         self.set_attribute('_period', _value)
-        _value = _checkValueObject(_reciprocal_period, _reciprocal_unit)
+        _value = _check_value_object(_reciprocal_period, _reciprocal_unit)
         self.set_attribute('_reciprocal_period', _value)
 
         ### quantity
-        _value = _checkQuantity(_quantity, _unit)
+        _value = _check_quantity(_quantity, _unit)
         self.set_attribute('_quantity', _value)
-        _value = _checkQuantity(_reciprocal_quantity, _reciprocal_unit)
+        _value = _check_quantity(_reciprocal_quantity, _reciprocal_unit)
         self.set_attribute('_reciprocal_quantity', _value)
 
         ### label
@@ -159,7 +246,7 @@ class _linearlySampledGrid:
 
 
     def set_attribute(self, name, value):
-        super(_linearlySampledGrid, self).__setattr__(name, value)
+        super(_linearlySampledGridDimension, self).__setattr__(name, value)
 
     def __delattr__(self, name):
         if name in __class__.__slots__:
@@ -188,17 +275,17 @@ class _linearlySampledGrid:
     @property
     def period(self):
         """ 
-        :Return type: ``Quantity`` instance
-        :Assign type: ``string``
-
         The attribute returns the period of the grid dimension.
         When assigned a value, this attribute updates the 
-        previous value. For example, a ``period`` of "1 km/h".
+        previous value. For example, a period of "1 km/h".
+
+        :Return type: ``Quantity``
+        :Assign type: ``string``
         """
         return self._period
     @period.setter
     def period(self, value = True):
-        self.set_attribute('_period', _checkValueObject(value, self.unit))
+        self.set_attribute('_period', _check_value_object(value, self.unit))
 
     ## reciprocal period
     @property
@@ -216,7 +303,7 @@ class _linearlySampledGrid:
     @reciprocal_period.setter
     def reciprocal_period(self, value = True):
         self.set_attribute('_reciprocal_period', \
-                _checkValueObject(value, self.reciprocal_unit))
+                _check_value_object(value, self.reciprocal_unit))
     
     ## Quantity
     @property
@@ -370,7 +457,7 @@ class _linearlySampledGrid:
         return self._reverse
     @reverse.setter
     def reverse(self, value=False):
-        _value = _checkAndAssignBool(value)
+        _value = _check_and_assign_bool(value)
         self.set_attribute('_reverse', _value)
 
 
@@ -389,7 +476,7 @@ class _linearlySampledGrid:
         return self._reciprocal_reverse
     @reciprocal_reverse.setter
     def reciprocal_reverse(self, value=False):
-        _value = _checkAndAssignBool(value)
+        _value = _check_and_assign_bool(value)
         self.set_attribute('_reciprocal_reverse', _value)
 
 
@@ -413,7 +500,7 @@ class _linearlySampledGrid:
         return self._reference_offset
     @reference_offset.setter
     def reference_offset(self, value):
-        _value = _assignAndCheckUnitConsistency(value, self.unit)
+        _value = _assign_and_check_unit_consistency(value, self.unit)
         self.set_attribute('_reference_offset', _value)
         # self._get_coordinates()
 
@@ -435,7 +522,7 @@ class _linearlySampledGrid:
         return self._reciprocal_reference_offset
     @reciprocal_reference_offset.setter
     def reciprocal_reference_offset(self, value):
-        _value = _assignAndCheckUnitConsistency(value, self.reciprocal_unit)
+        _value = _assign_and_check_unit_consistency(value, self.reciprocal_unit)
         self.set_attribute('_reciprocal_reference_offset', _value)
         # self._get_reciprocal_coordinates()
 
@@ -457,7 +544,7 @@ class _linearlySampledGrid:
         return self._origin_offset
     @origin_offset.setter
     def origin_offset(self, value):
-        _value = _assignAndCheckUnitConsistency(value, self.unit)
+        _value = _assign_and_check_unit_consistency(value, self.unit)
         self.set_attribute('_origin_offset', _value)
         # self._get_coordinates()
 
@@ -479,7 +566,7 @@ class _linearlySampledGrid:
         return self._reciprocal_origin_offset
     @reciprocal_origin_offset.setter
     def reciprocal_origin_offset(self, value):
-        _value = _assignAndCheckUnitConsistency(value, self.reciprocal_unit)
+        _value = _assign_and_check_unit_consistency(value, self.reciprocal_unit)
         self.set_attribute('_reciprocal_origin_offset', _value)
         # self._get_reciprocal_coordinates()
 
@@ -501,10 +588,10 @@ class _linearlySampledGrid:
         return self._sampling_interval
     @sampling_interval.setter
     def sampling_interval(self, value):
-        _value = _assignAndCheckUnitConsistency(value, self.unit)
+        _value = _assign_and_check_unit_consistency(value, self.unit)
         self.set_attribute('_sampling_interval', _value)
         ### Reciprocal sampling interval is calculated assuming a Fourier inverse 
-        super(_linearlySampledGrid, self).__setattr__("_reciprocal_sampling_interval", \
+        super(_linearlySampledGridDimension, self).__setattr__("_reciprocal_sampling_interval", \
                                                                     1/(_value*self.number_of_points))
         self._get_coordinates()
 
@@ -531,10 +618,10 @@ class _linearlySampledGrid:
         return self._reciprocal_sampling_interval
     @reciprocal_sampling_interval.setter
     def reciprocal_sampling_interval(self, value):
-        _value = _assignAndCheckUnitConsistency(value, self.reciprocal_unit)
+        _value = _assign_and_check_unit_consistency(value, self.reciprocal_unit)
         self.set_attribute('_reciprocal_sampling_interval', _value)
         ### Sampling interval is calculated assuming a Fourier inverse 
-        super(_linearlySampledGrid, self).__setattr__("sampling_interval", \
+        super(_linearlySampledGridDimension, self).__setattr__("sampling_interval", \
                                                                     1/(_value*self.number_of_points))
         # self.sampling_interval = 1/(_value*self.number_of_points)
         self._get_reciprocal_coordinates()
@@ -854,17 +941,22 @@ class _linearlySampledGrid:
         return (json.dumps(dictionary, sort_keys=False, indent=2))
 
     def to(self, unit):
+        """
+        Converts the unit of the controlled variables coordinates to 
+        ``unit``. This method wraps the ``to`` method from the ``Quantity`` 
+        class. The methods returns a ``Quantity`` object.
+        """
         if unit.strip() == 'ppm': 
             self.set_attribute('_dimensionless_unit', _ppm)
         else:
-            self.set_attribute('_unit', _checkUnitConsistency(stringToQuantity('1 '+unit), self.unit).unit)
+            self.set_attribute('_unit', _check_unit_consistency(string_to_quantity('1 '+unit), self.unit).unit)
         return self.coordinates
 
     def __iadd__(self, other):
-        self.reference_offset -= _assignAndCheckUnitConsistency(other, self.unit) 
+        self.reference_offset -= _assign_and_check_unit_consistency(other, self.unit) 
 
     def __isub__(self, other):
-        self.reference_offset += _assignAndCheckUnitConsistency(other, self.unit) 
+        self.reference_offset += _assign_and_check_unit_consistency(other, self.unit) 
 
 
 
@@ -940,7 +1032,7 @@ class _arbitrarilySampledGridDimension:
         self.set_attribute('_number_of_points', len(_coordinates))
         self.set_attribute('_reciprocal_number_of_points', self.number_of_points)
 
-        _unit = _assignAndCheckUnitConsistency(_coordinates[0], None).unit
+        _unit = _assign_and_check_unit_consistency(_coordinates[0], None).unit
         _reciprocal_unit =  _unit**-1
 
         self.set_attribute('_unit', _unit)
@@ -949,39 +1041,39 @@ class _arbitrarilySampledGridDimension:
         self.set_attribute('_reciprocal_dimensionless_unit', '')
 
         ## reference
-        _value = _checkValueObject(_reference_offset, _unit)
+        _value = _check_value_object(_reference_offset, _unit)
         self.set_attribute('_reference_offset', _value)
-        _value = _checkValueObject(_reciprocal_reference_offset, _reciprocal_unit)
+        _value = _check_value_object(_reciprocal_reference_offset, _reciprocal_unit)
         self.set_attribute('_reciprocal_reference_offset', _value)
         
         ## origin offset
-        _value = _checkValueObject(_origin_offset, _unit)
+        _value = _check_value_object(_origin_offset, _unit)
         self.set_attribute('_origin_offset', _value)
-        _value =  _checkValueObject(_reciprocal_origin_offset, _reciprocal_unit)
+        _value =  _check_value_object(_reciprocal_origin_offset, _reciprocal_unit)
         self.set_attribute('_reciprocal_origin_offset', _value)
 
         ### made dimensionless
-        _value = _checkAndAssignBool(_made_dimensionless)
+        _value = _check_and_assign_bool(_made_dimensionless)
         self.set_attribute('_made_dimensionless', _value)
-        _value = _checkAndAssignBool(_reciprocal_made_dimensionless)
+        _value = _check_and_assign_bool(_reciprocal_made_dimensionless)
         self.set_attribute('_reciprocal_made_dimensionless', _value)
        
         ### reverse
-        _value = _checkAndAssignBool(_reverse)
+        _value = _check_and_assign_bool(_reverse)
         self.set_attribute('_reverse', _value)
-        _value = _checkAndAssignBool(_reciprocal_reverse)
+        _value = _check_and_assign_bool(_reciprocal_reverse)
         self.set_attribute('_reciprocal_reverse', _value)
 
         ## period
-        _value = _checkValueObject(_period, _unit)
+        _value = _check_value_object(_period, _unit)
         self.set_attribute('_period', _value)
-        _value = _checkValueObject(_reciprocal_period, _reciprocal_unit)
+        _value = _check_value_object(_reciprocal_period, _reciprocal_unit)
         self.set_attribute('_reciprocal_period', _value)
 
         ## quantity
-        _value = _checkQuantity(_quantity, _unit)
+        _value = _check_quantity(_quantity, _unit)
         self.set_attribute('_quantity', _value)
-        _value = _checkQuantity(_reciprocal_quantity, _reciprocal_unit)
+        _value = _check_quantity(_reciprocal_quantity, _reciprocal_unit)
         self.set_attribute('_reciprocal_quantity', _value)
     
         ## label
@@ -989,7 +1081,7 @@ class _arbitrarilySampledGridDimension:
         self.set_attribute('_reciprocal_label', _reciprocal_label)
 
         # [print (item) for item in _coordinates]
-        _value = [_assignAndCheckUnitConsistency(item, _unit).to(_unit).value \
+        _value = [_assign_and_check_unit_consistency(item, _unit).to(_unit).value \
                                 for item in _coordinates]
         # print (_value)
         _value = np.asarray(_value, dtype=np.float64)*_unit
@@ -1042,7 +1134,7 @@ class _arbitrarilySampledGridDimension:
         return self._period
     @period.setter
     def period(self, value):
-        self.set_attribute('_period', _checkValueObject(value, self.unit))
+        self.set_attribute('_period', _check_value_object(value, self.unit))
 
 
     ## reciprocal period
@@ -1061,7 +1153,7 @@ class _arbitrarilySampledGridDimension:
     @reciprocal_period.setter
     def reciprocal_period(self, value):
         self.set_attribute('_reciprocal_period', \
-                        _checkValueObject(value, self.reciprocal_unit))
+                        _check_value_object(value, self.reciprocal_unit))
 
 
     ## Quantity
@@ -1222,7 +1314,7 @@ class _arbitrarilySampledGridDimension:
         return self._reverse
     @reverse.setter
     def reverse(self, value=False):
-        _value = _checkAndAssignBool(value)
+        _value = _check_and_assign_bool(value)
         self.set_attribute('_reverse', _value)
 
 
@@ -1241,7 +1333,7 @@ class _arbitrarilySampledGridDimension:
         return self._reciprocal_reverse
     @reciprocal_reverse.setter
     def reciprocal_reverse(self, value=False):
-        _value = _checkAndAssignBool(value)
+        _value = _check_and_assign_bool(value)
         self.set_attribute('_reciprocal_reverse', _value)
     
 
@@ -1266,7 +1358,7 @@ class _arbitrarilySampledGridDimension:
         return self._reference_offset
     @reference_offset.setter
     def reference_offset(self, value):
-        _value = _assignAndCheckUnitConsistency(value, self.unit)
+        _value = _assign_and_check_unit_consistency(value, self.unit)
         self.set_attribute('_reference_offset', _value)
 
 
@@ -1287,7 +1379,7 @@ class _arbitrarilySampledGridDimension:
         return self._reciprocal_reference_offset
     @reciprocal_reference_offset.setter
     def reciprocal_reference_offset(self, value):
-        _value = _assignAndCheckUnitConsistency(value, self.reciprocal_unit)
+        _value = _assign_and_check_unit_consistency(value, self.reciprocal_unit)
         self.set_attribute('_reciprocal_reference_offset', _value)
         # self._getreciprocalCoordinates()
 
@@ -1309,7 +1401,7 @@ class _arbitrarilySampledGridDimension:
         return self._origin_offset
     @origin_offset.setter
     def origin_offset(self, value):
-        _value = _assignAndCheckUnitConsistency(value, self.unit)
+        _value = _assign_and_check_unit_consistency(value, self.unit)
         self.set_attribute('_origin_offset', _value)
 
 
@@ -1330,7 +1422,7 @@ class _arbitrarilySampledGridDimension:
         return self._reciprocal_origin_offset
     @reciprocal_origin_offset.setter
     def reciprocal_origin_offset(self, value):
-        _value = _assignAndCheckUnitConsistency(value, self.reciprocal_unit)
+        _value = _assign_and_check_unit_consistency(value, self.reciprocal_unit)
         self.set_attribute('_reciprocal_origin_offset', _value)
 
 
@@ -1502,14 +1594,148 @@ class _arbitrarilySampledGridDimension:
         return (json.dumps(dictionary, sort_keys=False, indent=2))
 
     def to(self, unit):
+        """
+        Converts the unit of the controlled variables coordinates to 
+        ``unit``. This method wraps the ``to`` method from the ``Quantity`` 
+        class. The methods returns a ``Quantity`` object.
+        """
         if unit.strip() == 'ppm': 
             self.set_attribute('_dimensionless_unit', _ppm)
         else:
-            self.set_attribute('_unit', _checkUnitConsistency(stringToQuantity('1 '+unit), self.unit).unit)
+            self.set_attribute('_unit', _check_unit_consistency(string_to_quantity('1 '+unit), self.unit).unit)
         return self.coordinates
 
     def __iadd__(self, other):
-        self.reference_offset -= _assignAndCheckUnitConsistency(other, self.unit) 
+        self.reference_offset -= _assign_and_check_unit_consistency(other, self.unit) 
 
     def __isub__(self, other):
-        self.reference_offset += _assignAndCheckUnitConsistency(other, self.unit) 
+        self.reference_offset += _assign_and_check_unit_consistency(other, self.unit) 
+
+
+
+
+
+
+
+
+
+
+class _nonQuantitativeGridDimension:
+
+    __slots__ = ['_sampling_type',
+                 '_non_quantitative',
+                 '_number_of_points',
+                 '_coordinates', 
+                 '_reverse',
+                 '_label'
+                 ]
+
+    def __init__(self,  _coordinates, 
+                        _sampling_type='grid',
+                        _non_quantitative=True,
+                        _reverse=False, 
+                        _label=''):
+
+        self.set_attribute('_sampling_type', _sampling_type)
+        self.set_attribute('_non_quantitative', _non_quantitative)
+
+        self.set_attribute('_number_of_points', len(_coordinates))
+
+        ### reverse
+        _value = _check_and_assign_bool(_reverse)
+        self.set_attribute('_reverse', _value)
+
+        ## label
+        self.set_attribute('_label', _label)
+
+        # print (_value)
+        _value = np.asarray(_coordinates)
+        self.set_attribute('_coordinates', _value)
+
+    def set_attribute(self, name, value):
+        super(_nonQuantitativeGridDimension, self).__setattr__(name, value)
+
+    def __delattr__(self, name):
+        if name in __class__.__slots__:
+            raise AttributeError("attribute '{0}' of class '{1}' cannot be deleted.".format(name, __class__.__name__))
+
+    def __setattr__(self, name, value):
+        if name in __class__.__slots__:
+            raise AttributeError("attribute '{0}' cannot be modified".format(name))
+        elif name in __class__.__dict__.keys():
+            return self.set_attribute(name, value)
+        else:
+            raise AttributeError("'{0}' object has no attribute '{1}'".format(__class__.__name__, name))
+
+
+### --------------- Attributes ------------------ ###
+    ## sampling_type
+    @property
+    def sampling_type(self):
+        return self._sampling_type
+
+    ## non_quantitative
+    @property
+    def non_quantitative(self):
+        return self._non_quantitative
+
+    ## label
+    @property
+    def label(self):
+        return self._label
+    @label.setter
+    def label(self, label=''):
+        self.set_attribute('_label', label)
+    
+    @property
+    def axis_label(self):
+        return self.label
+
+    ## reverse
+    @property
+    def reverse(self):
+        return self._reverse
+    @reverse.setter
+    def reverse(self, value=False):
+        _value = _check_and_assign_bool(value)
+        self.set_attribute('_reverse', _value)
+
+    ## number_of_points
+    @property
+    def number_of_points(self):
+        return self._number_of_points
+
+    ## coordinates
+    @property
+    def coordinates(self):
+        return self._coordinates
+
+
+###--------------Private Methods------------------###
+
+    def _info(self):
+        _response =[self.sampling_type,
+                    self.non_quantitative,
+                    self.number_of_points,
+                    self.reverse,
+                    str(self._label)]
+        return _response
+
+    def _get_python_dictonary(self):
+        dictionary = {}
+
+        dictionary['coordinates'] = self.coordinates.tolist()
+        dictionary['non_quantitative'] = True
+        if self.reverse is True:
+            dictionary['reverse'] = True
+
+        if self._label.strip() != "":
+            dictionary['label'] = self._label
+
+        return dictionary
+
+### ------------- Public Methods ------------------ ###
+
+    def __str__(self):
+        dictionary = self._get_python_dictonary()
+        return (json.dumps(dictionary, sort_keys=False, indent=2))

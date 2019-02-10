@@ -97,7 +97,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="controlled_variables.html">4. Controlled variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="referenceAPI.html">5. Reference/API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="referenceAPI.html">5. Reference/API documentation</a></li>
 </ul>
 
             
@@ -149,7 +149,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/Importing_csdfpy.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/Importing_csdfpy.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -226,15 +226,15 @@ variable coordinates are</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last"><code class="docutils literal notranslate"><span class="pre">x[0].coordinates</span></code> return an instance of the
+<p class="last"><code class="docutils literal notranslate"><span class="pre">x[0].coordinates</span></code> return a
 <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity">Quantity</a>
-class from
+object from the
 <a class="reference external" href="http://docs.astropy.org/en/stable/units/">Astropy</a> module.
 The <code class="docutils literal notranslate"><span class="pre">csdfpy</span></code> module uses the units library from the astropy module to handle
 the physical quantities.
 The value and the unit of the physical quantity are accessed through the
-Quantity instance, using the <code class="docutils literal notranslate"><span class="pre">value</span></code> and the <code class="docutils literal notranslate"><span class="pre">unit</span></code> attributes. In <code class="docutils literal notranslate"><span class="pre">csdfpy</span></code>,
-the <code class="docutils literal notranslate"><span class="pre">value</span></code> attribute is always a
+Quantity object, using the <code class="docutils literal notranslate"><span class="pre">value</span></code> and the <code class="docutils literal notranslate"><span class="pre">unit</span></code> attributes. In <code class="docutils literal notranslate"><span class="pre">csdfpy</span></code>,
+the <code class="docutils literal notranslate"><span class="pre">value</span></code> attribute is a
 <a class="reference external" href="https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.ndarray.html">numpy array</a>.</p>
 </div>
 <p>The list of uncontrolled variables is accessed through the <code class="docutils literal notranslate"><span class="pre">components</span></code> attribute

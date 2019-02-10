@@ -1,11 +1,11 @@
 from __future__ import print_function, division
 import base64, json, warnings, os
 import numpy as np
-from ._csdmChecks import (_assignAndCheckUnitConsistency, 
-                       _checkQuantity,
-                       _checkEncoding,
-                       _checkNumericType,
-                       _checkDatasetType)
+from ._csdmChecks import (_assign_and_check_unit_consistency, 
+                       _check_quantity,
+                       _check_encoding,
+                       _check_numeric_type,
+                       _check_dataset_type)
 import os
 from urllib.request import urlopen
 from urllib.parse import urlparse
@@ -40,7 +40,7 @@ def _get_absolute_URI_path(uri, file):
     return path
 
 
-class _unControlledVariable:
+class _unControlledVariable():
     """
         keywork aruament :
           name : any string
@@ -88,17 +88,17 @@ class _unControlledVariable:
         # if _components != None and _encoding is None: _encoding = 'none'
         # elif _components_URI != None and _encoding is None: _encoding = 'raw'
 
-        self.set_attribute('_encoding', _checkEncoding(_encoding))
-        _va = _assignAndCheckUnitConsistency(_unit, None)
+        self.set_attribute('_encoding', _check_encoding(_encoding))
+        _va = _assign_and_check_unit_consistency(_unit, None)
         self.set_attribute('_unit', _va.unit)
         self.set_attribute('_name', str(_name))
-        self.set_attribute('_quantity', _checkQuantity(_quantity, self.unit))
+        self.set_attribute('_quantity', _check_quantity(_quantity, self.unit))
 
-        _va, npType = _checkNumericType(_numeric_type)
+        _va, npType = _check_numeric_type(_numeric_type)
         self.set_attribute('_numeric_type', _va)
         self.set_attribute('_npType', npType)
 
-        _va, total_components = _checkDatasetType(_dataset_type)
+        _va, total_components = _check_dataset_type(_dataset_type)
         self.set_attribute('_dataset_type', _va)        
         self.set_attribute('_channels', total_components)
         
@@ -192,7 +192,7 @@ class _unControlledVariable:
         return self._unit
     @unit.setter
     def unit(self, value):
-        _va = _assignAndCheckUnitConsistency(value, None)
+        _va = _assign_and_check_unit_consistency(value, None)
         self.set_attribute('_unit', _va)
         self.quantity = _va.unit.physical_type
 
@@ -205,7 +205,7 @@ class _unControlledVariable:
         return self._encoding
     @encoding.setter
     def encoding(self, value):
-        value = _checkEncoding(value)
+        value = _check_encoding(value)
         self.set_attribute('_encoding', value)
     
     @property
@@ -213,7 +213,7 @@ class _unControlledVariable:
         return self._numeric_type
     @numeric_type.setter
     def numeric_type(self, value):
-        _va, npType = _checkNumericType(value)
+        _va, npType = _check_numeric_type(value)
         self.set_attribute('_numeric_type', value)
         self.set_attribute('_npType', npType)
         self.set_attribute('_components', \
@@ -224,7 +224,7 @@ class _unControlledVariable:
         return self._dataset_type
     @dataset_type.setter
     def dataset_type(self, value):
-        value = _checkDatasetType(value)
+        value = _check_dataset_type(value)
         self.set_attribute('_dataset_type', value)
 
     @property
@@ -262,7 +262,7 @@ class _unControlledVariable:
         return _response
 
     def _get_python_dictonary(self, filename, dataset_index=None, 
-                            number_of_components=None, for_display=True,
+                            for_display=True,
                             version='0.1.0'):
         dictionary = {}
         if self.name.strip() != '' and self.name is not None:
@@ -349,16 +349,6 @@ class _unControlledVariable:
 
 
                 print ('relative path', data_path_relative)
-                # splt = os.path.split(filename)
-                # fname = os.path.splitext(splt[1])[0]
-
-                # if number_of_components > 1:
-                #     directory = os.path.join(splt[0], fname)
-                #     if not os.path.exists(directory):
-                #         os.makedirs(directory)
-                #     filepath = ''.join([ fname, '/', index, '.dat'])
-                # else:
-                #     filepath = ''.join([ fname, '_', index, '.dat'])
                 dictionary['components_URI'] = data_path_relative
 
                 data_path_absolute = os.path.abspath(urlparse( \
@@ -378,7 +368,7 @@ class _unControlledVariable:
         return (json.dumps(dictionary, sort_keys=False, indent=2))
 
     def scale(self, value):
-        value = _assignAndCheckUnitConsistency(value, None)
+        value = _assign_and_check_unit_consistency(value, None)
         self.set_attribute('_unit', self._unit*value.unit)
         value = self._unit*value.value
         self.set_attribute('_components',self.components*value)

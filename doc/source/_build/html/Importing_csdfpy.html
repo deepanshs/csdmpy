@@ -97,7 +97,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="controlled_variables.html">4. Controlled variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="referenceAPI.html">5. Reference/API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="startingFromScrach.html">5. Starting from scrach</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/examples.html">6. Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="referenceAPI.html">7. Reference/API documentation</a></li>
 </ul>
 
             
@@ -188,14 +190,16 @@
 </style>
 <div class="section" id="importing-csdfpy">
 <h1>3. Importing csdfpy<a class="headerlink" href="#importing-csdfpy" title="Permalink to this headline">¶</a></h1>
-<p>We have put together a set of guidelines for importing <code class="docutils literal notranslate"><span class="pre">csdfpy</span></code> module and related functionality.
-We encourage the users to follow these guidelines to promote consistency amongst other users.
-The module is imported as</p>
+<p>We have put together a set of guidelines for importing <code class="docutils literal notranslate"><span class="pre">csdfpy</span></code>
+package and the related functionality. We encourage the users to
+follow these guidelines to promote consistency amongst others.
+The package is imported as,</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MRData</span> <span class="k">import</span> <span class="n">csdfpy</span> 
 </pre></div>
 </div>
-<p>To load a <code class="docutils literal notranslate"><span class="pre">.csdf</span></code> or a <code class="docutils literal notranslate"><span class="pre">.csdfx</span></code> file, use the <code class="docutils literal notranslate"><span class="pre">open</span></code> method of the <code class="docutils literal notranslate"><span class="pre">csdfpy</span></code> module.
-In the following example, we use a sample test file.</p>
+<p>To load a <code class="docutils literal notranslate"><span class="pre">.csdf</span></code> or a <code class="docutils literal notranslate"><span class="pre">.csdfx</span></code> file, use the <code class="docutils literal notranslate"><span class="pre">open</span></code> method
+of the <code class="docutils literal notranslate"><span class="pre">csdfpy</span></code> package. In the following example, we use a
+sample test file.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="n">csdfpy</span><span class="o">.</span><span class="n">test_file</span><span class="p">[</span><span class="s1">&#39;test01&#39;</span><span class="p">]</span> <span class="c1"># Replace this with the file address</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">testdata1</span> <span class="o">=</span> <span class="n">csdfpy</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> 
 </pre></div>
@@ -203,42 +207,45 @@ In the following example, we use a sample test file.</p>
 <p>Here, <code class="docutils literal notranslate"><span class="pre">testdata1</span></code> is an instance of the <code class="docutils literal notranslate"><span class="pre">CSDModel</span></code> class.</p>
 <div class="section" id="accessing-controlled-and-uncontrolled-variables">
 <h2>3.1. Accessing controlled and uncontrolled variables<a class="headerlink" href="#accessing-controlled-and-uncontrolled-variables" title="Permalink to this headline">¶</a></h2>
-<p>To access the uncontrolled and uncontrolled variables, use the <code class="docutils literal notranslate"><span class="pre">uncontrolled_variables</span></code>
-and the <code class="docutils literal notranslate"><span class="pre">controlled_variables</span></code> attributes of the <code class="docutils literal notranslate"><span class="pre">testdata1</span></code> instance,</p>
+<p>To access the uncontrolled and uncontrolled variables, use the
+<code class="docutils literal notranslate"><span class="pre">uncontrolled_variables</span></code> and the <code class="docutils literal notranslate"><span class="pre">controlled_variables</span></code>
+attributes of the <code class="docutils literal notranslate"><span class="pre">testdata1</span></code> instance,</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">testdata1</span><span class="o">.</span><span class="n">controlled_variables</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">testdata1</span><span class="o">.</span><span class="n">uncontrolled_variables</span>
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> are the tuples of controlled and uncontrolled variables objects.
-In the above example, both <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> are tuples with a single object</p>
+<p>where <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> are the tuples of controlled and uncontrolled
+variables objects. In the above example, both <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> are
+tuples with a single object</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>  
 <span class="go">x 1 &lt;class &#39;tuple&#39;&gt;</span>
 <span class="go">y 1 &lt;class &#39;tuple&#39;&gt;</span>
 </pre></div>
 </div>
-<p>The list of controlled variable coordinates is accessed through the <code class="docutils literal notranslate"><span class="pre">coordinates</span></code>
-attribute of the controlled variable object. In the above example, the controlled
-variable coordinates are</p>
+<p>The list of controlled variable coordinates is accessed through
+the <code class="docutils literal notranslate"><span class="pre">coordinates</span></code> attribute of the controlled variable object.
+In the above example, the controlled variable coordinates are</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span> 
 <span class="go">[0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last"><code class="docutils literal notranslate"><span class="pre">x[0].coordinates</span></code> return an instance of the
+<p class="last"><code class="docutils literal notranslate"><span class="pre">x[0].coordinates</span></code> return a
 <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity">Quantity</a>
-class from
+object from the
 <a class="reference external" href="http://docs.astropy.org/en/stable/units/">Astropy</a> module.
-The <code class="docutils literal notranslate"><span class="pre">csdfpy</span></code> module uses the units library from the astropy module to handle
-the physical quantities.
-The value and the unit of the physical quantity are accessed through the
-Quantity instance, using the <code class="docutils literal notranslate"><span class="pre">value</span></code> and the <code class="docutils literal notranslate"><span class="pre">unit</span></code> attributes. In <code class="docutils literal notranslate"><span class="pre">csdfpy</span></code>,
-the <code class="docutils literal notranslate"><span class="pre">value</span></code> attribute is always a
+The <code class="docutils literal notranslate"><span class="pre">csdfpy</span></code> module uses the units library from the astropy
+module to handle the physical quantities. The value and the
+unit of the physical quantity are accessed through the  Quantity
+object, using the <code class="docutils literal notranslate"><span class="pre">value</span></code> and the <code class="docutils literal notranslate"><span class="pre">unit</span></code> attributes.
+In <code class="docutils literal notranslate"><span class="pre">csdfpy</span></code>, the <code class="docutils literal notranslate"><span class="pre">value</span></code> attribute is a
 <a class="reference external" href="https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.ndarray.html">numpy array</a>.</p>
 </div>
-<p>The list of uncontrolled variables is accessed through the <code class="docutils literal notranslate"><span class="pre">components</span></code> attribute
-of the uncontrolled variable object. This returns a numpy array.</p>
+<p>The list of uncontrolled variables is accessed through the
+<code class="docutils literal notranslate"><span class="pre">components</span></code> attribute of the uncontrolled variable object.
+This returns a numpy array.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">components</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">components</span> <span class="p">))</span>  
 <span class="go">[[ 0.0000000e+00  5.8778524e-01  9.5105654e-01  9.5105654e-01</span>
@@ -249,22 +256,24 @@ of the uncontrolled variable object. This returns a numpy array.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The numpy array from the <code class="docutils literal notranslate"><span class="pre">components</span></code> attribute has M+1 dimensions,
-where M is the number of controlled variables.</p>
+<p class="last">The numpy array from the <code class="docutils literal notranslate"><span class="pre">components</span></code> attribute has M+1
+dimensions, where M is the number of controlled variables.</p>
 </div>
-<p>In the above example, there is only one controlled variable object, therefore
-<code class="docutils literal notranslate"><span class="pre">y[0].components</span></code> holds a two dimensional array of shape</p>
+<p>In the above example, there is only one controlled variable
+object, therefore <code class="docutils literal notranslate"><span class="pre">y[0].components</span></code> holds a two dimensional
+array of shape</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  
 <span class="go">(1, 10)</span>
 </pre></div>
 </div>
-<p>The first element of the shape tuple, <code class="docutils literal notranslate"><span class="pre">(1,10)</span></code>, is the number of components of
-the uncontrolled variable. In this case, the number of components is one.</p>
+<p>The first element of the shape tuple, <code class="docutils literal notranslate"><span class="pre">(1,10)</span></code>, is the number
+of components of the uncontrolled variable. In this case, the
+number of components is one.</p>
 </div>
 <div class="section" id="plotting-the-data">
 <h2>3.2. Plotting the data<a class="headerlink" href="#plotting-the-data" title="Permalink to this headline">¶</a></h2>
-<p>We show the plot using python’s Matplotlib library, however, the users may
-use their favorite plotting library.</p>
+<p>We show the plot using python’s Matplotlib library, however,
+the users may use their favorite plotting library.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>

@@ -16,10 +16,8 @@
 
 
 
-  
-  
-    @import url("./bootswatch-3.3.7/united/bootstrap.min.css");
-  
+    @import url("./bootstrap-3.3.7/css/bootstrap.min.css");
+    @import url("./bootstrap-3.3.7/css/bootstrap-theme.min.css");
 
 
 /*
@@ -59,12 +57,12 @@
 
   body {
     
-      padding-top: 60px;
+      padding-top: 40px;
     
   }
   .page-top {
     
-      top: 60px;
+      top: 40px;
     
   }
 

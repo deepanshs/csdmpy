@@ -43,15 +43,15 @@ variable coordinates are ::
     [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s
 
 .. note::
-    ``x[0].coordinates`` return an instance of the 
+    ``x[0].coordinates`` return a 
     `Quantity <http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity>`_
-    class from 
+    object from the  
     `Astropy <http://docs.astropy.org/en/stable/units/>`_ module.
     The ``csdfpy`` module uses the units library from the astropy module to handle 
     the physical quantities.
     The value and the unit of the physical quantity are accessed through the 
-    Quantity instance, using the ``value`` and the ``unit`` attributes. In ``csdfpy``,
-    the ``value`` attribute is always a 
+    Quantity object, using the ``value`` and the ``unit`` attributes. In ``csdfpy``,
+    the ``value`` attribute is a 
     `numpy array <https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.ndarray.html>`_.
 
 

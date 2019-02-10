@@ -1,7 +1,7 @@
 from __future__ import print_function
 import numpy as np
 import warnings
-from .unit import stringToQuantity
+from .unit import string_to_quantity
 import os
 import collections
 
@@ -21,6 +21,75 @@ import collections
 
 #     def __len__(self):
 #         return self._get_length()
+
+# class valueObject:
+#     default_type = 'physical'
+
+#     __slots__ = ['_object_value', '_object_type']
+
+#     def __init__(self, object_value, object_type=default_type):
+#         """
+#         The class returns a value object. There are two types of 
+#         value objects: *physical* and *string*.
+
+#         For physical value objects, the ``valueObject`` class 
+#         use the ``Quantity`` class from ``Astropy`` package to handle
+#         the physical quantities. For string value oject, the class 
+#         uses Python strings. 
+#         """
+#         # _val_obj  = valueObject(object_value, object_type)
+#         # print (object_type)
+#         if object_type == 'physical':
+#             quantity = _check_value_object(object_value)
+
+#         if object_type == 'string':
+#             quantity = object_value
+
+#         super(valueObject, self).__setattr__('_object_type', object_type)
+#         super(valueObject, self).__setattr__('_object_value', quantity)
+
+#     def __str__(self):
+#         return '< valueObject > ' + str(self._object_value)
+
+#     @property
+#     def object_type(self):
+#         """ 
+#         The attribute returns the type of object value. It is either
+#         *physical* or *string* 
+#         """
+#         return self._object_type
+
+#     @property
+#     def value(self):
+#         """ 
+#         The attribute returns the type of object value. It is either
+#         *physical* or *string* 
+#         """
+#         if self._object_type == 'physical':
+#             return self._object_value.value
+
+#         if self._object_type == 'string':
+#             return self._object_value
+
+#     @property
+#     def unit(self):
+#         if self._object_type == 'string':
+#             raise Exception('string value objects do not have unit attribute.')
+#         else:
+#             return self._unit
+
+#     def to(self, another_unit):
+#         if self._value_type != 'physical':
+#             raise Exception('This method is only valid physical value objects.')
+#         if self._value_type == 'physical':
+#             _another_object_value = self._object_value.to(another_unit)
+#             super(valueObject, self).__setattr__('_object_value', _another_object_value)
+
+#     def __add__(self, a):
+#         if self._object_type == 'physical':
+#             return valueObject(self._object_value + a._object_value, 'physical')
+
+            
 
 def _axis_label(label, unit, made_dimensionless, dimensionless_unit):
     if made_dimensionless:
@@ -42,17 +111,7 @@ def _is_numeric(element):
 def _is_physical_quantity(element):
     pass
 
-def _checkValueObject(element, unit):
-    return _checkAssignmentAndThenCheckUnitConsistency(element, unit)
-
-def _defaultUnits(element):
-    # print (element.unit.physical_type)
-    if element.unit.physical_type == 'frequency':
-        element = element.to('Hz')
-    return element
-
-
-def _checkEncoding(element):
+def _check_encoding(element):
 
     lst = ['base64', 'none', 'raw']
     if element in lst:
@@ -61,7 +120,7 @@ def _checkEncoding(element):
         options = ''.join(["'"+item+"', " for item in lst[:-1]])
         raise Exception("Invalid 'encoding'. Available options are "+ options+"and '"+lst[-1]+"'.")
 
-def _checkDatasetType(element):
+def _check_dataset_type(element):
     lst = ['RGB', 'RGBA', 'scalar', 'vector', 'matrix', 'symmetric_matrix']
     listValues = element.strip().split('_')
 
@@ -85,7 +144,7 @@ def _checkDatasetType(element):
     else:
         raise Exception("'dataset_type' cannot be identified.")
 
-def _checkNumericType(element):
+def _check_numeric_type(element):
     lst = {'uint8' : '<u1',
            'uint16': '<u2',
            'uint32': '<u4',
@@ -104,7 +163,35 @@ def _checkNumericType(element):
     else:
         raise Exception("'numeric_type' '{0}' not recognized.".format(element))
 
-def _checkUnitConsistency(element, unit):
+
+
+
+
+
+
+def _check_value_object(element, unit=None):
+    return _check_assignment_and_then_check_unit_consistency(element, unit)
+
+
+def _check_assignment_and_then_check_unit_consistency(element, unit):
+    if element is None:
+        element = 0*unit
+    else:
+        element = _assign_and_check_unit_consistency(element, unit)
+    return element
+
+
+def _assign_and_check_unit_consistency(element, unit):
+    element = _default_units(string_to_quantity(str(element)))
+    _fitsUnitFormat = element.unit.to_string('fits').strip()
+    element = element.to(_fitsUnitFormat)
+    if unit is not None:
+        return _check_unit_consistency(element, unit)
+    else:
+        return element
+
+
+def _check_unit_consistency(element, unit):
     if element.unit.physical_type != unit.physical_type:
         # try: element.unit.to(unit)
         # except Exception as e:
@@ -114,23 +201,20 @@ def _checkUnitConsistency(element, unit):
     else:
         return element
 
-def _assignAndCheckUnitConsistency(element, unit):
-    element = _defaultUnits(stringToQuantity(str(element)))
-    _fitsUnitFormat = element.unit.to_string('fits').strip()
-    element = element.to(_fitsUnitFormat)
-    if unit is not None:
-        return _checkUnitConsistency(element, unit)
-    else:
-        return element
 
-def _checkAssignmentAndThenCheckUnitConsistency(element, unit):
-    if element is None:
-        element = 0*unit
-    else:
-        element = _assignAndCheckUnitConsistency(element, unit)
+def _default_units(element):
+    # print (element.unit.physical_type)
+    if element.unit.physical_type == 'frequency':
+        element = element.to('Hz')
     return element
 
-def _checkAndAssignBool(element):
+
+
+
+
+
+
+def _check_and_assign_bool(element):
     if element is None:
         element = False
         return element
@@ -141,7 +225,7 @@ def _checkAndAssignBool(element):
             raise Exception("Bool type is required for '{0}', given '{1}' ".format( 
                 str(element), element.__class__.__name__))
 
-def _checkQuantity(element, unit):
+def _check_quantity(element, unit):
     if element == None:
         element = unit.physical_type
         return element
@@ -154,3 +238,11 @@ def _checkQuantity(element, unit):
         raise Exception("The physical quantity name '{0}' is not consistent with the unit '{1}'".format(element, str(unit)) )
     
     return element.lower()
+
+
+if __name__ == '__main__':
+    v = valueObject('5 s')
+    t = valueObject('15 s')
+    print (t + v)
+    print (v)
+    print (v.value)

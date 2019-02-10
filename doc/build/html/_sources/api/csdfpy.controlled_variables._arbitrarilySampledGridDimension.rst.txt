@@ -1,0 +1,44 @@
+.. _asgd_api:
+
+Arbitrarily sampled grid-controlled-variable
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. currentmodule:: csdfpy.controlled_variables
+.. autoclass:: _arbitrarilySampledGridDimension
+    :show-inheritance:
+
+    .. rubric:: Attributes Summary
+
+    .. autosummary::
+        :toctree:
+        ~_arbitrarilySampledGridDimension.coordinates
+        ~_arbitrarilySampledGridDimension.origin_offset
+        ~_arbitrarilySampledGridDimension.quantity
+        ~_arbitrarilySampledGridDimension.reverse
+        ~_arbitrarilySampledGridDimension.label
+        ~_arbitrarilySampledGridDimension.period
+        ~_arbitrarilySampledGridDimension.quantity
+
+    .. rubric:: Attributes Documentation
+
+    .. autoattribute:: coordinates
+    .. autoattribute:: reference_offset
+    .. autoattribute:: origin_offset
+    .. autoattribute:: quantity
+    .. autoattribute:: reverse
+    .. autoattribute:: label
+    .. autoattribute:: period
+    .. autoattribute:: quantity
+
+
+
+    .. rubric:: Methods Summary
+
+    .. autosummary::
+        :toctree:
+
+        ~_arbitrarilySampledGridDimension.to
+
+    .. rubric:: Method Documentation
+
+    .. automethod:: to

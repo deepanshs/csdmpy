@@ -1,20 +1,16 @@
-Reference/API
-=============
+Reference/API documentation
+===========================
 
-Controlled Variable object
---------------------------
+.. .. automodapi:: csdfpy
 
-Linearly sampled grid dimension
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: csdfpy.controlled_variables._linearlySampledGrid
-    :members:
+Controlled Variable objects
+---------------------------
 
-Arbitrarily sampled grid dimension
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. toctree::
 
-.. autoclass:: csdfpy.controlled_variables._arbitrarilySampledGridDimension
-    :members:
+    api/csdfpy.controlled_variables._linearlySampledGridDimension.rst
+    api/csdfpy.controlled_variables._arbitrarilySampledGridDimension.rst
 
 Also see
     `Quantity <>`_

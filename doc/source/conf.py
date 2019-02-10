@@ -58,6 +58,8 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.inheritance_diagram',
+    'sphinx.ext.autosummary',
+    # 'sphinx_automodapi.automodapi',
     'nbsphinx',
     # 'rinoh.frontend.sphinx',
 ]

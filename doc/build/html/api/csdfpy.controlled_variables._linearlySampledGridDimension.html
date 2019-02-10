@@ -1,0 +1,594 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>7.1.1. Linearly sampled grid-controlled-variable &mdash; csdfpy 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="7.1.2. Arbitrarily sampled grid-controlled-variable" href="csdfpy.controlled_variables._arbitrarilySampledGridDimension.html" />
+    <link rel="prev" title="7. Reference/API documentation" href="../referenceAPI.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> csdfpy
+          
+
+          
+            
+            <img src="../_static/csdfpy.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../requirement.html">1. The requirements for csdfpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CSDModel.html">2. The core scientific dataset model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Importing_csdfpy.html">3. Importing csdfpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../controlled_variables.html">4. Controlled variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startingFromScrach.html">5. Starting from scrach</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/examples.html">6. Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../referenceAPI.html">7. Reference/API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../referenceAPI.html#controlled-variable-objects">7.1. Controlled Variable objects</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">7.1.1. Linearly sampled grid-controlled-variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csdfpy.controlled_variables._arbitrarilySampledGridDimension.html">7.1.2. Arbitrarily sampled grid-controlled-variable</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">csdfpy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../referenceAPI.html">7. Reference/API documentation</a> &raquo;</li>
+        
+      <li>7.1.1. Linearly sampled grid-controlled-variable</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/csdfpy.controlled_variables._linearlySampledGridDimension.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="linearly-sampled-grid-controlled-variable">
+<span id="lsgd-api"></span><h1>7.1.1. Linearly sampled grid-controlled-variable<a class="headerlink" href="#linearly-sampled-grid-controlled-variable" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="csdfpy.controlled_variables._linearlySampledGridDimension">
+<em class="property">class </em><code class="descclassname">csdfpy.controlled_variables.</code><code class="descname">_linearlySampledGridDimension</code><span class="sig-paren">(</span><em>_number_of_points</em>, <em>_sampling_interval</em>, <em>_reference_offset=None</em>, <em>_origin_offset=None</em>, <em>_quantity=None</em>, <em>_reverse=False</em>, <em>_label=''</em>, <em>_period=None</em>, <em>_fft_output_order=False</em>, <em>_made_dimensionless=False</em>, <em>_sampling_type='grid'</em>, <em>_non_quantitative=False</em>, <em>_reciprocal_sampling_interval=None</em>, <em>_reciprocal_reference_offset=None</em>, <em>_reciprocal_origin_offset=None</em>, <em>_reciprocal_quantity=None</em>, <em>_reciprocal_reverse=False</em>, <em>_reciprocal_label=''</em>, <em>_reciprocal_period=None</em>, <em>_reciprocal_made_dimensionless=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/csdfpy/controlled_variables.html#_linearlySampledGridDimension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#csdfpy.controlled_variables._linearlySampledGridDimension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This class should not be used directly. Instead, 
+use the <code class="docutils literal notranslate"><span class="pre">CSDModel</span></code> object to access the attributes
+and methods of this class. See example ref???</p>
+</div>
+<p>The class returns an object which represents a controlled variable.
+The corresponding dimension is quantitative and sampled linearly. 
+Given the sampling interval as <cite>m_k</cite>, number of points as <cite>N_k</cite>,
+reference offset as <cite>c_k</cite> and the origin offset as <cite>o_k</cite> for the
+<cite>k^{th}</cite> dimension, the coordinates along this dimension is</p>
+<div class="math notranslate nohighlight">
+\[x_k^{ref} = [m_k j ]_{j=0}^{N_k-1} - c_k\]</div>
+<div class="math notranslate nohighlight">
+\[x_k^{abs} = x_k^{ref} + o_k\]</div>
+<p>where <span class="math notranslate nohighlight">\(x_k^{ref}\)</span> is an array of the <code class="docutils literal notranslate"><span class="pre">coordinates</span></code> and <span class="math notranslate nohighlight">\(x_k^{abs}\)</span>
+is an array of the <code class="docutils literal notranslate"><span class="pre">absolute_coordinate</span></code>.</p>
+<p class="rubric">Attributes Summary</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#csdfpy.controlled_variables._linearlySampledGridDimension.sampling_interval" title="csdfpy.controlled_variables._linearlySampledGridDimension.sampling_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sampling_interval</span></code></a></td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">Quantity</span></code> instance</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#csdfpy.controlled_variables._linearlySampledGridDimension.reference_offset" title="csdfpy.controlled_variables._linearlySampledGridDimension.reference_offset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reference_offset</span></code></a></td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">Quantity</span></code> instance</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#csdfpy.controlled_variables._linearlySampledGridDimension.origin_offset" title="csdfpy.controlled_variables._linearlySampledGridDimension.origin_offset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin_offset</span></code></a></td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">Quantity</span></code> instance</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#csdfpy.controlled_variables._linearlySampledGridDimension.quantity" title="csdfpy.controlled_variables._linearlySampledGridDimension.quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantity</span></code></a></td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#csdfpy.controlled_variables._linearlySampledGridDimension.reverse" title="csdfpy.controlled_variables._linearlySampledGridDimension.reverse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reverse</span></code></a></td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">role:</th><td class="field-body"><cite>reverse</cite></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#csdfpy.controlled_variables._linearlySampledGridDimension.label" title="csdfpy.controlled_variables._linearlySampledGridDimension.label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">label</span></code></a></td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#csdfpy.controlled_variables._linearlySampledGridDimension.period" title="csdfpy.controlled_variables._linearlySampledGridDimension.period"><code class="xref py py-obj docutils literal notranslate"><span class="pre">period</span></code></a></td>
+<td>The attribute returns the period of the grid dimension.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#csdfpy.controlled_variables._linearlySampledGridDimension.fft_output_order" title="csdfpy.controlled_variables._linearlySampledGridDimension.fft_output_order"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fft_output_order</span></code></a></td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ref:</th><td class="field-body"><cite>fft_output_order</cite></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#csdfpy.controlled_variables._linearlySampledGridDimension.quantity" title="csdfpy.controlled_variables._linearlySampledGridDimension.quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantity</span></code></a></td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="attribute">
+<dt id="csdfpy.controlled_variables._linearlySampledGridDimension.number_of_points">
+<code class="descname">number_of_points</code><a class="headerlink" href="#csdfpy.controlled_variables._linearlySampledGridDimension.number_of_points" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">integer</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Assign type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">integer</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>The attribute returns the number of points along the grid dimension.
+The value of this attribute can be updated. This is also the 
+number of points along the reciprocal dimension.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="csdfpy.controlled_variables._linearlySampledGridDimension.sampling_interval">
+<code class="descname">sampling_interval</code><a class="headerlink" href="#csdfpy.controlled_variables._linearlySampledGridDimension.sampling_interval" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">Quantity</span></code> instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Assign type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>The attribute returns the sampling interval along the grid 
+dimension. This attribute can also be used to update the
+sampling interval along the grid dimension. When assigning 
+a value, the dimensionality of the value must be 
+consistent with other members specifying the grid dimension. 
+For example, a <code class="docutils literal notranslate"><span class="pre">sampling_interval</span></code> of “0.2 cm/s”.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="csdfpy.controlled_variables._linearlySampledGridDimension.reference_offset">
+<code class="descname">reference_offset</code><a class="headerlink" href="#csdfpy.controlled_variables._linearlySampledGridDimension.reference_offset" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">Quantity</span></code> instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Assign type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>The attribute returns the reference offset along the
+grid dimension. This attribute can also be used to update the
+reference offset along the grid dimension. When assigning a value, 
+the dimensionality of the value must be 
+consistent with other members specifying the grid dimension. 
+For example, a <code class="docutils literal notranslate"><span class="pre">reference_offset</span></code> of “-10 m/s”.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="csdfpy.controlled_variables._linearlySampledGridDimension.origin_offset">
+<code class="descname">origin_offset</code><a class="headerlink" href="#csdfpy.controlled_variables._linearlySampledGridDimension.origin_offset" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">Quantity</span></code> instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Assign type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>The attribute returns the origin offset along the grid 
+dimension. This attribute can also be used to update the
+orgin offset along the grid dimension. When assigning 
+a value, the dimensionality of the value must be 
+consistent with other members specifying the grid dimension. 
+For example, a <code class="docutils literal notranslate"><span class="pre">origin_offset</span></code> of “120.2 km/s”.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="csdfpy.controlled_variables._linearlySampledGridDimension.quantity">
+<code class="descname">quantity</code><a class="headerlink" href="#csdfpy.controlled_variables._linearlySampledGridDimension.quantity" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Assign type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>The attribute returns the quantity name associated
+with the grid dimension. When assigning a value, 
+this attribute updates the previous 
+value. The quantity name must be 
+consistent with other physical quantities specifying 
+the grid dimension. For example, the <code class="docutils literal notranslate"><span class="pre">quantity</span></code> name, “speed”.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="csdfpy.controlled_variables._linearlySampledGridDimension.reverse">
+<code class="descname">reverse</code><a class="headerlink" href="#csdfpy.controlled_variables._linearlySampledGridDimension.reverse" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Role:</th><td class="field-body"><cite>reverse</cite></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">boolean</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Assign type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">boolean</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>The attribute returns a boolean specifying the
+mapping of the controlled variable coordinates, 
+associated with the grid dimension, to 
+the grid indices. This attribute value can be updated.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="csdfpy.controlled_variables._linearlySampledGridDimension.label">
+<code class="descname">label</code><a class="headerlink" href="#csdfpy.controlled_variables._linearlySampledGridDimension.label" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Assign type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>The attribute returns the label associated 
+with the grid dimension. When assigning a value, 
+this attribute updates the previous value. 
+For example, a <code class="docutils literal notranslate"><span class="pre">label</span></code> of “velocity”.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="csdfpy.controlled_variables._linearlySampledGridDimension.period">
+<code class="descname">period</code><a class="headerlink" href="#csdfpy.controlled_variables._linearlySampledGridDimension.period" title="Permalink to this definition">¶</a></dt>
+<dd><p>The attribute returns the period of the grid dimension.
+When assigned a value, this attribute updates the 
+previous value. For example, a period of “1 km/h”.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">Quantity</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Assign type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="csdfpy.controlled_variables._linearlySampledGridDimension.fft_output_order">
+<code class="descname">fft_output_order</code><a class="headerlink" href="#csdfpy.controlled_variables._linearlySampledGridDimension.fft_output_order" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Ref:</th><td class="field-body"><cite>fft_output_order</cite></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">Boolean</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Assign type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">Boolean</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>The value of this attribute is a boolean. If true, the 
+controlled variable coordinates along this dimension are ordered according to 
+the output of a fast Fourier transformation.  A universal 
+behavior of all fast Fourier transform (FFT) routines 
+is to order the <span class="math notranslate nohighlight">\(N\)</span> output amplitudes by placing the zero 
+“frequency”  at the start of the output array, with 
+positive frequencies increasing in magnitude placed at 
+increasing array offset until reaching  <span class="math notranslate nohighlight">\(N/2 -1\)</span> if <span class="math notranslate nohighlight">\(N\)</span> 
+is even otherwise <span class="math notranslate nohighlight">\((N-1)/2\)</span>, followed by negative frequencies 
+decreasing in magnitude until reaching <span class="math notranslate nohighlight">\(N-1\)</span>.  
+This is also the ordering needed for the input of the inverse FFT.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">quantity</code></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Assign type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>The attribute returns the quantity name associated
+with the grid dimension. When assigning a value, 
+this attribute updates the previous 
+value. The quantity name must be 
+consistent with other physical quantities specifying 
+the grid dimension. For example, the <code class="docutils literal notranslate"><span class="pre">quantity</span></code> name, “speed”.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="csdfpy.controlled_variables._arbitrarilySampledGridDimension.html" class="btn btn-neutral float-right" title="7.1.2. Arbitrarily sampled grid-controlled-variable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../referenceAPI.html" class="btn btn-neutral" title="7. Reference/API documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Deepansh J. Srivastava
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script type="text/javascript" src="../_static/copybutton.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

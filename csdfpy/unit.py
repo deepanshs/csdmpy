@@ -20,7 +20,7 @@ convert = {
 # dimensionless_frequency_ratio = [(u.Hz, _ppm, lambda x: 1000.0 * x, lambda x: x / 1000.0)]
 
 
-def stringToQuantity(string, dtype=float):
+def string_to_quantity(string, dtype=float):
 
     numeric = '0123456789-+.eE*/j^ ()'
     string = string.strip()+' '
@@ -150,7 +150,7 @@ if __name__ == '__main__':
     s = "4 ppm"
     # s = '5 cm^-1 µs °'
     # print (s, type(s))
-    a = stringToQuantity(s)#, dtype=np.float32)
+    a = string_to_quantity(s)#, dtype=np.float32)
     print (timer() - start)
     print (a)
     # print (type(a.unit), a.unit.physical_type)

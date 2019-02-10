@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="5. Reference/API" href="referenceAPI.html" />
+    <link rel="next" title="5. Starting from scrach" href="startingFromScrach.html" />
     <link rel="prev" title="3. Importing csdfpy" href="Importing_csdfpy.html" /> 
 
   
@@ -92,12 +92,17 @@
 <li class="toctree-l1"><a class="reference internal" href="CSDModel.html">2. The core scientific dataset model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Importing_csdfpy.html">3. Importing csdfpy</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">4. Controlled variables</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#linearly-sampled-quantitative-grid-dimension">4.1. Linearly sampled quantitative grid dimension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linearly-sampled-quantitative-grid-dimension">4.1. Linearly sampled quantitative grid dimension</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#attributes-of-linearly-sampled-quantitative-grid-dimension">4.1.1. Attributes of linearly sampled quantitative grid dimension</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#arbitrarily-sampled-quantitative-grid-dimension">4.2. Arbitrarily sampled quantitative grid dimension</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#non-quantitative-dimension">4.3. Non-quantitative dimension</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="referenceAPI.html">5. Reference/API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="startingFromScrach.html">5. Starting from scrach</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/examples.html">6. Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="referenceAPI.html">7. Reference/API documentation</a></li>
 </ul>
 
             
@@ -188,45 +193,69 @@
 </style>
 <div class="section" id="controlled-variables">
 <h1>4. Controlled variables<a class="headerlink" href="#controlled-variables" title="Permalink to this headline">¶</a></h1>
-<p>Based on the sampling type and the types of coordinates,
+<p>The <code class="docutils literal notranslate"><span class="pre">CSDModel</span></code> module is not just designed to read and save a scientific data file.
+In the following subsections, we describe the features of a controlled variable
+object using examples.
+Based on the sampling type and the types of coordinates,
 there are three types of controlled variable objects
-associated with,</p>
-<ul class="simple">
-<li><a class="reference internal" href="#lsgd"><span class="std std-ref">Linearly sampled quantitative grid dimension</span></a></li>
-<li><a class="reference internal" href="#asgd"><span class="std std-ref">Arbitrarily sampled quantitative grid dimension</span></a></li>
-<li><a class="reference internal" href="#nqd"><span class="std std-ref">Non-quantitative dimension</span></a></li>
-</ul>
+associated with,
+<a class="reference internal" href="#lsgd"><span class="std std-ref">Linearly sampled quantitative grid dimension</span></a>, <a class="reference internal" href="#asgd"><span class="std std-ref">Arbitrarily sampled quantitative grid dimension</span></a>, and <a class="reference internal" href="#nqd"><span class="std std-ref">Non-quantitative dimension</span></a>.</p>
 <div class="section" id="linearly-sampled-quantitative-grid-dimension">
 <span id="lsgd"></span><h2>4.1. Linearly sampled quantitative grid dimension<a class="headerlink" href="#linearly-sampled-quantitative-grid-dimension" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">CSDModel</span></code> is not just designed to read a scientific data file.
-In this section, we describe the features of a linearly
+<p>In this subsection, we describe the features of a linearly
 sampled quantitative grid dimension. We illustrate this with
-the following example.</p>
+the following example,</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MRData</span> <span class="k">import</span> <span class="n">csdfpy</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="n">csdfpy</span><span class="o">.</span><span class="n">test_file</span><span class="p">[</span><span class="s1">&#39;test01&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">testdata1</span> <span class="o">=</span> <span class="n">csdfpy</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="n">testdata1</span><span class="p">)</span>
+<span class="go">&lt;MRData.csdfpy.CSDModel object at 0xa24723678&gt;</span>
 </pre></div>
 </div>
-<p>This creates an object <code class="docutils literal notranslate"><span class="pre">testdata1</span></code>, an instance of the <code class="docutils literal notranslate"><span class="pre">CSDModel</span></code> class.
-Here, we focus on the controlled variable,</p>
+<p>This creates <code class="docutils literal notranslate"><span class="pre">testdata1</span></code>, an object of the <code class="docutils literal notranslate"><span class="pre">CSDModel</span></code> class.
+Here, we focus on the <code class="docutils literal notranslate"><span class="pre">controlled_variables</span></code> attribute of <code class="docutils literal notranslate"><span class="pre">testdata1</span></code> object,</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">testdata1</span><span class="o">.</span><span class="n">controlled_variables</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="go">(&lt;MRData.csdfpy.controlled_variables._linearlySampledGrid object at 0xa0bc86150&gt;,)</span>
 </pre></div>
 </div>
-<dl class="docutils">
-<dt>where <code class="docutils literal notranslate"><span class="pre">x</span></code> is a tuple with a single object, that is a <code class="docutils literal notranslate"><span class="pre">_linearlySampledGrid</span></code> object.</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;number of points = &#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">number_of_points</span><span class="p">)</span>
+<p>The variable <code class="docutils literal notranslate"><span class="pre">x</span></code> is a tuple with a single object, that is, a
+<a class="reference internal" href="api/csdfpy.controlled_variables._linearlySampledGridDimension.html#lsgd-api"><span class="std std-ref">_linearlySampledGrid</span></a> object. The controlled
+variable coordinates of this object are</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>
+<span class="go">[0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s</span>
 </pre></div>
 </div>
-</dd>
-</dl>
+<p>The <code class="docutils literal notranslate"><span class="pre">x[0].coordinates</span></code> returns a
+<a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity">Quantity</a>
+object. The value and the unit of this object are</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># To access the numpy array object</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy_array</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">value</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;numpy array = &#39;</span><span class="p">,</span> <span class="n">numpy_array</span><span class="p">)</span>
+<span class="go">numpy array =  [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># To access the astropy.unit object</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">astropy_unit</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">unit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;astropy.unit object = &#39;</span><span class="p">,</span> <span class="n">astropy_unit</span><span class="p">)</span>
+<span class="go">astropy.unit object =  s</span>
+</pre></div>
+</div>
+<p>respectively.</p>
+<div class="section" id="attributes-of-linearly-sampled-quantitative-grid-dimension">
+<h3>4.1.1. Attributes of linearly sampled quantitative grid dimension<a class="headerlink" href="#attributes-of-linearly-sampled-quantitative-grid-dimension" title="Permalink to this headline">¶</a></h3>
+<p>We go through all the attributes of the <a class="reference internal" href="api/csdfpy.controlled_variables._linearlySampledGridDimension.html#lsgd-api"><span class="std std-ref">_linearlySampledGrid</span></a> class
+and how it influences the coordiantes along the dimensions.</p>
+<hr class="docutils" />
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;number of points = &#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">number_of_points</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>This can also be used to assign/update the sampling
 interval of the dimension.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">number_of_points</span> <span class="o">=</span> <span class="mi">5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;new number of points = &#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">number_of_points</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;new coordinates = &#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>
 </pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="arbitrarily-sampled-quantitative-grid-dimension">
@@ -245,7 +274,7 @@ interval of the dimension.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="referenceAPI.html" class="btn btn-neutral float-right" title="5. Reference/API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="startingFromScrach.html" class="btn btn-neutral float-right" title="5. Starting from scrach" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="Importing_csdfpy.html" class="btn btn-neutral" title="3. Importing csdfpy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -1,8 +1,8 @@
 from __future__ import print_function, division
-from .controlled_variables import _linearlySampledGrid as lsg
-from .controlled_variables import _arbitrarilySampledGridDimension as asg
-from .nonQuantitative import _nonQuantitativeControlledVariable as nqcv
-from .uncontrolledVariables import _unControlledVariable as uv
+from .controlled_variables import _linearlySampledGridDimension
+from .controlled_variables import _arbitrarilySampledGridDimension
+from .controlled_variables import _nonQuantitativeGridDimension
+from .uncontrolledVariables import _unControlledVariable
 import numpy as np
 import json
 from scipy.fftpack import fft, fftshift
@@ -18,10 +18,10 @@ test_file = {
     }
 
 
-open_py = open
+_open_py = open
 
 def _import_json(filename):
-    with open_py(filename, "rb") as f:
+    with _open_py(filename, "rb") as f:
         content = f.read()
         return (json.loads(str(content,encoding = "UTF-8")))
 
@@ -31,29 +31,27 @@ def _import_json(filename):
 
 """
 
-
-def open(filename):
+def open(filename=None):
     # print (filename)
     if filename is None:
-        raise Exception("'open' method requires an address to the data file.")
+        raise Exception("'open' method requires a data file address.")
+    
     try:
         dictionary = _import_json(filename)
     except Exception as e:
         raise Exception(e)
-    
 
     ### Create the CSDModel and populate the attribures
-
     _version = dictionary['CSDM']['version']
 
-    csdm = CSDModel(_version, filename)
+    csdm = CSDModel(filename, _version)
 
 
     for dim in dictionary['CSDM']['controlled_variables']:
         csdm.add_controlled_variable(dim)
 
     for dat in dictionary['CSDM']['uncontrolled_variables']:
-        csdm.add_uncontrolled_variable(dat, filename)
+        csdm.add_uncontrolled_variable(dat) #, filename)
 
     _type = [(item.sampling_type == 'grid') for item in csdm.controlled_variables]
 
@@ -71,6 +69,8 @@ def open(filename):
     
     return csdm
 
+def create_new():
+    return CSDModel()
 
 class CSDModel:
 
@@ -116,7 +116,7 @@ class CSDModel:
                  'filename',
                  ]
 
-    def __init__(self, version=None, filename=''):
+    def __init__(self, filename='', version=None):
         """
         The CSDM object 
 
@@ -132,7 +132,7 @@ class CSDModel:
         """ 
 
         if version is None: version = CSDModel.current_version
-        if version in CSDModel._old_incompatible_versions:
+        elif version in CSDModel._old_incompatible_versions:
             raise Exception("Files created with version {0} of the CSD model are no longer supported.".format([version]))
 
         super(CSDModel, self).__setattr__('controlled_variables', ())
@@ -207,7 +207,7 @@ class CSDModel:
                 raise Exception("'coordinates' key is required.")
             else:
                 super(CSDModel, self).__setattr__('controlled_variables', \
-                    self.controlled_variables + (nqcv( \
+                    self.controlled_variables + (_nonQuantitativeGridDimension( \
                         _sampling_type          = default['sampling_type'], \
                         _non_quantitative       = default['non_quantitative'], \
 
@@ -223,7 +223,7 @@ class CSDModel:
 
         if not default['non_quantitative'] and default['coordinates'] is not None:
             super(CSDModel, self).__setattr__('controlled_variables', \
-                    self.controlled_variables + (asg( \
+                    self.controlled_variables + (_arbitrarilySampledGridDimension( \
                         _sampling_type          = default['sampling_type'], \
                         _non_quantitative       = default['non_quantitative'], \
 
@@ -248,7 +248,7 @@ class CSDModel:
                 default['number_of_points'] is not None and \
                 default['sampling_interval'] is not None:
             super(CSDModel, self).__setattr__('controlled_variables', \
-                    self.controlled_variables + (lsg(
+                    self.controlled_variables + (_linearlySampledGridDimension(
                         _sampling_type          = default['sampling_type'], \
                         _non_quantitative       = default['non_quantitative'], \
 
@@ -291,10 +291,10 @@ class CSDModel:
         if arg != ():
             if type(arg[0]) == dict:
                 input_dict = arg[0]
-                if (len(arg) >= 2):
-                    filename = arg[1]
-                else:
-                    filename = ''
+                # if (len(arg) >= 2):
+                #     filename = arg[1]
+                # else:
+                #     filename = ''
             else:
                 error_string = ''.join(['This method only accept keyword arguaments or a dictionary with keywords.',
                                   '\nUse keys() method of dimensions object to find the list of allowed keywords'])
@@ -311,7 +311,7 @@ class CSDModel:
         #     raise Exception("The method either requires input '{0}' or '{1}'.".format('sampling_interval', 'coordinate'))
 
         super(CSDModel, self).__setattr__('uncontrolled_variables', 
-                self.uncontrolled_variables + (uv(
+                self.uncontrolled_variables + (_unControlledVariable(
                                 _name = default['name'],
                                 _unit = default['unit'],
                                 _quantity = default['quantity'], 
@@ -322,7 +322,7 @@ class CSDModel:
                                 _components = default['components'],
                                 _components_URI = default['components_URI'], 
                                 _sampling_schedule = default['sampling_schedule'],
-                                _filename = filename), ) )
+                                _filename = self.filename), ) )
 
 
     # def datum(self, index):
@@ -346,12 +346,12 @@ class CSDModel:
             'period']
         y = []
         for i in range(len(self.controlled_variables)):
-            y.append(self.controlled_variables[i].info())
+            y.append(self.controlled_variables[i]._info())
         pack = np.asarray(y).T, x, ['dimension '+str(i) for i in range(len(self.controlled_variables))]
         return pack
 
 
-    def __str__(self):
+    def data_structure(self):
         dictionary = self._get_python_dictonary(self.filename, print_function=True)
         return (json.dumps(dictionary, sort_keys=False, indent=2))
 
@@ -371,7 +371,6 @@ class CSDModel:
                     self.uncontrolled_variables[i]._get_python_dictonary(
                                 filename = filename,
                                 dataset_index = i, 
-                                number_of_components = _length_of_uncontrolled_variables, 
                                 for_display = print_function, 
                                 version = version))
         csdm = {}
@@ -381,7 +380,7 @@ class CSDModel:
 
     def save(self, filename, version=current_version):
         dictionary = self._get_python_dictonary(filename, version=version)
-        with open_py(filename, 'w') as outfile:
+        with _open_py(filename, 'w') as outfile:
             json.dump(dictionary, outfile, sort_keys=False, indent=2)
 
 
