@@ -1,7 +1,0 @@
-nqcv
-====
-
-.. currentmodule:: csdfpy
-
-.. autoclass:: nqcv
-   :show-inheritance:

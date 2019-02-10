@@ -1,7 +1,0 @@
-uv
-==
-
-.. currentmodule:: csdfpy
-
-.. autoclass:: uv
-   :show-inheritance:

@@ -1,7 +1,0 @@
-lsg
-===
-
-.. currentmodule:: csdfpy
-
-.. autoclass:: lsg
-   :show-inheritance:

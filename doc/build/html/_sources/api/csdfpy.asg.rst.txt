@@ -1,7 +1,0 @@
-asg
-===
-
-.. currentmodule:: csdfpy
-
-.. autoclass:: asg
-   :show-inheritance:
