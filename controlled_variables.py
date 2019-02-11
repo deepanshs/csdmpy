@@ -262,6 +262,17 @@ class _linearlySampledGridDimension:
 
 
 ### --------------- Class Attributes ------------------ ###
+
+    ## gcv type
+    @property
+    def gcv_type(self):
+        """
+        Returns a string specifying the grid-controlled variable type.
+        """
+        return "Linearly sampled grid controlled variable"
+
+
+    ## samping type
     @property
     def sampling_type(self):
         return self._sampling_type
@@ -445,7 +456,6 @@ class _linearlySampledGridDimension:
     @property
     def reverse(self):
         """
-        :role: `reverse`
         :Return type: ``boolean``
         :Assign type: ``boolean``
 
@@ -1108,6 +1118,14 @@ class _arbitrarilySampledGridDimension:
 
 ### --------------- Attributes ------------------ ###
 
+    ## gcv type
+    @property
+    def gcv_type(self):
+        """
+        Returns a string specifying the grid-controlled variable type.
+        """
+        return "Arbitrarily sampled grid controlled variable"
+
     ## sampling_type
     @property
     def sampling_type(self):
@@ -1668,7 +1686,17 @@ class _nonQuantitativeGridDimension:
             raise AttributeError("'{0}' object has no attribute '{1}'".format(__class__.__name__, name))
 
 
-### --------------- Attributes ------------------ ###
+### --------------- Class Attributes ------------------ ###
+
+    ## gcv type
+    @property
+    def gcv_type(self):
+        """
+        Returns a string specifying the grid-controlled variable type.
+        """
+        return "Linearly sampled grid controlled variable"
+
+
     ## sampling_type
     @property
     def sampling_type(self):
@@ -1682,6 +1710,15 @@ class _nonQuantitativeGridDimension:
     ## label
     @property
     def label(self):
+        """
+        :Return type: ``string``
+        :Assign type: ``string``
+
+        The attribute returns the label associated 
+        with the grid dimension. When assigning a value, 
+        this attribute updates the previous value. 
+        For example, a ``label`` of "Atom symbols".
+        """
         return self._label
     @label.setter
     def label(self, label=''):
@@ -1694,6 +1731,15 @@ class _nonQuantitativeGridDimension:
     ## reverse
     @property
     def reverse(self):
+        """
+        :Return type: ``boolean``
+        :Assign type: ``boolean``
+
+        The attribute returns a boolean specifying the
+        mapping of the controlled variable coordinates, 
+        associated with the grid dimension, to 
+        the grid indices. This attribute value can be updated. 
+        """
         return self._reverse
     @reverse.setter
     def reverse(self, value=False):
@@ -1703,11 +1749,23 @@ class _nonQuantitativeGridDimension:
     ## number_of_points
     @property
     def number_of_points(self):
+        """
+        :Return type: ``integer``
+
+        The attribute returns the number of points along the dimension.
+        """
         return self._number_of_points
 
     ## coordinates
     @property
     def coordinates(self):
+        """
+        :Return type: ``numpy array`` of strings.
+
+        The attribute returns the controlled variable coordinates
+        along the dimension. The order of these coordinates
+        depends on the value of the ``reverse`` attribute of the class.
+        """
         return self._coordinates
 
 
