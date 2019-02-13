@@ -1,6 +1,6 @@
 # folders #
-__pycache__/**
-testFiles/**
+__pycache__/
+testFiles/
 
 # Compiled source #
 ###################
