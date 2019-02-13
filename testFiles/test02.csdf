@@ -12,7 +12,7 @@
     ],
     "controlled_variables": [
       {
-        "coordinates": [
+        "values": [
             "-0.28758166 cm",
             "-0.22712233 cm",
             "-0.19913859 cm",

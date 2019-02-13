@@ -2,14 +2,14 @@ from __future__ import print_function, division
 import numpy as np
 import json
 from scipy.fftpack import fftshift
-from .unit import valueObjectFormat, unitToLatex, _ppm, string_to_quantity
-from ._csdmChecks import (_assign_and_check_unit_consistency, 
-                      _check_unit_consistency,
-                      _check_and_assign_bool,
-                      _check_quantity,
-                      _check_value_object,
-                    #   _default_units,
-                      _axis_label)
+from .unit import valueObjectFormat, unitToLatex, _ppm, string_to_quantity, string_to_unit
+from ._csdmChecks import (
+                    _assign_and_check_unit_consistency, 
+                    _check_unit_consistency,
+                    _check_and_assign_bool,
+                    _check_quantity,
+                    _check_value_object,
+                    _axis_label)
 
 # class gcvObject:
 #     def __init__(self, dictionary):
@@ -92,21 +92,25 @@ class _linearlySampledGridDimension:
     .. warning :: 
         This class should not be used directly. Instead, 
         use the ``CSDModel`` object to access the attributes
-        and methods of this class. See example ref???
+        and methods of this class. See example, :ref:`lsgd`.
         
-    The class returns an object which represents a controlled variable.
-    The corresponding dimension is quantitative and sampled linearly. 
-    Given the sampling interval as `m_k`, number of points as `N_k`,
-    reference offset as `c_k` and the origin offset as `o_k` for the
-    `k^{th}` dimension, the coordinates along this dimension is
+    This class returns an object which represents a physical 
+    controlled variable, sampled linearly along a grid dimension. 
+    Let :math:`m_k` be the sampling interval, :math:`N_k \ge 1` be the 
+    number of points, :math:`c_k` be the reference offset, and 
+    :math:`o_k` be the origin offset along the :math:`k^{th}` 
+    grid dimension, then the coordinates along the
+    grid dimension are given as
 
     .. math ::
-        x_k^{ref} = [m_k j ]_{j=0}^{N_k-1} - c_k
+        \mathbf{X}_k^\mathrm{ref} = [m_k j ]_{j=0}^{N_k-1} - c_k \mathbf{1},
     .. math ::
-        x_k^{abs} = x_k^{ref} + o_k
+        \mathbf{X}_k^\mathrm{abs} = \mathbf{X}_k^\mathrm{ref} + o_k \mathbf{1},
 
-    where :math:`x_k^{ref}` is an array of the ``coordinates`` and :math:`x_k^{abs}`
-    is an array of the ``absolute_coordinate``.
+    where :math:`\mathbf{X}_k^\mathrm{ref}` is an ordered array of the 
+    reference controlled variable coordinates,
+    :math:`\mathbf{X}_k^\mathrm{abs}` is an ordered array of the absolute 
+    controlled variable coordinates, and :math:`\mathbf{1}` is an array of ones.
     """
 
     __slots__ = ['_sampling_type', 
@@ -273,12 +277,11 @@ class _linearlySampledGridDimension:
 
 
     ## samping type
-    @property
     def sampling_type(self):
         return self._sampling_type
 
+
     ## non_quantitative
-    @property
     def non_quantitative(self):
         return self._non_quantitative
 
@@ -286,9 +289,10 @@ class _linearlySampledGridDimension:
     @property
     def period(self):
         """ 
-        The attribute returns the period of the grid dimension.
-        When assigned a value, this attribute updates the 
-        previous value. For example, a period of "1 km/h".
+        The period of the grid dimension, if periodic.
+        The default value is `None`, that is, the grid
+        dimension is considered non-periodic.
+        This attribute can be updated. For example, a period of "1 km/h".
 
         :Return type: ``Quantity``
         :Assign type: ``string``
@@ -302,13 +306,14 @@ class _linearlySampledGridDimension:
     @property
     def reciprocal_period(self):
         """ 
+        The period of the reciprocal grid dimension, if periodic.
+        The default value is `None`, that is, the reciprocal grid
+        dimension is considered non-periodic.
+        This attribute can be updated. 
+        For example, the reciprocal_period of "0.1 h/km".
+
         :Return type: ``Quantity`` instance
         :Assign type: ``string``
-
-        The attribute returns the period of the 
-        reciprocal grid dimension. When assigned a value, this
-        attribute updates the previous value.
-        For example, the ``reciprocal_period`` of "0.1 h/km".
         """
         return self._reciprocal_period
     @reciprocal_period.setter
@@ -320,51 +325,55 @@ class _linearlySampledGridDimension:
     @property
     def quantity(self):
         """
+        The quantity name associated with the physical dimension.
+        For example, the quantity name, "speed".
+        In version 0.0.9, this value cannot be updated. 
+        
         :Return type: ``string``
-        :Assign type: ``string``
-
-        The attribute returns the quantity name associated
-        with the grid dimension. When assigning a value, 
-        this attribute updates the previous 
-        value. The quantity name must be 
-        consistent with other physical quantities specifying 
-        the grid dimension. For example, the ``quantity`` name, "speed".
         """
+
+        # """
+        # When assigning a value, the quantity name must be 
+        # consistent with other physical quantities specifying 
+        # the grid dimension. 
+        # """
         return self._quantity
-    @quantity.setter
-    def quantity(self, string = ''):
-        ## To do: add a check for quantity
-        self.set_attribute('_quantity', string)
+    # @quantity.setter
+    # def quantity(self, string = ''):
+    #     ## To do: add a check for quantity
+    #     self.set_attribute('_quantity', string)
 
     ## reciprocal Quantity
     @property
     def reciprocal_quantity(self):
         """
-        :Return type: ``string``
-        :Assign type: ``string``
+        The quantity name associated with the reciprocal 
+        physical dimension. For example, the reciprocal 
+        quantity name, "inverse speed".
+        In version 0.0.9, this value cannot be updated.
 
-        The attribute returns the quantity name associated 
-        with the reciprocal grid dimension. 
-        When assigning a value, this attribute updates the 
-        previous value. 
-        The quantity name must be consistent with other 
-        physical quantities specifying the reciprocal 
-        grid dimension. For example, the ``reciprocal_quantity`` name, "inverse speed".
+        :Return type: ``string``
         """
+        # """
+        # When assigning a value, the 
+        # quantity name must be consistent with the other 
+        # physical quantities specifying the reciprocal 
+        # grid dimension.
+        # """
         return self._reciprocal_quantity
-    @reciprocal_quantity.setter
-    def reciprocal_quantity(self, string = ''):
-        ## To do: add a check for reciprocal quantity
-        self.set_attribute('_reciprocal_quantity', string)
+    # @reciprocal_quantity.setter
+    # def reciprocal_quantity(self, string = ''):
+    #     ## To do: add a check for reciprocal quantity
+    #     self.set_attribute('_reciprocal_quantity', string)
 
     @property
     def unit(self):
-        """
-        :Return type: ``string``
-
-        The attribute returns the unit associated 
-        with the grid dimension. For example, a unit "km/h".
-        """
+        # """
+        # Returns the unit associated with the physical dimension.
+        # For example, a unit of "km/h". This attribute cannot be updated.
+        
+        # :Return type: ``string``
+        # """
         if self._made_dimensionless:
             unit = self._dimensionless_unit
         else:
@@ -373,13 +382,12 @@ class _linearlySampledGridDimension:
 
     @property
     def reciprocal_unit(self):
-        """
-        :Return type: ``string``
+        # """
+        # Returns the unit associated with the reciprocal grid dimension.
+        # For example, a unit a "h/km". This attribute cannot be updated.
 
-        The attribute returns the unit associated 
-        with the reciprocal grid dimension. 
-        For example, a unit "h/km".
-        """
+        # :Return type: ``string``
+        # """
         if self._reciprocal_made_dimensionless:
             unit = self._reciprocal_dimensionless_unit
         else:
@@ -390,13 +398,12 @@ class _linearlySampledGridDimension:
     @property
     def label(self):
         """
+        The label associated with the grid dimension.
+        For example, the label, "velocity".
+        This attribute can be updated. 
+
         :Return type: ``string``
         :Assign type: ``string``
-
-        The attribute returns the label associated 
-        with the grid dimension. When assigning a value, 
-        this attribute updates the previous value. 
-        For example, a ``label`` of "velocity".
         """
         return self._label
     @label.setter
@@ -414,13 +421,12 @@ class _linearlySampledGridDimension:
     @property
     def reciprocal_label(self):
         """
+        The label associated with the reciprocal grid dimension.
+        For example, the reciprocal label, "inverse velocity".
+        This attribute can be updated. 
+
         :Return type: ``string``
         :Assign type: ``string``
-
-        The attribute returns the label associated 
-        with the reciprocal grid dimension. When assigning a value, 
-        this attribute updates the previous value. 
-        For example, a ``reciprocal_label`` of "inverse velocity".
         """
         return self._reciprocal_label
     @reciprocal_label.setter
@@ -456,13 +462,24 @@ class _linearlySampledGridDimension:
     @property
     def reverse(self):
         """
+        The mapping order of :math:`\mathbf{X}_k^\mathrm{ref}` and 
+        :math:`\mathbf{X}_k^\mathrm{abs}` coordinates relative to the grid indices.
+        If true, these coordinates are mapped to the grid indices
+        in the reverse order. 
+        This attribute can be updated. 
+        For example, consider
+
+        .. math ::
+            \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3, 4] \mathrm{ m/s}
+
+        when reverse is false, then, with the reverse set to true, the order
+        follows
+
+        .. math ::
+            \mathbf{X}_k^\mathrm{ref} = [4, 3, 2, 1, 0] \mathrm{ m/s}
+
         :Return type: ``boolean``
         :Assign type: ``boolean``
-
-        The attribute returns a boolean specifying the
-        mapping of the controlled variable coordinates, 
-        associated with the grid dimension, to 
-        the grid indices. This attribute value can be updated. 
         """
         return self._reverse
     @reverse.setter
@@ -475,13 +492,14 @@ class _linearlySampledGridDimension:
     @property
     def reciprocal_reverse(self):
         """
+        The mapping order of :math:`\mathbf{X_r}_k^\mathrm{ref}` and 
+        :math:`\mathbf{X_r}_k^\mathrm{ref}` coordinates, 
+        from the reciprocal grid dimension, relative to the grid indices.
+        If true, these coordinates are mapped to the grid indices in 
+        the reverse order. This attribute can be updated.  
+
         :Return type: ``boolean``
         :Assign type: ``boolean``
-
-        The attribute returns a boolean specifying the
-        mapping of the controlled variable coordinates 
-        associated with the reciprocal grid dimension 
-        to the grid indices. This attribute value can be updated. 
         """
         return self._reciprocal_reverse
     @reciprocal_reverse.setter
@@ -497,15 +515,13 @@ class _linearlySampledGridDimension:
     @property
     def reference_offset(self):
         """
-        :Return type: ``Quantity`` instance
-        :Assign type: ``string``
-
-        The attribute returns the reference offset along the
-        grid dimension. This attribute can also be used to update the
-        reference offset along the grid dimension. When assigning a value, 
-        the dimensionality of the value must be 
+        The reference offset, :math:`c_k`, along the grid dimension.
+        When assigning a value, the dimensionality of the value must be 
         consistent with other members specifying the grid dimension. 
-        For example, a ``reference_offset`` of "-10 m/s".
+        For example, a reference offset of "-10 m/s".
+
+        :Return type: ``Quantity`` object
+        :Assign type: ``string``
         """
         return self._reference_offset
     @reference_offset.setter
@@ -519,15 +535,14 @@ class _linearlySampledGridDimension:
     @property
     def reciprocal_reference_offset(self):
         """
-        :Return type: ``Quantity`` instance
-        :Assign type: ``string``
+        The reference offset along the reciprocal grid dimension.
+        When assigning a value, the dimensionality of the value must be 
+        consistent with the dimensionality of the other members 
+        specifying the reciprocal grid dimension.
+        For example, a reciprocal reference offset of "-3.0 s/cm".
 
-        The attribute returns the reference offset along the reciprocal
-        grid dimension. This attribute can also be used to update the
-        reference offset along the reciprocal grid dimension. When assigning 
-        a value, the dimensionality of the value must be 
-        consistent with other members specifying the reciprocal grid dimension. 
-        For example, a ``reciprocal_reference_offset`` of "-3.0 s/cm".
+        :Return type: ``Quantity`` object
+        :Assign type: ``string``
         """
         return self._reciprocal_reference_offset
     @reciprocal_reference_offset.setter
@@ -541,15 +556,14 @@ class _linearlySampledGridDimension:
     @property
     def origin_offset(self):
         """
-        :Return type: ``Quantity`` instance
-        :Assign type: ``string``
+        The origin offset, :math:`o_k`, along the grid dimension.
+        When assigning a value, the dimensionality of the value must be 
+        consistent with the dimensionality of the other 
+        members specifying the grid dimension. 
+        For example, an origin offset of "120.2 km/s".
 
-        The attribute returns the origin offset along the grid 
-        dimension. This attribute can also be used to update the
-        orgin offset along the grid dimension. When assigning 
-        a value, the dimensionality of the value must be 
-        consistent with other members specifying the grid dimension. 
-        For example, a ``origin_offset`` of "120.2 km/s".
+        :Return type: ``Quantity`` object
+        :Assign type: ``string``
         """
         return self._origin_offset
     @origin_offset.setter
@@ -563,15 +577,14 @@ class _linearlySampledGridDimension:
     @property
     def reciprocal_origin_offset(self):
         """
-        :Return type: ``Quantity`` instance
-        :Assign type: ``string``
+        The origin offset along the reciprocal grid dimension.
+        When assigning a value, the dimensionality of the value must be 
+        consistent with the dimensionality of the other members 
+        specifying the reciprocal grid dimension. 
+        For example, a reciprocal origin offset of "10.1 s/m".
 
-        The attribute returns the origin offset along the reciprocal
-        grid dimension. This attribute can also be used to update the
-        origin offset along the reciprocal grid dimension. When assigning 
-        a value, the dimensionality of the value must be 
-        consistent with other members specifying the reciprocal grid dimension. 
-        For example, a ``reciprocal_origin_offset`` of "10.1 s/m".
+        :Return type: ``Quantity`` object
+        :Assign type: ``string``
         """
         return self._reciprocal_origin_offset
     @reciprocal_origin_offset.setter
@@ -585,20 +598,28 @@ class _linearlySampledGridDimension:
     @property
     def sampling_interval(self):
         """
-        :Return type: ``Quantity`` instance
-        :Assign type: ``string``
+        The sampling interval, :math:`m_k`, along the grid dimension.
+        When assigning a value, the dimensionality of the value must be 
+        consistent with the dimensionality of the other 
+        members specifying the grid dimension. The numerical value 
+        associated with the sampling interval must be a positive real
+        number. For example, a sampling_interval of "0.2 cm/s".
 
-        The attribute returns the sampling interval along the grid 
-        dimension. This attribute can also be used to update the
-        sampling interval along the grid dimension. When assigning 
-        a value, the dimensionality of the value must be 
-        consistent with other members specifying the grid dimension. 
-        For example, a ``sampling_interval`` of "0.2 cm/s".
+        .. note:: The sampling interval along a grid and the reciprocal 
+            grid dimension follow the Nyquist–Shannon sampling theorem. 
+            Thus, updating the ``sampling_interval`` will trigger an 
+            update on its reciprocal counterpart. 
+
+        :Return type: ``Quantity`` object
+        :Assign type: ``string``
         """
         return self._sampling_interval
     @sampling_interval.setter
     def sampling_interval(self, value):
         _value = _assign_and_check_unit_consistency(value, self.unit)
+        if _value.value < 0.0:
+            raise ValueError('The numerical value of the sampling interval \
+is a positive real number. A value of {0} is provide.'.format(_value))
         self.set_attribute('_sampling_interval', _value)
         ### Reciprocal sampling interval is calculated assuming a Fourier inverse 
         super(_linearlySampledGridDimension, self).__setattr__("_reciprocal_sampling_interval", \
@@ -610,25 +631,22 @@ class _linearlySampledGridDimension:
     @property
     def reciprocal_sampling_interval(self):
         """
-        :Return type: ``Quantity`` instance
+        The sampling interval along the reciprocal grid dimension.
+        When assigning a value, the dimensionality of the value must be 
+        consistent with the dimensionality of the other members 
+        specifying the reciprocal grid dimension. 
+        For example, a reciprocal_sampling_interval of "0.5 s/m".
+
+        :Return type: ``Quantity`` object
         :Assign type: ``string``
-
-        The attribute returns the sampling interval along the reciprocal
-        grid dimension. This attribute can also be used to update the
-        sampling interval along the reciprocal grid dimension. When assigning 
-        a value, the dimensionality of the value must be 
-        consistent with other members specifying the reciprocal grid dimension. 
-        For example, a ``reciprocal_sampling_interval`` of "0.5 s/m".
-
-        The ``sampling_interval`` along a grid dimension and the 
-        ``reciprocal_sampling_interval`` along the reciprocal grid dimension
-        follow the Nyquist–Shannon sampling theorem. Thus, updating either
-        one will trigger an update on the other. 
         """
         return self._reciprocal_sampling_interval
     @reciprocal_sampling_interval.setter
     def reciprocal_sampling_interval(self, value):
         _value = _assign_and_check_unit_consistency(value, self.reciprocal_unit)
+        if _value.value < 0.0:
+            raise ValueError('The numerical value of the reciprocal sampling interval \
+is a positive real number. A value of {0} is provide.'.format(_value))
         self.set_attribute('_reciprocal_sampling_interval', _value)
         ### Sampling interval is calculated assuming a Fourier inverse 
         super(_linearlySampledGridDimension, self).__setattr__("sampling_interval", \
@@ -636,22 +654,25 @@ class _linearlySampledGridDimension:
         # self.sampling_interval = 1/(_value*self.number_of_points)
         self._get_reciprocal_coordinates()
 
+
     ## number_of_points
     @property
     def number_of_points(self):
         """
+        The number of points, :math:`N_k \ge 1`, along the grid dimension.
+        The value can be updated. 
+
         :Return type: ``integer``
         :Assign type: ``integer``
-
-        The attribute returns the number of points along the grid dimension.
-        The value of this attribute can be updated. This is also the 
-        number of points along the reciprocal dimension.
         """
         return self._number_of_points
     @number_of_points.setter
     def number_of_points(self, value):
-        if isinstance(value, int):
-            self.set_attribute('_number_of_points', value)
+        if not isinstance(value, int):
+            raise ValueError('An integer type is required, a type {0} is provided.'.format(type(value)))
+        if value <= 0:
+            raise ValueError('An positive integer value is required, a value of {0} is provided.'.format(value))
+        self.set_attribute('_number_of_points', value)
         self._get_coordinates()
 
     ### The following properties will control the order of the 
@@ -660,12 +681,12 @@ class _linearlySampledGridDimension:
     @property
     def coordinates(self):
         """
-        :Return type: ``Quantity`` instance
-
-        The attribute returns the controlled variable coordinates
+        The ordered array, :math:`\mathbf{X}_k^\mathrm{ref}`,
         along the grid dimension. The order of these coordinates
         depends on the value of the ``reverse`` and the 
         ``fft_output_order`` attributes of the class.
+
+        :Return type: ``Quantity`` object
         """
         _value = 1.0
         coordinates = self._coordinates
@@ -682,12 +703,12 @@ class _linearlySampledGridDimension:
     @property
     def absolute_coordinates(self):
         """
-        :Return type: ``Quantity`` instance
-
-        The attribute returns the absolute controlled variable coordinates
+        An ordered array, :math:`\mathbf{X}_k^\mathrm{abs}`, 
         along the grid dimension. The order of these coordinates
-        depends on the value of the :ref:`reverse` and the 
+        depends on the value of the ``reverse`` and the 
         ``fft_output_order`` attributes of the class.
+
+        :Return type: ``Quantity`` object
         """
         return self.coordinates + self.origin_offset.to(self.unit)
 
@@ -696,12 +717,13 @@ class _linearlySampledGridDimension:
     @property
     def reciprocal_coordinates(self):
         """
-        :Return type: ``Quantity`` instance
-
-        The attribute returns the controlled variable coordinates
-        along the reciprocal grid dimension. The order of these coordinates
+        An ordered array of controlled variable coordinates 
+        along the reciprocal grid dimension.
+        The order of these coordinates
         depends on the value of the ``reciprocal_reverse`` 
         attributes of the class.
+
+        :Return type: ``Quantity`` object
         """
         _value = 1.0
         reciprocal_coordinates = self._reciprocal_coordinates
@@ -717,12 +739,13 @@ class _linearlySampledGridDimension:
     @property
     def reciprocal_absolute_coordinates(self):
         """
-        :Return type: ``Quantity`` instance
-
-        The attribute returns the absolute controlled variable coordinates
-        along the reciprocal grid dimension. The order of these coordinates
+        An ordered array of absolute controlled variable coordinates 
+        along the reciprocal grid dimension.
+        The order of these coordinates
         depends on the value of the ``reciprocal_reverse`` 
         attributes of the class.
+
+        :Return type: ``Quantity`` object
         """
         return self.reciprocal_coordinates + self.reciprocal_origin_offset.to(self.reciprocal_unit)
 
@@ -730,21 +753,29 @@ class _linearlySampledGridDimension:
     @property
     def fft_output_order(self):
         """
-        :ref: `fft_output_order`
+        A boolean specifying if the coordinates along the grid dimension
+        are ordered according to the output of a fast Fourier transform 
+        (FFT) routine. A universal behavior of the FFT routine
+        is to order the :math:`N_k` output amplitudes by placing the zero 
+        `frequency` at the start of the output array, with 
+        positive `frequencies` increasing in magnitude placed at 
+        increasing array offset until reaching  :math:`\\frac{N_k}{2} -1` if :math:`N_k` 
+        is even, otherwise :math:`\\frac{N_k-1}{2}`, followed by negative frequencies 
+        decreasing in magnitude until reaching :math:`N_k-1`.  
+        This is also the ordering needed for the input of the inverse FFT. 
+        For example, consider
+
+        .. math ::
+            \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3, 4, 5, 6, 7] \mathrm{ m/s}
+
+        when fft output order is false, then, with the fft output order set to true, the order
+        follows
+
+        .. math ::
+            \mathbf{X}_k^\mathrm{ref} = [0 ,1 ,2, 3, -4, -3, -2, -1] \mathrm{ m/s}
+
         :Return type: ``Boolean``
         :Assign type: ``Boolean``
-
-        The value of this attribute is a boolean. If true, the 
-        controlled variable coordinates along this dimension are ordered according to 
-        the output of a fast Fourier transformation.  A universal 
-        behavior of all fast Fourier transform (FFT) routines 
-        is to order the :math:`N` output amplitudes by placing the zero 
-        "frequency"  at the start of the output array, with 
-        positive frequencies increasing in magnitude placed at 
-        increasing array offset until reaching  :math:`N/2 -1` if :math:`N` 
-        is even otherwise :math:`(N-1)/2`, followed by negative frequencies 
-        decreasing in magnitude until reaching :math:`N-1`.  
-        This is also the ordering needed for the input of the inverse FFT. 
         """
         return self._fft_output_order
     @fft_output_order.setter
@@ -831,41 +862,39 @@ class _linearlySampledGridDimension:
         _unit = self._unit
         _number_of_points = self.number_of_points
         _sampling_interval = self.sampling_interval.to(_unit)
-        # _reference_offset = self.reference_offset.to(_unit)
-        # _origin_offset = self.origin_offset.to(_unit)
 
         _index = np.arange(_number_of_points, dtype=np.float64)
+
         if self.fft_output_order:
-            if _number_of_points%2 == 0:
-                _index -= _number_of_points/2.0
-            else:
-                _index -= (_number_of_points-1)/2.0            
-        _value = _index * _sampling_interval# - _reference_offset
+            _index = np.empty(_number_of_points, dtype=np.int)
+            N = (_number_of_points-1)//2 + 1
+            p1 = np.arange(0, N, dtype=np.int)
+            _index[:N] = p1
+            p2 = np.arange(-(_number_of_points//2), 0, dtype=np.int)
+            _index[N:] = p2
+        
+        _value = _index * _sampling_interval
 
         # if self.made_dimensionless:
         #     _value/=(_origin_offset + _reference_offset)
         #     _value = _value.to(_ppm)
         self.set_attribute('_coordinates', _value)
-        # self.set_attribute('_absolute_coordinates', _value + _origin_offset)
 
     def _get_reciprocal_coordinates(self):
         _unit = self._reciprocal_unit
         _number_of_points = self.number_of_points
         _sampling_interval = self.reciprocal_sampling_interval.to(_unit)
-        # _reference_offset = self.reciprocal_reference_offset.to(_unit)
-        # _origin_offset = self.reciprocal_origin_offset.to(_unit)
 
-        # print (_unit, _number_of_points, _sampling_interval, _reference_offset, _origin_offset)
         _index = np.arange(_number_of_points, dtype=np.float64)
+
         if not self.fft_output_order:
             if _number_of_points%2 == 0:
                 _index -= _number_of_points/2.0
             else:
                 _index -= (_number_of_points-1)/2.0
-        _value =  _index * _sampling_interval #- _reference_offset 
+        _value =  _index * _sampling_interval 
 
         self.set_attribute('_reciprocal_coordinates', _value)
-        # self.set_attribute('_reciprocal_absolute_coordinates', _value + _origin_offset)
 
     def _swapValues(self, a, b):
         temp = self.__getattribute__(a)
@@ -952,15 +981,22 @@ class _linearlySampledGridDimension:
 
     def to(self, unit):
         """
-        Converts the unit of the controlled variables coordinates to 
-        ``unit``. This method wraps the ``to`` method from the ``Quantity`` 
-        class. The methods returns a ``Quantity`` object.
+        Converts the unit of the controlled variable coordinates to 
+        `unit`. This method is a wrapper of the `to` method 
+        from the `Quantity <http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity.to>`_ class. 
+
+        Parameters
+        ----------
+        unit : string
+            A string containing a unit with the same dimensionality as the
+            controlled variable coordinates.
+
         """
         if unit.strip() == 'ppm': 
             self.set_attribute('_dimensionless_unit', _ppm)
         else:
-            self.set_attribute('_unit', _check_unit_consistency(string_to_quantity('1 '+unit), self.unit).unit)
-        return self.coordinates
+            self.set_attribute('_unit', _check_unit_consistency(1.0*string_to_unit(unit), self.unit).unit)
+        # return self.coordinates
 
     def __iadd__(self, other):
         self.reference_offset -= _assign_and_check_unit_consistency(other, self.unit) 
@@ -983,17 +1019,43 @@ class _linearlySampledGridDimension:
 
 class _arbitrarilySampledGridDimension:
 
+    """
+    .. warning :: 
+        This class should not be used directly. Instead, 
+        use the ``CSDModel`` object to access the attributes
+        and methods of this class. See example, :ref:`asgd`.
+        
+    This class returns an object which represents a physical 
+    controlled variable, sampled arbitrarily along a grid dimension. 
+    Let :math:`\mathbf{A}_k` be an ordered array of physical 
+    quantities, :math:`c_k` be the reference offset, and 
+    :math:`o_k` be the origin offset along the :math:`k^{th}` 
+    grid dimension, then the coordinates along this dimension
+    are given as
+
+    .. math ::
+        \mathbf{X}_k^\mathrm{ref} = \mathbf{A}_k - c_k \mathbf{1},
+    .. math ::
+        \mathbf{X}_k^\mathrm{abs} = \mathbf{X}_k^\mathrm{ref} + o_k \mathbf{1},
+
+    where :math:`\mathbf{X}_k^\mathrm{ref}` is an ordered array of the 
+    reference controlled variable coordinates,
+    :math:`\mathbf{X}_k^\mathrm{abs}` is an ordered array of the absolute 
+    controlled variable coordinates, and 
+    :math:`\mathbf{1}` is an array of ones.
+    """
+
     __slots__ = ['_sampling_type',
                  '_non_quantitative',
                  '_quantity',
                  '_number_of_points',
-                 '_coordinates',
                  '_reference_offset',
                  '_origin_offset', 
                  '_reverse',
                  '_label',
                  '_period',
                  '_made_dimensionless',
+                 '_coordinates',
 
                  '_reciprocal_coordinates',
                  '_reciprocal_quantity',
@@ -1015,7 +1077,7 @@ class _arbitrarilySampledGridDimension:
                  
                  '_type']
 
-    def __init__(self,  _coordinates, 
+    def __init__(self,  _values, 
                         _reference_offset = None,
                         _origin_offset = None,
                         _quantity=None, 
@@ -1039,10 +1101,10 @@ class _arbitrarilySampledGridDimension:
         self.set_attribute('_non_quantitative', _non_quantitative)
         self.set_attribute('_type', 'non-linear')
 
-        self.set_attribute('_number_of_points', len(_coordinates))
+        self.set_attribute('_number_of_points', len(_values))
         self.set_attribute('_reciprocal_number_of_points', self.number_of_points)
 
-        _unit = _assign_and_check_unit_consistency(_coordinates[0], None).unit
+        _unit = _assign_and_check_unit_consistency(_values[0], None).unit
         _reciprocal_unit =  _unit**-1
 
         self.set_attribute('_unit', _unit)
@@ -1090,15 +1152,14 @@ class _arbitrarilySampledGridDimension:
         self.set_attribute('_label', _label)
         self.set_attribute('_reciprocal_label', _reciprocal_label)
 
-        # [print (item) for item in _coordinates]
-        _value = [_assign_and_check_unit_consistency(item, _unit).to(_unit).value \
-                                for item in _coordinates]
-        # print (_value)
-        _value = np.asarray(_value, dtype=np.float64)*_unit
-        self.set_attribute('_coordinates', _value)
+        ## coordinates ##
+        self._getCoordinates(_values)
+
+        ## Reciprocal coordinates ##
         self.set_attribute('_reciprocal_coordinates', None)
+
         # self.set_attribute('_reciprocal_absolute_coordinates', None)
-        self._getCoordinates()
+        
 
     def set_attribute(self, name, value):
         super(_arbitrarilySampledGridDimension, self).__setattr__(name, value)
@@ -1133,7 +1194,7 @@ class _arbitrarilySampledGridDimension:
 
 
     ## non_quantitative
-    @property
+    # @property
     def non_quantitative(self):
         return self._non_quantitative
 
@@ -1142,12 +1203,13 @@ class _arbitrarilySampledGridDimension:
     @property
     def period(self):
         """ 
-        :Return type: ``Quantity`` instance
-        :Assign type: ``string``
+        The period of the grid dimension, if periodic.
+        The default value is `None`, that is, the grid
+        dimension is considered non-periodic.
+        This attribute can be updated. For example, a period of "1 cm".
 
-        The attribute returns the period of the dimension.
-        When assigned a value, this attribute updates the 
-        previous value. For example, a ``period`` of "1 cm".
+        :Return type: ``Quantity``
+        :Assign type: ``string``
         """
         return self._period
     @period.setter
@@ -1159,13 +1221,14 @@ class _arbitrarilySampledGridDimension:
     @property
     def reciprocal_period(self):
         """ 
+        The period of the reciprocal grid dimension, if periodic.
+        The default value is `None`, that is, the reciprocal grid
+        dimension is considered non-periodic.
+        This attribute can be updated. 
+        For example, the reciprocal_period of "0.1 cm^-1".
+
         :Return type: ``Quantity`` instance
         :Assign type: ``string``
-
-        The attribute returns the period of the 
-        reciprocal dimension. When assigned a value, this
-        attribute updates the previous value.
-        For example, the ``reciprocal_period`` of "0.1 cm^-1".
         """
         return self._reciprocal_period
     @reciprocal_period.setter
@@ -1178,50 +1241,57 @@ class _arbitrarilySampledGridDimension:
     @property
     def quantity(self):
         """
-        :Return type: ``string``
-        :Assign type: ``string``
+        The quantity name associated with the physical dimension.
+        For example, the quantity name, "length".
+        In version 0.0.9, this value cannot be updated.
 
-        The attribute returns the quantity name associated
-        with the dimension. When assigning a value, 
-        this attribute updates the previous 
-        value. The quantity name must be 
-        consistent with other physical quantities specifying 
-        the dimension. For example, the ``quantity`` name, "length".
+        :Return type: ``string``
         """
+        # """ When assigning a value, 
+        # this attribute updates the previous 
+        # value. The quantity name must be 
+        # consistent with other physical quantities specifying 
+        # the dimension. """
         return self._quantity
-    @quantity.setter
-    def quantity(self, string = ''):
-        self.set_attribute('_quantity', string)
+    # @quantity.setter
+    # def quantity(self, string = '', force_update=False):
+    #     if self._unit.physical_type == string:
+    #         self.set_attribute('_quantity', string)
+    #     else:
+    #         raise Warning('Then quantity name {0} is not recognized \
+    #             by the astropy.units library.'.format([string]))
 
 
     ## reciprocal Quantity
     @property
     def reciprocal_quantity(self):
         """
-        :Return type: ``string``
-        :Assign type: ``string``
+        The quantity name associated with the reciprocal 
+        physical dimension. For example, the reciprocal 
+        quantity name, "wavelength".
+        In version 0.0.9, this value cannot be updated.
 
-        The attribute returns the quantity name associated 
-        with the reciprocal dimension. 
-        When assigning a value, this attribute updates the 
-        previous value. 
-        The quantity name must be consistent with other 
-        physical quantities specifying the reciprocal 
-        grid dimension. For example, the ``reciprocal_quantity`` name, "wavenumber".
+        :Return type: ``string``
         """
+        # """
+        # When assigning a value, the 
+        # quantity name must be consistent with the other 
+        # physical quantities specifying the reciprocal 
+        # grid dimension.
+        # """
         return self._reciprocal_quantity
-    @reciprocal_quantity.setter
-    def reciprocal_quantity(self, string = ''):
-        self.set_attribute('_reciprocal_quantity', string)
+    # @reciprocal_quantity.setter
+    # def reciprocal_quantity(self, string = ''):
+    #     self.set_attribute('_reciprocal_quantity', string)
 
 
     @property
     def unit(self):
         """
+        Returns the unit associated with the physical dimension.
+        For example, a unit of "cm". This attribute cannot be updated.
+        
         :Return type: ``string``
-
-        The attribute returns the unit associated 
-        with the dimension. For example, a unit "cm".
         """
         if self._made_dimensionless:
             unit = self._dimensionless_unit
@@ -1233,11 +1303,10 @@ class _arbitrarilySampledGridDimension:
     @property
     def reciprocal_unit(self):
         """
-        :Return type: ``string``
+        Returns the unit associated with the reciprocal grid dimension.
+        For example, a unit a "cm^-1". This attribute cannot be updated.
 
-        The attribute returns the unit associated 
-        with the reciprocal dimension. 
-        For example, a unit "cm^-1".
+        :Return type: ``string``
         """
         if self._reciprocal_made_dimensionless:
             unit = self._reciprocal_dimensionless_unit
@@ -1250,13 +1319,12 @@ class _arbitrarilySampledGridDimension:
     @property
     def label(self):
         """
+        The label associated with the grid dimension.
+        For example, the label, "distance".
+        This attribute can be updated. 
+
         :Return type: ``string``
         :Assign type: ``string``
-
-        The attribute returns the label associated 
-        with the dimension. When assigning a value, 
-        this attribute updates the previous value. 
-        For example, a ``label`` of "distance".
         """
         return self._label
     @label.setter
@@ -1276,13 +1344,12 @@ class _arbitrarilySampledGridDimension:
     @property
     def reciprocal_label(self):
         """
+        The label associated with the reciprocal grid dimension.
+        For example, the reciprocal label, "inverse distance".
+        This attribute can be updated. 
+
         :Return type: ``string``
         :Assign type: ``string``
-
-        The attribute returns the label associated 
-        with the reciprocal dimension. When assigning a value, 
-        this attribute updates the previous value. 
-        For example, a ``reciprocal_label`` of "inverse distance".
         """
         return self._reciprocal_label
     @reciprocal_label.setter
@@ -1320,14 +1387,24 @@ class _arbitrarilySampledGridDimension:
     @property
     def reverse(self):
         """
-        :role: `reverse`
+        The mapping order of :math:`\mathbf{X}_k^\mathrm{ref}` and 
+        :math:`\mathbf{X}_k^\mathrm{abs}` coordinates relative to the grid indices.
+        If true, these coordinates are mapped to the grid indices
+        in the reverse order. 
+        This attribute can be updated. 
+        For example, consider
+
+        .. math ::
+            \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3, 4] \mathrm{ cm}
+
+        when reverse is false, then, with the reverse set to true, the order
+        follows
+
+        .. math ::
+            \mathbf{X}_k^\mathrm{ref} = [4, 3, 2, 1, 0] \mathrm{ cm}
+
         :Return type: ``boolean``
         :Assign type: ``boolean``
-
-        The attribute returns a boolean specifying the
-        mapping of the controlled variable coordinates, 
-        associated with the dimension, to 
-        the grid indices. This attribute value can be updated. 
         """
         return self._reverse
     @reverse.setter
@@ -1340,13 +1417,14 @@ class _arbitrarilySampledGridDimension:
     @property
     def reciprocal_reverse(self):
         """
+        The mapping order of :math:`\mathbf{X_r}_k^\mathrm{ref}` and 
+        :math:`\mathbf{X_r}_k^\mathrm{ref}` coordinates, 
+        from the reciprocal grid dimension, relative to the grid indices.
+        If true, these coordinates are mapped to the grid indices in 
+        the reverse order. This attribute can be updated.  
+
         :Return type: ``boolean``
         :Assign type: ``boolean``
-
-        The attribute returns a boolean specifying the
-        mapping of the controlled variable coordinates, 
-        associated with the reciprocal dimension, 
-        to the grid indices. This attribute value can be updated. 
         """
         return self._reciprocal_reverse
     @reciprocal_reverse.setter
@@ -1355,23 +1433,22 @@ class _arbitrarilySampledGridDimension:
         self.set_attribute('_reciprocal_reverse', _value)
     
 
+
+
     ### Modifying the following attributes triggers an update of 
     ### controlled variable coordinates
-
 
     ## reference offset
     @property
     def reference_offset(self):
         """
-        :Return type: ``Quantity`` instance
-        :Assign type: ``string``
+        The reference offset, :math:`c_k`, along the grid dimension.
+        When assigning a value, the dimensionality of the value must be 
+        consistent with other members specifying the grid dimension. 
+        For example, a reference offset of "-10 cm".
 
-        The attribute returns the reference offset along the
-        dimension. This attribute can also be used to update the
-        reference offset along the grid dimension. When assigning a value, 
-        the dimensionality of the value must be 
-        consistent with other members specifying the dimension. 
-        For example, a ``reference_offset`` of "-10 cm".
+        :Return type: ``Quantity`` object
+        :Assign type: ``string``
         """
         return self._reference_offset
     @reference_offset.setter
@@ -1384,15 +1461,14 @@ class _arbitrarilySampledGridDimension:
     @property
     def reciprocal_reference_offset(self):
         """
-        :Return type: ``Quantity`` instance
-        :Assign type: ``string``
+        The reference offset along the reciprocal grid dimension.
+        When assigning a value, the dimensionality of the value must be 
+        consistent with the dimensionality of the other members 
+        specifying the reciprocal grid dimension.
+        For example, a reciprocal reference offset of "0.5 cm^-1".
 
-        The attribute returns the reference offset along the reciprocal
-        dimension. This attribute can also be used to update the
-        reference offset along the reciprocal dimension. When assigning 
-        a value, the dimensionality of the value must be 
-        consistent with other members specifying the reciprocal dimension. 
-        For example, a ``reciprocal_reference_offset`` of "0.5 cm^-1".
+        :Return type: ``Quantity`` object
+        :Assign type: ``string``
         """
         return self._reciprocal_reference_offset
     @reciprocal_reference_offset.setter
@@ -1406,15 +1482,14 @@ class _arbitrarilySampledGridDimension:
     @property
     def origin_offset(self):
         """
-        :Return type: ``Quantity`` instance
-        :Assign type: ``string``
+        The origin offset, :math:`o_k`, along the grid dimension.
+        When assigning a value, the dimensionality of the value must be 
+        consistent with the dimensionality of the other 
+        members specifying the grid dimension. 
+        For example, an origin offset of "1.0 m".
 
-        The attribute returns the origin offset along the 
-        dimension. This attribute can also be used to update the
-        orgin offset along this dimension. When assigning 
-        a value, the dimensionality of the value must be 
-        consistent with other members specifying the dimension. 
-        For example, a ``origin_offset`` of "1.0 m".
+        :Return type: ``Quantity`` object
+        :Assign type: ``string``
         """
         return self._origin_offset
     @origin_offset.setter
@@ -1427,15 +1502,14 @@ class _arbitrarilySampledGridDimension:
     @property
     def reciprocal_origin_offset(self):
         """
-        :Return type: ``Quantity`` instance
-        :Assign type: ``string``
+        The origin offset along the reciprocal grid dimension.
+        When assigning a value, the dimensionality of the value must be 
+        consistent with the dimensionality of the other members 
+        specifying the reciprocal grid dimension. 
+        For example, an origin offset of "-400.2 cm^-1".
 
-        The attribute returns the origin offset along the reciprocal
-        dimension. This attribute can also be used to update the
-        origin offset along the reciprocal dimension. When assigning 
-        a value, the dimensionality of the value must be 
-        consistent with other members specifying the reciprocal dimension. 
-        For example, a ``reciprocal_origin_offset`` of "-400.2 cm^-1".
+        :Return type: ``Quantity`` object
+        :Assign type: ``string``
         """
         return self._reciprocal_origin_offset
     @reciprocal_origin_offset.setter
@@ -1448,21 +1522,35 @@ class _arbitrarilySampledGridDimension:
     @property
     def number_of_points(self):
         """
-        :Return type: ``integer``
+        The number of points, :math:`N_k`, along the grid dimension.
+        The value can be updated. 
 
-        The attribute returns the number of points along the dimension.
+        :Return type: ``integer``
+        :Assign type: ``integer``
         """
         return self._number_of_points
+
+    @property
+    def values(self, array):
+        """
+        The ordered array, :math:`\mathbf{A}_k`,
+        along the grid dimension.
+
+        :Assign type: An array of strings containing the
+        physical quantities.
+        """
+        self._getCoordinates(_values)
+
 
     ## coordinates
     @property
     def coordinates(self):
         """
-        :Return type: ``Quantity`` instance
+        The ordered array, :math:`\mathbf{X}_k^\mathrm{ref}`,
+        along the grid dimension. The order of these coordinates
+        depends on the value of the ``reverse`` attributes of the class.
 
-        The attribute returns the controlled variable coordinates
-        along the dimension. The order of these coordinates
-        depends on the value of the ``reverse`` attribute of the class.
+        :Return type: ``Quantity`` object
         """
         _value = 1.0
         coordinates = self._coordinates
@@ -1477,11 +1565,11 @@ class _arbitrarilySampledGridDimension:
     @property
     def absolute_coordinates(self):
         """
-        :Return type: ``Quantity`` instance
+        An ordered array, :math:`\mathbf{X}_k^\mathrm{abs}`, 
+        along the grid dimension. The order of these coordinates
+        depends on the value of the ``reverse`` attributes of the class.
 
-        The attribute returns the absolute controlled variable coordinates
-        along the dimension. The order of these coordinates
-        depends on the value of the :ref:`reverse` attribute of the class.
+        :Return type: ``Quantity`` object
         """
         return self.coordinates + self.origin_offset.to(self.unit)
 
@@ -1551,16 +1639,15 @@ class _arbitrarilySampledGridDimension:
     #                                 self.period)
     #     return string
 
-    def _getCoordinates(self):
+    def _getCoordinates(self, _values):
         _unit = self._unit
-        # _reference_offset = self.reference_offset.to(_unit)
-        # _value = ( self._coordinates - _reference_offset )
-        # _origin_offset = self.origin_offset.to(_unit)
-        # if self.made_dimensionless:
-        #     _value/=(_origin_offset + _reference_offset)
-            # _value = _value.to(_ppm)
-        self.set_attribute('_coordinates', self._coordinates.to(_unit))
-        # self.set_attribute('_absolute_coordinates', _value + _origin_offset)
+        _value = [_assign_and_check_unit_consistency(item, _unit).to(_unit).value \
+                                for item in _values]
+        # print (_value)
+        _value = np.asarray(_value, dtype=np.float64)*_unit
+        self.set_attribute('_coordinates', _value)
+        # self.set_attribute('_coordinates', self._coordinates.to(_unit))
+
 
     def _get_python_dictonary(self):
         dictionary = {}
@@ -1606,22 +1693,23 @@ class _arbitrarilySampledGridDimension:
 
         return dictionary
 
+
 ### ------------- Public Methods ------------------ ###
     def __str__(self):
         dictionary = self._get_python_dictonary()
         return (json.dumps(dictionary, sort_keys=False, indent=2))
 
-    def to(self, unit):
+    def to(self, unit=''):
         """
         Converts the unit of the controlled variables coordinates to 
-        ``unit``. This method wraps the ``to`` method from the ``Quantity`` 
-        class. The methods returns a ``Quantity`` object.
+        `unit`. This method wraps the ``to`` method from the ``Quantity`` 
+        class. 
         """
         if unit.strip() == 'ppm': 
             self.set_attribute('_dimensionless_unit', _ppm)
         else:
             self.set_attribute('_unit', _check_unit_consistency(string_to_quantity('1 '+unit), self.unit).unit)
-        return self.coordinates
+        # return self.coordinates
 
     def __iadd__(self, other):
         self.reference_offset -= _assign_and_check_unit_consistency(other, self.unit) 
@@ -1648,7 +1736,7 @@ class _nonQuantitativeGridDimension:
                  '_label'
                  ]
 
-    def __init__(self,  _coordinates, 
+    def __init__(self,  _values, 
                         _sampling_type='grid',
                         _non_quantitative=True,
                         _reverse=False, 
@@ -1665,9 +1753,11 @@ class _nonQuantitativeGridDimension:
 
         ## label
         self.set_attribute('_label', _label)
-
+        self._get_coordinates(_values)
         # print (_value)
-        _value = np.asarray(_coordinates)
+
+    def _get_coordinates(self, _values):
+        _value = np.asarray(_values)
         self.set_attribute('_coordinates', _value)
 
     def set_attribute(self, name, value):

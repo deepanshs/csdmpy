@@ -1,4 +1,5 @@
 from astropy import units as u
+# from astropy.units import UnitConversionError
 # from astropy.units import cds
 
 # cds.enable()
@@ -17,8 +18,19 @@ convert = {
     # "ppm" : _ppm,
 }
 
-# dimensionless_frequency_ratio = [(u.Hz, _ppm, lambda x: 1000.0 * x, lambda x: x / 1000.0)]
+def display_unit(unit):
+    unit = str(unit)
+    for key in convert:
+        unit = unit.replace(convert[key], key)
+    return unit
 
+# dimensionless_frequency_ratio = [(u.Hz, _ppm, lambda x: 1000.0 * x, lambda x: x / 1000.0)]
+def string_to_unit(unit):
+    for key in convert:
+        unit = unit.replace(key, convert[key])
+    # print (unit)
+    unitQt = u.Unit(unit)
+    return unitQt
 
 def string_to_quantity(string, dtype=float):
 
@@ -147,12 +159,15 @@ if __name__ == '__main__':
     # import numpy as np
     from timeit import default_timer as timer
     start = timer()
+    print (UnitConversionError)
     s = "4 ppm"
     # s = '5 cm^-1 µs °'
     # print (s, type(s))
-    a = string_to_quantity(s)#, dtype=np.float32)
-    print (timer() - start)
-    print (a)
+    a = string_to_unit('µs')
+    print (display_unit(a))
+    # a = string_to_quantity(s)#, dtype=np.float32)
+    # print (timer() - start)
+    # print (a)
     # print (type(a.unit), a.unit.physical_type)
     # print (valueObjectFormat(a))
     # print (unitToLatex(a.unit))

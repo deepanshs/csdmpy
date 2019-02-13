@@ -53,7 +53,7 @@ def open(filename=None):
     for dat in dictionary['CSDM']['uncontrolled_variables']:
         csdm.add_uncontrolled_variable(dat) #, filename)
 
-    _type = [(item.sampling_type == 'grid') for item in csdm.controlled_variables]
+    _type = [(item._sampling_type == 'grid') for item in csdm.controlled_variables]
 
     if np.all(_type):
         npts = [item.number_of_points for item in csdm.controlled_variables]
@@ -211,7 +211,7 @@ class CSDModel:
                         _sampling_type          = default['sampling_type'], \
                         _non_quantitative       = default['non_quantitative'], \
 
-                        _coordinates            = default['coordinates'], \
+                        _values                 = default['values'], \
                         _reverse                = default['reverse'], \
                         _label                  = default['label'] ), ))
 
@@ -227,7 +227,7 @@ class CSDModel:
                         _sampling_type          = default['sampling_type'], \
                         _non_quantitative       = default['non_quantitative'], \
 
-                        _coordinates            = default['coordinates'], \
+                        _values                 = default['values'], \
                         _reference_offset       = default['reference_offset'],  \
                         _origin_offset          = default['origin_offset'], \
                         _quantity               = default['quantity'], \

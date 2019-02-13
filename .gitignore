@@ -1,6 +1,6 @@
 # folders #
-/build/doctrees
-/build/html
+__pycache__/**
+testFiles/**
 
 # Compiled source #
 ###################
