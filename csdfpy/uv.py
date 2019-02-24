@@ -32,23 +32,36 @@ def _get_absolute_data_address(data_path, file):
 
     :params: data_path:
     """
-    _data_abs_path = os.path.abspath(data_path)
+    # _data_abs_path = os.path.abspath(data_path)
     _file_abs_path = os.path.abspath(file)
-    _common_path = os.path.commonpath([_data_abs_path, _file_abs_path])
+    # print(_file_abs_path)
+    # _common_path = os.path.commonpath([_data_abs_path, _file_abs_path])
 
-    if (_common_path != os.path.abspath(_file_abs_path[:-len(file)])):
-        raise Exception(
-            "invalid path to external data file, '{0}'".format(_data_abs_path)
-        )
+    _norm_data_path = os.path.normpath(data_path)
+    # print(_norm_data_path)
+    # print(os.path.normpath(file))
+    _path, _file = os.path.split(_file_abs_path)
+    # print(_path)
+    _join = os.path.join(_path, _norm_data_path)
+    # print(_join)
+    # print(_data_abs_path)
 
-    _relative_path_to_file = os.path.split(file)[0]
-    _relative_path_to_data = _data_abs_path[len(_common_path)+1:]
+    # print(_common_path)
+    # print(os.path.abspath(_file_abs_path[:-len(file)]))
 
-    _path = os.path.join(_common_path,
-                         _relative_path_to_file,
-                         _relative_path_to_data)
+    # if (_common_path != os.path.abspath(_file_abs_path[:-len(file)])):
+    #     raise Exception(
+    #         "invalid path to external data file, '{0}'".format(_data_abs_path)
+    #     )
 
-    return 'file:'+_path
+    # _relative_path_to_file = os.path.split(file)[0]
+    # _relative_path_to_data = _data_abs_path[len(_common_path)+1:]
+
+    # _path = os.path.join(_common_path,
+    #                      _relative_path_to_file,
+    #                      _relative_path_to_data)
+
+    return 'file:'+_join
 
 
 def _get_relative_data_address(data_absolute_uri, file):
@@ -63,6 +76,7 @@ def _get_relative_data_address(data_absolute_uri, file):
 def _get_absolute_uri_path(uri, file):
     res = urlparse(uri)
     path = uri
+    # print(res)
     if res.scheme in ['file', '']:
         if res.netloc == '':
             path = _get_absolute_data_address(res.path, file)

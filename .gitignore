@@ -8,6 +8,8 @@ csdfpy.egg-info/**
 .eggs/**
 build/**
 dist/**
+datafile/**
+test/**
 
 # Compiled source #
 ###################
@@ -48,3 +50,7 @@ dist/**
 ehthumbs.db
 Thumbs.db
 *.DS_Store*
+
+# files
+files.txt
+**_test.py
