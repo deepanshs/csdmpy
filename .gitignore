@@ -1,9 +1,9 @@
 # folders #
 __pycache__/
 testFiles/
-doc/source/_build/**
-doc/source/resource/*
-doc/build/**
+docs/source/_build/**
+docs/source/resource/*
+docs/build/**
 
 # Compiled source #
 ###################
