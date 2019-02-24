@@ -1,0 +1,10 @@
+include README.md
+# include LICENSE.rst
+# include CHANGES.rst
+include requirements.txt
+# include CITATION
+
+recursive-include docs *
+prune docs/source/_build
+
+global-exclude *.pyc *.o

@@ -9,6 +9,7 @@ import json
 from scipy.fftpack import fft, fftshift
 import os
 from copy import deepcopy
+from .__version__ import __version__ as version
 
 script_path = os.path.dirname(os.path.abspath(__file__))
 # print (script_path)
@@ -134,7 +135,7 @@ class CSDModel:
     :returns: A CSDM object.
     """
 
-    __version__ = '0.0.9'
+    __version__ = version
     _old_compatible_versions = ('0.0.9')
     _old_incompatible_versions = ()
 

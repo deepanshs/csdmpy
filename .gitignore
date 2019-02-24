@@ -4,6 +4,10 @@ testFiles/
 docs/source/_build/**
 docs/source/resource/*
 docs/build/**
+csdfpy.egg-info/**
+.eggs/**
+build/**
+dist/**
 
 # Compiled source #
 ###################
