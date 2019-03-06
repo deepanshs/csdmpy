@@ -22,6 +22,7 @@ Uncontrolled variable
         ~UncontrolledVariable.component_labels
         ~UncontrolledVariable.components
         ~UncontrolledVariable.components_uri
+        ~UncontrolledVariable.axis_label
         ~UncontrolledVariable.data_structure
 
     .. rubric:: Methods Summary
@@ -40,6 +41,7 @@ Uncontrolled variable
     .. autoattribute:: component_labels
     .. autoattribute:: components
     .. autoattribute:: components_uri
+    .. autoattribute:: axis_label
     .. autoattribute:: data_structure
 
 

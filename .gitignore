@@ -2,14 +2,17 @@
 __pycache__/
 testFiles/
 docs/source/_build/**
-docs/source/resource/*
+docs/source/resource/**
 docs/build/**
 csdfpy.egg-info/**
 .eggs/**
 build/**
 dist/**
-datafile/**
-test/**
+test_files/**
+tests/**
+test*.*
+docs/source/_static/**
+docs/source/_templates/**
 
 # Compiled source #
 ###################
@@ -53,4 +56,6 @@ Thumbs.db
 
 # files
 files.txt
+info.txt
 **_test.py
+*.png

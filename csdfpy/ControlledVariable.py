@@ -1,9 +1,9 @@
 
 """The base ControlledVariable object: attributes and methods."""
 
-from ._gcv import _LinearlySampledGridDimension
-from ._gcv import _ArbitrarilySampledGridDimension
-from ._gcv import _NonQuantitativeGridDimension
+from ._LinearlySampledDimension import _LinearlySampledDimension
+from ._ArbitrarilySampledDimension import _ArbitrarilySampledDimension
+from ._NonQuantitativeDimension import _NonQuantitativeDimension
 
 from copy import deepcopy
 
@@ -69,14 +69,14 @@ non-quantitative dimension.")
     return is_false
 
 
-class ControlledVariable(object):
+class ControlledVariable:
     r"""
     The base ControlledVariable class.
 
-    This class returns an object which represents a control variable.
-    There are three types of control variables based on the types of
-    dimensions: a linearly sampled, an arbitrarily sampled, and a
-    non-qunatitative dimensions, respectively.
+    This class returns an object which represents a control variable. There are
+    three types of controlled variables based on the three types ofdimensions:
+    a linearly sampled, an arbitrarily sampled, and a
+    non-quantitative dimension, respectively.
 
     **A linearly sampled control variable**
 
@@ -89,12 +89,12 @@ class ControlledVariable(object):
     .. math ::
         \begin{align}
         \mathbf{X}_k &= [m_k j ]_{j=0}^{N_k-1} - c_k \mathbf{1}, \\
-        \mathbf{X}_k^\mathrm{abs} &= \mathbf{X}_k + o_k \mathbf{1},
+        \mathbf{X}_k^\mathrm{abs} &= \mathbf{X}_k + o_k \mathbf{1}.
         \end{align}
         :label: eq_linear_gcv
 
-    where :math:`\mathbf{X}_k` and :math:`\mathbf{X}_k^\mathrm{abs}` are the
-    ordered arrays of the reference amd absolute control variable coordinates,
+    Here :math:`\mathbf{X}_k` and :math:`\mathbf{X}_k^\mathrm{abs}` are the
+    ordered arrays of the reference and absolute control variable coordinates,
     respectively, and :math:`\mathbf{1}` is an array of ones.
 
     **An arbitrarily sampled control variable**
@@ -125,27 +125,28 @@ class ControlledVariable(object):
     .. math ::
         \mathbf{X}_k = \mathbf{A}_k.
 
-    **Constructing a ControlledVariable object.**
+    **Creating a new control variable.**
 
-    There are a number of different ways to construct a control variable,
-    but it always returns a ControlledVariable instance.
+    There are two ways to create a new control variable using this class, but
+    it always returns a ControlledVariable instance.
 
-    `Create a control variable with a python dictionary containing valid
-    keywords.` ::
+    `From a python dictionary containing valid keywords.` ::
 
         >>> from csdfpy import ControlledVariable
         >>> py_dictionary = {
-        ...     'sampling_interval': '5 G'
-        ...     'number_of_points: 50,
-        ...     'reference_offset': '-10 mT'
+        ...     'sampling_interval': '5 G',
+        ...     'number_of_points': 10,
+        ...     'reference_offset': '-10 mT',
+        ...     'origin_offset': '10 T'
         ... }
-        >>> var1 = ControlledVariable(py_dictionary)
+        >>> x = ControlledVariable(py_dictionary)
 
-    `Create a control variable with valid keyword arguaments.` ::
+    `From valid keyword arguaments.` ::
 
-        >>> var2 = ControlledVariable(sampling_interval = '5 G',
-        ...                           number_of_points = 50,
-        ...                           reference_offset = '-10 mT')
+        >>> x = ControlledVariable(sampling_interval = '5 G',
+        ...                        number_of_points = 10,
+        ...                        reference_offset = '-10 mT',
+        ...                        origin_offset = '10 T')
 
     """
 
@@ -205,7 +206,7 @@ class ControlledVariable(object):
         # print(dictionary)
 
         if _check_non_quantitative(dictionary):
-            _gcv_object = _NonQuantitativeGridDimension(
+            _gcv_object = _NonQuantitativeDimension(
                     _sampling_type=dictionary['sampling_type'],
                     _non_quantitative=dictionary['non_quantitative'],
                     _values=dictionary['values'],
@@ -214,7 +215,7 @@ class ControlledVariable(object):
                     )
 
         if _check_quantitative_arbitrary(dictionary):
-            _gcv_object = _ArbitrarilySampledGridDimension(
+            _gcv_object = _ArbitrarilySampledDimension(
 
                 _sampling_type=dictionary['sampling_type'],
                 _non_quantitative=dictionary['non_quantitative'],
@@ -242,7 +243,7 @@ class ControlledVariable(object):
             )
 
         if _check_quantitative_linear(dictionary):
-            _gcv_object = _LinearlySampledGridDimension(
+            _gcv_object = _LinearlySampledDimension(
                 _sampling_type=dictionary['sampling_type'],
                 _non_quantitative=dictionary['non_quantitative'],
 
@@ -280,21 +281,21 @@ class ControlledVariable(object):
     @property
     def variable_type(self):
         r"""
-        Return the type of the controlled variable.
+        Return the control variable type.
 
         There are three types of controlled variables base on the types of
         dimensions, linearly and arbitrarily sampled quantitative grid
         dimensions and non-quantitative dimension.
         This attribute cannot be modified. ::
 
-            >>> x.variable_type
+            >>> print(x.variable_type)
             Linearly sampled grid controlled variable
 
         In the above example, ``x`` is an instance of the ControlledVariable
         class associated with a linearly sampled controlled variable.
 
         :returns: A string.
-        :raises AttributeError: When the attribute is attempted to be modified.
+        :raises AttributeError: When the attribute is modified.
         """
         return deepcopy(self.gcv.variable_type)
 
@@ -309,11 +310,11 @@ class ControlledVariable(object):
 
         This attribute cannot be modified. ::
 
-            >>> x.sampling_type
+            >>> print(x.sampling_type)
             grid
 
         :returns: A string.
-        :raises AttributeError: When the attribute is attempted to be modified.
+        :raises AttributeError: When the attribute is modified.
         """
         return deepcopy(self.gcv._sampling_type)
 
@@ -325,21 +326,21 @@ class ControlledVariable(object):
     @property
     def coordinates(self):
         r"""
-        Return an array of coordinates, :math:`\mathbf{X}_k`, along the dimension.
+        Return an array of reference coordinates, :math:`\mathbf{X}_k`, along the dimension.
 
         The order of these coordinates
         depends on the value of the ``reverse`` and the ``fft_output_order``
         (only applicable when sampling is linear along the dimension)
         attributes of the class. This attribute cannot be modified. ::
 
-            >>> x.coordinates
-            [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] m/s
+            >>> print(x.coordinates)
+            [100. 105. 110. 115. 120. 125. 130. 135. 140. 145.] G
 
         :returns: A ``Quantity array`` when the controlled variable is
                   quantitative.
-        :returns: A ``numpy array`` when the controlled variable is
+        :returns: A ``Numpy array`` when the controlled variable is
                   non-quantitative.
-        :raises AttributeError: When the attribute is attempted to be modified.
+        :raises AttributeError: When the attribute is modified.
         """
         return self.gcv.coordinates
 
@@ -356,10 +357,10 @@ class ControlledVariable(object):
         the dimension) attributes of the class. This attribute cannot be
         modified. ::
 
-            >>> x.origin_offset
-            100.0 m / s
-            >>> x.absolute_coordinates
-            [100.  100.1 100.2 100.3 100.4 100.5 100.6 100.7 100.8 100.9] m / s
+            >>> print(x.origin_offset)
+            10.0 T
+            >>> print(x.absolute_coordinates)
+            [100100. 100105. 100110. 100115. 100120. 100125. 100130. 100135. 100140. 100145.] G
 
         In the above example, the absolute coordinate is ``coordinates
         + origin_offset``.
@@ -367,7 +368,7 @@ class ControlledVariable(object):
         :returns: A ``Quantity array`` when the controlled
                   variable is quantitative.
         :raises AttributeError: For non-quantitative controlled variables.
-        :raises AttributeError: When the attribute is attempted to be modified.
+        :raises AttributeError: When the attribute is modified.
         """
         if self.variable_type in _quantitative_variable_types:
             return self.gcv.coordinates + \
@@ -390,7 +391,7 @@ class ControlledVariable(object):
         :returns: A ``Quantity`` object when the controlled
                   variable is quantitative.
         :raises AttributeError: For non-quantitative controlled variables.
-        :raises AttributeError: When the attribute is attempted to be modified.
+        :raises AttributeError: When the attribute is modified.
         """
         if self.variable_type in _quantitative_variable_types[0]:
             return self.gcv.reciprocal_coordinates
@@ -412,7 +413,7 @@ class ControlledVariable(object):
         :returns: A ``Quantity`` object when the controlled
                   variable is quantitative.
         :raises AttributeError: For non-quantitative controlled variables.
-        :raises AttributeError: When the attribute is attempted to be modified.
+        :raises AttributeError: When the attribute is modified.
         """
         return self.gcv.reciprocal_coordinates + \
             self.gcv._reciprocal_origin_offset.to(self.gcv.reciprocal_unit)
@@ -427,17 +428,18 @@ class ControlledVariable(object):
         r"""
         Return the reference offset, :math:`c_k`, along the dimension.
 
-        This attribute is only `valid` for the quantitative
+        The attribute is only `valid` for quantitative
         dimensions. When assigning a value, the dimensionality of the value
-        must be consistent with other members specifying the dimension. The
-        value is assigned with a string containing the reference offset,
+        must be consistent with the dimensionality of the other members
+        specifying the dimension. The value is assigned with a string
+        containing the reference offset,
         for example, ::
 
-            >>> x.reference_offset
-            0 cm/s
-            >>> x.reference_offset = "-10 m/s"
-            >>> x.coordinates
-            [10.    10.002 10.004 10.006 10.008] m / s
+            >>> print(x.reference_offset)
+            -10.0 mT
+            >>> x.reference_offset = "0 T"
+            >>> print(x.coordinates)
+            [ 0.  5. 10. 15. 20. 25. 30. 35. 40. 45.] G
 
         :returns: A ``Quantity`` object with the reference offset.
         :raises AttributeError: For non-quantitative controlled variables.
@@ -477,9 +479,9 @@ class ControlledVariable(object):
         string containing the reference offset of the reciprocal
         dimension, for example, ::
 
-            >>> x.reciprocal_reference_offset
-            0 s/cm
-            >>> x.reciprocal_reference_offset = "0.5 s/cm"
+            >>> print(x.reciprocal_reference_offset)
+            0.0 1 / G
+            >>> x.reciprocal_reference_offset = "5 (1/T)"
 
         :returns: A ``Quantity`` object with the reference offset
                   of the reciprocal dimension.
@@ -516,17 +518,17 @@ class ControlledVariable(object):
         r"""
         Return the origin offset, :math:`o_k`, along the dimension.
 
-        This attribute is only `valid` for the quantitative
+        The attribute is only `valid` for quantitative
         dimensions. When assigning a value, the dimensionality of the value
         must be consistent with the dimensionality of other members specifying
         the dimension. The value is assigned with a string containing the
         origin offset, for example, ::
 
-            >>> x.origin_offset
-            0 cm/s
-            >>> x.origin_offset = "120.2 km/s"
-            >>> x.absolute_coordinates
-            [120210.    120210.002 120210.004 120210.006 120210.008] m / s
+            >>> print(x.origin_offset)
+            10.0 T
+            >>> x.origin_offset = "1e5 G"
+            >>> print(x.absolute_coordinates)
+            [100000. 100005. 100010. 100015. 100020. 100025. 100030. 100035. 100040. 100045.] G
 
         :returns: A ``Quantity`` object with the origin offset.
         :raises AttributeError: For non-quantitative controlled variables.
@@ -563,9 +565,9 @@ class ControlledVariable(object):
         dimension. The value is assigned with a string containing the origin
         offset of the reciprocal dimension, for example, ::
 
-            >>> x.reciprocal_origin_offset
-            0 s/cm
-            >>> x.reciprocal_origin_offset = "400 s/cm"
+            >>> print(x.reciprocal_origin_offset)
+            0.0 1 / G
+            >>> x.reciprocal_origin_offset = "400 (1/µT)"
 
         :returns: A ``Quantity`` object with the origin offset of
                   the reciprocal dimension.
@@ -598,25 +600,24 @@ class ControlledVariable(object):
     @property
     def sampling_interval(self):
         r"""
-        Return the sampling interval along the dimension.
+        Return the sampling interval, :math:`m_k`, along the dimension.
 
-        The sampling interval, :math:`m_k`, along the controlled variable
-        dimension. This attribute is only `valid` for instances specifying a
-        linearly sampled controlled variable dimension. When assigning a value,
+        The attribute is only `valid` for instances with linearly sampled
+        controlled-variable dimensions. When assigning a value,
         the dimensionality of the value must be consistent with the
         dimensionality of other members specifying the grid dimension.
         Additionally, the sampling interval must be a positive real number.
         The value is assigned with a string containing the sampling interval,
         for example, ::
 
-            >>> x.sampling_interval
-            0.1 m/s
-            >>> x.sampling_interval = "0.2 cm/s"
-            >>> x.coordinates
-            [0.    0.002 0.004 0.006 0.008] m / s
+            >>> print(x.sampling_interval)
+            5.0 G
+            >>> x.sampling_interval = "0.1 G"
+            >>> print(x.coordinates)
+            [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] G
 
-        Here, the original sampling interval, '0.1 m' is modified to
-        '0.2 cm/s'.
+        Here, the original sampling interval, '5 G' is modified to
+        '0.1 G'.
 
         .. note:: The sampling interval along a grid dimension and the
             respective reciprocal grid dimension follow the Nyquist–Shannon
@@ -626,7 +627,6 @@ class ControlledVariable(object):
         :returns: A ``Quantity`` object with the sampling interval.
         :raises AttributeError: For non-quantitative and arbitrarily
                                 sampled controlled variables.
-        :raises AttributeError: For non-quantitative controlled variables.
         :raises TypeError: When the assigned value is not a string.
         """
         if self.variable_type == _quantitative_variable_types[0]:
@@ -654,16 +654,16 @@ class ControlledVariable(object):
         Return the number of points along the dimension.
 
         The number of points, :math:`N_k \ge 1`, along the controlled
-        variable dimension. This attribute can be updated with an
+        variable dimension. The attribute is updated with an
         integer specifying the number of points, for example ::
 
-            >>> x.number_of_points
+            >>> print(x.number_of_points)
             10
             >>> x.number_of_points = 5
-            >>> x.coordinates
-            [0.  0.1 0.2 0.3 0.4] m / s
+            >>> print(x.coordinates)
+            [0.  0.1 0.2 0.3 0.4] G
 
-        :returns: A ``Integer`` with the number of points.
+        :returns: An ``Integer`` with the number of points.
         :raises TypeError: When the assigned value is not an integer.
         """
         return deepcopy(self.gcv._number_of_points)
@@ -714,7 +714,7 @@ class ControlledVariable(object):
         An ordered array, :math:`\mathbf{A}_k`, of strings
         containing the values. Depending on the values, either a
         quantitative or a non-quantitative controlled variable dimension
-        is generated. For example,
+        is created. For example,
 
         .. math::
             \mathbf{A}_k = [\mathrm{"0~cm"}, \mathrm{"4.1~µm"},
@@ -726,11 +726,14 @@ class ControlledVariable(object):
         .. math::
             \mathbf{A}_k = [\mathrm{"Cu"}, \mathrm{"Ag"}, \mathrm{"Au"}]
 
-        will generate a non-quantitative controlled variable dimension. For
+        will generate a non-quantitative dimension. For
         an arbitrarily sampled quantitative variables,
         :math:`\mathbf{A}_k` is an ascending order of quantities. ::
 
+            >>> x1 = ControlledVariable(values=['cm'])
             >>> x1.values = ['0cm', '4.1µm', '0.3mm', '5.8m', '32.4km']
+
+            >>> x2 = ControlledVariable(values=[''], non_quantitative=True)
             >>> x2.values = ['Cu', 'Ag', 'Au']
 
         In the above examples, ``x1`` and ``x2`` are the instances of the
@@ -739,7 +742,7 @@ class ControlledVariable(object):
 
         :returns: A ``Quantity array`` for arbitrarily sampled controlled
                         variables.
-        :returns: A ``numpy array`` for non-quantitative controlled variables.
+        :returns: A ``Numpy array`` for non-quantitative controlled variables.
         :raises AttributeError: For linearly sampled controlled variables.
 
         .. todo:
@@ -768,7 +771,7 @@ class ControlledVariable(object):
     @property
     def fft_output_order(self):
         r"""
-        Return the fft output order of coordinates along the dimension.
+        Return the coordinates along the dimension according to the fft order.
 
         A boolean specifying if the coordinates along the controlled
         variable dimension are ordered according to the output of a
@@ -787,11 +790,25 @@ class ControlledVariable(object):
         .. math ::
             \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3, 4, 5] \mathrm{~m/s}
 
-        when fft output order is false, then, with the fft output
+        when the fft output order is false. When the fft output
         order is true, the order follows,
 
         .. math ::
             \mathbf{X}_k^\mathrm{ref} = [0 ,1, 2, -3, -2, -1] \mathrm{~m/s}
+
+        The following is a test example. ::
+
+            >>> test = ControlledVariable(sampling_interval = '1',
+            ...                           number_of_points = 10)
+
+            >>> print(test.coordinates)
+            [0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]
+            >>> test.fft_output_order
+            False
+
+            >>> test.fft_output_order = True
+            >>> print(test.coordinates)
+            [ 0.  1.  2.  3.  4. -5. -4. -3. -2. -1.]
 
         :returns: A ``Boolean``.
         :raises TypeError: When the assigned value is not a boolean.
@@ -808,7 +825,7 @@ class ControlledVariable(object):
             if not isinstance(value, bool):
                 raise TypeError(_type_message(bool, type(value)))
 
-            print('in fft output order')
+            # print('in fft output order')
 
             self.gcv.set_attribute('_fft_output_order', value)
             self.gcv._get_coordinates()
@@ -822,34 +839,29 @@ class ControlledVariable(object):
     @property
     def reverse(self):
         r"""
-        Return the reverse order of coordinates along the dimension.
+        Return the coordinates along the dimension in the reverse order.
 
         The order in which the :math:`\mathbf{X}_k` and
-        :math:`\mathbf{X}_k^\mathrm{abs}` (for quantitative dimensions)
-        coordinates are mapped to the grid indices. Let, the grid
-        indices are :math:`[0,1,2,...,N_k-1]`, then when reverse
-        is false, the mapping follows,
+        :math:`\mathbf{X}_k^\mathrm{abs}` coordinates map to the grid indices,
+        :math:`\mathbf{G}_k = [0,1,2,...,N_k-1]`. For example, consider
 
         .. math ::
-            \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3,...N_{k-1}] \mathrm{~m/s}
+            \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3,...N_{k-1}] \mathrm{~m/s},
 
-        and when reverse is true, the mapping is
+        when the reverse is false. We the reverse is true, the mapping is
 
         .. math ::
-            \mathbf{X}_k^\mathrm{ref} = [N_{k-1},...3, 2, 1, 0] \mathrm{~m/s}
-
-        ::
+            \mathbf{X}_k^\mathrm{ref} = [N_{k-1},...3, 2, 1, 0] \mathrm{~m/s}.
 
             >>> x.reverse
             False
-            >>> x.coordinates
-            [10.    10.002 10.004 10.006 10.008] m / s
+            >>> print(x.coordinates)
+            [0.  0.1 0.2 0.3 0.4] G
             >>> x.reverse = True
-            >>> x.coordinates
-            [10.008 10.006 10.004 10.002 10.   ] m / s
+            >>> print(x.coordinates)
+            [0.4 0.3 0.2 0.1 0. ] G
 
-
-        :returns: A ``boolean``.
+        :returns: A ``Boolean``.
         :raises TypeError: When the assigned value is not a boolean.
         """
         return deepcopy(self.gcv._reverse)
@@ -866,7 +878,7 @@ class ControlledVariable(object):
     @property
     def reciprocal_reverse(self):
         r"""
-        Return the reverse order of coordinates along the reciprocal dimension.
+        Return the coordinates along the reciprocal dimension in reverse order.
 
         The order in which the :math:`\mathbf{X_r}_k` and
         :math:`\mathbf{X_r}_k^\mathrm{abs}` (for quantitative dimensions)
@@ -881,16 +893,6 @@ class ControlledVariable(object):
 
         .. math ::
             \mathbf{X}_k^\mathrm{ref} = [4, 3, 2, 1, 0] \mathrm{~s/m}
-
-        ::
-
-            >>> x.fft_output_order
-            False
-            >>> x.coordinates
-            [10.008 10.006 10.004 10.002 10.   ] m / s
-            >>> x.fft_output_order = True
-            >>> x.coordinates
-            [ 9.998  9.996 10.004 10.002 10.   ] m / s
 
         :returns: A ``boolean``.
         :raises TypeError: When the assigned value is not a boolean.
@@ -913,24 +915,23 @@ class ControlledVariable(object):
     @property
     def period(self):
         r"""
-        Return the period of the dimension.
+        Return the period of a quantitative controlled variable dimension.
 
-        The period of the quantitative controlled variable, if any.
-        The default value is infinity, that is, the controlled variable is
-        considered non-periodic.
-        This attribute can be updated with a string containing
-        a quantity, representing the period, for example, ::
+        The default value of the period is infinity, i.e., the controlled
+        variable dimension is non-periodic. The attribute is updated with a
+        string containing a quantity which represents the period of the
+        controlled variable. For example, ::
 
-            >>> x.period
-            inf m/s
-            >>> x.period = '10 m/s'
+            >>> print(x.period)
+            inf G
+            >>> x.period = '1 T'
 
-        To assign a quantitative controlled variable dimension as a
-        non-periodic dimension, one of the following may be used, ::
+        To assign a dimension as non-periodic, one of the following may be
+        used, ::
 
-            >>> x.period = '1/0 m/s'
-            >>> x.period = 'infinite m/s'
-            >>> x.period = '∞ m/s'
+            >>> x.period = '1/0 T'
+            >>> x.period = 'infinity µT'
+            >>> x.period = '∞ G'
 
         :return: A ``Quantity`` object with the period of quantitative
             controlled variables.
@@ -1015,14 +1016,11 @@ class ControlledVariable(object):
         r"""
         Return the quantity name associated with the dimension.
 
-        This attribute is only `valid` for quantitative
-        controlled variables. The attribute returns the quantity
-        name, for example, "speed".
-        Assigning a value to this attribute will raise a
-        ``NotImplementedError``. ::
+        The attribute is only `valid` for the quantitative
+        controlled variables. ::
 
-            >>> x.quantity
-            speed
+            >>> print(x.quantity)
+            magnetic flux density
 
         :returns: A string with the quantity name.
         :raises AttributeError: For non-quantitative controlled variables.
@@ -1078,14 +1076,14 @@ class ControlledVariable(object):
         r"""
         Return the label associated with the dimension.
 
-        This attribute can be updated with a
-        string containing the label, for example,
+        The attribute is updated with a string containing the label, for
+        example, ::
 
-        >>> x.label
-        velocity
-        >>> x.label = 'Wind velocity at 10 m above ground.'
+            >>> x.label
+            ''
+            >>> x.label = 'field strength'
 
-        :returns: A ``string`` containing the label.
+        :returns: A ``String`` containing the label.
         :raises TypeError: When the assigned value is not a string.
         """
         return deepcopy(self.gcv._label)
@@ -1119,23 +1117,26 @@ class ControlledVariable(object):
     @property
     def axis_label(self):
         r"""
-        Return the axis label associated with the dimension.
+        Return a formatted string for displaying the label along the dimension.
 
         This supplementary attribute is convenient for labeling axes.
         For quantitative controlled variables, this attributes returns a
-        string, 'label / unit',  if the label is not an empty string. If the
-        label is an empty string, 'quantity / unit’ is returned instead.
-        For example, consider a temporal controlled variable where
+        string, 'label / unit',  if the `label` is not an empty string. If the
+        `label` is an empty string, 'quantity / unit’ is returned instead. Here
+        `quantity` and `label` are the attributes of the :ref:`cv_api`
+        instances described before, and `unit` is the unit associated with the
+        control variable.
+        For example, consider a temporal controlled variable where ::
 
-        >>> x[0].label
-        ''
-        >>> x[0].axis_label
-        'speed / m/s'
+            >>> x.label
+            'field strength'
+            >>> x.axis_label
+            'field strength / ( G)'
 
         For non-quantitative controlled variables, this attribute returns
-        the 'label'.
+        the `label`.
 
-        :returns: A string.
+        :returns: A ``String``.
         :raises AttributeError: When assigned a value.
         """
         if self.label.strip() == '':
@@ -1157,24 +1158,28 @@ class ControlledVariable(object):
         r"""
         Return the ControlledVariable object as a json object.
 
-        The attribute cannot be modified. ::
+        This supplementary attribute is useful for a quick preview of the data
+        structure. The attribute cannot be modified. ::
 
             >>> print(x.data_structure)
             {
+                "reciprocal": {
+                    "reference_offset": "5.0 T^-1",
+                    "origin_offset": "400.0 µT^-1"
+                },
                 "number_of_points": 5,
-                "sampling_interval": "0.2 cm * s^-1",
-                "reference_offset": "-10.0 m * s^-1",
-                "origin_offset": "120.2 km * s^-1",
+                "sampling_interval": "0.1 G",
+                "origin_offset": "100000.0 G",
                 "reverse": true,
-                "fft_output_order": true,
-                "quantity": "speed",
-                "label": "Wind velocity at 10 m above ground."
+                "quantity": "magnetic flux density",
+                "label": "field strength"
             }
 
         :raises AttributeError: When modified.
         """
         dictionary = self.get_python_dictionary()
-        return (json.dumps(dictionary, sort_keys=False, indent=2))
+        return (json.dumps(dictionary, ensure_ascii=False,
+                           sort_keys=False, indent=2))
 
 # =========================================================================== #
 #                                  Methods                                    #
@@ -1209,15 +1214,15 @@ class ControlledVariable(object):
         astropy.units.Quantity.html#astropy.units.Quantity.to>`_ class
         and is only `valid` for physical dimensions.
 
-        For example, if
+        For example, if ::
 
-            >>> x[0].coordinates
-            [0.  0.2 0.4 0.6 0.8] cm / s
-            >>> x[0].to('cm / min')
-            >>> x[0].coordinates
-            [ 0. 12. 24. 36. 48.] cm / min
+            >>> print(x.coordinates)
+            [0.4 0.3 0.2 0.1 0. ] G
+            >>> x.to('µT')
+            >>> print(x.coordinates)
+            [40. 30. 20. 10.  0.] uT
 
-        :params: unit : A string containing a unit with the same
+        :params: `unit` : A string containing a unit with the same
             dimensionality as the controlled variable coordinates.
         :raise AttributeError: For non-quantitative controlled variables.
         """

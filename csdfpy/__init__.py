@@ -2,25 +2,34 @@
 """CSDModel."""
 
 from __future__ import print_function, division
-from .cv import ControlledVariable
-from .uv import UncontrolledVariable
+from .ControlledVariable import ControlledVariable
+from .UncontrolledVariable import UncontrolledVariable
 import numpy as np
 import json
 from scipy.fftpack import fft, fftshift
-import os
+
 from copy import deepcopy
 from .__version__ import __version__ as version
+from ._utils_download_file import download_file_from_url
 
-script_path = os.path.dirname(os.path.abspath(__file__))
-# print (script_path)
+from urllib.parse import urlparse
+from os import path
+
+# from test_files import test_file
+
+script_path = path.dirname(path.abspath(__file__))
+# print(script_path)
 
 test_file = {
-    "test01": script_path+'/testFiles/test01.csdf',
-    "test02": script_path+'/testFiles/test02.csdf'
+    "test01": path.normpath(script_path+'/../tests/test01.csdf'),
+    "test02": path.normpath(script_path+'/../tests/test02.csdf')
     }
 
 
 def _import_json(filename):
+    res = urlparse(filename)
+    if res[0] not in ['file', '']:
+        filename = download_file_from_url(filename)
     with open(filename, "rb") as f:
         content = f.read()
         return (json.loads(str(content, encoding="UTF-8")))
@@ -30,14 +39,16 @@ def load(filename=None):
     r"""
     Open a `.csdf or `.csdfx` file and return a :ref:`csdm_api` object.
 
-    The file must be a json serialization of the CSD Model. ::
+    The file must be a JSON serialization of the CSD Model. ::
 
-        >>> import csdfpy
-        >>> data1 = csdfpy.load('local/address/to/the/file.csdf')
+        >>> import csdfpy  # doctest: +SKIP
+        >>> data1 = csdfpy.load('local_address/file.csdf')  # doctest: +SKIP
+        >>> data2 = csdfpy.load('url_address/file.csdf')  # doctest: +SKIP
 
     In the above example, ``data1`` is an instance of CSDModel class.
 
-    :params: filename: A local address to the `.csdf or `.csdfx` file.
+    :params: filename: A local or remote address to the `.csdf or
+                        `.csdfx` file.
     :returns: CSDModel object.
     """
     if filename is None:
@@ -104,7 +115,7 @@ def new():
 
 class CSDModel:
     r"""
-    A python module for handling the CSD format files, `.csdf` and `.csdfx`.
+    A python module for handling the CSD model file formats.
 
     The module is bulit on the concept of the core scientific dataset (CSD)
     model which follows,
@@ -127,9 +138,9 @@ class CSDModel:
     :math:`y_\alpha` must share the same set of controlled variable
     coordinates.
 
-    In ``csdfpy`` package, every control variable, :math:`x_k`, is represented
+    In `csdfpy` package, every control variable, :math:`x_k`, is represented
     as a :ref:`cv_api` object and every uncontrol variable, :math:`y_\alpha`,
-    by :ref:`uv_api` object. The ``CSDModel`` class holdes and manages the
+    by :ref:`uv_api` object. The CSDModel class holdes and manages the
     tuples of both these variable objects.
 
     :returns: A CSDM object.
@@ -241,7 +252,7 @@ class CSDModel:
         keywords. ::
 
             >>> datamodel = CSDModel()
-            ...
+
             >>> py_dictionary = {
                     'sampling_interval': '5 G'
                     'number_of_points: 50,
@@ -287,7 +298,7 @@ class CSDModel:
         keywords. ::
 
             >>> datamodel = CSDModel()
-            ...
+
             >>> numpy_array = (100*np.random.rand(3,50)).astype(np.uint8))
             >>> py_dictionary = {
             ...     'components': numpy_array,

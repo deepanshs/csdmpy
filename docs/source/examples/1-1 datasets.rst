@@ -1,59 +1,177 @@
 
-------------------------
-:math:`(1,1)`-D datasets
-------------------------
+----------------
+(1,1)-D datasets
+----------------
 
-In this section, we illustrate the simplest group of datasets, :math:`(1,1)`-D
-datasets, which are both one-dimensional control and uncontrol variable dataset.
-Let's start by first importing the :guilabel:`csdfpy` package. Here, we
-also import the :guilabel:`matplotlib.pyplot` package for producing plots. ::
+In this section, we illustrate the simplest subset of datasets, the 
+(1,1)-D datasets. These datasets are one-dimensional in both controlled
+and uncontrolled variables.
+Let's start by first importing the `csdfpy` package. Here, we
+also import the `matplotlib.pyplot` package for rendering the
+plots.
+
+.. doctest::
 
     >>> import csdfpy as cp
     >>> import matplotlib.pyplot as plt
 
-.. Since we will be describing :math:`(1,1)`-D examples for a number of scientific
-.. datasets, it is convenient to define a common function for plotting the data
-.. values. ::
+Global Mean Sea Level rise dataset
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-..     >>> def plot1D(dataObject):
-..     >>>     fig, ax = plt.subplots(1,1,  figsize=(3.4,2.1))
+The following dataset is the Global Mean Sea Level (GMSL) rise from the Late
+19th to the Early 21st Century. The original
+`dataset <http://www.cmar.csiro.au/sealevel/sl_data_cmar.html>`_ was obtained
+as a CSV file and subsequently converted to the CSD model format. Let's start
+by loading the data file,
 
-..     >>>     x = dataObject.controlled_variables
-..     >>>     y = dataObject.uncontrolled_variables
+.. doctest::
 
-..     >>>     ax.plot(x[0].coordinates,
-..     >>>             y[0].components[0].real,
-..     >>>             color='k', linewidth=0.75)
+    >>> filename = '../../test-datasets/gmsl/sea_level.csdf'
+    >>> sea_level = cp.load(filename)
 
-..     >>>     ax.set_xlabel(x[0].axis_label)
-..     >>>     ax.set_ylabel(y[0].component_labels[0])
-..     >>>     ax.set_title(y[0].name)
+where the `filename` is a string with the local address to the `sea_level.csdf`
+file.
+The :py:meth:`~csdfpy.load` method of the `csdfpy` package reads the
+file and returns an instance of the :ref:`CSDModel <csdm_api>` class, in
+this case, the variable ``sea_level``. For a quick preview of the data
+contents, use the :py:attr:`~csdfpy.CSDModel.data_structure` attribute of the
+instance,
 
-..     >>>     plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
-..     >>>     plt.savefig(dataObject.filename+'.pdf')
-..     >>>     plt.show()
+.. doctest::
 
-.. In the above function, the ``plot1D`` accepts an object of the
-.. :ref:`CSDModel <csdm_api>` class as an argument. Within the function, we make
-.. use of a number of attribute from this object. We will describe most of these
-.. attribute as we procced with the examples. For more details, please refer to
-.. :ref:`cv_api` and :ref:`uv_api`.
+    >>> print(sea_level.data_structure)
+    {
+      "CSDM": {
+        "uncontrolled_variables": [
+          {
+            "name": "Global Mean Sea Level",
+            "unit": " mm",
+            "quantity": "length",
+            "component_labels": [
+              "GMSL"
+            ],
+            "numeric_type": "float16",
+            "components": "[-183.0, -183.0, ...... 59.7, 59.7]"
+          }
+        ],
+        "controlled_variables": [
+          {
+            "reciprocal": {
+              "quantity": "frequency"
+            },
+            "number_of_points": 1608,
+            "sampling_interval": "0.08333333333333333 yr",
+            "reference_offset": "-1880.0417 yr",
+            "quantity": "time",
+            "label": "Time"
+          }
+        ],
+        "version": "0.0.9"
+      }
+    }
+
+which returns a JSON object.
+
+.. warning::
+    The JSON output from the :py:attr:`~csdfpy.CSDModel.data_structure`
+    attribute is not the same as the JSON serialization on the file.
+    This attribute is only intended for a quick preview of the data 
+    structure and avoids displaying large datasets. Do not use
+    the value of this attribute to save the data to the file. Instead, use the
+    :py:meth:`~csdfpy.CSDModel.save` method of the :ref:`CSDModel <csdm_api>`
+    class.
+
+To access the tuples of controlled and the uncontrolled variables follow
+
+.. doctest::
+
+    >>> x = sea_level.controlled_variables
+    >>> y = sea_level.uncontrolled_variables
+
+respectively. The coordinates of the controlled variable, `x0`, and the
+component of the uncontrolled variable, `y00`, are
+
+.. doctest::
+
+    >>> x0 = x[0].coordinates
+    >>> print(x0)
+    [1880.0417     1880.12503333 1880.20836667 ... 2013.7917     2013.87503333
+     2013.95836667] yr
+
+    >>> y00 = y[0].components[0]
+    >>> print(y00)
+    [-183.  -171.1 -164.2 ...   66.4   59.7   58.5]
+
+respectively. 
+
+Before we plot the dataset, we find it convenient to write a small plotting
+method. This method makes it easier, later, when we describe (1,1)-D
+examples form a variety of scientific datasets. The method follows,
+
+.. doctest::
+
+    >>> def plot1D(dataObject):
+    ...     fig, ax = plt.subplots(1,1,  figsize=(3.4,2.1))
+
+    ...     x = dataObject.controlled_variables
+    ...     y = dataObject.uncontrolled_variables
+
+    ...     x0 = x[0].coordinates
+    ...     y00 = y[0].components[0]
+
+    ...     ax.plot(x0, y00.real, color='k', linewidth=0.75)
+
+    ...     ax.set_xlabel(x[0].axis_label)
+    ...     ax.set_ylabel(y[0].axis_label[0])
+    ...     ax.set_title(y[0].name)
+
+    ...     if x[0].reverse:
+    ...         ax.invert_xaxis()
+
+    ...     ax.grid(color='gray', linestyle='--', linewidth=0.5)
+    ...     ax.set_xlim([x0[0].value, x0[-1].value])
+    ...     plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
+    ...     plt.savefig(dataObject.filename+'.pdf')
+    ...     plt.show()
+
+Let's take a quick look at the ``plot1D`` method. The method accepts an
+instance of the
+:ref:`CSDModel <csdm_api>` class as an argument. Within the method, we make
+use of the instance's attributes in addition to the matplotlib
+functions. The first line creates a new blank figure. In the following four
+lines, we define the `x`, `y`, `x0`, and `y00` as previously described. The
+next line adds a plot of `y00` vs. `x0` to the figure. For labeling the
+axes, we use the 
+:py:attr:`~csdfpy.ControlledVariable.axis_label` attribute of both control and
+uncontrol variable instances. For the figure title, we use the
+:py:attr:`~csdfpy.UncontrolledVariable.name` attribute of the
+uncontrol variable instances. The following `if` statement plot the figure with
+the x-axis in reverse, if the 
+:py:attr:`~csdfpy.ControlledVariable.reverse` attribute of the control
+variable instance is True. The following two lines add a grid and and the range
+of x-axis, respectively.
+For additional information refer to the :ref:`cv_api`, :ref:`uv_api`, and the
+`Matplotlib <https://matplotlib.org>`_ documentation.
+
+Now to plot the ``sea_level`` dataset,
+
+.. doctest::
+
+    >>> plot1D(sea_level)
+
+.. image:: /_static/sea_level.csdf.pdf
+
 
 NMR dataset
 ^^^^^^^^^^^
 
-Loading the file is as simple as, ::
+The following dataset is a :math:`^{13}\mathrm{C}` NMR Bloch decay signal of
+ethanol. Let's load the file and take a quick look at the data structure.
 
-    >>> filename = 'test/NMR/blochDecay/blochDecay_raw.csdfx'
+.. doctest::
+
+    >>> filename = '../../test-datasets/NMR/blochDecay/blochDecay_raw.csdfx'
     >>> NMRdata = cp.load(filename)
-
-where `filename` contains the local address to the `.csdfx` or `.csdf` file.
-The :py:meth:`~csdfpy.load` method of the :guilabel:`csdfpy` package reads the
-file and return an object, in this case, ``NMRdata``, of the
-:ref:`CSDModel <csdm_api>` class. For a quick preview of the data contents
-from this object, use the :py:attr:`~csdfpy.CSDModel.data_structure` attribute.
-This returns a JSON object as shown below. ::
-
     >>> print(NMRdata.data_structure)
     {
       "CSDM": {
@@ -82,97 +200,57 @@ This returns a JSON object as shown below. ::
       }
     }
 
-.. note::
-    The JSON output from the :py:attr:`~csdfpy.CSDModel.data_structure`
-    attribute is not the same as
-    the JSON serialization on file. This attribute is only intended for a quick
-    preview of the data structure and avoids displaying large data. Do not use
-    the value of this attribute to save the data to the file. Instead, use the
-    :py:meth:`~csdfpy.CSDModel.save` method of the :ref:`CSDModel <csdm_api>`
-    class.
+Unlike the previous example, the data structure of the NMR measurement reveals
+a complexed value dataset. These complex values, `y00`, are the
+component of the uncontrolled variable and are accessed as follows,
 
-The tuples of controlled and the uncontrolled variables are accessed with ::
+.. doctest::
+
+    >>> y = NMRdata.uncontrolled_variables
+    >>> y00 = y[0].components[0]
+    >>> print(y00)
+    [-8899.406   -1276.7734j  -4606.8804   -742.4125j
+      9486.438    -770.0413j  ...   -70.95386   -28.32843j
+        37.548492  +20.15689j  -193.92285   -67.06525j]
+
+Similarly, the coordinates of the controlled variable, `x0`, are accessed as
+follows,
+
+.. doctest::
 
     >>> x = NMRdata.controlled_variables
-    >>> y = NMRdata.uncontrolled_variables
-
-respectively. The coordinates of the controlled variable, ``x0``, and the
-component of the uncontrolled variable, ``y00``, are ::
-
-    >>> x0 = x[0].cooridnates
-    >>> x0
+    >>> x0 = x[0].coordinates
+    >>> print(x0)
     [-3.000e-01 -2.000e-01 -1.000e-01 ...  4.090e+02  4.091e+02  4.092e+02] ms
-    >>> y00 = y[0].components[0]
-    >>> y00
-    [-8899.406   -1276.7734j  -4606.8804   -742.4125j
-     9486.438    -770.0413j  ...   -70.95386   -28.32843j
-     37.548492  +20.15689j  -193.92285   -67.06525j]
 
+Now to the plot the dataset,
 
-respectively. 
-
-Before we plot the dataset, we find it convenient to write a small plotting
-method. This method makes it easier, later, when we describe :math:`(1,1)`-D
-examples form the number of scientific fields. The method follows, ::
-
-    >>> def plot1D(dataObject):
-    >>>     fig, ax = plt.subplots(1,1,  figsize=(3.4,2.1))
-
-    >>>     x = dataObject.controlled_variables
-    >>>     y = dataObject.uncontrolled_variables
-
-    >>>     x0 = x[0].cooridnates
-    >>>     y00 = y[0].components[0]
-
-    >>>     ax.plot(x0, y00.real, color='k', linewidth=0.75)
-
-    >>>     ax.set_xlabel(x[0].axis_label)
-    >>>     ax.set_ylabel(y[0].axis_label[0])
-    >>>     ax.set_title(y[0].name)
-    >>>     if x[0].reverse:
-    >>>         ax.invert_xaxis()
-
-    >>>     plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
-    >>>     plt.savefig(dataObject.filename+'.pdf')
-    >>>     plt.show()
-
-A quick description of the ``plot1D`` method. The method accepts an
-object of the
-:ref:`CSDModel <csdm_api>` class as an argument. Within the method, we make
-use of a number of attributes from this object in addition to the matplotlib
-functions. The first line creates a new blank figure. In the following four
-lines, we define ``x``, ``y``, ``x0``, and ``y00`` as previously described. The
-next line adds a plot of ``y00`` vs ``x0`` to the figure. For labeling the
-axes, we use the 
-:py:attr:`~csdfpy.ControlledVariable.axis_label` attribute of both control and
-uncontrol variable objects. For the figure title, we use the
-:py:attr:`~csdfpy.UncontrolledVariable.name` attribute of the
-uncontrol variable object. The following `if` statement plot the figure with
-the x-axis in reverse, if the 
-:py:attr:`~csdfpy.ControlledVariable.reverse` attribute of the control
-variable is True.
-Please refer to the :ref:`cv_api` and :ref:`uv_api` for additional
-information.
-
-Now to plot the ``NMRdata`` contents,
+.. doctest::
 
     >>> plot1D(NMRdata)
 
-.. image:: /resource/blochDecay_raw.csdfx.pdf
+.. image:: /_static/blochDecay_raw.csdfx.pdf
 
 
-EPR simulated dataset
-^^^^^^^^^^^^^^^^^^^^^
-Similarly, ::
+EPR dataset
+^^^^^^^^^^^
 
-    >>> filename = 'test/EPR/xyinc2_base64.csdf'
+The following simulation of the
+`EPR dataset <http://wwwchem.uwimona.edu.jm/spectra/index.html>`_
+is formerly received as a JCAMP-DX file and later converted to the
+CSD model format. The data structure of the dataset and the corresponding
+plot follows,
+
+.. doctest::
+
+    >>> filename = '../../test-datasets/EPR/xyinc2_base64.csdf'
     >>> EPRdata = cp.load(filename)
     >>> print(EPRdata.data_structure)
     {
       "CSDM": {
         "uncontrolled_variables": [
           {
-            "name": "Vanadyl in Amanita muscaria",
+            "name": "Amanita.muscaria",
             "component_labels": [
               "Arbitrary"
             ],
@@ -193,21 +271,27 @@ Similarly, ::
     }
     >>> plot1D(EPRdata)
 
-.. image:: /resource/xyinc2_base64.csdf.pdf
-
+.. image:: /_static/xyinc2_base64.csdf.pdf
 
 Gas Chromatography dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-::
 
-    >>> filename = 'test/GC/cinnamon_none.csdf'
+The following
+`Gas Chromatography dataset  <http://wwwchem.uwimona.edu.jm/spectra/index.html>`_
+is also obtained as a JCAMP-DX file and subsequently converted to the CSD model
+format. The data structure and the plot of the gas chromatography dataset
+follows,
+
+.. doctest::
+
+    >>> filename = '../../test-datasets/GC/cinnamon_none.csdf'
     >>> GCData = cp.load(filename)
     >>> print(GCData.data_structure)
     {
       "CSDM": {
         "uncontrolled_variables": [
           {
-            "name": "cinnamon stick",
+            "name": "Headspace from cinnamon stick",
             "component_labels": [
               "Arbitrary"
             ],
@@ -230,14 +314,20 @@ Gas Chromatography dataset
     }
     >>> plot1D(GCData)
 
-.. image:: /resource/cinnamon_none.csdf.pdf
+.. image:: /_static/cinnamon_none.csdf.pdf
 
 
 FTIR dataset
 ^^^^^^^^^^^^
-::
 
-    >>> filename = 'test/IR/caffeine_none.csdf'
+For the following 
+`FTIR dataset  <http://wwwchem.uwimona.edu.jm/spectra/index.html>`_,
+we convert the original JCAMP-DX file to the CSD model format. The data
+structure and the plot of the FTIR dataset follows
+
+.. doctest::
+
+    >>> filename = '../../test-datasets/IR/caffeine_none.csdf'
     >>> FTIRData = cp.load(filename)
     >>> print(FTIRData.data_structure)
     {
@@ -269,13 +359,21 @@ FTIR dataset
     }
     >>> plot1D(FTIRData)
 
-.. image:: /resource/caffeine_none.csdf.pdf
+.. image:: /_static/caffeine_none.csdf.pdf
 
+Notice, the reverse axis of the FTIR wavenumber axis.
 
 UV-vis dataset
 ^^^^^^^^^^^^^^
 
-    >>> filename = 'test/UV-Vis/benzeneVapour_base64.csdf'
+The following
+`UV-vis dataset <http://wwwchem.uwimona.edu.jm/spectra/index.html>`_
+is originally downloaded as a JCAMP-DX file and consequently turned to the CSD
+model format. The data structure and the plot of the UV-vis dataset follows,
+
+.. doctest::
+
+    >>> filename = '../../test-datasets/UV-Vis/benzeneVapour_base64.csdf'
     >>> UVdata = cp.load(filename)
     >>> print(UVdata.data_structure)
     {
@@ -287,7 +385,7 @@ UV-vis dataset
               "Absorbance"
             ],
             "numeric_type": "float32",
-            "components": "[0.25890622, 0.25890622, ...... 0.16814752, 0.16814752]"
+            "components": "[0.16786034, 0.16786034, ...... 0.25923702, 0.25923702]"
           }
         ],
         "controlled_variables": [
@@ -306,46 +404,6 @@ UV-vis dataset
         "version": "0.0.9"
       }
     }
-
     >>> plot1D(UVdata)
 
-.. image:: /resource/benzeneVapour_base64.csdf.pdf
-
-Global Mean Sea Level dataset
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-    >>> filename = 'test/gmsl/sea_level.csdf'
-    >>> sea_level = cp.load(filename)
-    >>> print (sea_level.data_structure)
-    {
-      "CSDM": {
-        "uncontrolled_variables": [
-          {
-            "name": "Global Mean Sea Level",
-            "component_labels": [
-              "GMSL (mm)"
-            ],
-            "numeric_type": "float64",
-            "components": "[-183.0, -183.0, ...... 59.7, 59.7]"
-          }
-        ],
-        "controlled_variables": [
-          {
-            "reciprocal": {
-              "quantity": "frequency"
-            },
-            "number_of_points": 1608,
-            "sampling_interval": "0.083333333 yr",
-            "reference_offset": "-1880.0417 yr",
-            "quantity": "time",
-            "label": "Time"
-          }
-        ],
-        "version": "0.0.9"
-      }
-    }
-
-    >>> plot1D(sea_level)
-
-
-.. image:: /resource/sea_level.csdf.pdf
+.. image:: /_static/benzeneVapour_base64.csdf.pdf

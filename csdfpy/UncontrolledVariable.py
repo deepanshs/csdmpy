@@ -5,11 +5,12 @@ from __future__ import print_function, division
 import base64
 import json
 import warnings
-import os
+from os import path
 import numpy as np
 
 from ._utils import (
     _assign_and_check_unit_consistency,
+    # _check_unit_consistency,
     _check_quantity,
     _check_encoding,
     _check_numeric_type,
@@ -21,7 +22,11 @@ from ._utils import (
 )
 from copy import deepcopy
 
-from .unit import value_object_format
+from .unit import (
+    value_object_format,
+    # string_to_unit
+)
+
 from urllib.request import urlopen
 from urllib.parse import urlparse
 
@@ -32,44 +37,19 @@ def _get_absolute_data_address(data_path, file):
 
     :params: data_path:
     """
-    # _data_abs_path = os.path.abspath(data_path)
-    _file_abs_path = os.path.abspath(file)
-    # print(_file_abs_path)
-    # _common_path = os.path.commonpath([_data_abs_path, _file_abs_path])
-
-    _norm_data_path = os.path.normpath(data_path)
-    # print(_norm_data_path)
-    # print(os.path.normpath(file))
-    _path, _file = os.path.split(_file_abs_path)
-    # print(_path)
-    _join = os.path.join(_path, _norm_data_path)
-    # print(_join)
-    # print(_data_abs_path)
-
-    # print(_common_path)
-    # print(os.path.abspath(_file_abs_path[:-len(file)]))
-
-    # if (_common_path != os.path.abspath(_file_abs_path[:-len(file)])):
-    #     raise Exception(
-    #         "invalid path to external data file, '{0}'".format(_data_abs_path)
-    #     )
-
-    # _relative_path_to_file = os.path.split(file)[0]
-    # _relative_path_to_data = _data_abs_path[len(_common_path)+1:]
-
-    # _path = os.path.join(_common_path,
-    #                      _relative_path_to_file,
-    #                      _relative_path_to_data)
+    _file_abs_path = path.abspath(file)
+    _path, _file = path.split(_file_abs_path)
+    _join = path.join(_path, data_path)
+    _join = path.normpath(_join)
 
     return 'file:'+_join
 
 
 def _get_relative_data_address(data_absolute_uri, file):
     res = urlparse(data_absolute_uri)
-    _data_abs_path = os.path.abspath(res.path)
-    _file_abs_path = os.path.abspath(file)
-    _common_path = os.path.commonpath([_data_abs_path, _file_abs_path])
-    _data_rel_path = _data_abs_path[len(_common_path)+1:]
+    _data_abs_path = path.abspath(res.path)
+    _file_abs_path = path.split(path.abspath(file))[0]
+    _data_rel_path = path.relpath(_data_abs_path, start=_file_abs_path)
     return 'file:./'+_data_rel_path
 
 
@@ -85,29 +65,30 @@ def _get_absolute_uri_path(uri, file):
 
 class UncontrolledVariable:
     r"""
-    Uncontrolled variable class.
+    The base UncontrolledVariable class.
 
     This class returns an object which represents an uncontrol variable.
-    Each uncontrol variable, :math:`y_\alpha`, resides in a
-    :math:`p_\alpha`-dimensional space, for example, a scalar resides in an
-    one-dimensional space, a vector resides in a :math:`n`-dimensional vector
-    space, and a second rank symmetric tensor resides in a six-dimensional
-    space. We refer the coordinates of a data value from this
+    The uncontrol variable, :math:`y_\alpha`, resides in a
+    :math:`p_\alpha`-dimensional space. For example, a scalar resides in a
+    one-dimensional space (:math:`p_\alpha=1`), a vector resides in an
+    `n`-dimensional vector space (:math:`p_\alpha=n`), and a second rank
+    symmetric tensor resides in a six-dimensional space (:math:`p_\alpha=6`).
+    We refer the coordinates of a data value from this
     :math:`p_\alpha`-dimensional space as the components of the
     data value. For example, if the coordinates of a magnetic field vector is
     ("1 T", "25 mT"), then "1 T" and "25 mT" are the components of the
     magnetic field vector.
 
-    **Constructing a ControlledVariable object.**
+    **Creating a new uncontrol variable.**
 
-    There are two different ways to construct an instance of the
+    There are two ways to create a new uncontrolled variable from the
     UncontrolledVariable class.
 
-    `Create an uncontrol variable using a python dictionary containing valid
-    keywords.` ::
+    `From a python dictionary containing valid keywords.` ::
 
         >>> from csdfpy import UncontrolledVariable
-        >>> numpy_array = (100*np.random.rand(3,50)).astype(np.uint8))
+        >>> import numpy as np
+        >>> numpy_array = np.arange(30).reshape(3,10).astype(np.uint8)
         >>> py_dictionary = {
         ...     'components': numpy_array,
         ...     'name': 'star',
@@ -115,35 +96,14 @@ class UncontrolledVariable:
         ...     'quantity': 'energy',
         ...     'dataset_type': 'RGB'
         ... }
-        >>> var1 = UncontrolledVariable(py_dictionary)
-        >>> print(var1.data_structure)
-        {
-          "name": "star",
-          "unit": " s * W",
-          "quantity": "energy",
-          "numeric_type": "uint8",
-          "dataset_type": "RGB",
-          "components": "[78, 78, ...... 44, 44], [37, 37, ...... 22, 22], [72, 72, ...... 44, 44]"
-        }
+        >>> y = UncontrolledVariable(py_dictionary)
 
-    `Create an uncontrol variable with valid keyword arguaments.` ::
+    `From valid keyword arguaments.` ::
 
-        >>> var2 = UncontrolledVariable(name='star',
-        ...                             unit='W s',
-        ...                             dataset_type='RGB',
-        ...                             components=numpy_array)
-        >>> print(var2.data_structure)
-        {
-          "name": "star",
-          "unit": " s * W",
-          "quantity": "energy",
-          "numeric_type": "uint8",
-          "dataset_type": "RGB",
-          "components": "[78, 78, ...... 44, 44], [37, 37, ...... 22, 22], [72, 72, ...... 44, 44]"
-        }
-
-    The above two examples create two different UncontrolledVariable objects,
-    with the same content, but, using two different approaches.
+        >>> y = UncontrolledVariable(name='star',
+        ...                          unit='W s',
+        ...                          dataset_type='RGB',
+        ...                          components=numpy_array)
     """
 
     __slots__ = ['uv']
@@ -209,16 +169,16 @@ class UncontrolledVariable:
         r"""
         Return a string containing the name of the uncontrolled variable.
 
-        This attribute is editable. For example, ::
+        The attribute is editable. For example, ::
 
             >>> y.name
-            star
+            'star'
             >>> y.name = 'rock star'
 
         In the above example, ``y`` is an instance of the UncontrolledVariable
         class.
 
-        :returns: A string.
+        :returns: A ``String``.
         :raises TypeError: When the assigned value is not a string.
         """
         return deepcopy(self.uv._name)
@@ -233,15 +193,15 @@ class UncontrolledVariable:
     @property
     def unit(self):
         r"""
-        Return the unit associated the uncontrolled variable values.
+        Return the unit associated the uncontrolled variable.
 
-        This attribute cannot be edited. To convert the unit, use the ``to``
-        method of the class. ::
+        The attribute cannot be modified. To convert the unit, use the
+        :py:meth:`~csdfpy.UncontrolledVariable.to` method of the class. ::
 
             >>> y.unit
-            W s
+            Unit("s W")
 
-        :returns: A ``unit`` object.
+        :returns: A ``Unit`` object.
         :raises AttributeError: When assigned a value.
         """
         return deepcopy(self.uv._unit)
@@ -256,15 +216,14 @@ class UncontrolledVariable:
     @property
     def quantity(self):
         """
-        Return a string with a quantity name of the uncontrolled variable.
+        Return a string with a `quantity name` of the uncontrolled variable.
 
-        When assigning a value, the attribute raises a
-        NotImplementedError. ::
+        ::
 
             >>> y.quantity
-            energy
+            'energy'
 
-        :returns: A string.
+        :returns: A ``String``.
         :raises NotImplementedError: When assigning a value.
         """
         return deepcopy(self.uv._quantity)
@@ -283,7 +242,7 @@ class UncontrolledVariable:
         r"""
         Return a string describing the encoding method.
 
-        The attribute hold the value that determines the method used when
+        The attribute holds the value that determines the method used when
         storing the data values to a file. Currently, there are
         three valid encoding methods:
 
@@ -291,16 +250,16 @@ class UncontrolledVariable:
         | ``base64``
         | ``none``
 
-        The value, `raw`, mean that data is stored as binary data.
-        The value, `base64`, implies that the data is stored as
-        a base64 string, while, `none` refers to text-based storage. This
-        attribute of the class is *only* relavent when storing the data
-        to a file and is specified as a string containing a *valid* encoding
+        A value, `raw`, indicates that the data values are stored as binary.
+        The value, `base64`, implies that the data values are stored as
+        base64 strings, while, the value `none` refers to text-based storage.
+        The attribute is *only* relevant when storing the dataset to a file.
+        The value is specified as a string containing a *valid* encoding
         method, for example, ::
 
             >>> y.encoding = 'base64'
 
-        :returns: A string.
+        :returns: A ``String``.
         :raises ValueError: If an invalid value is assigned.
         :raises TypeError: When the assigned value is not a string.
         """
@@ -327,21 +286,29 @@ class UncontrolledVariable:
         ``uint64``       ``int64``
         ==============   ============   ============   ============
 
-        When assigning a value, this attribute updates the `numeric type` as
-        well as the `dtype` of the numpy array from the corresponding
-        ``components`` attribute. We recommended using the numeric type to
-        change the `dtype` of the numpy array. For example, ::
+        When assigned a value, this attribute updates the `numeric type` as
+        well as the `dtype` of the Numpy array from the corresponding
+        :py:attr:`~csdfpy.UncontrolledVariable.components` attribute. We
+        recommended the use of the numeric type attribute for updating
+        the `dtype` of the Numpy array. For example, ::
 
-            >>> y.components
-            [[0.56928902 0.44169458 0.68068357 0.24362424 0.25700121]]
+            >>> print(y.components)
+            [[ 0  1  2  3  4  5  6  7  8  9]
+             [10 11 12 13 14 15 16 17 18 19]
+             [20 21 22 23 24 25 26 27 28 29]]
             >>> y.numeric_type
-            float64
+            'uint8'
             >>> y.numeric_type = 'complex64'
-            >>> y.components
-            [[0.569289  +0.j 0.4416946 +0.j 0.68068355+0.j 0.24362424+0.j  0.25700122+0.j]]
+            >>> print(y.components)
+            [[ 0.+0.j  1.+0.j  2.+0.j  3.+0.j  4.+0.j  5.+0.j  6.+0.j  7.+0.j  8.+0.j
+               9.+0.j]
+             [10.+0.j 11.+0.j 12.+0.j 13.+0.j 14.+0.j 15.+0.j 16.+0.j 17.+0.j 18.+0.j
+              19.+0.j]
+             [20.+0.j 21.+0.j 22.+0.j 23.+0.j 24.+0.j 25.+0.j 26.+0.j 27.+0.j 28.+0.j
+              29.+0.j]]
 
-        :returns: A string.
-        :raises ValueError: If an invalid key-value is assigned.
+        :returns: A ``String``.
+        :raises ValueError: If an invalid value is assigned.
         :raises TypeError: When the assigned value is not a string.
         """
         return deepcopy(self.uv._numeric_type)
@@ -371,14 +338,14 @@ class UncontrolledVariable:
         | ``matrix_n_m``
         | ``symmetric_matrix_n``
 
-        Here `n` and `m` are integers. The attribute can also be used
-        to assign a ``dataset_type`` to the dataset. ::
+        where `n` and `m` are integers. The attribute can also be used
+        to assign a `dataset type` to the dataset. ::
 
             >>> y.dataset_type
-            RGB
+            'RGB'
             >>> y.dataset_type = 'vector_3'
 
-        :returs: A string.
+        :returs: A ``String``.
         :raise ValueError: If an invalid value is assigned.
         :raises TypeError: When the assigned value is not a string.
         """
@@ -394,21 +361,20 @@ class UncontrolledVariable:
     @property
     def component_labels(self):
         r"""
-        Return an ordered array of labels.
+        Return an ordered array of labels relative to the order of the :py:attr:`~csdfpy.UncontrolledVariable.components`. ::
 
-        The labels in the ordered array are associated with the ordered array
-        of components from the ``components`` attribute.
+            >>> y.component_labels
+            ['', '', '']
+
+        When assigning a value, simply assign an array with same size ::
+
+            >>> y.component_labels = ['x', 'y', 'z']
+
         The individual labels are accessed with proper indexing,
         for example, ::
 
-            >>> y.component_labels
-            ['dxx', 'dxy', 'dxz', 'dyy', 'dyz', 'dzz']
             >>> y.component_labels[2]
-            'dxz'
-
-        Similarly, when assigning a value, ::
-
-            >>> y.component_labels = ['x', 'y', 'z']
+            'z'
 
         .. todo::
             Check the component labels.
@@ -424,23 +390,23 @@ class UncontrolledVariable:
     @property
     def axis_label(self):
         r"""
-        Return the axis label associated with the dimension.
+        Return a formatted array of strings for displaying the label.
 
         This supplementary attribute is convenient for labeling axes.
-        For quantitative controlled variables, this attributes returns a
-        string, 'label / unit',  if the label is not an empty string. If the
-        label is an empty string, 'quantity / unit’ is returned instead.
-        For example, consider a temporal controlled variable where
+        For uncontrolled variables, this attributes returns an array of strings
+        where every string is formatted as, 'label / unit',  if the
+        corresponding index of the `component_labels` array is not an empty
+        string, otherwise, 'quantity / unit’. Here
+        `quantity`, `component_labels`, and `unit` are the attributes of the
+        :ref:`uv_api` instances described before.
+        For example, consider a diffusion tensor uncontrolled variable where ::
 
-        >>> x[0].label
-        ''
-        >>> x[0].axis_label
-        'speed / m/s'
+            >>> y.component_labels[1]
+            'y'
+            >>> y.axis_label[1]
+            'y / ( s * W)'
 
-        For non-quantitative controlled variables, this attribute returns
-        the 'label'.
-
-        :returns: A string.
+        :returns: A ``String``.
         :raises AttributeError: When assigned a value.
         """
         labels = []
@@ -455,68 +421,58 @@ class UncontrolledVariable:
         r"""
         Return the components of data values.
 
-        The value of the ``components`` attribute of the uncontrolled variables
-        :math:`y_\alpha`, is a numpy array of shape
+        The value of the components attribute of the uncontrolled variables
+        :math:`y_\alpha` is a Numpy array of shape
         :math:`(p_\alpha \times N_{d-1} \times ... N_1 \times N_0)` where
         :math:`p_\alpha` is the number of components, and :math:`N_k` is the
         number of points sampled along the :math:`k^\mathrm{th}` controlled
-        variable. The total number of dimensions of this array is :math:`d+1`
-        where :math:`d` is number of controlled variables. Note, the
-        shape of the numpy array follows a reverse order based on the ordered
+        variable. The total number of dimensions from this array is :math:`d+1`
+        where :math:`d` is the number of controlled variables. Note, the
+        shape of the Numpy array follows a reverse order based on the ordered
         list of controlled variables, that is, the :math:`k^\mathrm{th}`
         controlled variable lies along the :math:`(d-k)^\mathrm{th}` axis of
-        the numpy array. Thus, the first controlled variable, :math:`x_0`
-        with :math:`N_0` points, is the last axis, :math:`d`, and the last
-        controlled variable, :math:`x_{d-1}` with :math:`N_{d-1}` points, is
-        the first axis of the numpy array. The zeroth axis, with
+        the Numpy array. Thus, the first controlled variable :math:`x_0`
+        with :math:`N_0` points is the last axis, and the last
+        controlled variable :math:`x_{d-1}` with :math:`N_{d-1}` points is
+        the first axis of the Numpy array. The zeroth axis with
         :math:`p_\alpha` points is the number of components.
 
         This attribute can only be updated when the shape of the new array is
         the same as the shape of the components array.
 
-        For example, let ::
+        For example, ::
 
-            >>> y.components
-            [[0.3823 0.4595 0.4944 0.9614 0.814 ]]
+            >>> print(y.components.shape)
+            (3, 10)
             >>> y.numeric_type
-            float16
+            'complex64'
 
-        be a one component uncontrolled variable with five data values. The
-        numeric type of data values, in this example, is ``float16``. To
-        update the components array, the ``components`` attribute is assigned
-        with an array whose shape is (1,5). In the following example, a numpy
-        array of random values is assigned to the ``components`` attribute. ::
+        be a single-component uncontrolled variable with five data values. The
+        numeric type of data values, in this example, is `float16`. To update
+        the components array, assign an array of shape (1,5) to the components
+        attribute. In the following example, we assign a Numpy
+        array of random numbers. ::
 
-            >>> y.components = np.random.rand(1,5)
-            [[0.01616425 0.25530287 0.15347935 0.07685529 0.19680315]]
+            >>> y.components = np.linspace(0,256,30, dtype='u1').reshape(3,10)
             >>> y.numeric_type
-            float64
+            'uint8'
 
-        Notice, the value of the ``numeric_type`` attribute is updated based on
-        the `dtype` of the numpy array. In this other example, ::
+        Notice, the value of the `numeric_type` attribute is automatically
+        updated based on the `dtype` of the Numpy array. In this case, from a
+        *complex64* to *uint8*.
+        In this other example, ::
 
-            >>> y.components = np.random.rand(1,10)
-            ---------------------------------------------------------------------------
-            ValueError                                Traceback (most recent call last)
+            >>> y.components = np.random.rand(1,10).astype('u1')
+            Traceback (most recent call last):
+              File "<stdin>", line 1, in <module>
+              File "/Users/deepansh/Dropbox/NMRgit/MRData/csdfpy/csdfpy/uv.py", line 491, in components
+                self.uv._set_components(value)
+              ValueError: The shape of `ndarray`, `(1, 10)`, is not consistent with the shape of the components array, `(3, 10)`.
 
-            <ipython-input-20-a2621a428043> in <module>()
-            ----> 1 dts.uncontrolled_variables[0].components = np.random.rand(1,10)
-                2 # print(dts.uncontrolled_variables[0].components)
-                3 # print(dts.uncontrolled_variables[0].numeric_type)
-            ~/csdfpy/uv.py in components(self, value)
-                367                     "shape of the components array, `{2}`."
-                368                 ).format(
-            --> 369                     value.__class__.__name__,
-                370                     value.shape,
-                371                     self.components.shape
-
-            ValueError: The shape of `ndarray`, `(1, 10)`, is not consistent with
-            the shape of the components array, `(1, 5)`.
-
-        a ``ValueError`` is raised because the shape of input array (1,10) is
+        a `ValueError` is raised because the shape of the input array (1,10) is
         not consistent with the shape of the components array, (1,5).
 
-        :returns: A ``numpy array``.
+        :returns: A ``Numpy array``.
         :raises ValueError: When assigning an array whose shape is
             not consistent with the shape of the components array.
         """
@@ -542,13 +498,13 @@ class UncontrolledVariable:
     @property
     def components_uri(self):
         r"""
-        Return the uri of the data file where data components are stored.
+        Return the URI of the data file where data components are stored.
 
-        This attribute is only informative and cannot be modified. Its value is
+        The attribute is only informative and cannot be modified. Its value is
         a string containing the local or remote address of a file where the
         data values are stored.
 
-        :returns: A string
+        :returns: A ``String``.
         :raises AttributeError: When assigining a value.
         """
         return self.uv._components_uri
@@ -565,26 +521,31 @@ class UncontrolledVariable:
 
         This attribute is useful for a quick view of the data structure. Note,
         the JSON object from this attribute is not the same as the one written
-        to the file. For convenience, the values from the ``components``
+        to the file. For convenience, the values from the `components`
         attribute are truncated to the first and the last two numbers per
-        component. Also, the encoding keyword is hidden from this view.
-        Further, this attribute cannot be modified. ::
+        component. Also, the `encoding` keyword is hidden from this view.
+        The attribute cannot be modified. ::
 
             >>> print(y.data_structure)
             {
               "name": "rock star",
               "unit": " s * W",
               "quantity": "energy",
+              "component_labels": [
+                "x",
+                "y",
+                "z"
+              ],
               "numeric_type": "uint8",
-              "dataset_type": "RGB",
-              "components": "[4, 4, ...... 88, 88], [79, 79, ...... 47, 47], [63, 63, ...... 71, 71]"
+              "dataset_type": "vector_3",
+              "components": "[0, 0, ...... 70, 70], [88, 88, ...... 158, 158], [176, 176, ...... 247, 247]"
             }
-
 
         :raises AttributeError: When modified.
         """
         dictionary = self.get_python_dictionary()
-        return (json.dumps(dictionary, sort_keys=False, indent=2))
+        return (json.dumps(dictionary, ensure_ascii=False,
+                           sort_keys=False, indent=2))
 
 # =========================================================================== #
 #                                  Methods                                    #
@@ -598,10 +559,23 @@ class UncontrolledVariable:
         self.uv.set_attribute('_components', self.components*value)
 
     def to(self, unit):
-        r"""NotImplemented."""
-        factor = self.unit.to(unit)
-        self.uv.set_attribute('_components', self.components*factor)
-        self.uv.set_attribute('_unit', unit)
+        r"""
+        Convert the unit of the uncontrolled variable components to `unit`.
+
+        This method is a wrapper of the `to` method from the
+        `Quantity <http://docs.astropy.org/en/stable/api/\
+        astropy.units.Quantity.html#astropy.units.Quantity.to>`_ class. ::
+
+            >>> y.unit
+            Unit("s W")
+            >>> y.to('J')
+            >>> y.unit
+            Unit(" J")
+
+        """
+        factor = (1.0*self.unit).to(unit)
+        self.uv.set_attribute('_components', self.components*factor.value)
+        self.uv.set_attribute('_unit', factor.unit)
 
     def reshape(self, shape):
         r"""
@@ -1012,17 +986,17 @@ class _UnControlledVariable:
 
                 print('abs URI', self._components_uri)
                 print('rel filename', filename)
-                data_path_relative = os.path.join(
-                    'file:.', os.path.splitext(
-                        os.path.split(filename)[1]
+                data_path_relative = path.join(
+                    'file:.', path.splitext(
+                        path.split(filename)[1]
                     )[0] + '_' + index + '.dat'
                 )
 
                 print('relative path', data_path_relative)
                 dictionary['components_URI'] = data_path_relative
 
-                data_path_absolute = os.path.abspath(
-                    urlparse(os.path.join(
+                data_path_absolute = path.abspath(
+                    urlparse(path.join(
                         file_save_path_abs, urlparse(data_path_relative).path
                     )).path
                 )

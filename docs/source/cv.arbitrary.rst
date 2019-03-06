@@ -6,23 +6,23 @@
 Arbitrarily sampled grid dimension controlled variable
 ------------------------------------------------------
 
+In this subsection, we describe the features of a linearly sampled grid
+controlled variable class. We do so by using an illustrative example.
+The following snippet loads a test file with a linearly sampled grid dimension,
 
-In this subsection, we describe the features of an arbitrarily
-sampled grid controlled variable class. We again demostrate
-this with illustrative example. The following snippet
-loads a test file with an arbitrarily sampled grid dimension, ::
+.. doctest::
 
     >>> import csdfpy
     >>> filename = csdfpy.test_file['test01']
     >>> testdata1 = csdfpy.open(filename)
-    >>> print (testdata1)
-    <csdfpy.CSDModel object at 0x10b757bd0>
 
-The variable ``testdata1`` holds an object of the
+The variable ``testdata1`` is an instance of the
 :ref:`CSDModel <csdm_api>` class. For the remainder of this example,
-we will focus on its ``controlled_variables`` attribute, ::
+we will focus on its :py:attr:~csdfpy.CSDModel.controlled_variables attribute,
 
-    >>> x = testdata2.controlled_variables
+.. doctest::
+
+    >>> x = testdata1.controlled_variables
     >>> print(x)
     (<csdfpy.controlled_variables._arbitrarilySampledGridDimension object at 0xa1c9f6e48>,)
 

@@ -1,17 +1,22 @@
 
-------------------------
-:math:`(2,2)`-D datasets
-------------------------
+----------------
+(2,2)-D datasets
+----------------
 
-This group of datasets has two controlled variables, as well as two
-uncontrolled variables.
+The following subset of datasets has two controlled variables, :math:`d=2`,
+and one two-component uncontrolled variable, :math:`p_0=2`.
 
 Vector dataset
 ^^^^^^^^^^^^^^
 
-Start by importing the :guilabel:`csdfpy` package and loading the file. ::
+Here is an example of a simulated dataset of the electric field of a dipole
+as a function of two spatial dimensions.
 
-    >>> filename = 'test/vector/electricField/electric_field_raw.csdfx'
+.. doctest::
+
+    >>> import csdfpy as cp
+
+    >>> filename = '../../test-datasets/vector/electricField/electric_field_raw.csdfx'
     >>> vectordata = cp.load(filename)
     >>> print (vectordata.data_structure)
     {
@@ -52,38 +57,54 @@ Start by importing the :guilabel:`csdfpy` package and loading the file. ::
       }
     }
 
-and the corresponding tuples of controlled and uncontrolled variable
-objects. ::
+The corresponding tuples of controlled and uncontrolled variable
+instances are
+
+.. doctest::
 
     >>> x = vectordata.controlled_variables
     >>> y = vectordata.uncontrolled_variables
 
-Let's plot the vector data. In the follwing code, we use the streamplot
-from matplotlib package. This requires a initial setup before we can plot
-the vector data. ::
+Let's plot the vector data. To do this, we use the *streamplot* method
+from the matplotlib package. Before we could visualize, however, there
+is an initial processing step.
+
+.. doctest::
 
     >>> import numpy as np
 
-    >>> n=2
-    >>> X, Y =  np.meshgrid(x[0].coordinates[::n], x[1].coordinates[::n])
-    >>> U, V = y[0].components[0][::n,::n], y[0].components[1][::n,::n]
+    >>> X, Y = np.meshgrid(x[0].coordinates, x[1].coordinates)
+    >>> U, V = y[0].components[0], y[0].components[1]
     >>> R = np.sqrt(U**2 + V**2)
-    >>> lw = np.sqrt(R)
-    >>> lw/=lw.max()
+    >>> R/=R.min()
+    >>> Rlog=np.log10(R)
 
-And now, the plot. ::
+And now, the plot.
 
-    >>> fig, ax = plt.subplots(1,1)
-    >>> ax.streamplot(X.value, Y.value, U, V, density =1 , linewidth=8*lw, color=np.sqrt(lw), cmap='viridis')
+.. doctest::
+
+    >>> import matplotlib.pyplot as plt
+
+    >>> fig, ax = plt.subplots(1,1, figsize=(5.4,5))
+    >>> ax.streamplot(X.value, Y.value, U, V, density =1,
+    ...               linewidth=Rlog, color=Rlog, cmap='viridis')  # doctest: +SKIP
+
     >>> ax.set_xlim([x[0].coordinates[0].value,
-    ...             x[0].coordinates[-1].value])
+    ...             x[0].coordinates[-1].value])  # doctest: +SKIP
     >>> ax.set_ylim([x[1].coordinates[0].value,
-    ...             x[1].coordinates[-1].value])
-    >>> ax.set_xlabel(x[0].axis_label)
-    >>> ax.set_ylabel(x[1].axis_label)
-    >>> ax.set_title(y[0].name)
+    ...             x[1].coordinates[-1].value])  # doctest: +SKIP
+
+    >>> # Set axes labels and figure title.
+    >>> ax.set_xlabel(x[0].axis_label)  # doctest: +SKIP
+    >>> ax.set_ylabel(x[1].axis_label)  # doctest: +SKIP
+    >>> ax.set_title(y[0].name) # doctest: +SKIP
+
+    >>> # Set grid lines.
+    >>> ax.grid(color='gray', linestyle='--', linewidth=0.5)
+
     >>> plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
     >>> plt.subplots_adjust(wspace=0.025, hspace=0.05)
+    >>> plt.savefig(vectordata.filename+'.pdf')
     >>> plt.show()
 
-.. image:: /resource/electric_field_raw.csdfx.pdf
+.. image:: /_static/electric_field_raw.csdfx.pdf

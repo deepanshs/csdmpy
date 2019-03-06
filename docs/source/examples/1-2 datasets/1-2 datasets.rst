@@ -1,15 +1,12 @@
 
 
-------------------------
-:math:`(1,2)`-D datasets
-------------------------
+----------------
+(1,2)-D datasets
+----------------
 
-This group of datasets has two controlled variables, that is, a two-dimensional
-controlled variable space, :math:`d=1`, and one single-component uncontrolled
-variable, :math:`p_0=1`. Let's import the essential packages, ::
-
-    >>> import csdfpy as cp
-    >>> import matplotlib.pyplot as plt
+This subset of datasets has two controlled variables, :math:`d=2`, and one
+single-component uncontrolled variable, :math:`p_0=1`. Here, we present
+examples for the following:
 
 .. toctree::
     astronomy.rst

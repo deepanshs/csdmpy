@@ -6,20 +6,19 @@
 Controlled variables
 ====================
 
-In the ``csdfpy`` package, the ``CSDModel`` class is not
-just designed to read and save a scientific data file.
+.. In the `csdfpy` package, the  :ref:`CSDM_api` class is not just designed
+.. to read and save a scientific data file.
 
-In the following subsections, we describe the features
-of a controlled variable object using examples.
-Based on the sampling type and the types of coordinates,
-there are three types of grid controlled variable objects
-(*gcv*-objecta) associated with,
+In the following subsections, we describe the attributes and methods
+associated with the controlled variable instance. Based on the
+sampling types and the types of coordinates, the controlled variables
+are categorized as follows,
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     cv.linear
-    cv.arbitrary
+..    cv.arbitrary
 .. :ref:`asgd`, and
 .. :ref:`nqd`.
 

@@ -7,13 +7,15 @@
 Welcome to csdfpy's documentation!
 ==================================
 
-``csdfpy`` is a python module for handling ``.csdf`` and ``.csdfx`` files.
-This module is build on the concept of core scientific dataset format which
-includes the core scientific dataset (CSD) model.
 
-
-.. .. autoclass:: csdfpy.CSDModel
-
+The `csdfpy` package is the Python support for the core scientific
+dataset (CSD) model. The CSD model is the first step forward towards a portable
+scientific dataset format and is capable of handling a wide variety of
+scientific datasets both within and across disciplinary fields. The main
+objective of this python package is to facilitate an easy import and export
+of the CSD model files for Python programmers. Because the `csdfpy`
+package utilizes Numpy arrays, it empowers the end users to process or
+visualize the datasets with any third party package(s) compatible with Numpy.
 
 .. toctree::
     :maxdepth: 2
@@ -21,18 +23,16 @@ includes the core scientific dataset (CSD) model.
     :name: mastertoc
     :numbered:
 
-    includeme
     requirement
     installation
     CSDModel
     Importing_csdfpy
     examples/examples
+    controlled_variables
     startingFromScrach
     examples/A fun example
     referenceAPI
 
-
-.. controlled_variables
 
 ------------------
 Indices and tables

@@ -5,33 +5,45 @@ A fun 🤪 example
 ----------------
 
 We have looked at datasets from various scientific fields. Let's create a
-fun dataset. As usual, we start by importing the ``csdfpy`` package. ::
+fun dataset. As usual, we start by importing the ``csdfpy`` package.
+
+.. doctest::
 
     >>> import csdfpy as cp
 
-Let's create a new :ref:`CSDM_api` object. ::
+Let's create a new :ref:`CSDM_api` object.
+
+.. doctest::
 
     >>> fundata = cp.new()
 
-Let's also write a python dictionary for generating a :ref:`cv_api` object ::
+Let's also write a python dictionary for generating a :ref:`cv_api` object
+
+.. doctest::
 
     >>> x = {
     ...     'values': ['🍈','🍉','🍋','🍌','🥑','🍍'],
     ...     'non_quantitative': True
     ... }
 
-and another for the :ref:`uv_api` object, ::
+and another for the :ref:`uv_api` object,
+
+.. doctest::
 
     >>> y ={
     ...     'components': [[0.5, 0.25, 1, 2, 1, 0.25]]
     ... }
 
-Let's add the two dictionaries to the ``fundata`` object, ::
+Let's add the two dictionaries to the ``fundata`` object,
+
+.. doctest::
 
     >>> fundata.add_controlled_variable(x)
     >>> fundata.add_uncontrolled_variable(y)
 
-Now, we have a 😂 dataset... ::
+Now, we have a 😂 dataset...
+
+.. doctest::
 
     >>> print(fundata.data_structure)
     {

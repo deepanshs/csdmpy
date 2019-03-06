@@ -1,8 +1,9 @@
 
 =====================================
-Installing :guilabel:`csdfpy` package
+Installing `csdfpy` package
 =====================================
 
-.. todo::
-    Write the installation document
+To install, download the package and run
+
+python setup.py install
 
