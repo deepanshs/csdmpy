@@ -117,17 +117,18 @@ setup(
     # },
     install_requires=REQUIRED,
     extras_require=EXTRAS,
-    package_data={'csdfpy': ['tests/*.csdf']},
+    # package_data={'csdfpy': ['tests/*.csdf']},
     include_package_data=True,
 
     # license='MIT',
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
-        # 'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: BSD License',
         # 'Programming Language :: Python',
-        # 'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3',
+        # 'Development Status :: 3 - Alpha'
+        # 'Programming Language :: Python :: 3.5',
         # 'Programming Language :: Python :: Implementation :: CPython',
         # 'Programming Language :: Python :: Implementation :: PyPy'
     ],
