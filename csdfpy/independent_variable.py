@@ -18,7 +18,7 @@ from ._utils import (
     _axis_label
 )
 
-_dimension_generators = ['linear_spacing']
+_dimension_generators = ['linearly_sampled']
 
 
 def _check_quantitative(dictionary):
@@ -123,7 +123,7 @@ class IndependentVariable:
 
         >>> from csdfpy import IndependentVariable
         >>> py_dictionary = {
-        ...     'type': 'linear_spacing',
+        ...     'type': 'linearly_sampled',
         ...     'sampling_interval': '5 G',
         ...     'number_of_points': 10,
         ...     'reference_offset': '-10 mT',
@@ -135,7 +135,7 @@ class IndependentVariable:
 
     .. doctest::
 
-        >>> x = IndependentVariable(type = 'linear_spacing',
+        >>> x = IndependentVariable(type = 'linearly_sampled',
         ...                         sampling_interval = '5 G',
         ...                         number_of_points = 10,
         ...                         reference_offset = '-10 mT',
@@ -197,12 +197,12 @@ class IndependentVariable:
                 else:
                     dictionary[key] = input_dict[key]
 
-        _valid_types = ['arbitrary_spacing', 'linear_spacing', 'labeled']
+        _valid_types = ['arbitrarily_sampled', 'linearly_sampled', 'labeled']
 
         if dictionary['type'] not in _valid_types:
             raise ValueError((
                 "'{0}' is an invalid value for the dimension type. The "
-                "allowed values are 'arbitrary_spacing', 'linear_spacing' "
+                "allowed values are 'arbitrarily_sampled', 'linearly_sampled' "
                 "and 'labeled'.".format(dictionary['type'])
             ))
 
@@ -213,7 +213,7 @@ class IndependentVariable:
                     # _label=dictionary['label']
                     )
 
-        if dictionary['type'] == 'arbitrary_spacing':
+        if dictionary['type'] == 'arbitrarily_sampled':
             _independent_variable_object = DimensionWithArbitrarySpacing(
                 _values=dictionary['values'],
                 _reference_offset=dictionary['reference_offset'],
@@ -232,7 +232,7 @@ class IndependentVariable:
                 _reciprocal_period=dictionary['reciprocal']['period'],
                 _reciprocal_label=dictionary['reciprocal']['label'])
 
-        if dictionary['type'] == 'linear_spacing':
+        if dictionary['type'] == 'linearly_sampled':
             _independent_variable_object = DimensionWithLinearSpacing(
                 _number_of_points=dictionary['number_of_points'],
                 _sampling_interval=dictionary['sampling_interval'],
@@ -280,7 +280,7 @@ class IndependentVariable:
         .. doctest::
 
             >>> print(x.dimension_type)
-            linear_spacing
+            linearly_sampled
 
         In the above example, ``x`` is an instance of the IndependentVariable
         class associated with a linearly sampled independent variable.
@@ -739,10 +739,10 @@ class IndependentVariable:
 
         .. doctest::
 
-            >>> x1 = IndependentVariable(type='arbitrary_spacing', values=['cm'])
+            >>> x1 = IndependentVariable(type='arbitrarily_sampled', values=['cm'])
             >>> print(x1.data_structure)
             {
-              "type": "arbitrary_spacing",
+              "type": "arbitrarily_sampled",
               "values": [
                 "cm"
               ],
@@ -755,7 +755,7 @@ class IndependentVariable:
             >>> x1.values = ['0cm', '4.1µm', '0.3mm', '5.8m', '32.4km']
             >>> print(x1.data_structure)
             {
-              "type": "arbitrary_spacing",
+              "type": "arbitrarily_sampled",
               "values": [
                 "0cm",
                 "4.1µm",
@@ -847,7 +847,7 @@ class IndependentVariable:
 
         .. doctest::
 
-            >>> test = IndependentVariable(type='linear_spacing',
+            >>> test = IndependentVariable(type='linearly_sampled',
             ...														 sampling_interval = '1',
             ...                            number_of_points = 10)
 
@@ -1258,7 +1258,7 @@ class IndependentVariable:
 
             >>> print(x.data_structure)
             {
-              "type": "linear_spacing",
+              "type": "linearly_sampled",
               "number_of_points": 5,
               "sampling_interval": "0.1 G",
               "origin_offset": "100000.0 G",

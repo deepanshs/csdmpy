@@ -311,7 +311,7 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
         '_coordinates',
     )
 
-    _type = 'linear_spacing'
+    _type = 'linearly_sampled'
 
     def __init__(
             self,
@@ -499,7 +499,7 @@ class DimensionWithArbitrarySpacing(BaseIndependentVariable):
         '_coordinates'
     )
 
-    _type = 'arbitrary_spacing'
+    _type = 'arbitrarily_sampled'
 
     def __init__(
             self,
