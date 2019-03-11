@@ -1,5 +1,4 @@
 
-===================
 The `csdfpy` module
 ===================
 
@@ -18,7 +17,6 @@ module utilizes standard Python libraries such as Numpy and Scipy and
 therefore empowers the end users to process or visualize the imported datasets
 with any third party package(s) compatible with Numpy and Scipy.
 
-=======================================
 The core scientific dataset (CSD) model
 =======================================
 
@@ -71,7 +69,6 @@ the .csdf file extension is used, otherwise, the file is serialized with a
 end user to a possible risk of failure if the external data file is
 inaccessible when deserializing a file with the .csdfe file extensions.
 
-==========================
 Installing `csdfpy` module
 ==========================
 
