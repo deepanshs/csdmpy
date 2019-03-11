@@ -2,7 +2,8 @@
 __pycache__/
 testFiles/
 docs/source/_build/**
-docs/source/resource/**
+docs/source/_static/**
+docs/source/_templates/**
 docs/build/**
 csdfpy.egg-info/**
 .eggs/**
@@ -13,6 +14,10 @@ tests/**
 test*.*
 docs/source/_static/**
 docs/source/_templates/**
+.ipynb_checkpoints/**
+archive/**
+.eggs/**
+.vscode
 
 # Compiled source #
 ###################
@@ -59,3 +64,7 @@ files.txt
 info.txt
 **_test.py
 *.png
+*.ipynb
+*.csdf
+*.csdfe
+myfile

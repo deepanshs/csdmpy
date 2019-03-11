@@ -1,46 +1,42 @@
 
 
-NMR dataset
-^^^^^^^^^^^
+Nuclear Magnetic Resonance (NMR) dataset
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The following example is a :math:`^{29}\mathrm{Si}` NMR saturation recovery
-measurement of highly siliceous zeolite Silicalite-I. The original data is the
-Bruker binary format which is subsequently transformed to the CSD model format.
-Let's start by loading the file and look at its data structure.
+The following example is a :math:`^{29}\mathrm{Si}` NMR time domain
+saturation recovery measurement of a highly siliceous zeolite Silicalite-I.
+Usually, the spin recovery measurements are acquired over a rectilinear grid
+where the grid spacing along one dimension is non-linear.
+
+Let's load the file and look at its data structure.
 
 .. doctest::
 
     >>> import csdfpy as cp
 
-    >>> filename = '../../test-datasets/NMR/satrec/satRec_raw.csdfx'
+    >>> filename = '../../test-datasets/NMR/satrec/satRec_raw.csdfe'
     >>> NMR2Ddata = cp.load(filename)
     >>> print(NMR2Ddata.data_structure)
     {
       "CSDM": {
-        "uncontrolled_variables": [
+        "version": "1.0.0",
+        "independent_variables": [
           {
-            "numeric_type": "complex64",
-            "components": "[(182.26953+136.4989j), (182.26953+136.4989j), ...... (-1765.7441-375.72888j), (-1765.7441-375.72888j)]"
-          }
-        ],
-        "controlled_variables": [
-          {
-            "reciprocal": {
-              "origin_offset": "79578822.26202029 Hz",
-              "reverse": true,
-              "quantity": "frequency",
-              "label": "$^{29}$ frequency shift"
-            },
+            "type": "linear_spacing",
             "number_of_points": 1024,
             "sampling_interval": "8e-05 s",
             "reference_offset": "0.04104 s",
             "quantity": "time",
-            "label": "$t_2$"
+            "label": "$t_2$",
+            "reciprocal": {
+              "origin_offset": "79578822.26202029 Hz",
+              "quantity": "frequency",
+              "reverse": true,
+              "label": "$^{29}$ frequency shift"
+            }
           },
           {
-            "reciprocal": {
-              "quantity": "frequency"
-            },
+            "type": "arbitrary_spacing",
             "values": [
               "1.0 s",
               "5.0 s",
@@ -50,24 +46,34 @@ Let's start by loading the file and look at its data structure.
               "80.0 s"
             ],
             "quantity": "time",
-            "label": "$t_1$"
+            "label": "$t_1$",
+            "reciprocal": {
+              "quantity": "frequency"
+            }
           }
         ],
-        "version": "0.0.9"
+        "dependent_variables": [
+          {
+            "numeric_type": "complex64",
+            "components": "[(182.26953+136.4989j), (182.26953+136.4989j), ...... (-1765.7441-375.72888j), (-1765.7441-375.72888j)]"
+          }
+        ]
       }
     }
 
-Let's get the tuples of the controlled and uncontrolled variable instances from
-the ``NMR2Ddata`` instance following,
+The tuples of the independent and dependent variable instances from
+the ``NMR2Ddata`` instance are
 
 .. doctest::
 
-    >>> x = NMR2Ddata.controlled_variables
-    >>> y = NMR2Ddata.uncontrolled_variables
+    >>> x = NMR2Ddata.independent_variables
+    >>> y = NMR2Ddata.dependent_variables
 
-and look at the coordinates of each variable using the
-:py:attr:`~csdfpy.ControlledVariable.coordinates` attribute of the respective
-:ref:`cv_api` instance.
+respectively.
+There are two independent variable instances in this example. The coordinates
+along the first independent variable are spaced linearly while the coordinate
+spacing is non-linear, or arbitrary, along the second independent variable.
+The coordinates of the two independent variables are
 
 .. doctest::
 
@@ -79,10 +85,11 @@ and look at the coordinates of each variable using the
     >>> print(x1)
     [ 1.  5. 10. 20. 40. 80.] s
 
-Notice, the unit of `x0` is in second. Since all the values are less than one
+Notice, the unit of `x0` is in seconds. Since all the values are less than one
 second, it might be convenient to convert the unit to milliseconds.
-Use the :py:meth:`~csdfpy.ControlledVariable.to` method of the 
-:ref:`cv_api` class for the unit conversion. In this case, it follows
+Use the :py:meth:`~csdfpy.IndependentVariable.to` method of the respective
+:ref:`iv_api` instance for the unit conversion. In this case,
+it follows
 
 .. doctest::
 
@@ -91,8 +98,8 @@ Use the :py:meth:`~csdfpy.ControlledVariable.to` method of the
     [-41.04 -40.96 -40.88 ...  40.64  40.72  40.8 ] ms
     
 
-As before, the components of the uncontrol variable is accessed using the
-:py:attr:`~csdfpy.UncontrolledVariable.components` attribute.
+As before, the components of the dependent variable is accessed using the
+:py:attr:`~csdfpy.DependentVariable.components` attribute.
 
 .. doctest::
 
@@ -131,9 +138,9 @@ exhaustingly long. Here is one such example.
 
     >>> """ 
     ... Set the extents of the image.
-    ... To set the control variable coordinates at the center of each image
+    ... To set the independent variable coordinates at the center of each image
     ... pixel, subtract and add half the sampling interval from the first
-    ... and the last coordinate, respectively, of the linearly sampled grid
+    ... and the last coordinate, respectively, of the linearly sampled
     ... dimension, i.e., x0.
     ... """  # doctest: +SKIP
     >>> si=x[0].sampling_interval

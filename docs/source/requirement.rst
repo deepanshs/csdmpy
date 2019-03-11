@@ -3,7 +3,7 @@
 The requirements for csdfpy
 =============================
 
-The package requires the following
+The module requires the following
 
 * python>=3.5
 * numpy>=1.13.0

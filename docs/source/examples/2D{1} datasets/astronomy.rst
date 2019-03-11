@@ -6,36 +6,32 @@ Astronomy dataset
 The following dataset is a new observation of the Bubble Nebula 
 acquired by
 `The Hubble Heritage Team <https://archive.stsci.edu/prepds/heritage/bubble/introduction.html>`_,
-in February 2016. The dataset was downloaded in FITS format and then converted
-to the CSD model format.
+on February 2016. The original dataset was downloaded in the FITS format
+and then converted to the CSD model file-format.
 
-Let's import the `.csdfx` file and take a quick look at the data structure.
+Let's load the `.csdfe` file and take a quick look at its data structure.
 
 .. doctest::
 
     >>> import csdfpy as cp
 
-    >>> bubble_data = cp.load('../../test-datasets/astronomy/source/Bubble Nebula/Bubble.csdfx')
+    >>> bubble_data = cp.load('../../test-datasets/astronomy/source/Bubble Nebula/Bubble.csdfe')
     >>> print(bubble_data.data_structure)
     {
       "CSDM": {
-        "uncontrolled_variables": [
+        "version": "1.0.0",
+        "independent_variables": [
           {
-            "name": "hlsp_heritage_hst_wfc3-uvis_bubble_nebula_f656n_v1_drc",
-            "numeric_type": "float32",
-            "components": "[0.0, 0.0, ...... 0.0, 0.0]"
-          }
-        ],
-        "controlled_variables": [
-          {
+            "type": "linear_spacing",
             "number_of_points": 11596,
             "sampling_interval": "2.279306196154649e-05 °",
             "reference_offset": "-350.04758940351087 °",
-            "reverse": true,
             "quantity": "angle",
+            "reverse": true,
             "label": "Right Ascension"
           },
           {
+            "type": "linear_spacing",
             "number_of_points": 11351,
             "sampling_interval": "1.1005521846938031e-05 °",
             "reference_offset": "-61.128514949691635 °",
@@ -43,30 +39,36 @@ Let's import the `.csdfx` file and take a quick look at the data structure.
             "label": "Declination"
           }
         ],
-        "version": "0.0.9"
+        "dependent_variables": [
+          {
+            "name": "hlsp_heritage_hst_wfc3-uvis_bubble_nebula_f656n_v1_drc",
+            "numeric_type": "float32",
+            "components": "[0.0, 0.0, ...... 0.0, 0.0]"
+          }
+        ]
       }
     }
 
 Here, the variable ``bubble_data`` is an instance of the :ref:`csdm_api` class.
-From the data structure, one finds two control variables, labeled as
-*Right Ascension* and *Declination*, and a single one-component uncontrol
-variable named *hlsp_heritage_hst_wfc3-uvis_bubble_nebula_f656n_v1_drc*.
-During the file conversion to the CSD model, we choose to retain the original
-naming convention.
+From the data structure, one finds two independent variables, labeled as
+*Right Ascension* and *Declination*, and a single one-component dependent
+variable named as *hlsp_heritage_hst_wfc3-uvis_bubble_nebula_f656n_v1_drc*.
+During the file conversion to the CSD model, we retained the original FITS
+standard naming convention.
 
 
-Let's get the tuples of the controlled and uncontrolled variable objects from
+Let's get the tuples of the independent and dependent variable instances from
 the ``bubble_data`` instance following,
 
 .. doctest::
 
-    >>> x = bubble_data.controlled_variables
-    >>> y = bubble_data.uncontrolled_variables
+    >>> x = bubble_data.independent_variables
+    >>> y = bubble_data.dependent_variables
 
-Because there are two controlled variable instances in ``x``, let's look at the
-coordinates of each variable, `x0` and `x1` respectively, using the
-:py:attr:`~csdfpy.ControlledVariable.coordinates` attribute of the respective
-instance.
+Because there are two independent variable instances in `x`, let's take a look
+at the coordinates of each independent variable, `x0` and `x1` respectively, 
+using the :py:attr:`~csdfpy.IndependentVariable.coordinates` attribute of the
+respective instances.
 
 .. doctest::
 
@@ -80,12 +82,12 @@ instance.
     [61.12851495 61.12852596 61.12853696 ... 61.25340561 61.25341662
      61.25342762] deg
  
-Notice, the descending order of coordinates along `x0` which is a
-consequence of  the :py:attr:`~csdfpy.ControlledVariable.reverse` attribute set
-to True for the corresponding :ref:`cv_api` object. This is also observed from
-the data structure view shown above. The component of the uncontrolled variable
-is accessed through the :py:attr:`~csdfpy.UncontrolledVariable.components`
-attribute.
+Notice, the descending order of coordinates in `x0` which is a
+consequence of  the :py:attr:`~csdfpy.IndependentVariable.reverse` attribute set
+to `True` for the corresponding :ref:`iv_api` instance. This is also
+observed from the data structure view shown above. The component of the
+dependent variable is accessed through the 
+:py:attr:`~csdfpy.DependentVariable.components` attribute.
 
 .. doctest::
 
@@ -99,7 +101,7 @@ Now, to plot the data.
     >>> from matplotlib.colors import LogNorm
     >>> import numpy as np
 
-    >>> # Setup the figure.
+    >>> # Figure setup.
     >>> fig, ax = plt.subplots(1,1,figsize=(6, 5))
     >>> ax.set_facecolor('w')
 
@@ -125,7 +127,7 @@ Now, to plot the data.
     >>> ax.set_xlim([350.25, 350.1])  # doctest: +SKIP
     >>> ax.set_ylim([61.15, 61.22])  # doctest: +SKIP
 
-    >>> # Add a grid.
+    >>> # Add grid lines.
     >>> ax.grid(color='gray', linestyle='--', linewidth=0.5)
 
     >>> plt.tight_layout(pad=0, w_pad=0, h_pad=0)

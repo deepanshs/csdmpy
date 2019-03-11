@@ -4,16 +4,17 @@
 --------
 CSDModel
 --------
+
 .. currentmodule:: csdfpy
 .. autoclass:: CSDModel
-   :show-inheritance:
+   :show-inheritance: ~
 
    .. rubric:: Attributes Summary
 
    .. autosummary::
 
-      ~CSDModel.controlled_variables
-      ~CSDModel.uncontrolled_variables
+      ~CSDModel.independent_variables
+      ~CSDModel.dependent_variables
       ~CSDModel.filename
       ~CSDModel.version
       ~CSDModel.data_structure
@@ -22,22 +23,24 @@ CSDModel
 
    .. autosummary::
 
-      ~CSDModel.add_controlled_variable
-      ~CSDModel.add_uncontrolled_variable
+      ~CSDModel.add_independent_variable
+      ~CSDModel.add_dependent_variable
       ~CSDModel.save
       ~CSDModel.fft
 
    .. rubric:: Attributes Documentation
 
-   .. autoattribute:: controlled_variables
-   .. autoattribute:: uncontrolled_variables
+   .. autoattribute:: independent_variables
+   .. autoattribute:: dependent_variables
    .. autoattribute:: filename
    .. autoattribute:: version
    .. autoattribute:: data_structure
 
    .. rubric:: Methods Documentation
 
-   .. automethod:: add_controlled_variable
-   .. automethod:: add_uncontrolled_variable
+   .. automethod:: add_independent_variable
+   .. automethod:: add_dependent_variable
    .. automethod:: save
    .. automethod:: fft
+
+.. image:: /_static/classes_csdfpy.png

@@ -2,31 +2,49 @@
 
 .. _lsgd:
 
------------------------------------------
-Linearly sampled grid controlled variable
------------------------------------------
+--------------------------
+DimensionWithLinearSpacing
+--------------------------
 
-In this subsection, we describe the methods and attributes of a linearly
-sampled grid controlled variable class. We illustrate this with an example.
-The following snippet downloads and loads a test file containing a linearly
-sampled grid controlled variable dimension. ::
+The coordinates along an independent variable with subtype :ref:`dwls_api` is
+frequently encountered in scientific datasets.
+Consider :math:`m_k` as the sampling interval, :math:`N_k \ge 1` as the
+number of points, :math:`c_k` as the reference offset, and
+:math:`o_k` as the origin offset from the :math:`k^{th}`
+:ref:`iv_api` instance with the subtype of `DimensionWithLinearSpacing`,
+then the corresponding coordinates along the dimension are evaluated as,
+
+.. math::
+
+    \begin{align}
+    \mathbf{X}_k &= [m_k j ]_{j=0}^{N_k-1} - c_k \mathbf{1}, \\
+    \mathbf{X}_k^\mathrm{abs} &= \mathbf{X}_k + o_k \mathbf{1}.
+    \end{align}
+
+Here :math:`\mathbf{X}_k` and :math:`\mathbf{X}_k^\mathrm{abs}` are the
+ordered arrays of the reference and absolute independent variable
+coordinates, respectively, and :math:`\mathbf{1}` is an array of ones.
+
+In this section, we describe the methods and attributes of an independent
+variable dimension with the `DimensionWithLinearSpacing` subtype. As an
+example, we consider a test file.
+The following snippet downloads and loads a test file with a linearly
+spaced independent variable dimension coordinates.
+
+.. doctest::
 
     >>> import csdfpy as cp
-    >>> url = 'https://raw.githubusercontent.com/DeepanshS/csdfpy-doc/master/test_files/test1.csdf?token=AUYEl2qKFBHjoZcy5nhkP0Ajo0syO5t2ks5cgSD2wA%3D%3D'
+    >>> url = 'https://github.com/DeepanshS/NMRLineshape/raw/master/test1.csdf'
     >>> testdata1 = cp.load(url)
-    Downloading '/DeepanshS/csdfpy-doc/master/test_files/test1.csdf' from 'raw.githubusercontent.com' to file 'test1_1.csdf'.
-    [█████████████████████████████████████████████████]
+    Downloading '/DeepanshS/NMRLineshape/raw/master/NMR_CSA_lineshape_simulation.csdf' from 'github.com' to file 'NMR_CSA_lineshape_simulation.csdf'.
+    [█████████████████████████████████████████]
 
-.. testsetup:: test1.csdf
-
-    import csdfpy as cp
-    url = 'https://raw.githubusercontent.com/DeepanshS/csdfpy-doc/master/test_files/test1.csdf?token=AUYEl2qKFBHjoZcy5nhkP0Ajo0syO5t2ks5cgSD2wA%3D%3D'
-    testdata1 = cp.load(url)
 
 When the argument of the :py:meth:`~csdfpy.load` method is an URL, the
 corresponding file is first downloaded to the working directory and then
-read as a local file.
+read in as a local file.
 
+Here, the `testdata1` is an instance of the :ref:`CSDModel <csdm_api>` class.
 Let's look at the data structure.
 
 .. doctest::
@@ -34,37 +52,40 @@ Let's look at the data structure.
     >>> print(testdata1.data_structure)
     {
       "CSDM": {
-        "uncontrolled_variables": [
+        "version": "1.0.0",
+        "independent_variables": [
+          {
+            "type": "linear_spacing",
+            "number_of_points": 10,
+            "sampling_interval": "0.1 s",
+            "quantity": "time",
+            "reciprocal": {
+              "quantity": "frequency"
+            }
+          }
+        ],
+        "dependent_variables": [
           {
             "numeric_type": "float32",
             "components": "[0.0, 0.0, ...... -0.95105654, -0.95105654]"
           }
-        ],
-        "controlled_variables": [
-          {
-            "reciprocal": {
-              "quantity": "frequency"
-            },
-            "number_of_points": 10,
-            "sampling_interval": "0.1 s",
-            "quantity": "time"
-          }
-        ],
-        "version": "0.0.9"
+        ]
       }
     }
 
-Here, the `testdata1` is an instance of the :ref:`CSDModel <csdm_api>` class.
-For the remainder of this example, we will focus on the
-:py:attr:`~csdfpy.CSDModel.controlled_variables` attribute of this
-instance.
+For the remainder of this example, we focus only on the
+:py:attr:`~csdfpy.CSDModel.independent_variables` attribute of the
+``testdata1`` instance.
 
 .. doctest::
 
-    >>> x = testdata1.controlled_variables
+    >>> x = testdata1.independent_variables
 
-The variable `x` is a tuple containing an instance of the :ref:`cv_api` class.
-The controlled variable coordinates of this instance are
+The variable `x` is a tuple containing an instance of the :ref:`iv_api` class.
+This instance is a dimension with `linear_spacing` as seen from the value of
+the :attr:`~csdfpy.IndependentVariable.dimension_type` attribute.
+
+The coordinates of the independent variable from this instance are
 
 .. doctest::
 
@@ -73,7 +94,7 @@ The controlled variable coordinates of this instance are
 
 where ``x[0].coordinates`` is a
 `Quantity <http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity>`_
-object. The value and the unit of this object are
+instance. The value and the unit of this object are
 
 .. doctest::
 
@@ -94,15 +115,15 @@ respectively.
 Attributes
 ^^^^^^^^^^
 
-We go through the attributes of the :ref:`cv_api` class and demonstrate its
-effects on the coordinates along the dimension.
+We go through different attributes of the :ref:`iv_api` instance and show
+how it affects the coordinates along the independent variable dimension.
 
 The attributes that modify the coordinates
 """"""""""""""""""""""""""""""""""""""""""
 
-**The** :py:attr:`~csdfpy.ControlledVariable.number_of_points`:
-The number of points along the grid dimension is accessed through the
-:py:attr:`~csdfpy.ControlledVariable.number_of_points` attribute.
+**The** :py:attr:`~csdfpy.IndependentVariable.number_of_points`:
+The number of points along the dimension is accessed through the
+:py:attr:`~csdfpy.IndependentVariable.number_of_points` attribute.
 
 .. doctest::
 
@@ -120,7 +141,7 @@ To update the number of points, simply update the value of this attribute,
     >>> print('new coordinates =', x[0].coordinates)
     new coordinates = [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.  1.1] s
 
-**The** :py:attr:`~csdfpy.ControlledVariable.sampling interval`: Similarly,
+**The** :py:attr:`~csdfpy.IndependentVariable.sampling interval`: Similarly,
 
 .. doctest::
 
@@ -134,7 +155,7 @@ To update the number of points, simply update the value of this attribute,
     >>> print('new coordinates =', x[0].coordinates)
     new coordinates = [  0.  10.  20.  30.  40.  50.  60.  70.  80.  90. 100. 110.] s
 
-**The** :py:attr:`~csdfpy.ControlledVariable.reference_offset`
+**The** :py:attr:`~csdfpy.IndependentVariable.reference_offset`
 
 .. doctest::
 
@@ -148,7 +169,7 @@ To update the number of points, simply update the value of this attribute,
     >>> print('new coordinates =', x[0].coordinates)
     new coordinates = [  1.  11.  21.  31.  41.  51.  61.  71.  81.  91. 101. 111.] s
 
-**The** :py:attr:`~csdfpy.ControlledVariable.origin_offset`
+**The** :py:attr:`~csdfpy.IndependentVariable.origin_offset`
 
 .. doctest::
 
@@ -164,9 +185,9 @@ To update the number of points, simply update the value of this attribute,
 
 The last operation updates the value of the origin offset, however,
 the coordinates remain unaffected. This is because the
-:py:attr:`~csdfpy.ControlledVariable.coordinates` attribute refers to the
+:py:attr:`~csdfpy.IndependentVariable.coordinates` attribute refers to the
 reference coordinates. Access the absolute coordinates through the
-:py:attr:`~csdfpy.ControlledVariable.absolute_coordinates` attribute.
+:py:attr:`~csdfpy.IndependentVariable.absolute_coordinates` attribute.
 
 .. doctest::
 
@@ -180,7 +201,7 @@ reference coordinates. Access the absolute coordinates through the
 The attributes that modify the order of coordinates
 """""""""""""""""""""""""""""""""""""""""""""""""""
 
-**The** :py:attr:`~csdfpy.ControlledVariable.fft_output_order` **option**:
+**The** :py:attr:`~csdfpy.IndependentVariable.fft_output_order` **option**:
 Orders the coordinates according to the output of a Fast Fourier Transform
 (FFT) routine.
 
@@ -193,7 +214,7 @@ Orders the coordinates according to the output of a Fast Fourier Transform
     >>> print('new coordinates =', x[0].coordinates)
     new coordinates = [  1.  11.  21.  31.  41.  51. -59. -49. -39. -29. -19.  -9.] s
 
-**The** :py:attr:`~csdfpy.ControlledVariable.reverse` **option**:
+**The** :py:attr:`~csdfpy.IndependentVariable.reverse` **option**:
 Reverse the order of the coordinates.
 
 .. doctest::
@@ -210,7 +231,7 @@ Reverse the order of the coordinates.
 Other attributes
 """"""""""""""""
 
-**The** :py:attr:`~csdfpy.ControlledVariable.label`
+**The** :py:attr:`~csdfpy.IndependentVariable.label`
 
 .. doctest::
 
@@ -221,7 +242,7 @@ Other attributes
     >>> x[0].label
     't1'
 
-**The** :py:attr:`~csdfpy.ControlledVariable.period`
+**The** :py:attr:`~csdfpy.IndependentVariable.period`
 
 .. doctest::
 
@@ -232,7 +253,7 @@ Other attributes
     >>> print('new period =', x[0].period)
     new period = 10.0 s
 
-**The** :py:attr:`~csdfpy.ControlledVariable.quantity`:
+**The** :py:attr:`~csdfpy.IndependentVariable.quantity`:
 Returns the quantity name.
 
 .. doctest::
@@ -245,7 +266,7 @@ Returns the quantity name.
 Methods
 ^^^^^^^
 
-**The** :py:meth:`~csdfpy.ControlledVariable.to` **method**:
+**The** :py:meth:`~csdfpy.IndependentVariable.to` **method**:
 The method is used for unit conversions. It follows
 
 .. doctest::
@@ -283,4 +304,4 @@ coordinates.  An exception will be raised otherwise.
         raise Exception(message.format(*options))
     Exception: The unit 'km / s' (speed) is inconsistent with the unit 'min' (time).
 
-Also see :ref:`cv_api`
+Also see :ref:`iv_api`

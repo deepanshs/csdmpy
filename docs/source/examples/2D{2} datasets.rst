@@ -1,73 +1,75 @@
 
-----------------
-(2,2)-D datasets
-----------------
+--------------
+2D{2} datasets
+--------------
 
-The following subset of datasets has two controlled variables, :math:`d=2`,
-and one two-component uncontrolled variable, :math:`p_0=2`.
+The 2D{2} datasets have two independent variables, :math:`d=2`,
+and one two-component dependent variable, :math:`p=2`.
 
 Vector dataset
 ^^^^^^^^^^^^^^
 
-Here is an example of a simulated dataset of the electric field of a dipole
+The following is an example of a simulated electric field dataset of a dipole
 as a function of two spatial dimensions.
 
 .. doctest::
 
     >>> import csdfpy as cp
 
-    >>> filename = '../../test-datasets/vector/electricField/electric_field_raw.csdfx'
+    >>> filename = '../../test-datasets/vector/electricField/electric_field_raw.csdfe'
     >>> vectordata = cp.load(filename)
     >>> print (vectordata.data_structure)
     {
       "CSDM": {
-        "uncontrolled_variables": [
+        "version": "1.0.0",
+        "independent_variables": [
           {
-            "name": "Electric field lines",
-            "unit": " C^-1 * N",
-            "quantity": "electrical field strength",
-            "numeric_type": "float32",
-            "dataset_type": "vector_2",
-            "components": "[3.7466873e-07, 3.7466873e-07, ...... 3.5343004e-07, 3.5343004e-07], [1.6129676e-06, 1.6129676e-06, ...... 1.846712e-06, 1.846712e-06]"
-          }
-        ],
-        "controlled_variables": [
-          {
-            "reciprocal": {
-              "quantity": "wavenumber"
-            },
+            "type": "linear_spacing",
             "number_of_points": 64,
             "sampling_interval": "0.0625 cm",
             "reference_offset": "2.0 cm",
             "quantity": "length",
-            "label": "x"
+            "label": "x",
+            "reciprocal": {
+              "quantity": "wavenumber"
+            }
           },
           {
-            "reciprocal": {
-              "quantity": "wavenumber"
-            },
+            "type": "linear_spacing",
             "number_of_points": 64,
             "sampling_interval": "0.0625 cm",
             "reference_offset": "2.0 cm",
             "quantity": "length",
-            "label": "y"
+            "label": "y",
+            "reciprocal": {
+              "quantity": "wavenumber"
+            }
           }
         ],
-        "version": "0.0.9"
+        "dependent_variables": [
+          {
+            "name": "Electric field lines",
+            "unit": "C^-1 * N",
+            "quantity": "electrical field strength",
+            "numeric_type": "float32",
+            "quantity_type": "vector_2",
+            "components": "[3.7466873e-07, 3.7466873e-07, ...... 3.5343004e-07, 3.5343004e-07], [1.6129676e-06, 1.6129676e-06, ...... 1.846712e-06, 1.846712e-06]"
+          }
+        ]
       }
     }
 
-The corresponding tuples of controlled and uncontrolled variable
-instances are
+The tuples of independent and dependent variable instances are
 
 .. doctest::
 
-    >>> x = vectordata.controlled_variables
-    >>> y = vectordata.uncontrolled_variables
+    >>> x = vectordata.independent_variables
+    >>> y = vectordata.dependent_variables
 
 Let's plot the vector data. To do this, we use the *streamplot* method
 from the matplotlib package. Before we could visualize, however, there
-is an initial processing step.
+is an initial processing step. We use the methods from Numpy library for
+processing.
 
 .. doctest::
 

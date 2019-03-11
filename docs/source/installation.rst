@@ -3,7 +3,7 @@
 Installing `csdfpy` package
 =====================================
 
-To install, download the package and run
+To install, download the package and run. ::
 
-python setup.py install
+    >>> python setup.py install #  doctest: +SKIP
 

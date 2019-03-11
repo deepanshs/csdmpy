@@ -1,20 +1,24 @@
 
 
-.. _asgd:
+.. _dwas:
 
-------------------------------------------------------
-Arbitrarily sampled grid dimension controlled variable
-------------------------------------------------------
+-----------------------------
+DimensionWithArbitrarySpacing
+-----------------------------
 
-In this subsection, we describe the features of a linearly sampled grid
-controlled variable class. We do so by using an illustrative example.
+In this subsection, we describe an independent variable dimension which is
+discretized at arbitrary spacing. This subtypes of independent variables are
+the instances of the :ref:`dwas_api` class.
+
+In the following we illustrate the various features :ref:`dwas_api` instance.
+using an illustrative example.
 The following snippet loads a test file with a linearly sampled grid dimension,
 
 .. doctest::
 
-    >>> import csdfpy
-    >>> filename = csdfpy.test_file['test01']
-    >>> testdata1 = csdfpy.open(filename)
+    >>> import csdfpy as cp
+    >>> filename = cp.test_file['test01']
+    >>> testdata1 = cp.load(filename)
 
 The variable ``testdata1`` is an instance of the
 :ref:`CSDModel <csdm_api>` class. For the remainder of this example,
@@ -22,7 +26,7 @@ we will focus on its :py:attr:~csdfpy.CSDModel.controlled_variables attribute,
 
 .. doctest::
 
-    >>> x = testdata1.controlled_variables
+    >>> x = testdata1.independent_variables
     >>> print(x)
     (<csdfpy.controlled_variables._arbitrarilySampledGridDimension object at 0xa1c9f6e48>,)
 

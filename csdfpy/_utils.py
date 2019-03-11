@@ -18,16 +18,19 @@ def _attribute_message(a, b):
 
 
 def _axis_label(label, unit, made_dimensionless=False,
-                dimensionless_unit=None):
+                dimensionless_unit=None, label_type=''):
     if made_dimensionless:
         if dimensionless_unit != '':
             return '{0} / {1}'.format(label, dimensionless_unit)
         return label
 
     if unit != '':
-        return '{0} / ({1})'.format(
-            label, value_object_format(1*unit, numerical_value=False)
-        )
+        if label_type == '':
+            return '{0} / ({1})'.format(
+                label, value_object_format(1*unit, numerical_value=False)[1:]
+            )
+        if label_type == 'latex':
+            return '{0} / ({1})'.format(label, unit.to_string('latex'))
     return label
 
 
@@ -56,6 +59,9 @@ def _is_numeric(element):
 def _is_physical_quantity(element=None):
     print(element)
 
+# class EncodingType(Enum):
+#     base64
+
 
 def _check_encoding(element):
     """
@@ -82,39 +88,73 @@ def _check_encoding(element):
     raise ValueError(message.format(element, *lst))
 
 
-def _check_dataset_type(element):
+class QuantityType:
     """
-    Validate the dataset_type string value.
+    Validate the quantity_type string value.
 
     The valid options are `RGB`, `RGBA`, `scalar`, `vector_n`,
     `matrix_n_m`, and `symmetric_matrix_n`.
 
-    :returns: The dataset_type key-value, if the value is valid.
+    :returns: The quantity_type key-value, if the value is valid.
     :raises KeyError: Otherwise.
     """
-    list_values = element.strip().split('_')
-    numbers = np.asarray(
-        [int(item) for item in list_values if item.isnumeric()]
+
+    __slots__ = (
+        '_value',
+        '_p'
     )
-    keyword = '_'.join([item for item in list_values if not item.isnumeric()])
 
-    lst = {
-        'RGB': 3,
-        'RGBA': 4,
-        'scalar': 1,
-        'vector': numbers.prod(),
-        'matrix': numbers.prod(),
-        'symmetric_matrix': int(numbers.prod() * (numbers.prod() + 1)/2.0)
-    }
+    literals = (
+        'RGB',
+        'RGBA',
+        'scalar',
+        'vector',
+        'matrix',
+        'symmetric_matrix'
+    )
 
-    if keyword not in lst.keys():
-        message = (
-            "`{0}` is not a valid `dataset_type` value. Available options are "
-            "{1}, {2}, {3}, {4}, {5} and {6}."
+    def __init__(self, element):
+        self._update(element)
+
+    def __str__(self):
+        return self._value
+
+    def _update(self, element):
+        """Update the quantity tpye."""
+        if not isinstance(element, str):
+            raise TypeError(_type_message(str, type(element)))
+        self._check_quantity_type(element)
+
+    @classmethod
+    def _get_number_of_components(cls, keyword, numbers):
+        x = {
+            'RGB': 3,
+            'RGBA': 4,
+            'scalar': 1,
+            'vector': numbers.prod(),
+            'matrix': numbers.prod(),
+            'symmetric_matrix': int(numbers.prod() * (numbers.prod() + 1)/2.0)
+        }
+        return int(x[keyword])
+
+    def _check_quantity_type(self, element):
+        list_values = element.strip().split('_')
+        numbers = np.asarray(
+            [int(item) for item in list_values if item.isnumeric()]
         )
-        raise ValueError(message.format(keyword, *lst.keys()))
+        keyword = '_'.join([item for item in list_values if not item.isnumeric()])
 
-    return element, lst[keyword]
+        lst = self.__class__.literals
+        if keyword not in lst:
+            message = (
+                "`{0}` is not a valid `quantity_type` value. Available options "
+                "are {1}, {2}, {3}, {4}, {5} and {6}."
+            )
+            raise ValueError(message.format(keyword, *lst))
+
+        components = self._get_number_of_components(keyword, numbers)
+        self._value = element
+        self._p = components
 
 
 def numpy_dtype_to_numeric_type(element):
@@ -147,10 +187,11 @@ def numpy_dtype_to_numeric_type(element):
         '>c8': 'complex64',
         '>c16': 'complex128',
     }
-    lst2 = ['uint8', 'uint16', 'uint32', 'uint64',
+
+    lst2 = ('uint8', 'uint16', 'uint32', 'uint64',
             'int8', 'int16', 'int32', 'int64',
             'float16', 'float32', 'float64',
-            'complex64', 'complex128']
+            'complex64', 'complex128')
 
     if element in lst.keys():
         return lst[element]
@@ -161,20 +202,25 @@ def numpy_dtype_to_numeric_type(element):
     )
 
 
-def _check_numeric_type(element):
+class NumericType:
     """
-    Validate the numeric_type string value.
+        Validate the numeric_type string value.
 
-    The valid options are
-    `uint8`, `uint16`, `uint32`, `uint64`, `int8`, `int16`, `int32`, `int64`,
-    `float16`, `float32`, `float64`, `complex64`, and `complex128`. The byte
-    order for multi-byte numeric_types are assumed to follow the little
-    endianness format.
+        The valid options are
+        `uint8`, `uint16`, `uint32`, `uint64`, `int8`, `int16`, `int32`, `int64`,
+        `float16`, `float32`, `float64`, `complex64`, and `complex128`. The byte
+        order for multi-byte numeric_types are assumed to follow the little
+        endianness format.
 
-    :returns: The dataset_type key-value, if the value is valid.
-    :raises KeyError: Otherwise.
+        :returns: The numeric_type value, if the value is valid.
+        :raises KeyError: Otherwise.
     """
-    lst = {
+    __slots__ = (
+        '_value',
+        '_nptype'
+    )
+
+    _lst = {
         'uint8': '<u1',
         'uint16': '<u2',
         'uint32': '<u4',
@@ -201,12 +247,53 @@ def _check_numeric_type(element):
         '>f8': '<f8',
         '>c8': '<c8',
         '>c16': '<c16'
-    }
+        }
 
-    if element in lst.keys():
-        return element, np.dtype(lst[element])
-    raise ValueError(
-        "The `numeric_type`, `{0}`, is not a valid value.".format(element)
+    literals = ('uint8', 'uint16', 'uint32', 'uint64',
+                'int8', 'int16', 'int32', 'int64',
+                'float16', 'float32', 'float64',
+                'complex64', 'complex128')
+
+    def __init__(self, element='float32'):
+        self._update(element)
+
+    def _update(self, element):
+        """Update the numeric tpye."""
+        if not isinstance(element, str):
+            raise TypeError(_type_message(str, type(element)))
+        self._check_numeric_type(element)
+
+    def __str__(self):
+        return self._value
+
+    def _check_numeric_type(self, element):
+        lst = self.__class__._lst
+        # print(lst.keys())
+        if element not in lst.keys():
+            raise ValueError((
+                "The `numeric_type`, `{0}`, is not a valid enumeration literal"
+                ". The allowed values are {1}".format(
+                    element,
+                    "'"+"', '".join(self.__class__.literals)+"'"
+                )
+            ))
+
+        self._value = element
+        self._nptype = np.dtype(lst[element])
+
+
+def _check_and_assign_bool(element):
+    if element is None:
+        element = False
+        return element
+
+    if isinstance(element, bool):
+        return element
+
+    raise TypeError(
+        "'Boolean' type is required for '{0}', given '{1}' ".format(
+            str(element), element.__class__.__name__
+        )
     )
 
 
@@ -216,7 +303,7 @@ def _check_value_object(element, unit=None):
 
 def _check_assignment_and_then_check_unit_consistency(element, unit):
     if element is None:
-        element = 0*unit
+        element = 0.0*unit
     else:
         element = _assign_and_check_unit_consistency(element, unit)
     return element
@@ -250,21 +337,6 @@ def _default_units(element):
     if element.unit.physical_type == 'frequency':
         element = element.to('Hz')
     return element
-
-
-def _check_and_assign_bool(element):
-    if element is None:
-        element = False
-        return element
-
-    if isinstance(element, bool):
-        return element
-
-    raise TypeError(
-        "'Boolean' type is required for '{0}', given '{1}' ".format(
-            str(element), element.__class__.__name__
-        )
-    )
 
 
 def _check_quantity(element, unit):
@@ -301,12 +373,12 @@ if __name__ == '__main__':
 
     print(_check_quantity('time', string_to_quantity('1 s/m').unit))
 
-    # print (_check_dataset_type('RgB'))
-    # print (_check_dataset_type('RGBA'))
-    # print (_check_dataset_type('scalar'))
-    # print (_check_dataset_type('vector_15'))
-    # print (_check_dataset_type('matrix_13_3'))
-    # print (_check_dataset_type('symmetric_matrix_10'))
+    # print (_check_quantity_type('RgB'))
+    # print (_check_quantity_type('RGBA'))
+    # print (_check_quantity_type('scalar'))
+    # print (_check_quantity_type('vector_15'))
+    # print (_check_quantity_type('matrix_13_3'))
+    # print (_check_quantity_type('symmetric_matrix_10'))
     # v = valueObject('5 s')
     # t = valueObject('15 s')
     # print (t + v)
