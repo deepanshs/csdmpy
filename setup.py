@@ -13,7 +13,7 @@ from setuptools import find_packages, setup, Command
 
 # Package meta-data.
 NAME = 'csdfpy'
-DESCRIPTION = 'A python package for importing CSD model file format.'
+DESCRIPTION = 'A python module for importing and exporting CSD model file-format.'
 URL = 'https://github.com/DeepanshS/csdfpy'
 EMAIL = 'srivastava.89@osu.edu'
 AUTHOR = 'Deepansh Srivastava'

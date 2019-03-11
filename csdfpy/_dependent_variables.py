@@ -310,11 +310,12 @@ class InternalDataset(BaseDependentVariable):
             if isinstance(_components[0], np.ndarray):
                 _components = np.asarray(_components)
             if isinstance(_components[0], list):
-                _components = np.asarray(_components)
+                if _numeric_type not in ['complex64', 'complex128']:
+                    _components = np.asarray(_components)
 
         # if components is numpy array
         if isinstance(_components, np.ndarray):
-            if _numeric_type is None:
+            if _numeric_type not in ['complex64', 'complex128']:
                 _numeric_type = numpy_dtype_to_numeric_type(
                     str(_components.dtype)
                 )
