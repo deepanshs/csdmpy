@@ -1,9 +1,9 @@
 
-=====================================
-Installing `csdfpy` package
-=====================================
+==========================
+Installing `csdfpy` module
+==========================
 
-To install, download the package and run. ::
+To install, download the module and run. ::
 
     >>> python setup.py install #  doctest: +SKIP
 
