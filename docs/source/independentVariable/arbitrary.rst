@@ -1,50 +1,53 @@
 
 
-.. _lsgd:
+.. _dwas:
 
------------------------------------------
-Linearly sampled grid controlled variable
------------------------------------------
+-----------------------------
+DimensionWithArbitrarySpacing
+-----------------------------
 
-In this subsection, we describe the features of a linearly
-sampled grid controlled variable class. It is perhaps best
-to do so with an illustrative example. The following snippet
-loads a test file with a linearly sampled grid dimension, ::
+In this subsection, we describe an independent variable dimension which is
+discretized at arbitrary spacing. This subtypes of independent variables are
+the instances of the :ref:`dwas_api` class.
 
-    >>> import csdfpy
-    >>> filename = csdfpy.test_file['test01']
-    >>> testdata1 = csdfpy.open(filename)
-    >>> print (testdata1)
-    <csdfpy.CSDModel object at 0xa156a00d8>
+In the following we illustrate the various features :ref:`dwas_api` instance.
+using an illustrative example.
+The following snippet loads a test file with a linearly sampled grid dimension,
 
-Here, ``testdata1`` is an object of the :ref:`CSDModel <csdm_api>` class.
-For the remainder of this example, we will focus on the
-``controlled_variables`` attribute of the ``testdata1`` object, ::
+.. doctest::
 
-    >>> x = testdata1.controlled_variables
+    >>> import csdfpy as cp
+    >>> filename = cp.test_file['test01']
+    >>> testdata1 = cp.load(filename)
+
+The variable ``testdata1`` is an instance of the
+:ref:`CSDModel <csdm_api>` class. For the remainder of this example,
+we will focus on its :py:attr:~csdfpy.CSDModel.controlled_variables attribute,
+
+.. doctest::
+
+    >>> x = testdata1.independent_variables
     >>> print(x)
-    (<csdfpy.controlled_variables._linearlySampledGridDimension object at 0x104c6f990>,)
+    (<csdfpy.controlled_variables._arbitrarilySampledGridDimension object at 0xa1c9f6e48>,)
 
-The variable x is a tuple with a single object, that is, a
-:ref:`cv_api` object. The controlled
+In this case, the variable x is a tuple with a single object,
+only now, it contains a :ref:`cv_api` object. The controlled
 variable coordinates of this object are ::
 
     >>> print (x[0].coordinates)
-    [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s
+    [-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172  -0.10372635 -0.01817061  0.05936719  0.18141424  0.34758913] cm
 
 where ``x[0].coordinates`` is a
 `Quantity <http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity>`_
 object. The value and the unit of this object are ::
 
-    >>> # To access the numpy array object
-    >>> numpy_array = x[0].coordinates.value
-    >>> print ('numpy array =', numpy_array)
-    numpy array = [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]
+    >>> value = x[0].coordinates.value
+    >>> print ('value =', value)
+    value = [-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172  -0.10372635 -0.01817061  0.05936719  0.18141424  0.34758913]
 
-    >>> # To access the astropy.unit object
     >>> unit = x[0].coordinates.unit
     >>> print ('unit =', unit)
-    unit = s
+    unit = cm
 
 respectively.
 
@@ -115,7 +118,7 @@ attribute. ::
     absolute coordinates = [86401. 86411. 86421. 86431. 86441. 86451. 86461. 86471. 86481. 86491. 86501. 86511.] s
 
 
-.. _lsgd_order_attributes:
+.. _asgd_order_attributes:
 
 The attributes that modify the order of coordinates
 """""""""""""""""""""""""""""""""""""""""""""""""""
@@ -155,7 +158,7 @@ Other attributes
     >>> print ('old period =', x[0].period)
     >>> x[0].period = '10 s'
     >>> print ('new period =', x[0].period)
-    old period = inf s
+    old period = 0.0 s
     new period = 10.0 s
 
 **The quantity** Returns the quantity name. ::
@@ -186,14 +189,14 @@ The method is used for unit conversions. It follows, ::
 
 .. note:: In the above examples, the coordinates are ordered according
     to FFT output order and are also reversed. This follows directly
-    from our previous operations in section :ref:`lsgd_order_attributes`.
+    from our previous operations in section :ref:`asgd_order_attributes`.
 
 The argument of this method is a unit, in this case, 'min', whose
 dimensionality must be consistent with the dimensionality of the
-coordinates.  An exception will be raised otherwise. ::
+coordinates.  An exception will be raised otherwise, ::
 
     >>> x[0].to('km/s')
-    ---------------------------------------------------------------------------
+        :raises ExceptionType: ---------------------------------------------------------------------------
     Exception                                 Traceback (most recent call last)
     <ipython-input-18-28f505d29a22> in <module>()
         3

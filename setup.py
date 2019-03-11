@@ -13,21 +13,24 @@ from setuptools import find_packages, setup, Command
 
 # Package meta-data.
 NAME = 'csdfpy'
-DESCRIPTION = 'A python package for importing CSD model file format.'
+DESCRIPTION = 'A python module for importing and exporting CSD model file-format.'
 URL = 'https://github.com/DeepanshS/csdfpy'
 EMAIL = 'srivastava.89@osu.edu'
 AUTHOR = 'Deepansh Srivastava'
-REQUIRES_PYTHON = '>=3.5.3'
+REQUIRES_PYTHON = '>=3.5'
 VERSION = '0.0.9'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-     'astropy>=3.1.1', 'scipy>=0.16.0', 'numpy>=1.13.0',
+    'requests>=2.21.0',
+    'astropy>=3.0',
+    'scipy>=0.16.0',
+    'numpy>=1.10.1'
 ]
 
 # What packages are optional?
 EXTRAS = {
-     'fancy feature': ['matplotlib'],
+     'fancy feature': ['matplotlib>=3.0.2'],
 }
 
 # The rest you shouldn't have to touch too much :)
@@ -80,7 +83,9 @@ class UploadCommand(Command):
             pass
 
         self.status('Building Source and Wheel (universal) distribution…')
-        os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
+        os.system(
+            '{0} setup.py sdist bdist_wheel --universal'.format(sys.executable)
+        )
 
         # self.status('Uploading the package to PyPI via Twine…')
         # os.system('twine upload dist/*')
@@ -103,7 +108,7 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    packages=find_packages(exclude=('tests',)),
+    packages=find_packages(),
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['mypackage'],
 
@@ -112,14 +117,16 @@ setup(
     # },
     install_requires=REQUIRED,
     extras_require=EXTRAS,
+    package_data={'csdfpy': ['tests/*.csdf']},
     include_package_data=True,
+
     # license='MIT',
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
         # 'License :: OSI Approved :: MIT License',
         # 'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
+        # 'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         # 'Programming Language :: Python :: Implementation :: CPython',
         # 'Programming Language :: Python :: Implementation :: PyPy'

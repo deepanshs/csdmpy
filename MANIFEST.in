@@ -4,7 +4,7 @@ include README.md
 include requirements.txt
 # include CITATION
 
-recursive-include docs *
-prune docs/source/_build
+# recursive-include docs *
+include tests/*.csdf
 
 global-exclude *.pyc *.o

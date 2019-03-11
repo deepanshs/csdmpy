@@ -30,7 +30,7 @@ author = 'Deepansh J. Srivastava'
 # The short X.Y version
 version = '0.0.9'
 # The full version, including alpha/beta/rc tags
-release = '0.0.9'
+release = '0.0.9alpha'
 
 
 # -- General configuration ---------------------------------------------------
@@ -56,7 +56,6 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
-    'sphinx.ext.githubpages',
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.autosummary',
     # 'sphinx_automodapi.automodapi',
@@ -65,7 +64,7 @@ extensions = [
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['.templates']
+templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -97,12 +96,42 @@ pygments_style = None
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
+
+# sys.path[0:0] = [os.path.abspath('_themes/foundation-sphinx-theme')]
+# html_theme = 'foundation_sphinx_theme'
+
+# html_theme_path = foundation_sphinx_theme.HTML_THEME_PATH
+
+
 # html_theme = 'alabaster'  or 'bootstrap' or 'sphinx_rtd_theme', 'classic'
 html_theme = 'sphinx_rtd_theme'
 # html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 
 # Theme options
-html_logo = path_to_static + "/csdfpy.png"
+html_logo = "_static/csdfpy.png"
+
+html_theme_options = {
+    'canonical_url': '',
+    'logo_only': False,
+    # 'display_version': True,
+    'prev_next_buttons_location': 'bottom',
+    'style_external_links': False,
+    # 'style_nav_header_background': "#2980B9",
+    # 'github_url': 'https://github.com/DeepanshS/csdfpy/doc/source/index',
+    # Toc options
+    'collapse_navigation': True,
+    'sticky_navigation': True,
+    'navigation_depth': 4,
+    'includehidden': True,
+    'titles_only': False
+}
+
+html_context = {
+  'display_github': True,
+  'github_user': 'DeepanshS',
+  'github_repo': 'csdfpy',
+  'github_version': 'master/docs/source/'
+}
 
 # html_theme_options = {
 #     # Navigation bar title. (Default: ``project`` value)
@@ -168,7 +197,7 @@ html_logo = path_to_static + "/csdfpy.png"
 #     # Currently, the supported themes are:
 #     # - Bootstrap 2: https://bootswatch.com/2
 #     # - Bootstrap 3: https://bootswatch.com/3
-#     'bootswatch_theme': "lux",
+#     'bootswatch_theme': "solar",
 
 #     # Choose Bootstrap version.
 #     # Values: "3" (default) or "2" (in quotes)
@@ -185,7 +214,7 @@ html_logo = path_to_static + "/csdfpy.png"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['.static']
+html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.

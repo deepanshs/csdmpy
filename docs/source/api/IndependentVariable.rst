@@ -1,43 +1,43 @@
 
-.. _cv_api:
+.. _iv_api:
 
 -------------------
-Controlled variable
+IndependentVariable
 -------------------
 
 .. currentmodule:: csdfpy
 
-.. autoclass:: ControlledVariable
+.. autoclass:: IndependentVariable
     :show-inheritance:
 
     .. rubric:: Attributes Summary
 
     .. autosummary::
-        ~ControlledVariable.variable_type
-        ~ControlledVariable.coordinates
-        ~ControlledVariable.absolute_coordinates
-        ~ControlledVariable.values
-        ~ControlledVariable.number_of_points
-        ~ControlledVariable.sampling_interval
-        ~ControlledVariable.reference_offset
-        ~ControlledVariable.origin_offset
-        ~ControlledVariable.reverse
-        ~ControlledVariable.fft_output_order
-        ~ControlledVariable.quantity
-        ~ControlledVariable.label
-        ~ControlledVariable.period
-        ~ControlledVariable.axis_label
-        ~ControlledVariable.data_structure
+        ~IndependentVariable.dimension_type
+        ~IndependentVariable.coordinates
+        ~IndependentVariable.absolute_coordinates
+        ~IndependentVariable.values
+        ~IndependentVariable.number_of_points
+        ~IndependentVariable.sampling_interval
+        ~IndependentVariable.reference_offset
+        ~IndependentVariable.origin_offset
+        ~IndependentVariable.reverse
+        ~IndependentVariable.fft_output_order
+        ~IndependentVariable.quantity
+        ~IndependentVariable.label
+        ~IndependentVariable.period
+        ~IndependentVariable.axis_label
+        ~IndependentVariable.data_structure
 
     .. rubric:: Methods Summary
 
     .. autosummary::
-        ~ControlledVariable.to
+        ~IndependentVariable.to
 
 
     .. rubric:: Attributes Documentation
 
-    .. autoattribute:: variable_type
+    .. autoattribute:: dimension_type
     .. autoattribute:: coordinates
     .. autoattribute:: absolute_coordinates
     .. autoattribute:: values
