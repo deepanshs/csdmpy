@@ -1,5 +1,4 @@
 
-
 =======================================
 The core scientific dataset (CSD) model
 =======================================
@@ -41,15 +40,15 @@ operating system, application software, programming language, and the
 object-oriented file-serialization format utilized in writing the CSD model to
 the file. Out of numerous file serialization formats, XML, JSON, property list,
 we adopt the data-exchange oriented JSON (JavaScript Object Notation) file-
-serialization format because it is `human readable`, if properly organized, and
+serialization format because it is `human readable` if properly organized and
 `easily integrable` with any number of programming languages and field related
 application-software.
 
 The serialization file names are designated with two possible extensions: .csdf
 and .csdfe, the acronyms for Core Scientific Dataset Format and Core Scientific
-Dataset Format External. When all data values are stored within the file, then
-the .csdf file extension is used, otherwise, the file is serialized with a
-.csdfe extension. This difference in extensions is intended to alert the
+Dataset Format External. When all data values are stored within the serialized
+file, a `.csdf` file extension is used otherwise a `.csdfe` file extension.
+This difference in extensions is intended to alert the
 end user to a possible risk of failure if the external data file is
 inaccessible when deserializing a file with the .csdfe file extensions.
 

@@ -1,5 +1,6 @@
 
 
+
 Nuclear Magnetic Resonance (NMR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -14,15 +15,15 @@ Let's load the file and look at its data structure.
 
     >>> import csdfpy as cp
 
-    >>> filename = '../../test-datasets/NMR/satrec/satRec_raw.csdfe'
+    >>> filename = '../../test-datasets0.0.9/NMR/satrec/satRec_raw.csdfe'
     >>> NMR2Ddata = cp.load(filename)
     >>> print(NMR2Ddata.data_structure)
     {
       "CSDM": {
-        "version": "1.0.0",
+        "version": "0.0.9",
         "independent_variables": [
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 1024,
             "sampling_interval": "8e-05 s",
             "reference_offset": "0.04104 s",
@@ -36,7 +37,7 @@ Let's load the file and look at its data structure.
             }
           },
           {
-            "type": "arbitrary_spacing",
+            "type": "arbitrarily_sampled",
             "values": [
               "1.0 s",
               "5.0 s",
@@ -71,8 +72,9 @@ the ``NMR2Ddata`` instance are
 
 respectively.
 There are two independent variable instances in this example. The coordinates
-along the first independent variable are spaced linearly while the coordinate
-spacing is non-linear, or arbitrary, along the second independent variable.
+of the first independent variable, labeled as `$t_2$`, are spaced linearly
+while the coordinate spacing is non-linear, or arbitrary, for the second
+independent variable, labeled as `$t_1$`.
 The coordinates of the two independent variables are
 
 .. doctest::

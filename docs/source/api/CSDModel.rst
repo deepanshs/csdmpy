@@ -1,4 +1,5 @@
 
+
 .. _csdm_api:
 
 --------
@@ -26,7 +27,6 @@ CSDModel
       ~CSDModel.add_independent_variable
       ~CSDModel.add_dependent_variable
       ~CSDModel.save
-      ~CSDModel.fft
 
    .. rubric:: Attributes Documentation
 
@@ -41,6 +41,3 @@ CSDModel
    .. automethod:: add_independent_variable
    .. automethod:: add_dependent_variable
    .. automethod:: save
-   .. automethod:: fft
-
-.. image:: /_static/classes_csdfpy.png

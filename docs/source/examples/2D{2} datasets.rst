@@ -1,4 +1,5 @@
 
+
 --------------
 2D{2} datasets
 --------------
@@ -16,15 +17,15 @@ as a function of two spatial dimensions.
 
     >>> import csdfpy as cp
 
-    >>> filename = '../../test-datasets/vector/electricField/electric_field_raw.csdfe'
+    >>> filename = '../../test-datasets0.0.9/vector/electricField/electric_field_raw.csdfe'
     >>> vectordata = cp.load(filename)
     >>> print (vectordata.data_structure)
     {
       "CSDM": {
-        "version": "1.0.0",
+        "version": "0.0.9",
         "independent_variables": [
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 64,
             "sampling_interval": "0.0625 cm",
             "reference_offset": "2.0 cm",
@@ -35,7 +36,7 @@ as a function of two spatial dimensions.
             }
           },
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 64,
             "sampling_interval": "0.0625 cm",
             "reference_offset": "2.0 cm",
@@ -59,16 +60,38 @@ as a function of two spatial dimensions.
       }
     }
 
-The tuples of independent and dependent variable instances are
+The spatial dimensions are sampled linearly along the two independent
+variables. The tuples of independent and dependent variable instances
+from this example are
 
 .. doctest::
 
     >>> x = vectordata.independent_variables
     >>> y = vectordata.dependent_variables
 
+with the respective coordinates (viewed only up to five values).
+
+.. doctest::
+
+    >>> print(x[0].coordinates[:5])
+    [-2.     -1.9375 -1.875  -1.8125 -1.75  ] cm
+
+    >>> print(x[1].coordinates[:5])
+    [-2.     -1.9375 -1.875  -1.8125 -1.75  ] cm
+
+respectively.
+The components of the dependent variable are of a vector dataset. This is
+also seen from the :attr:`~csdfpy.DependentVariable.quantity_type`
+attribute of the corresponding dependent variable instance.
+
+.. doctest::
+
+    >>> print(y[0].quantity_type)
+    vector_2
+
 Let's plot the vector data. To do this, we use the *streamplot* method
 from the matplotlib package. Before we could visualize, however, there
-is an initial processing step. We use the methods from Numpy library for
+is an initial processing step. We use the methods from the Numpy library for
 processing.
 
 .. doctest::

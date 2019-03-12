@@ -30,7 +30,7 @@ author = 'Deepansh J. Srivastava'
 # The short X.Y version
 version = '0.0.9'
 # The full version, including alpha/beta/rc tags
-release = '0.0.9alpha'
+release = '0.0.9alpha0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -45,21 +45,21 @@ release = '0.0.9alpha'
 extensions = [
     'matplotlib.sphinxext.only_directives',
     'matplotlib.sphinxext.plot_directive',
-    'IPython.sphinxext.ipython_directive',
-    'IPython.sphinxext.ipython_console_highlighting',
+    # 'IPython.sphinxext.ipython_directive',
+    # 'IPython.sphinxext.ipython_console_highlighting',
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
     'sphinx.ext.graphviz',
-    'sphinx.ext.intersphinx',
+    # 'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
-    'sphinx.ext.coverage',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.ifconfig',
-    'sphinx.ext.viewcode',
+    # 'sphinx.ext.coverage',
+    # 'sphinx.ext.mathjax',
+    # 'sphinx.ext.ifconfig',
+    # 'sphinx.ext.viewcode',
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.autosummary',
     # 'sphinx_automodapi.automodapi',
-    'nbsphinx',
+    # 'nbsphinx',
     # 'rinoh.frontend.sphinx',
 ]
 

@@ -1,4 +1,5 @@
 
+
 --------------
 1D{1} datasets
 --------------
@@ -21,14 +22,14 @@ Global Mean Sea Level rise dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following dataset is the Global Mean Sea Level (GMSL) rise from the late
-19th to the Early 21st Century. The original
-`dataset <http://www.cmar.csiro.au/sealevel/sl_data_cmar.html>`_ was obtained
-as a CSV file and subsequently converted to the CSD model format. Let's import
-the file.
+19th to the Early 21st Century. The
+`original dataset <http://www.cmar.csiro.au/sealevel/sl_data_cmar.html>`_ was
+downloaded as a CSV file and subsequently converted to the CSD model format
+with a `.csdf` file extension. Let's import this file.
 
 .. doctest::
 
-    >>> filename = '../../test-datasets/gmsl/sea_level.csdf'
+    >>> filename = '../../test-datasets0.0.9/gmsl/sea_level.csdf'
     >>> sea_level = cp.load(filename)
 
 The variable `filename` is a string with the local address to the
@@ -44,10 +45,10 @@ instance,
     >>> print(sea_level.data_structure)
     {
       "CSDM": {
-        "version": "1.0.0",
+        "version": "0.0.9",
         "independent_variables": [
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 1608,
             "sampling_interval": "0.08333333333333333 yr",
             "reference_offset": "-1880.0417 yr",
@@ -176,15 +177,15 @@ structure.
 
 .. doctest::
 
-    >>> filename = '../../test-datasets/NMR/blochDecay/blochDecay_raw.csdfe'
+    >>> filename = '../../test-datasets0.0.9/NMR/blochDecay/blochDecay_raw.csdfe'
     >>> NMRdata = cp.load(filename)
     >>> print(NMRdata.data_structure)
     {
       "CSDM": {
-        "version": "1.0.0",
+        "version": "0.0.9",
         "independent_variables": [
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 4096,
             "sampling_interval": "0.1 ms",
             "reference_offset": "0.3 ms",
@@ -249,15 +250,15 @@ plot follows,
 
 .. doctest::
 
-    >>> filename = '../../test-datasets/EPR/xyinc2_base64.csdf'
+    >>> filename = '../../test-datasets0.0.9/EPR/xyinc2_base64.csdf'
     >>> EPRdata = cp.load(filename)
     >>> print(EPRdata.data_structure)
     {
       "CSDM": {
-        "version": "1.0.0",
+        "version": "0.0.9",
         "independent_variables": [
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 298,
             "sampling_interval": "4.0 G",
             "reference_offset": "-2750.0 G",
@@ -291,15 +292,15 @@ follows,
 
 .. doctest::
 
-    >>> filename = '../../test-datasets/GC/cinnamon_none.csdf'
+    >>> filename = '../../test-datasets0.0.9/GC/cinnamon_none.csdf'
     >>> GCData = cp.load(filename)
     >>> print(GCData.data_structure)
     {
       "CSDM": {
-        "version": "1.0.0",
+        "version": "0.0.9",
         "independent_variables": [
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 6001,
             "sampling_interval": "0.0034 min",
             "quantity": "time",
@@ -335,15 +336,15 @@ structure and the plot of the FTIR dataset follows
 
 .. doctest::
 
-    >>> filename = '../../test-datasets/IR/caffeine_none.csdf'
+    >>> filename = '../../test-datasets0.0.9/IR/caffeine_none.csdf'
     >>> FTIRData = cp.load(filename)
     >>> print(FTIRData.data_structure)
     {
       "CSDM": {
-        "version": "1.0.0",
+        "version": "0.0.9",
         "independent_variables": [
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 1842,
             "sampling_interval": "1.930548614883216 cm^-1",
             "reference_offset": "-449.41 cm^-1",
@@ -382,15 +383,15 @@ model format. The data structure and the plot of the UV-vis dataset follows,
 
 .. doctest::
 
-    >>> filename = '../../test-datasets/UV-Vis/benzeneVapour_base64.csdf'
+    >>> filename = '../../test-datasets0.0.9/UV-Vis/benzeneVapour_base64.csdf'
     >>> UVdata = cp.load(filename)
     >>> print(UVdata.data_structure)
     {
       "CSDM": {
-        "version": "1.0.0",
+        "version": "0.0.9",
         "independent_variables": [
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 4001,
             "sampling_interval": "0.01 nm",
             "reference_offset": "-230.0 nm",

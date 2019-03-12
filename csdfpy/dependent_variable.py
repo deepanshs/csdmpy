@@ -23,11 +23,11 @@ from .unit import (
 
 class DependentVariable:
     r"""
-    The DependentVariable class.
+    Instantiate a DependentVariable class.
 
-    This class returns an instance which represents a dependent variable,
-    :math:`y`. A dependent variable holds `p`-component data values, where
-    `p>0` is an integer.
+    The instance of this class represents a dependent variable,
+    :math:`y`. A dependent variable holds :math:`p`-component data values,
+    where :math:`p>0` is an integer.
     For example, a scalar is single-component (:math:`p=1`),
     a vector can have up to `n`-components (:math:`p=n`),
     while a second rank symmetric tensor has six-component (:math:`p=6`).
@@ -55,6 +55,7 @@ class DependentVariable:
         >>> y = DependentVariable(py_dictionary)
 
     Here, ``py_dictionary`` is the python dictionary.
+
     *From valid keyword arguaments.*
 
     .. doctest::
@@ -76,7 +77,7 @@ class DependentVariable:
     )
 
     def __init__(self, *args, **kwargs):
-        """Initialize an instance of UncontrolVariable object."""
+        """Initialize an instance of DependentVariable class."""
         dictionary = {
             'type': 'internal',
             'name': '',
@@ -151,12 +152,37 @@ class DependentVariable:
 # =========================================================================== #
     @property
     def type(self):
+        """
+        Returns the subtype of the :ref:`dv_api` instance.
+        
+        By default, all DependentVariable instances are assiged an `internal`
+        subtype upon import. The user can update this arrtritue at ant time.
+
+        .. doctest::
+
+            >>> print(y.type)
+            internal
+
+            >>> y.type = 'external'
+
+        When `type` is external, the data values from the corresponding
+        DependentVariable instance are store in an external file within
+        the same directory as the `.csdfe` file.
+        
+        :returns: A ``String``.
+        :raises ValueError: When an invalid value is assigned
+        """
         return self._type
 
     @type.setter
     def type(self, value):
         if value in ['internal', 'external']:
             self._type = value
+        else:
+            raise ValueError((
+                "{0} is not a valid value. The allowed values are "
+                "'internal' and 'external'.".format(value)
+            ))
 
     @property
     def name(self):
@@ -192,7 +218,7 @@ class DependentVariable:
         Returns the unit associated with the dependent variable.
 
         The attribute cannot be modified. To convert the unit, use the
-        :py:meth:`~csdfpy.DependentVariable.to` method of the class.
+        :py:meth:`~csdfpy.DependentVariable.to` method of the class instance.
 
         .. doctest::
 
@@ -208,7 +234,7 @@ class DependentVariable:
     def unit(self, value):
         raise AttributeError(
             "`unit` attribute cannot be modified. Use the ``to`` method of "
-            "the instance for unit conversion."
+            "the instance for the unit conversion."
         )
 
     @property
@@ -235,7 +261,7 @@ class DependentVariable:
     @property
     def encoding(self):
         r"""
-        Return a string describing the data value encoding method.
+        Returns a string describing the encoding method for the data value.
 
         The value of the attribute determines the method used when
         serializing/deserializing the data values to/from a file.
@@ -271,7 +297,7 @@ class DependentVariable:
         r"""
         Returns a string describing the numeric type of the data values.
 
-        There are currently thirteen valid numeric types which are:
+        There are currently thirteen valid numeric types:
 
         ==============   ============   ============   ============
         ``uint8``        ``int8``       ``float16``    ``complex64``
@@ -280,7 +306,7 @@ class DependentVariable:
         ``uint64``       ``int64``
         ==============   ============   ============   ============
 
-        When assigned a value, this attribute updates the `numeric type` as
+        When assigning a value, this attribute updates the `numeric type` as
         well as the `dtype` of the Numpy array from the corresponding
         :py:attr:`~csdfpy.DependentVariable.components` attribute. We
         recommended the use of the numeric type attribute for updating
@@ -321,7 +347,7 @@ class DependentVariable:
         r"""
         Returns a string describing the quantity type of the data values.
 
-        There are currently six quantity types,
+        There are currently six *valid* quantity types,
 
         | ``RGB``
         | ``RGBA``
@@ -352,14 +378,14 @@ class DependentVariable:
     @property
     def component_labels(self):
         r"""
-        Returns an ordered array of labels relative to the order of the :py:attr:`~csdfpy.DependentVariable.components`.
+        Returns an ordered array of labels relative to the order of the array from the :py:attr:`~csdfpy.DependentVariable.components` attribute.
 
         .. doctest::
 
             >>> y.component_labels
             ['', '', '']
 
-        When assigning a value, simply assign an array with same size
+        When assigning a value, simply assign an array with same number of elements.
 
         .. doctest::
 
@@ -375,7 +401,7 @@ class DependentVariable:
         .. todo::
             Check the component labels.
 
-        :raises TypeError: When the assigned value is not a string.
+        :raises TypeError: When the assigned value is not an array of strings.
         """
         return self.subtype.component_labels
 
@@ -394,7 +420,9 @@ class DependentVariable:
         `component_labels` array is not an empty string, otherwise,
         'quantity / unit’. Here, the `quantity`, `component_labels`, and `unit`
         are the attributes of the :ref:`dv_api` instance.
-        For example, consider a diffusion tensor dependent variable where ::
+        For example,
+
+        .. doctest::
 
             >>> y.component_labels[1]
             'y'
@@ -416,15 +444,15 @@ class DependentVariable:
         r"""
         Returns the components of the data values.
 
-        The value of the components attribute of the dependent variable
-        :math:`y` is a Numpy array of shape
+        The value of the components attribute of the dependent variable,
+        :math:`y`, is a Numpy array of shape
         :math:`(p \times N_{d-1} \times ... N_1 \times N_0)` where :math:`p` is
         the number of components, and :math:`N_k` is the number of points
         from the :math:`k^\mathrm{th}` :ref:`iv_api` instance. The number
         of dimensions of this Numpy array is :math:`d+1` where :math:`d` is the
         number of independent variables or equivalently the number of
         :ref:`iv_api` instances. Note, the shape of the Numpy array follows a
-        reverse order based on the ordered list of :ref:`iv_api` instances,
+        reverse order based on the ordered list of IndependentVariable instances,
         that is, the :math:`k^\mathrm{th}` independent variable lies along the
         :math:`(d-k)^\mathrm{th}` axis of the Numpy array. Thus, the first
         independent variable :math:`x_0` with :math:`N_0` points is the last
@@ -432,7 +460,7 @@ class DependentVariable:
         :math:`N_{d-1}` points is the first axis of the Numpy array. The
         zeroth axis with :math:`p` points is the number of components.
 
-        This attribute can only be modifies when the shape of the new array is
+        This attribute can only be modified when the shape of the new array is
         the same as the shape of the components array.
 
         For example,
@@ -444,11 +472,11 @@ class DependentVariable:
             >>> y.numeric_type
             'complex64'
 
-        be a single-component dependent variable with five data values. The
-        numeric type of data values, in this example, is `float16`. To update
-        the components array, assign an array of shape (1,5) to the components
-        attribute. In the following example, we assign a Numpy
-        array of random numbers.
+        is a three-component dependent variable with ten data values per
+        component. The numeric type of data values, in this example, is
+        `complex64`. To update the components array, assign a array of
+        shape (3, 10) to the `components` attribute. In the following example,
+        we assign a Numpy array,
 
         .. doctest::
 
@@ -472,8 +500,8 @@ class DependentVariable:
                 self.components.shape
             ValueError: The shape of `ndarray`, `(1, 10)`, is not consistent with the shape of the components array, `(3, 10)`.
 
-        a `ValueError` is raised because the shape of the input array (1,10) is
-        not consistent with the shape of the components array, (1,5).
+        a `ValueError` is raised because the shape of the input array (1, 10) is
+        not consistent with the shape of the components array, (3, 10).
 
         :returns: A ``Numpy array``.
         :raises ValueError: When assigning an array whose shape is
@@ -507,7 +535,7 @@ class DependentVariable:
     @property
     def data_structure(self):
         r"""
-        Returns the instance of the DependentVariable as a JSON object.
+        Returns the instance of the DependentVariable as a JSON object instance.
 
         This attribute is useful for a quick view of the data structure. Note,
         the JSON object from this attribute is not the same as the one
@@ -553,11 +581,13 @@ class DependentVariable:
 
     def to(self, unit):
         r"""
-        Converts the unit of the dependent variable to `unit`.
+        Converts the unit of the dependent variable to the `unit`.
 
         This method is a wrapper of the `to` method from the
         `Quantity <http://docs.astropy.org/en/stable/api/\
-        astropy.units.Quantity.html#astropy.units.Quantity.to>`_ class. ::
+        astropy.units.Quantity.html#astropy.units.Quantity.to>`_ class.
+
+        .. doctest::
 
             >>> y.unit
             Unit("s W")

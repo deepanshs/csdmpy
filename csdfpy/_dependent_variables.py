@@ -295,30 +295,30 @@ class InternalDataset(BaseDependentVariable):
             self,
             _name='',
             _unit='',
-            _type='internal',
+            # _type='internal',
             _quantity=None,
-            _encoding='base64',
+            _encoding='none',
             _numeric_type=None,
             _quantity_type='scalar',
             _component_labels=None,
             _components=None):
 
-        # self._type = _type
+        # self._type = internal
 
         # if components is a python list
         if isinstance(_components, list) and _components != []:
             if isinstance(_components[0], np.ndarray):
                 _components = np.asarray(_components)
-            if isinstance(_components[0], list):
-                if _numeric_type not in ['complex64', 'complex128']:
-                    _components = np.asarray(_components)
+            # if isinstance(_components[0], list):
+            #     if _numeric_type not in ['complex64', 'complex128']:
+            #         _components = np.asarray(_components)
 
         # if components is numpy array
         if isinstance(_components, np.ndarray):
-            if _numeric_type not in ['complex64', 'complex128']:
-                _numeric_type = numpy_dtype_to_numeric_type(
-                    str(_components.dtype)
-                )
+            # if _numeric_type not in ['complex64', 'complex128']:
+            _numeric_type = numpy_dtype_to_numeric_type(
+                str(_components.dtype)
+            )
 
             self._components = _components
 

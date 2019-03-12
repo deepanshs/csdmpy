@@ -9,6 +9,7 @@ single-component dependent variable, :math:`p=1`. Here, we present
 examples from the following:
 
 .. toctree::
+
     astronomy.rst
     nmr.rst
     TEM.rst

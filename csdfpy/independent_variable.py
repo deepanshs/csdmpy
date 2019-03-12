@@ -59,11 +59,12 @@ non-quantitative dimension.")
 
 class IndependentVariable:
     r"""
-    The base IndependentVariable class.
+    Instantiate an IndependentVariable class.
 
-    This class returns an object which represents a independent variable.
-    There are three types of independent variables based on the three types
-    of dimensions: LinearlySampledDimension, ArbitrarilySampledDimension, and
+    The instance of this class represents an independent variable, :math:`x_k`.
+    There are three subtypes of the independent variables based on the
+    three types of dimensions: LinearlySampledDimension,
+    ArbitrarilySampledDimension, and the
     LabeledDimension, respectively.
 
     **A linearly sampled independent variable**
@@ -71,7 +72,7 @@ class IndependentVariable:
     Let :math:`m_k` be the sampling interval, :math:`N_k \ge 1` be the
     number of points, :math:`c_k` be the reference offset, and
     :math:`o_k` be the origin offset along the :math:`k^{th}`
-    grid dimension, then the corresponding coordinates along the
+    independent variable dimension, then the corresponding coordinates along the
     dimension are given as,
 
     .. math ::
@@ -90,7 +91,7 @@ class IndependentVariable:
     Let :math:`\mathbf{A}_k` be an ordered array of ascending
     quantities, :math:`c_k` be the reference offset, and
     :math:`o_k` be the origin offset along the :math:`k^{th}`
-    grid dimension, then the coordinates along this dimension
+    independent variable dimension, then the coordinates along this dimension
     are given as,
 
     .. math ::
@@ -110,12 +111,12 @@ class IndependentVariable:
     .. math ::
         \mathbf{X}_k = \mathbf{A}_k.
 
-    where :math:`\mathbf{A}_k` is an array of labeled entities
+    where :math:`\mathbf{A}_k` is an array of labeled entries.
 
     **Creating a new independent variable.**
 
-    There are two ways to create a new independent variable using this class,
-    both of which return an instance of the IndependentVariable class.
+    There are two ways to create a new instance of an independent variable
+    using this class.
 
     `From a python dictionary containing valid keywords.`
 
@@ -160,7 +161,7 @@ class IndependentVariable:
     #     return instance
 
     def __init__(self, *args, **kwargs):
-        """Initialize an instance of ControlVariable object."""
+        """Initialize an instance of IndependentVariable object."""
         dictionary = {
             'type': '',
             'number_of_points': None,
@@ -272,9 +273,10 @@ class IndependentVariable:
         r"""
         Returns the dimension type of the independent variable.
 
-        There are three types of independent variables base on the types of
-        dimensions, LinearlySampledDimension and ArbitrarilySampledDimension
-        and LabeledDimension.
+        There are three types of
+        dimensions: LinearlySampledDimension, ArbitrarilySampledDimension,
+        and LabeledDimension with `type` names `linearly_sampled`,
+        `arbitrarily_sampled` and `labeled`, respectively.
         This attribute cannot be modified.
 
         .. doctest::
@@ -282,10 +284,7 @@ class IndependentVariable:
             >>> print(x.dimension_type)
             linearly_sampled
 
-        In the above example, ``x`` is an instance of the IndependentVariable
-        class associated with a linearly sampled independent variable.
-
-        :returns: A string.
+        :returns: A ``String``.
         :raises AttributeError: When the attribute is modified.
         """
         return self.subtype.__class__._type
@@ -317,22 +316,21 @@ class IndependentVariable:
     @property
     def coordinates(self):
         r"""
-        Return an array of reference coordinates, :math:`\mathbf{X}_k`, along the dimension.
+        Returns an array of reference coordinates, :math:`\mathbf{X}_k`, along the dimension.
 
-        The order of these coordinates
-        depends on the value of the ``reverse`` and the ``fft_output_order``
-        (only applicable when sampling is linear along the dimension)
-        attributes of the class. This attribute cannot be modified.
+        The order of the reference coordinates
+        depends on the value of the :attr:`~csdfpy.IndependentVariable.reverse`
+        and the :attr:`~csdfpy.IndependentVariable.fft_output_order`
+        (only applicable for `linearly_sampled` subtype)
+        attributes of the class instance. This attribute cannot be modified.
 
         .. doctest::
 
             >>> print(x.coordinates)
             [100. 105. 110. 115. 120. 125. 130. 135. 140. 145.] G
 
-        :returns: A ``Quantity array`` when the controlled variable is
-                  quantitative.
-        :returns: A ``Numpy array`` when the controlled variable is
-                  non-quantitative.
+        :returns: A ``Quantity array`` for quantitative independent variables.
+        :returns: A ``Numpy array`` for labeled dimensions.
         :raises AttributeError: When the attribute is modified.
         """
 
@@ -348,14 +346,14 @@ class IndependentVariable:
     @property
     def absolute_coordinates(self):
         r"""
-        Return an array of absolute coordinates, :math:`\mathbf{X}_k^\mathrm{abs}`, along the dimension.
+        Returns an array of absolute coordinates, :math:`\mathbf{X}_k^\mathrm{abs}`, along the dimension.
 
-        This attribute is
-        only `valid` for the quantitative controlled variables. The order of
-        these coordinates depends on the value of the ``reverse`` and the
-        ``fft_output_order`` (only applicable when sampling is linear along
-        the dimension) attributes of the class. This attribute cannot be
-        modified.
+        The order of the absolute coordinates depends on the value of the
+        :attr:`~csdfpy.IndependentVariable.reverse` and the 
+        :attr:`~csdfpy.IndependentVariable.fft_output_order`
+        (only applicable for `linearly_sampled` subtype)
+        attributes of the IndependentVariable instance. This attribute cannot
+        be modified. This attribute is `invalid` for the labeled dimensions. 
 
         .. doctest::
 
@@ -365,11 +363,7 @@ class IndependentVariable:
             [100100. 100105. 100110. 100115. 100120. 100125. 100130. 100135. 100140.
              100145.] G
 
-        In the above example, the absolute coordinate is ``coordinates
-        + origin_offset``.
-
-        :returns: A ``Quantity array`` when the controlled
-                  variable is quantitative.
+        :returns: A ``Quantity array`` for quantitative independent variables.
         :raises AttributeError: For labeled dimension.
         :raises AttributeError: When the attribute is modified.
         """
@@ -437,12 +431,11 @@ class IndependentVariable:
     @property
     def reference_offset(self):
         r"""
-        Return the reference offset, :math:`c_k`, along the dimension.
+        Returns the reference offset, :math:`c_k`, along the dimension.
 
-        The attribute is only `valid` for quantitative
-        dimensions. When assigning a value, the dimensionality of the value
+        When assigning a value, the dimensionality of the value
         must be consistent with the dimensionality of the other members
-        specifying the dimension. The value is assigned with a string
+        specifying the dimension. The value is assigned as a string
         containing the reference offset,
         for example,
 
@@ -454,8 +447,10 @@ class IndependentVariable:
             >>> print(x.coordinates)
             [0.  0.1 0.2 0.3 0.4] G
 
-        :returns: A ``Quantity`` object with the reference offset.
-        :raises AttributeError: For non-quantitative controlled variables.
+        The attribute is `invalid` for the labeled dimensions.
+
+        :returns: A ``Quantity`` instance with the reference offset.
+        :raises AttributeError: For the labeled dimensions.
         :raises TypeError: When the assigned value is not a string.
         """
         return self.subtype.reference_offset
@@ -532,12 +527,11 @@ class IndependentVariable:
     @property
     def origin_offset(self):
         r"""
-        Return the origin offset, :math:`o_k`, along the dimension.
+        Returns the origin offset, :math:`o_k`, along the dimension.
 
-        The attribute is only `valid` for quantitative
-        dimensions. When assigning a value, the dimensionality of the value
+        When assigning a value, the dimensionality of the value
         must be consistent with the dimensionality of other members specifying
-        the dimension. The value is assigned with a string containing the
+        the dimension. The value is assigned as a string containing the
         origin offset, for example,
 
         .. doctest::
@@ -548,8 +542,10 @@ class IndependentVariable:
             >>> print(x.absolute_coordinates)
             [100000.  100000.1 100000.2 100000.3 100000.4] G
 
-        :returns: A ``Quantity`` object with the origin offset.
-        :raises AttributeError: For non-quantitative controlled variables.
+        The attribute is `invalid` for the labeled dimensions.
+
+        :returns: A ``Quantity`` instance with the origin offset.
+        :raises AttributeError: For the labeled dimensions.
         :raises TypeError: When the assigned value is not a string.
         """
         return self.subtype.origin_offset
@@ -622,14 +618,14 @@ class IndependentVariable:
     @property
     def sampling_interval(self):
         r"""
-        Return the sampling interval, :math:`m_k`, along the dimension.
+        Returns the sampling interval, :math:`m_k`, along the dimension.
 
-        The attribute is only `valid` for instances with linearly sampled
-        controlled-variable dimensions. When assigning a value,
+        The attribute is only `valid` for IndependentVariable instances with
+        the subtype `linearly_sampled`. When assigning,
         the dimensionality of the value must be consistent with the
-        dimensionality of other members specifying the grid dimension.
+        dimensionality of other members specifying the dimension.
         Additionally, the sampling interval must be a positive real number.
-        The value is assigned with a string containing the sampling interval,
+        The value is assigned as a string containing the sampling interval,
         for example,
 
         .. doctest::
@@ -640,19 +636,14 @@ class IndependentVariable:
             >>> print(x.coordinates)
             [100.  100.1 100.2 100.3 100.4] G
 
-        Here, the original sampling interval, '5 G' is modified to
-        '0.1 G'.
-
-        .. note:: The sampling interval along a grid dimension and the
-            respective reciprocal grid dimension follow the Nyquist–Shannon
-            sampling theorem. Therefore, updating the ``sampling_interval``
-            will automatically trigger an update on its reciprocal counterpart.
-
-        :returns: A ``Quantity`` object with the sampling interval.
-        :raises AttributeError: For non-quantitative and arbitrarily
-                                sampled controlled variables.
+        :returns: A ``Quantity`` instance with the sampling interval.
+        :raises AttributeError: For dimension with subtypes other than `linearly_sampled`.
         :raises TypeError: When the assigned value is not a string.
         """
+        # .. note:: The sampling interval along a grid dimension and the
+        #     respective reciprocal grid dimension follow the Nyquist–Shannon
+        #     sampling theorem. Therefore, updating the ``sampling_interval``
+        #     will automatically trigger an update on its reciprocal counterpart.
         # if self.variable_type == _quantitative_variable_types[0]:
         return self.subtype.sampling_interval
 
@@ -676,11 +667,10 @@ class IndependentVariable:
     @property
     def number_of_points(self):
         r"""
-        Return the number of points along the dimension.
+        Returns the number of points, :math:`N_k \ge 1`, along the dimension.
 
-        The number of points, :math:`N_k \ge 1`, along the controlled
-        variable dimension. The attribute is updated with an
-        integer specifying the number of points, for example
+        The attribute is modified with an integer specifying the number of
+        points along the dimension, for example,
 
         .. doctest::
 
@@ -740,18 +730,6 @@ class IndependentVariable:
         .. doctest::
 
             >>> x1 = IndependentVariable(type='arbitrarily_sampled', values=['cm'])
-            >>> print(x1.data_structure)
-            {
-              "type": "arbitrarily_sampled",
-              "values": [
-                "cm"
-              ],
-              "quantity": "length",
-              "reciprocal": {
-                "quantity": "wavenumber"
-              }
-            }
-
             >>> x1.values = ['0cm', '4.1µm', '0.3mm', '5.8m', '32.4km']
             >>> print(x1.data_structure)
             {
@@ -768,6 +746,10 @@ class IndependentVariable:
                 "quantity": "wavenumber"
               }
             }
+        
+        For labeled dimensions, this array is an ordered collection of UTF-8 allowed strings.
+
+        .. doctest::
 
             >>> x2 = IndependentVariable(type='labeled', values=[''])
             >>> x2.values = ['Cu', 'Ag', 'Au']
@@ -783,17 +765,17 @@ class IndependentVariable:
 
         In the above examples, ``x1`` and ``x2`` are the instances of the
         :ref:`iv_api` class associated with the arbitrarily sampled
-        and the non-quantitative controlled variable respectively.
+        and the labeled dimensions respectively.
 
-        :returns: A ``Quantity array`` for arbitrarily sampled controlled
-                        variables.
-        :returns: A ``Numpy array`` for non-quantitative controlled variables.
-        :raises AttributeError: For linearly sampled controlled variables.
+        :returns: A ``Quantity array`` for dimensions with subtype `arbitarily_sampled`.
+        :returns: A ``Numpy array`` for dimensions with subtype `labeled`.
+        :raises AttributeError: For dimensions with subtype `linearly_sampled`.
 
-        .. todo:
-            raise type error if the values are not strings or numpy array
-            of stings.
         """
+        # .. todo:
+        #     raise type error if the values are not strings or numpy array
+        #     of stings.
+        # """
         # if self.variable_type == _quantitative_variable_types[0]:
         #     raise AttributeError(_attribute_message(self.variable_type,
         #                                             'values'))
@@ -816,13 +798,14 @@ class IndependentVariable:
     @property
     def fft_output_order(self):
         r"""
-        Return the coordinates along the dimension according to the fft order.
+        Returns the coordinates along the dimension according to the fft order.
 
-        A boolean specifying if the coordinates along the controlled
-        variable dimension are ordered according to the output of a
-        fast Fourier transform (FFT) routine. This attribute is only
-        *valid* for linearly sampled controlled variable dimensions. The
-        universal behavior of the FFT routine is to order the :math:`N_k`
+        This attribute is only `valid` for the IndependentVariable instances with
+        subtype `linearly_sampled`.
+        The value of the attribute is a boolean specifying if the coordinates
+        along the dimension are ordered according to the output of a
+        fast Fourier transform (FFT) routine. The
+        universal behavior of all FFT routine is to order the :math:`N_k`
         output amplitudes by placing the zero `frequency` at the start
         of the output array, with positive `frequencies` increasing in
         magnitude placed at increasing array offset until reaching
@@ -830,14 +813,14 @@ class IndependentVariable:
         :math:`\frac{N_k-1}{2}`, followed by negative frequencies
         decreasing in magnitude until reaching :math:`N_k-1`.
         This is also the ordering needed for the input of the inverse FFT.
-        For example, consider
+        For example, consider the coordinates along the dimension as
 
         .. math ::
 
             \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3, 4, 5] \mathrm{~m/s}
 
-        when the fft output order is false. When the fft output
-        order is true, the order follows,
+        when the value of the fft_output_order attribute is `false`, then when
+        the value is `true`, the order follows
 
         .. math ::
 
@@ -848,7 +831,7 @@ class IndependentVariable:
         .. doctest::
 
             >>> test = IndependentVariable(type='linearly_sampled',
-            ...														 sampling_interval = '1',
+            ...							   sampling_interval = '1',
             ...                            number_of_points = 10)
 
             >>> print(test.coordinates)
@@ -890,7 +873,7 @@ class IndependentVariable:
     @property
     def reverse(self):
         r"""
-        Return the coordinates along the dimension in the reverse order.
+        Returns the coordinates along the dimension in the reverse order.
 
         The order in which the :math:`\mathbf{X}_k` and
         :math:`\mathbf{X}_k^\mathrm{abs}` coordinates map to the grid indices,
@@ -900,7 +883,8 @@ class IndependentVariable:
 
             \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3,...N_{k-1}] \mathrm{~m/s},
 
-        when the reverse is false. We the reverse is true, the mapping is
+        when the value of the reverse attribute is `false`, then when the value
+        of the reverse attribute is `true`, the mapping follows
 
         .. math ::
 
@@ -977,12 +961,12 @@ class IndependentVariable:
     @property
     def period(self):
         r"""
-        Return the period of a quantitative controlled variable dimension.
+        Returns the period of a quantitative independent variable dimension.
 
-        The default value of the period is infinity, i.e., the controlled
-        variable dimension is non-periodic. The attribute is updated with a
+        The default value of the period is infinity, i.e., the dimension is
+        non-periodic. The attribute is modified with a
         string containing a quantity which represents the period of the
-        controlled variable. For example,
+        dimension. For example,
 
         .. doctest::
 
@@ -999,9 +983,8 @@ class IndependentVariable:
             >>> x.period = 'infinity µT'
             >>> x.period = '∞ G'
 
-        :return: A ``Quantity`` object with the period of quantitative
-            controlled variables.
-        :raises AttributeError: For non-quantitative controlled variables.
+        :return: A ``Quantity`` instance with the period of the independent variables.
+        :raises AttributeError: For the labeled dimensions.
         :raises TypeError: When the assigned value is not a string.
         """
         # if self.variable_type in _quantitative_variable_types:
@@ -1081,18 +1064,17 @@ class IndependentVariable:
     @property
     def quantity(self):
         r"""
-        Return the quantity name associated with the dimension.
+        Returns the `quantity name` associated with the dimension.
 
-        The attribute is only `valid` for the quantitative
-        controlled variables.
+        The attribute is `invalid` for the labeled dimension.
 
         .. doctest::
 
             >>> print(x.quantity)
             magnetic flux density
 
-        :returns: A string with the quantity name.
-        :raises AttributeError: For non-quantitative controlled variables.
+        :returns: A string with the `quantity name`.
+        :raises AttributeError: For labeled dimensions.
         :raises NotImplementedError: When assigning a value.
         """
         return self.subtype.quantity
@@ -1145,9 +1127,9 @@ class IndependentVariable:
     @property
     def label(self):
         r"""
-        Return the label associated with the dimension.
+        Returns the label associated with the dimension.
 
-        The attribute is updated with a string containing the label, for
+        The attribute is modified with a string containing the label, for
         example,
 
         .. doctest::
@@ -1195,16 +1177,16 @@ class IndependentVariable:
     @property
     def axis_label(self):
         r"""
-        Return a formatted string for displaying the label along the dimension.
+        Returns a formatted string for displaying the label along the dimension.
 
         This supplementary attribute is convenient for labeling axes.
-        For quantitative controlled variables, this attributes returns a
-        string, 'label / unit',  if the `label` is not an empty string. If the
-        `label` is an empty string, 'quantity / unit’ is returned instead. Here
-        `quantity` and `label` are the attributes of the :ref:`cv_api`
-        instances described before, and `unit` is the unit associated with the
-        control variable.
-        For example, consider a temporal controlled variable where
+        For quantitative independent variables, this attributes returns a
+        string, `label / unit`,  if the `label` is not an empty string. If the
+        `label` is an empty string, `quantity / unit` is returned instead. Here
+        :attr:`~csdfpy.IndependentVariable.quantity` and
+        :attr:`~csdfpy.IndependentVariable.label` are the attributes of the
+        :ref:`iv_api` instances, and `unit` is the unit associated with the
+        coordinates along the dimension.
 
         .. doctest::
 
@@ -1213,8 +1195,7 @@ class IndependentVariable:
             >>> x.axis_label
             'field strength / (G)'
 
-        For non-quantitative controlled variables, this attribute returns
-        the `label`.
+        For labled dimensions, this attribute returns 'label'.
 
         :returns: A ``String``.
         :raises AttributeError: When assigned a value.
@@ -1249,7 +1230,7 @@ class IndependentVariable:
     @property
     def data_structure(self):
         r"""
-        Return the ControlledVariable object as a json object.
+        Returns the :ref:`iv_api` instance as a JSON object.
 
         This supplementary attribute is useful for a quick preview of the data
         structure. The attribute cannot be modified.
@@ -1303,12 +1284,7 @@ class IndependentVariable:
 # is_quantitative()
     def is_quantitative(self):
         r"""
-        Verify if the control variable dimension is quantitative.
-
-        Returns `True`, if the control variable is quantitative,
-        otherwise `False`.
-
-        :returns: A Boolean.
+        Reture True if the independent variable is quantitative otherwise False.
         """
         return self.subtype._is_quantitative()
         # if self.variable_type in _quantitative_variable_types:
@@ -1318,14 +1294,14 @@ class IndependentVariable:
 # to()
     def to(self, unit='', equivalencies=None):
         r"""
-        Convert the unit of the controlled variable coordinates to `unit`.
+        Convert the unit of the independent variable coordinates to `unit`.
 
         This method is a wrapper of the `to` method from the
         `Quantity <http://docs.astropy.org/en/stable/api/\
         astropy.units.Quantity.html#astropy.units.Quantity.to>`_ class
         and is only `valid` for physical dimensions.
 
-        For example, if
+        For example,
 
         .. doctest::
 
@@ -1336,8 +1312,8 @@ class IndependentVariable:
             [40. 30. 20. 10.  0.] uT
 
         :params: `unit` : A string containing a unit with the same
-            dimensionality as the controlled variable coordinates.
-        :raise AttributeError: For non-quantitative controlled variables.
+            dimensionality as the coordinates along the dimension.
+        :raise AttributeError: For the labeled dimensions.
         """
         self.subtype._to(unit, equivalencies)
         # if self.variable_type in _quantitative_variable_types:

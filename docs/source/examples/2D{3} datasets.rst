@@ -21,20 +21,20 @@ The following is an example of the RGB image dataset.
 
     >>> import csdfpy as cp
 
-    >>> filename = '../../test-datasets/image/raccoon_raw.csdfe'
+    >>> filename = '../../test-datasets0.0.9/image/raccoon_raw.csdfe'
     >>> ImageData = cp.load(filename)
     >>> print (ImageData.data_structure)
     {
       "CSDM": {
-        "version": "1.0.0",
+        "version": "0.0.9",
         "independent_variables": [
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 1024,
             "sampling_interval": "1.0 "
           },
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 768,
             "sampling_interval": "1.0 "
           }
@@ -76,8 +76,8 @@ along each independent variable are
     x1 = [0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]
 
 respectively, where both independent variable coordinates are spaced linearly.
-In the above expression only first ten coordinates along each
-independent variable is displayed.
+In the above expression, only the first ten coordinates along each
+independent variable are displayed.
 
 The dependent variable is an RGB image as also seen from the
 :attr:`~csdfpy.DependentVariable.quantity_type` attribute of the corresponding
@@ -89,7 +89,7 @@ The dependent variable is an RGB image as also seen from the
     RGB
 
 As usual, the components of the dependent variable are accessed through
-the :py:attr:`~csdfpy.UncontrolledVariable.components` attribute.
+the :attr:`~csdfpy.DependentVariable.components` attribute.
 To access the individual components use the appropriate array indexing.
 For example,
 
@@ -107,8 +107,8 @@ For example,
 will return an array with the first component of all data values. Here, these
 components correspond to the red color intensity. The label corresponding to
 this component array is accessed through the
-:attr:`~csdfpy.DependentVariable.component_labels` with appropriate indexing
-and is
+:attr:`~csdfpy.DependentVariable.component_labels` attrbibute with appropriate
+indexing, that is
 
 .. doctest::
 
@@ -130,7 +130,7 @@ components along with their respective labels.
     >>> print (y[0].component_labels[2], y[0].components[2].shape)
     blue (768, 1024)
 
-The shape (768, 1024) cooresponds to the number of points from the list of the
+The shape (768, 1024) corresponds to the number of points from the list of the
 independent variable instances.
 
 .. note::
@@ -157,4 +157,4 @@ Now, to visualize the dataset.
     >>> plt.savefig(ImageData.filename+'.pdf')
     >>> plt.show()
 
-.. image:: /_static/raccoon_raw.csdfx.pdf
+.. image:: /_static/raccoon_raw.csdfx.png

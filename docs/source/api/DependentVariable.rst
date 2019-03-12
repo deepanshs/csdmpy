@@ -1,4 +1,5 @@
 
+
 .. _dv_api:
 
 -----------------
@@ -13,6 +14,7 @@ DependentVariable
     .. rubric:: Attributes Summary
 
     .. autosummary::
+        ~DependentVariable.type
         ~DependentVariable.name
         ~DependentVariable.unit
         ~DependentVariable.quantity
@@ -32,6 +34,7 @@ DependentVariable
 
 
     .. rubric:: Attributes Documentation
+    .. autoattribute:: type
     .. autoattribute:: name
     .. autoattribute:: unit
     .. autoattribute:: quantity

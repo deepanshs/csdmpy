@@ -1,10 +1,11 @@
 include README.md
 include LICENSE
-include test/*.*
+include test/*.csdf
+include test/*.csdfe
 # include CHANGES.rst
 include requirements.txt
 # include CITATION
 
-# recursive-include docs *
+recursive-include docs *
 
 global-exclude *.pyc *.o

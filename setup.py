@@ -18,7 +18,7 @@ URL = 'https://github.com/DeepanshS/csdfpy'
 EMAIL = 'srivastava.89@osu.edu'
 AUTHOR = 'Deepansh Srivastava'
 REQUIRES_PYTHON = '>=3.5'
-VERSION = '0.0.9'
+VERSION = '0.0.9alpha0'
 
 # What packages are required for this module to be executed?
 REQUIRED = [

@@ -1,5 +1,6 @@
 
 
+
 Transmission Electron Microscopy (TEM) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -16,15 +17,15 @@ Let's import the CSD model data-file and look at its data structure.
     >>> import csdfpy as cp
     >>> import matplotlib.pyplot as plt
 
-    >>> filename = '../../test-datasets/ssTEM/TEM.csdf'
+    >>> filename = '../../test-datasets0.0.9/ssTEM/TEM.csdf'
     >>> TEM = cp.load(filename)
     >>> print(TEM.data_structure)
     {
       "CSDM": {
-        "version": "1.0.0",
+        "version": "0.0.9",
         "independent_variables": [
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 512,
             "sampling_interval": "4.0 nm",
             "quantity": "length",
@@ -33,7 +34,7 @@ Let's import the CSD model data-file and look at its data structure.
             }
           },
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 512,
             "sampling_interval": "4.0 nm",
             "quantity": "length",
@@ -51,14 +52,17 @@ Let's import the CSD model data-file and look at its data structure.
       }
     }
 
-The tuples of the independent and the dependent variable instances are
+This dataset contains two linearly sampled independent variables and one
+single-component dependent variable.
+The tuples of the independent and the dependent variable instances from this
+example are
 
 .. doctest::
 
     >>> x = TEM.independent_variables
     >>> y = TEM.dependent_variables
 
-with the respective coordinates (previewed only for the first ten coordinates),
+with the respective coordinates (viewed only for the first ten coordinates),
 
 .. doctest::
 

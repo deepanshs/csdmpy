@@ -1,5 +1,6 @@
 
 
+
 Astronomy dataset
 ^^^^^^^^^^^^^^^^^
 
@@ -15,14 +16,14 @@ Let's load the `.csdfe` file and take a quick look at its data structure.
 
     >>> import csdfpy as cp
 
-    >>> bubble_data = cp.load('../../test-datasets/astronomy/source/Bubble Nebula/Bubble.csdfe')
+    >>> bubble_data = cp.load('../../test-datasets0.0.9/astronomy/source/Bubble Nebula/Bubble.csdfe')
     >>> print(bubble_data.data_structure)
     {
       "CSDM": {
-        "version": "1.0.0",
+        "version": "0.0.9",
         "independent_variables": [
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 11596,
             "sampling_interval": "2.279306196154649e-05 °",
             "reference_offset": "-350.04758940351087 °",
@@ -31,7 +32,7 @@ Let's load the `.csdfe` file and take a quick look at its data structure.
             "label": "Right Ascension"
           },
           {
-            "type": "linear_spacing",
+            "type": "linearly_sampled",
             "number_of_points": 11351,
             "sampling_interval": "1.1005521846938031e-05 °",
             "reference_offset": "-61.128514949691635 °",
@@ -66,7 +67,7 @@ the ``bubble_data`` instance following,
     >>> y = bubble_data.dependent_variables
 
 Because there are two independent variable instances in `x`, let's take a look
-at the coordinates of each independent variable, `x0` and `x1` respectively, 
+at the coordinates of each independent variable, `x0`, and `x1` respectively, 
 using the :py:attr:`~csdfpy.IndependentVariable.coordinates` attribute of the
 respective instances.
 
@@ -85,7 +86,7 @@ respective instances.
 Notice, the descending order of coordinates in `x0` which is a
 consequence of  the :py:attr:`~csdfpy.IndependentVariable.reverse` attribute set
 to `True` for the corresponding :ref:`iv_api` instance. This is also
-observed from the data structure view shown above. The component of the
+observed from the data structure view shown above. As before, the component of the
 dependent variable is accessed through the 
 :py:attr:`~csdfpy.DependentVariable.components` attribute.
 
@@ -134,5 +135,5 @@ Now, to plot the data.
     >>> plt.savefig(bubble_data.filename+'.pdf', dpi=450)
     >>> plt.show()
 
-.. image:: /_static/Bubble.csdfx.pdf
+.. image:: /_static/Bubble.csdfx.png
 

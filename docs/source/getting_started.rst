@@ -1,8 +1,13 @@
 
-
 =====================================
 Getting Started With `csdfpy` package
 =====================================
+
+If you prefer Jupyter notebooks, start a new notebook and follow the
+instructions below. If you are new to Jupyter notebooks, first refer to the
+`Installing Jupyter Notebook documentation <https://jupyter.readthedocs.io/en/latest/install.html>`_
+to set up a Jupyter notebook. Not a fan of Jupyter notebooks, simply start
+with a new python file.
 
 ------------------------------
 Importing the `csdfpy` package
@@ -43,8 +48,8 @@ respectively, of the ``testdata1`` instance. For example,
     >>> x = testdata1.independent_variables
     >>> y = testdata1.dependent_variables
 
-where x and y are the tuples of :ref:`iv_api` and :ref:`dv_api` instances. In
-the above example, both x and y are tuples with a single instance.
+where `x` and `y` are the tuples of :ref:`iv_api` and :ref:`dv_api` instances.
+In the above example, both `x` and `y` are tuples with a single instance.
 
 .. doctest::
 
@@ -55,7 +60,7 @@ the above example, both x and y are tuples with a single instance.
 
 To access the list of coordinates along the independent variable dimension, use
 the :py:attr:`~csdfpy.IndependentVariable.coordinates` attribute of the
-respective :ref:`iv_api` instances. In this example, the coordinates are
+respective :ref:`iv_api` instance. In this example, the coordinates are
 
 .. doctest::
 
@@ -68,8 +73,8 @@ respective :ref:`iv_api` instances. In this example, the coordinates are
     instance from the
     `Astropy <http://docs.astropy.org/en/stable/units/>`_ package.
     The `csdfpy` module utilizes the units library from
-    `astropy.units <http://docs.astropy.org/en/stable/units/>`_ package
-    to handle the physical quantities. The numerical `value` and the
+    `astropy.units <http://docs.astropy.org/en/stable/units/>`_ module
+    to handle physical quantities. The numerical `value` and the
     `unit` of the physical quantities are accessed through the Quantity
     instance, using the ``value`` and the ``unit`` attributes, respectively.
     Please refer to the `astropy.units <http://docs.astropy.org/en/stable/units/>`_
@@ -80,7 +85,7 @@ respective :ref:`iv_api` instances. In this example, the coordinates are
 
 Similarly, to access the list of components of the dependent variable, use the
 :py:attr:`~csdfpy.DependentVariable.components` attribute of the
-respective :ref:`dv_api` instances. For example,
+respective :ref:`dv_api` instance. For example,
 
 .. doctest::
 
@@ -97,8 +102,8 @@ is a Numpy array. Note, the number of dimensions of this array is :math:`d+1`
 where :math:`d` is the number of independent variables.
 The additional dimension corresponds to
 the number of components of the dependent variable. For instance, in this
-example, there is a single independent variable, `i.e.` :math:`d=1`, and
-therefore, the value of the :py:attr:`~csdfpy.DependentVariable.components`
+example, there is a single independent variable, `i.e.`, :math:`d=1` and
+therefore the value of the :py:attr:`~csdfpy.DependentVariable.components`
 attribute holds a two-dimensional array.
 The shape of this array is
 
@@ -107,9 +112,9 @@ The shape of this array is
     >>> print(y[0].components.shape)
     (1, 10)
 
-where the first element of the shape tuple, ``(1,10)``, is the number of
-components of the dependent variable, and the second element, `10`, is the
-number of points along the independent variable, `i.e.` ``x[0].coordinates``.
+where the first element of the shape tuple, `1`, is the number of
+components of the dependent variable and the second element, `10`, is the
+number of points along the independent variable, `i.e.`, ``x[0].coordinates``.
 
 
 --------------------
@@ -120,7 +125,7 @@ Plotting the dataset
 .. applies to the scientific dataset as well, that is, a plot of a scientific
 .. dataset is more informative than just the series of number.
 
-It is always appreciated to present the scientific datasets with visual aids
+It is always helpful to present the scientific datasets with visual aids
 such as plots and figures rather than columns of numbers. As such, throughout
 this documentation, we provide a figure or two for every example dataset.
 We make use of Python's `Matplotlib library <https://matplotlib.org>`_
@@ -128,11 +133,13 @@ for generating the figures. The users may, however, use their favorite plotting
 library.
 
 .. note::
+
     This documentation is not a guide for data visualization, and the `csdfpy`
     module does not include any plotting library.
 
 The following snippet plots the dataset from this example. Here, the
-`axis_label` is an attribute of both :ref:`iv_api` and :ref:`dv_api` instances.
+`axis_label` is an attribute of both IndependentVariable and DependentVariable
+instances and `name` is an attribute of the DependentVariable instance.
 
 .. doctest::
 
@@ -145,13 +152,9 @@ The following snippet plots the dataset from this example. Here, the
 
 .. image:: /_static/test.pdf
 
-
-
 .. seealso::
 
     :ref:`iv_api`, :ref:`dv_api`,
     `Quantity <http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity>`_,
     `numpy array <https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.ndarray.html>`_,
     `Matplotlib library <https://matplotlib.org>`_
-
-..    :ref:`Uncontrolled variables <dependent_variables>`,

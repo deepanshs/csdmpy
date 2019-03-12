@@ -1,30 +1,18 @@
 
-
 .. _iv:
 
-=====================
-Independent variables
-=====================
+==============================
+Independent variable dimension
+==============================
 
 .. In the `csdfpy` package, the  :ref:`CSDM_api` class is not just designed
 .. to read and save a scientific data file.
 
-Based on the spacing of the coordinates along an independent variable and the
-coordinate types, there are three subtypes of independent variables:
+Based on the type of coordinates and the spacing between the coordinates of
+an independent variable dimension, the instance of the :ref:`iv_api` class
+are classifies as one of the following:
 
 .. toctree::
     :maxdepth: 1
 
     independentVariable/linear
-
-
-
-
-
-..    cv.arbitrary
-.. :ref:`asgd`, and
-.. :ref:`nqd`.
-
-
-.. _nqd:
-
