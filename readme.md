@@ -25,10 +25,10 @@ The core scientific dataset (CSD) model is a *light-weight*, *portable*,
 scientific datasets.
 
 The model is *light-weight* because it only encapsulates
-data values and the minimum metadata, to accurately represent a `p`-component
-dependent variable, :math:`y`, discretely sampled at `N` unique points in a
-`d`-dimensional independent variable coordinate space
-:math:`(x_0, x_1, ... x_k, ... x_{d-1})`.
+data values and the minimum metadata, to accurately represent a $p$-component
+dependent variable, $y$, discretely sampled at $N$ unique points in a
+$d$-dimensional independent variable coordinate space
+$(x_0, x_1, ... x_k, ... x_{d-1})$.
 The model is not intended to encapsulate
 any information on how the data might be acquired, processed or visualized.
 
@@ -68,10 +68,3 @@ the .csdf file extension is used, otherwise, the file is serialized with a
 .csdfe extension. This difference in extensions is intended to alert the
 end user to a possible risk of failure if the external data file is
 inaccessible when deserializing a file with the .csdfe file extensions.
-
-Installing `csdfpy` module
-==========================
-
-To install, download the module and run.
-
-    >>> python setup.py install
