@@ -8,7 +8,7 @@ import io
 import os
 import sys
 from shutil import rmtree
-
+from csdfpy._version import __version__
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
@@ -18,7 +18,7 @@ URL = 'https://github.com/DeepanshS/csdfpy'
 EMAIL = 'srivastava.89@osu.edu'
 AUTHOR = 'Deepansh Srivastava'
 REQUIRES_PYTHON = '>=3.5'
-VERSION = '0.0.9alpha0'
+VERSION = __version__
 
 # What packages are required for this module to be executed?
 REQUIRED = [

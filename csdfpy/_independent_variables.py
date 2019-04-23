@@ -1,4 +1,4 @@
-
+"""The IndependentVariable SubTypes classes."""
 
 from __future__ import print_function, division
 from copy import deepcopy
@@ -21,37 +21,46 @@ from ._utils import (
 )
 
 
+__author__ = "Deepansh J. Srivastava"
+__email__ = "srivastava.89@osu.edu"
+
+
 # =========================================================================== #
 #               		 QuantitativeVariable Class      				      #
 # =========================================================================== #
 
-
 class BaseIndependentVariable:
+    r"""Declare a BaseIndependentVariable class."""
 
     __slots__ = (
         '_reference_offset',
         '_origin_offset',
         '_quantity',
         '_period',
+        '_label',
+        # '_reverse',
         '_equivalencies',
         '_unit',
-        '_reciprocal'
     )
 
     def __init__(
-        self,
-        _reference_offset=None,
-        _origin_offset=None,
-        _quantity=None,
-        _period=None,
-        _unit=None
-    ):
-
+            self,
+            _reference_offset=None,
+            _origin_offset=None,
+            _quantity=None,
+            _period=None,
+            _label='',
+            # _reverse=False,
+            _unit=None
+            ):
+        r"""Instantiate a BaseIndependentVariable class instance."""
         self._set_parameters(
             _reference_offset,
             _origin_offset,
             _quantity,
             _period,
+            _label,
+            # _reverse,
             _unit)
 
     def _set_parameters(
@@ -60,6 +69,8 @@ class BaseIndependentVariable:
             _origin_offset=None,
             _quantity=None,
             _period=None,
+            _label='',
+            # _reverse=False,
             _unit=None):
 
         # unit
@@ -82,6 +93,12 @@ class BaseIndependentVariable:
         # quantity
         _value = _check_quantity(_quantity, _unit)
         self._quantity = _value
+
+        # # reverse
+        # self.reverse = _reverse
+
+        # label
+        self.label = _label
 
 # --------------------------------------------------------------------------- #
 #                     QuantitativeVariable Attributes                         #
@@ -143,6 +160,31 @@ class BaseIndependentVariable:
     def quantity(self, value):
         raise NotImplementedError('This attribute is not yet implemented.')
 
+# label
+    @property
+    def label(self):
+        r"""The label associated with the dimension."""
+        return deepcopy(self._label)
+
+    @label.setter
+    def label(self, label=''):
+        if not isinstance(label, str):
+            raise TypeError(_type_message(str, type(label)))
+        self._label = label
+
+# # reverse
+#     @property
+#     def reverse(self):
+#         r"""The order of coordinates along the dimension."""
+#         return deepcopy(self._reverse)
+
+#     @reverse.setter
+#     def reverse(self, value=False):
+#         if not isinstance(value, bool):
+#             raise TypeError(_type_message(bool, type(value)))
+
+#         _value = _check_and_assign_bool(value)
+#         self._reverse = _value
 # --------------------------------------------------------------------------- #
 #                       QuantitativeVariable Methods                          #
 # --------------------------------------------------------------------------- #
@@ -167,13 +209,17 @@ class BaseIndependentVariable:
         if self._period.value not in [0.0, np.inf]:
             dictionary['period'] = value_object_format(self._period)
 
+        # if self.reverse is True:
+        #     dictionary['reverse'] = True
+
+        if self.label.strip() != "":
+            dictionary['label'] = self.label
+
         return dictionary
 
 # is_quantitative
     def _is_quantitative(self):
-        r"""
-        Returns `True`, if the dimension is quantitative,
-        otherwise `False`.
+        r"""Return `True`, if the dimension is quantitative, otherwise `False`.
 
         :returns: A Boolean.
         """
@@ -182,7 +228,6 @@ class BaseIndependentVariable:
 # to()
     def _to(self, unit='', equivalencies=None):
         r"""Convert the unit to given value `unit`."""
-
         if not isinstance(unit, str):
             raise TypeError(_type_message(str, type(unit)))
 
@@ -199,72 +244,73 @@ class BaseIndependentVariable:
 
 
 class ReciprocalVariable(BaseIndependentVariable):
+    r"""Declare a ReciprocalVariable class."""
+    pass
+#     __slots__ = (
+#         '_reverse',
+#         '_label',
+#     )
 
-    __slots__ = (
-        '_reverse',
-        '_label',
-    )
+#     def __init__(
+#             self,
+#             _reference_offset=None,
+#             _origin_offset=None,
+#             _quantity=None,
+#             _reverse=False,
+#             _label='',
+#             _period=None,
+#             _unit=None):
+#         r"""Instantiate a ReciprocalVariable class instance."""
+#         self.reverse = _reverse
+#         self.label = _label
 
-    def __init__(
-            self,
-            _reference_offset=None,
-            _origin_offset=None,
-            _quantity=None,
-            _reverse=False,
-            _label='',
-            _period=None,
-            _unit=None):
+#         self._set_parameters(
+#             _reference_offset,
+#             _origin_offset,
+#             _quantity,
+#             _period,
+#             _unit)
 
-        self.reverse = _reverse
-        self.label = _label
+# # --------------------------------------------------------------------------- #
+# #                                 Attributes                                  #
+# # --------------------------------------------------------------------------- #
 
-        self._set_parameters(
-            _reference_offset,
-            _origin_offset,
-            _quantity,
-            _period,
-            _unit)
+# # label
+#     @property
+#     def label(self):
+#         r"""The label associated with the dimension."""
+#         return deepcopy(self._label)
 
-# --------------------------------------------------------------------------- #
-#                                 Attributes                                  #
-# --------------------------------------------------------------------------- #
+#     @label.setter
+#     def label(self, label=''):
+#         if not isinstance(label, str):
+#             raise TypeError(_type_message(str, type(label)))
+#         self._label = label
 
-# label
-    @property
-    def label(self):
-        r"""The label associated with the dimension."""
-        return deepcopy(self._label)
+# # reverse
+#     @property
+#     def reverse(self):
+#         r"""The order of coordinates along the dimension."""
+#         return deepcopy(self._reverse)
 
-    @label.setter
-    def label(self, label=''):
-        if not isinstance(label, str):
-            raise TypeError(_type_message(str, type(label)))
-        self._label = label
+#     @reverse.setter
+#     def reverse(self, value=False):
+#         if not isinstance(value, bool):
+#             raise TypeError(_type_message(bool, type(value)))
 
-# reverse
-    @property
-    def reverse(self):
-        r"""The order of coordinates along the dimension."""
-        return deepcopy(self._reverse)
+#         _value = _check_and_assign_bool(value)
+#         self._reverse = _value
 
-    @reverse.setter
-    def reverse(self, value=False):
-        if not isinstance(value, bool):
-            raise TypeError(_type_message(bool, type(value)))
+#     def _get_reciprocal_dictionary(self):
+#         dictionary = self._get_quantitative_dictionary()
 
-        _value = _check_and_assign_bool(value)
-        self._reverse = _value
+#         if self.reverse is True:
+#             dictionary['reverse'] = True
 
-    def _get_reciprocal_dictionary(self):
-        dictionary = self._get_quantitative_dictionary()
+#         if self.label.strip() != "":
+#             dictionary['label'] = self.label
 
-        if self.reverse is True:
-            dictionary['reverse'] = True
-
-        if self.label.strip() != "":
-            dictionary['label'] = self.label
-
-        return dictionary
+#         return dictionary
 
 
 # =========================================================================== #
@@ -283,7 +329,7 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
 
     This class returns an object which represents a physical
     controlled variable, sampled linearly along a grid dimension.
-    Let :math:`m_k` be the sampling interval, :math:`N_k \ge 1` be the
+    Let :math:`m_k` be the increment, :math:`N_k \ge 1` be the
     number of points, :math:`c_k` be the reference offset, and
     :math:`o_k` be the origin offset along the :math:`k^{th}`
     grid dimension, then the coordinates along the
@@ -303,51 +349,55 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
 
     __slots__ = (
         '_number_of_points',
-        '_sampling_interval',
-        '_fft_output_order',
+        '_increment',
+        # '_fft_output_order',
         'reciprocal',
         '_reciprocal_number_of_points',
-        '_reciprocal_sampling_interval',
+        '_reciprocal_increment',
         '_coordinates',
     )
 
-    _type = 'linearly_sampled'
+    _type = 'linear_spacing'
 
     def __init__(
             self,
             _number_of_points,
-            _sampling_interval,
+            _increment,
             _reference_offset=None,
             _origin_offset=None,
             _quantity=None,
             _period=None,
-            _fft_output_order=False,
+            _label='',
+            # _reverse=False,
+            # _fft_output_order=False,
 
             _reciprocal_reference_offset=None,
             _reciprocal_origin_offset=None,
             _reciprocal_quantity=None,
-            _reciprocal_reverse=False,
+            # _reciprocal_reverse=False,
             _reciprocal_label='',
             _reciprocal_period=None):
-
+        r"""Instantiate a DimensionWithLinearSpacing class instance."""
         # number of points
         self._number_of_points = _number_of_points
 
-        # sampling interval
-        _value = _assign_and_check_unit_consistency(_sampling_interval, None)
-        self._sampling_interval = _value
+        # increment
+        _value = _assign_and_check_unit_consistency(_increment, None)
+        self._increment = _value
 
         # fft_ouput_order
-        _value = _check_and_assign_bool(_fft_output_order)
-        self._fft_output_order = _value
+        # _value = _check_and_assign_bool(_fft_output_order)
+        # self._fft_output_order = _value
 
-        self._unit = self._sampling_interval.unit
+        self._unit = self._increment.unit
 
         self._set_parameters(
             _reference_offset,
             _origin_offset,
             _quantity,
             _period,
+            _label,
+            # _reverse,
             self._unit)
 
         # create a reciprocal dimension
@@ -356,9 +406,9 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
                                 _reciprocal_reference_offset,
                                 _reciprocal_origin_offset,
                                 _reciprocal_quantity,
-                                _reciprocal_reverse,
-                                _reciprocal_label,
                                 _reciprocal_period,
+                                _reciprocal_label,
+                                # _reciprocal_reverse,
                                 _reciprocal_unit
                             )
 
@@ -369,23 +419,52 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
 # --------------------------------------------------------------------------- #
 #                    LinearlySampledDimension Methods                         #
 # --------------------------------------------------------------------------- #
+    def _swap(self):
+
+        # reference offset
+        self._reference_offset, self.reciprocal._reference_offset = \
+            self.reciprocal._reference_offset, self._reference_offset
+
+        # origin offset
+        self._origin_offset, self.reciprocal._origin_offset = \
+            self.reciprocal._origin_offset, self._origin_offset
+
+        # # reverse
+        # self._reverse, self.reciprocal._reverse = \
+        #     self.reciprocal._reverse, self._reverse
+
+        # period
+        self._period, self.reciprocal._period = \
+            self.reciprocal._period, self._period
+
+        # quantity
+        self._quantity, self.reciprocal._quantity = \
+            self.reciprocal._quantity, self._quantity
+
+        # label
+        self._label, self.reciprocal._label = \
+            self.reciprocal._label, self._label
+
+        # unit
+        self._unit, self.reciprocal._unit = \
+            self.reciprocal._unit, self._unit
 
     def _get_coordinates(self):
         _unit = self._unit
         _number_of_points = self._number_of_points
-        _sampling_interval = self._sampling_interval.to(_unit)
+        _increment = self._increment.to(_unit)
 
         _index = np.arange(_number_of_points, dtype=np.float64)
 
-        if self._fft_output_order:
-            _index = np.empty(_number_of_points, dtype=np.int)
-            n = (_number_of_points-1)//2 + 1
-            p1 = np.arange(0, n, dtype=np.int)
-            _index[:n] = p1
-            p2 = np.arange(-(_number_of_points//2), 0, dtype=np.int)
-            _index[n:] = p2
+        # if self._fft_output_order:
+        #     _index = np.empty(_number_of_points, dtype=np.int)
+        #     n = (_number_of_points-1)//2 + 1
+        #     p1 = np.arange(0, n, dtype=np.int)
+        #     _index[:n] = p1
+        #     p2 = np.arange(-(_number_of_points//2), 0, dtype=np.int)
+        #     _index[n:] = p2
 
-        _value = _index * _sampling_interval
+        _value = _index * _increment
         self._coordinates = _value
 
 # _get_python_dictionary()
@@ -393,16 +472,16 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
         dictionary = {}
         dictionary['type'] = self.__class__._type
         dictionary['number_of_points'] = self._number_of_points
-        dictionary['sampling_interval'] = value_object_format(
-            self.sampling_interval
+        dictionary['increment'] = value_object_format(
+            self.increment
         )
 
         dictionary.update(self._get_quantitative_dictionary())
 
-        if self.fft_output_order is True:
-            dictionary['fft_output_order'] = True
+        # if self.fft_output_order is True:
+        #     dictionary['fft_output_order'] = True
 
-        reciprocal_dictionary = self.reciprocal._get_reciprocal_dictionary()
+        reciprocal_dictionary = self.reciprocal._get_quantitative_dictionary()
 
         if reciprocal_dictionary == {}:
             del reciprocal_dictionary
@@ -421,40 +500,40 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
         r"""The number of points along the dimension."""
         return deepcopy(self._number_of_points)
 
-# sampling interval
+# increment
     @property
-    def sampling_interval(self):
-        r"""The sampling interval, :math:`m_k`, along the dimension."""
-        return deepcopy(self._sampling_interval)
+    def increment(self):
+        r"""The increment, :math:`m_k`, along the dimension."""
+        return deepcopy(self._increment)
 
-    @sampling_interval.setter
-    def sampling_interval(self, value):
+    @increment.setter
+    def increment(self, value):
         if not isinstance(value, str):
             raise TypeError(_type_message(str, type(value)))
         _value = _assign_and_check_unit_consistency(value, self._unit)
         if _value.value < 0.0:
             raise ValueError(
-                'The numerical value of the sampling interval \
+                'The numerical value of the increment \
                 is a positive real number. A value of {0} is \
                 provide.'.format(_value)
             )
-        self._sampling_interval = _value
+        self._increment = _value
         self._get_coordinates()
 
-# fft_ouput_order
-    @property
-    def fft_output_order(self):
-        r"""The coordinates are ordered according to the fft output order."""
-        return deepcopy(self._fft_output_order)
+# # fft_ouput_order
+#     @property
+#     def fft_output_order(self):
+#         r"""The coordinates are ordered according to the fft output order."""
+#         return deepcopy(self._fft_output_order)
 
-    @fft_output_order.setter
-    def fft_output_order(self, value):
-        if not isinstance(value, bool):
-            raise TypeError(_type_message(bool, type(value)))
+#     @fft_output_order.setter
+#     def fft_output_order(self, value):
+#         if not isinstance(value, bool):
+#             raise TypeError(_type_message(bool, type(value)))
 
-        self._fft_output_order = value
-        self._get_coordinates()
-        return
+#         self._fft_output_order = value
+#         self._get_coordinates()
+#         return
 
 
 # =========================================================================== #
@@ -499,7 +578,7 @@ class DimensionWithArbitrarySpacing(BaseIndependentVariable):
         '_coordinates'
     )
 
-    _type = 'arbitrarily_sampled'
+    _type = 'arbitrary_spacing'
 
     def __init__(
             self,
@@ -508,14 +587,16 @@ class DimensionWithArbitrarySpacing(BaseIndependentVariable):
             _origin_offset=None,
             _quantity=None,
             _period=None,
+            _label='',
+            # _reverse=False,
 
             _reciprocal_reference_offset=None,
             _reciprocal_origin_offset=None,
             _reciprocal_quantity=None,
-            _reciprocal_reverse=False,
+            # _reciprocal_reverse=False,
             _reciprocal_label='',
             _reciprocal_period=None):
-
+        """Instantiate a DimensionWithArbitrarySpacing class instance."""
         # unit
         self._unit = _assign_and_check_unit_consistency(_values[0], None).unit
 
@@ -524,6 +605,8 @@ class DimensionWithArbitrarySpacing(BaseIndependentVariable):
             _origin_offset,
             _quantity,
             _period,
+            _label,
+            # _reverse,
             self._unit)
 
         # reciprocal dimension attributes
@@ -532,9 +615,9 @@ class DimensionWithArbitrarySpacing(BaseIndependentVariable):
                             _reciprocal_reference_offset,
                             _reciprocal_origin_offset,
                             _reciprocal_quantity,
-                            _reciprocal_reverse,
-                            _reciprocal_label,
                             _reciprocal_period,
+                            _reciprocal_label,
+                            # _reciprocal_reverse,
                             _reciprocal_unit
                         )
 
@@ -579,7 +662,7 @@ class DimensionWithArbitrarySpacing(BaseIndependentVariable):
 # values
     @property
     def values(self):
-        r"""Returns a list of values along the dimensoion."""
+        r"""Return a list of values along the dimensoion."""
         return deepcopy(self._values)
 
     @values.setter
@@ -593,22 +676,52 @@ class DimensionWithArbitrarySpacing(BaseIndependentVariable):
 
 
 class DimensionWithLabels:
+    """Declare a DimensionWithLabels class."""
 
     __slots__ = (
         '_number_of_points',
         '_coordinates',
         '_values',
+        '_label',
+        '_reverse',
     )
 
     _type = 'labeled'
 
-    def __init__(self, _values):
-
+    def __init__(self, _values, _label='', _reverse=False,):
+        r"""Instantiate a DimensionWithLabels class instance."""
         self._get_coordinates(_values)
+        self._reverse = _reverse
+        self._label = _label
 
 # --------------------------------------------------------------------------- #
 #                          LabeledDimension Methods                           #
 # --------------------------------------------------------------------------- #
+# label
+    @property
+    def label(self):
+        r"""The label associated with the dimension."""
+        return deepcopy(self._label)
+
+    @label.setter
+    def label(self, label=''):
+        if not isinstance(label, str):
+            raise TypeError(_type_message(str, type(label)))
+        self._label = label
+
+# reverse
+    @property
+    def reverse(self):
+        r"""The order of coordinates along the dimension."""
+        return deepcopy(self._reverse)
+
+    @reverse.setter
+    def reverse(self, value=False):
+        if not isinstance(value, bool):
+            raise TypeError(_type_message(bool, type(value)))
+
+        _value = _check_and_assign_bool(value)
+        self._reverse = _value
 
     def _get_coordinates(self, _values):
         self._coordinates = np.asarray(_values)
@@ -617,9 +730,7 @@ class DimensionWithLabels:
 
 # is_quantitative
     def _is_quantitative(self):
-        r"""
-        Returns `True`, if the dimension is quantitative,
-        otherwise `False`.
+        r"""Return `True`, if the dimension is quantitative, otherwise `False`.
 
         :returns: A Boolean.
         """
@@ -640,7 +751,7 @@ class DimensionWithLabels:
 # values
     @property
     def values(self):
-        r"""Returns a list of values along the dimensoion."""
+        r"""Return a list of values along the dimensoion."""
         return deepcopy(self._values)
 
     @values.setter

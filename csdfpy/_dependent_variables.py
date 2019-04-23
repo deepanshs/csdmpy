@@ -1,3 +1,4 @@
+"""The DependentVariable SubType classes."""
 
 from __future__ import print_function, division
 import numpy as np
@@ -19,14 +20,18 @@ from ._utils import (
 )
 
 
+__author__ = "Deepansh J. Srivastava"
+__email__ = "srivastava.89@osu.edu"
+
+
 # Decode data functions #
 
 def _decode_base64(_components, _dtype):
-    _components = np.asarray([np.fromstring(base64.b64decode(item),
+    _components = np.asarray([np.frombuffer(base64.b64decode(item),
                              dtype=_dtype)
                              for item in _components])
 
-    _components.setflags(write=1)
+    # _components.setflags(write=1)
     return _components
 
 
@@ -42,18 +47,16 @@ def _decode_none(_components, _dtype):
             dtype=_dtype
         )
 
-    _components.setflags(write=1)
+    # _components.setflags(write=1)
     return _components
 
 
 def _decode_raw(_components, _dtype, _component_num):
-    _components = np.frombuffer(_components, dtype=_dtype)
-
-    _components = _components.reshape(
-        _component_num, int(_components.size/_component_num)
-    )
-
-    _components.setflags(write=1)
+    _components = np.fromstring(_components, dtype=_dtype)
+    # print(_components.flags)
+    # _components = np.array(_components, copy=True)
+    # _components.setflags(write=1)
+    _components.shape = _component_num, int(_components.size/_component_num)
     return _components
 # --------------------------------------------------------------
 
@@ -90,7 +93,7 @@ def _get_absolute_uri_path(uri, file):
     return path
 
 
-def _get_relative_URI_path(dataset_index, filename):
+def _get_relative_uri_path(dataset_index, filename):
     index = str(dataset_index)
     file_save_path_abs = _get_absolute_uri_path('', filename)
 
@@ -106,23 +109,12 @@ def _get_relative_URI_path(dataset_index, filename):
     return _URI_data_path_relative, data_path_absolute
 
 # =========================================================================== #
-#               	     BaseIndependentVariable Class      			      #
+#               	       BaseDependentVariable Class      			      #
 # =========================================================================== #
 
 
 class BaseDependentVariable:
-    """
-    An uncontrolled variable core object.
-
-        keywork aruament :
-          name : any string
-          format : either 'binary' or 'text'.
-          data_type : one of 'float32', 'float64', 'comple64' or 'complex128'.
-          unit : unit associated with the dataset.
-          quantity : the physical qunatity associated with the dataset.
-          values : ordered array in format specified at keywords 'format'
-                   and 'data_type'.
-    """
+    r"""Declare a BaseDependentVariable class."""
 
     __slots__ = (
         '_encoding',
@@ -138,6 +130,8 @@ class BaseDependentVariable:
             _numeric_type='float32',
             _quantity_type='scalar',
             _component_labels=None):
+
+        r"""Instantiate a BaseDependentVariable class."""
 
         self._set_parameters(
             _encoding,
@@ -174,8 +168,9 @@ class BaseDependentVariable:
         the inconsistency is resolved by appropriate truncating or additing the
         required number of strings.
         """
+        _n = self._quantity_type._p
         if component_labels is None:
-            _labels = ['' for i in range(self._quantity_type._p)]
+            _labels = ['' for i in range(_n)]
             self._component_labels = _labels
             return
 
@@ -187,18 +182,18 @@ class BaseDependentVariable:
             )
 
         _component_length = len(component_labels)
-        if _component_length != self._quantity_type._p:
+        if _component_length != _n:
             warnings.warn((
                     "The number of component labels, {0}, is not equal to the "
                     "number of components, {1}. The inconsistency is resolved "
                     "by appropriate truncation or addition of the strings."
-                ).format(len(component_labels), self._quantity_type._p)
+                ).format(len(component_labels), _n)
             )
 
-            if _component_length > self._quantity_type._p:
-                self._component_labels = component_labels[:self._quantity_type._p]
+            if _component_length > _n:
+                self._component_labels = component_labels[:_n]
             else:
-                _lables = ['' for i in range(self._quantity_type._p)]
+                _lables = ['' for i in range(_n)]
                 for i, item in enumerate(component_labels):
                     _lables[i] = item
                 self._component_labels = _lables
@@ -394,26 +389,23 @@ class InternalDataset(BaseDependentVariable):
 
     def _ravel_data(self):
         """Encode data based on the encoding key value."""
+        _n = self._quantity_type._p
         size = self._components[0].size
         if self._numeric_type._value in ['complex64', 'complex128']:
-            if self._numeric_type._value == 'complex64':
-                c = np.empty(
-                    (self._quantity_type._p, size*2), dtype=np.float32
-                )
-            if self._numeric_type._value == 'complex128':
-                c = np.empty(
-                    (self._quantity_type._p, size*2), dtype=np.float64
-                )
 
-            for i in range(self._quantity_type._p):
+            if self._numeric_type._value == 'complex64':
+                c = np.empty((_n, size*2), dtype=np.float32)
+
+            if self._numeric_type._value == 'complex128':
+                c = np.empty((_n, size*2), dtype=np.float64)
+
+            for i in range(_n):
                 c[i, 0::2] = self._components.real[i].ravel()
                 c[i, 1::2] = self._components.imag[i].ravel()
+
         else:
-            c = np.empty(
-                (self._quantity_type._p, size),
-                dtype=self._numeric_type._nptype
-            )
-            for i in range(self._quantity_type._p):
+            c = np.empty((_n, size), dtype=self._numeric_type._nptype)
+            for i in range(_n):
                 c[i] = self._components[i].ravel()
 
         return c
@@ -460,7 +452,7 @@ class InternalDataset(BaseDependentVariable):
 
         if self.encoding == 'raw':
             _URI_data_path_relative, data_path_absolute = \
-                _get_relative_URI_path(dataset_index, filename)
+                _get_relative_uri_path(dataset_index, filename)
 
             c.ravel().tofile(data_path_absolute)
 
@@ -507,7 +499,7 @@ class InternalDataset(BaseDependentVariable):
 class ExternalDataset(InternalDataset):
 
     __slots__ = (
-        '_components_URI'
+        '_components_uri'
     )
 
     def __init__(
@@ -519,7 +511,7 @@ class ExternalDataset(InternalDataset):
             _numeric_type=None,
             _quantity_type='scalar',
             _component_labels=None,
-            _components_URI=None,
+            _components_uri=None,
             _filename=''):
 
         self._set_parameters(
@@ -531,16 +523,16 @@ class ExternalDataset(InternalDataset):
         # self._type = 'external'
 
         _absolute_URI = _get_absolute_uri_path(
-            _components_URI, _filename
+            _components_uri, _filename
         )
-        self._components_URI = _components_URI
+        self._components_uri = _components_uri
 
         _components = urlopen(_absolute_URI).read()
         self._components = self._decode_components(_components)
 
     @property
-    def components_URI(self):
-        return self._components_URI
+    def components_uri(self):
+        return self._components_uri
 
     def _download_file_contents_from_url(self, filename):
         pass

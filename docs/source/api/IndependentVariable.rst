@@ -15,15 +15,18 @@ IndependentVariable
 
     .. autosummary::
         ~IndependentVariable.dimension_type
+        ~IndependentVariable.description
         ~IndependentVariable.coordinates
         ~IndependentVariable.absolute_coordinates
         ~IndependentVariable.values
         ~IndependentVariable.number_of_points
-        ~IndependentVariable.sampling_interval
+        ~IndependentVariable.increment
         ~IndependentVariable.reference_offset
         ~IndependentVariable.origin_offset
-        ~IndependentVariable.reverse
-        ~IndependentVariable.fft_output_order
+
+..        ~IndependentVariable.reverse
+..        ~IndependentVariable.fft_output_order
+
         ~IndependentVariable.quantity
         ~IndependentVariable.label
         ~IndependentVariable.period
@@ -39,15 +42,18 @@ IndependentVariable
     .. rubric:: Attributes Documentation
 
     .. autoattribute:: dimension_type
+    .. autoattribute:: description
     .. autoattribute:: coordinates
     .. autoattribute:: absolute_coordinates
     .. autoattribute:: values
     .. autoattribute:: number_of_points
-    .. autoattribute:: sampling_interval
+    .. autoattribute:: increment
     .. autoattribute:: reference_offset
     .. autoattribute:: origin_offset
-    .. autoattribute:: reverse
-    .. autoattribute:: fft_output_order
+
+..    .. autoattribute:: reverse
+..    .. autoattribute:: fft_output_order
+
     .. autoattribute:: quantity
     .. autoattribute:: label
     .. autoattribute:: period

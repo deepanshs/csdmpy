@@ -4,7 +4,7 @@ Getting Started With `csdfpy` package
 =====================================
 
 If you prefer Jupyter notebooks, start a new notebook and follow the
-instructions below. If you are new to Jupyter notebooks, first refer to the
+instructions below. If you are new to Jupyter notebooks, refer to the
 `Installing Jupyter Notebook documentation <https://jupyter.readthedocs.io/en/latest/install.html>`_
 to set up a Jupyter notebook. Not a fan of Jupyter notebooks, simply start
 with a new python file.
@@ -28,11 +28,26 @@ sample test file.
 
 .. doctest::
 
-    >>> filename = cp.test_file['test01']  # replace this with the filename.
-    >>> testdata1 = cp.load(filename)
+    >>> test_file = cp.test_file['test01']  # replace this with the filename.
+    >>> testdata1 = cp.load(test_file)
 
-Here, ``testdata1`` is an instance of the :ref:`csdm_api` class.
+Here, ``testdata1`` is an instance of the :ref:`csdm_api` class which holds the
+contents of the ``test_file``.
 
+------------------------------
+Accessing the file description
+------------------------------
+
+A CSD model serialized data file may contain an optional description key.
+This key is intended to provide a quick description of the data content. In the
+`csdfpy` module, one can access the file description using the
+:py:attr:`~csdfpy.CSDModel.description` attribute of the respective
+:ref:`csdm_api` class instance, in this case, the ``testdata1`` instance.
+
+.. doctest::
+
+    >>> print(testdata1.description)
+    'A simulated sine curve.'
 
 -------------------------------------------------
 Accessing the independent and dependent variables

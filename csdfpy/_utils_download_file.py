@@ -1,10 +1,16 @@
+"""Utility functions for the csdfpy module."""
+
 from os import path
 import requests
 from urllib.parse import urlparse
 import sys
 
 
-def download_file_from_url(url):
+__author__ = "Deepansh J. Srivastava"
+__email__ = "srivastava.89@osu.edu"
+
+
+def _download_file_from_url(url):
     res = urlparse(url)
     filename = path.split(res[2])[1]
     name, extension = path.splitext(filename)

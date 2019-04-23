@@ -14,47 +14,50 @@ from copy import deepcopy
 from ._utils import (
     _get_dictionary,
     _type_message,
-    _check_and_assign_bool,
+    # _check_and_assign_bool,
     _axis_label
 )
 
-_dimension_generators = ['linearly_sampled']
+__author__ = "Deepansh J. Srivastava"
+__email__ = "srivastava.89@osu.edu"
+
+_dimension_generators = ['linear_spacing']
 
 
-def _check_quantitative(dictionary):
-    if not _check_non_quantitative(dictionary):
-        if dictionary['number_of_points'] is None and \
-                dictionary['sampling_interval'] is None and \
-                dictionary['values'] is None:
-            raise Exception("either 'number_of_points, sampling_interval' \
-or 'values' key is required.")
-        return True
-    return False
+# def _check_quantitative(dictionary):
+#     if not _check_non_quantitative(dictionary):
+#         if dictionary['number_of_points'] is None and \
+#                 dictionary['increment'] is None and \
+#                 dictionary['values'] is None:
+#             raise Exception("either 'number_of_points, increment' \
+# or 'values' key is required.")
+#         return True
+#     return False
 
 
-def _check_quantitative_linear(dictionary):
-    if _check_quantitative(dictionary) and \
-            dictionary['number_of_points'] is not None and \
-            dictionary['sampling_interval'] is not None:
-        return True
-    return False
+# def _check_quantitative_linear(dictionary):
+#     if _check_quantitative(dictionary) and \
+#             dictionary['number_of_points'] is not None and \
+#             dictionary['increment'] is not None:
+#         return True
+#     return False
 
 
-def _check_quantitative_arbitrary(dictionary):
-    if _check_quantitative(dictionary) and \
-            dictionary['values'] is not None:
-        return True
-    return False
+# def _check_quantitative_arbitrary(dictionary):
+#     if _check_quantitative(dictionary) and \
+#             dictionary['values'] is not None:
+#         return True
+#     return False
 
 
-def _check_non_quantitative(dictionary):
-    is_false = False
-    if dictionary['non_quantitative']:
-        is_false = True
-        if dictionary['values'] is None:
-            raise Exception("'values' key is required for \
-non-quantitative dimension.")
-    return is_false
+# def _check_non_quantitative(dictionary):
+#     is_false = False
+#     if dictionary['non_quantitative']:
+#         is_false = True
+#         if dictionary['values'] is None:
+#             raise Exception("'values' key is required for \
+# non-quantitative dimension.")
+#     return is_false
 
 
 class IndependentVariable:
@@ -72,8 +75,8 @@ class IndependentVariable:
     Let :math:`m_k` be the sampling interval, :math:`N_k \ge 1` be the
     number of points, :math:`c_k` be the reference offset, and
     :math:`o_k` be the origin offset along the :math:`k^{th}`
-    independent variable dimension, then the corresponding coordinates along the
-    dimension are given as,
+    independent variable dimension, then the corresponding coordinates along
+    the dimension are given as,
 
     .. math ::
         \begin{align}
@@ -124,10 +127,10 @@ class IndependentVariable:
 
         >>> from csdfpy import IndependentVariable
         >>> py_dictionary = {
-        ...     'type': 'linearly_sampled',
-        ...     'sampling_interval': '5 G',
+        ...     'type': 'linear_spacing',
+        ...     'increment': '5 G',
         ...     'number_of_points': 10,
-        ...     'reference_offset': '-10 mT',
+        ...     'reference_offset': '10 mT',
         ...     'origin_offset': '10 T'
         ... }
         >>> x = IndependentVariable(py_dictionary)
@@ -136,10 +139,10 @@ class IndependentVariable:
 
     .. doctest::
 
-        >>> x = IndependentVariable(type = 'linearly_sampled',
-        ...                         sampling_interval = '5 G',
+        >>> x = IndependentVariable(type = 'linear_spacing',
+        ...                         increment = '5 G',
         ...                         number_of_points = 10,
-        ...                         reference_offset = '-10 mT',
+        ...                         reference_offset = '10 mT',
         ...                         origin_offset = '10 T')
 
     """
@@ -147,7 +150,8 @@ class IndependentVariable:
     __slots__ = (
         'subtype',
         '_label',
-        '_reverse'
+        '_description'
+        # '_reverse'
     )
 
     # def __new__(cls, *args, **kwargs):
@@ -164,21 +168,22 @@ class IndependentVariable:
         """Initialize an instance of IndependentVariable object."""
         dictionary = {
             'type': '',
+            'description': '',
             'number_of_points': None,
-            'sampling_interval': None,
+            'increment': None,
             'values': None,
             'reference_offset': None,
             'origin_offset': None,
-            'reverse': False,
-            'fft_output_order': False,
+            # 'reverse': False,
+            # 'fft_output_order': False,
             'period': None,
             'quantity': None,
             'label': '',
             'reciprocal': {
-                'sampling_interval': None,
+                'increment': None,
                 'reference_offset': None,
                 'origin_offset': None,
-                'reverse': False,
+                # 'reverse': False,
                 'period': None,
                 'quantity': None,
                 'label': ''}
@@ -198,115 +203,142 @@ class IndependentVariable:
                 else:
                     dictionary[key] = input_dict[key]
 
-        _valid_types = ['arbitrarily_sampled', 'linearly_sampled', 'labeled']
+        _valid_types = ['arbitrary_spacing', 'linear_spacing', 'labeled']
 
         if dictionary['type'] not in _valid_types:
             raise ValueError((
                 "'{0}' is an invalid value for the dimension type. The "
-                "allowed values are 'arbitrarily_sampled', 'linearly_sampled' "
+                "allowed values are 'arbitrary_spacing', 'linear_spacing' "
                 "and 'labeled'.".format(dictionary['type'])
             ))
 
         if dictionary['type'] == 'labeled':
+            if dictionary['values'] is None:
+                raise KeyError(
+                    "'value' key is missing for the labeled dimension."
+                )
+
             _independent_variable_object = DimensionWithLabels(
                     _values=dictionary['values'],
-                    # _reverse=dictionary['reverse'],
-                    # _label=dictionary['label']
+                    _label=dictionary['label'],
+                    # _reverse=dictionary['reverse']
                     )
 
-        if dictionary['type'] == 'arbitrarily_sampled':
+        if dictionary['type'] == 'arbitrary_spacing':
+            if dictionary['values'] is None:
+                raise KeyError((
+                    "'value' key is missing for the "
+                    "arbitrarily space dimension."   
+                ))
+    
             _independent_variable_object = DimensionWithArbitrarySpacing(
                 _values=dictionary['values'],
                 _reference_offset=dictionary['reference_offset'],
                 _origin_offset=dictionary['origin_offset'],
                 _quantity=dictionary['quantity'],
-                # _reverse=dictionary['reverse'],
-                # _label=dictionary['label'],
                 _period=dictionary['period'],
+                _label=dictionary['label'],
+                # _reverse=dictionary['reverse'],
 
                 _reciprocal_reference_offset=dictionary['reciprocal']
                                                        ['reference_offset'],
                 _reciprocal_origin_offset=dictionary['reciprocal']
                                                     ['origin_offset'],
                 _reciprocal_quantity=dictionary['reciprocal']['quantity'],
-                _reciprocal_reverse=dictionary['reciprocal']['reverse'],
+                # _reciprocal_reverse=dictionary['reciprocal']['reverse'],
                 _reciprocal_period=dictionary['reciprocal']['period'],
                 _reciprocal_label=dictionary['reciprocal']['label'])
 
-        if dictionary['type'] == 'linearly_sampled':
+        if dictionary['type'] == 'linear_spacing':
+            if dictionary['increment'] is None:
+                raise KeyError((
+                    "'increment' key is missing for the "
+                    "linearly space dimension."   
+                ))
+            if dictionary['number_of_points'] is None:
+                raise KeyError((
+                    "'number_of_points' key is missing for the "
+                    "linearly space dimension."   
+                ))
             _independent_variable_object = DimensionWithLinearSpacing(
                 _number_of_points=dictionary['number_of_points'],
-                _sampling_interval=dictionary['sampling_interval'],
+                _increment=dictionary['increment'],
                 _reference_offset=dictionary['reference_offset'],
                 _origin_offset=dictionary['origin_offset'],
                 _quantity=dictionary['quantity'],
-                # _reverse=dictionary['reverse'],
-                # _label=dictionary['label'],
                 _period=dictionary['period'],
-                _fft_output_order=dictionary['fft_output_order'],
+                _label=dictionary['label'],
+                # _reverse=dictionary['reverse'],
+                # _fft_output_order=dictionary['fft_output_order'],
 
                 _reciprocal_reference_offset=dictionary['reciprocal']
                                                        ['reference_offset'],
                 _reciprocal_origin_offset=dictionary['reciprocal']
                                                     ['origin_offset'],
                 _reciprocal_quantity=dictionary['reciprocal']['quantity'],
-                _reciprocal_reverse=dictionary['reciprocal']['reverse'],
+                # _reciprocal_reverse=dictionary['reciprocal']['reverse'],
                 _reciprocal_period=dictionary['reciprocal']['period'],
                 _reciprocal_label=dictionary['reciprocal']['label'])
 
         self.subtype = _independent_variable_object
-        self.reverse = dictionary['reverse']
-        self.label = dictionary['label']
+        self._description = dictionary['description']
+        # self.reverse = dictionary['reverse']
+        # self.label = dictionary['label']
 
 # --------------------------------------------------------------------------- #
 #                          IndependentVariable Attributes                     #
 # --------------------------------------------------------------------------- #
-
-# reciprocal
     @property
-    def reciprocal(self):
-        return self.subtype.reciprocal
+    def description(self):
+        """
+        A description for the instance of the IndependentVariable class.
+
+        The default value is an empty string, ''. The attribute can be
+        modified, for example
+        
+        .. doctest::
+
+            >>> print(x.description)
+            ''
+
+            >>> x.description = 'This is a test variable.'
+
+        :returns: A ``string`` with UTF-8 allows characters.
+        :raises ValueError: When the non-string value is assigned.
+        """
+        return self._description
+
+    @description.setter
+    def description(self, value):
+        if isinstance(value, str):
+            self._description = value
+        else:
+            raise ValueError(
+                ("Description requires a string, {0} given".format(type(value)))
+            )
+
 
 # dimension type
     @property
     def dimension_type(self):
         r"""
-        Returns the dimension type of the independent variable.
+        Return the dimension type of the independent variable.
 
         There are three types of
         dimensions: LinearlySampledDimension, ArbitrarilySampledDimension,
-        and LabeledDimension with `type` names `linearly_sampled`,
-        `arbitrarily_sampled` and `labeled`, respectively.
+        and LabeledDimension with `type` names `linear_spacing`,
+        `arbitrary_spacing` and `labeled`, respectively.
         This attribute cannot be modified.
 
         .. doctest::
 
             >>> print(x.dimension_type)
-            linearly_sampled
+            linear_spacing
 
         :returns: A ``String``.
         :raises AttributeError: When the attribute is modified.
         """
         return self.subtype.__class__._type
-
-#           Attributes defining the control variable sampling type            #
-# --------------------------------------------------------------------------- #
-
-# # Sampling type #
-#     @property
-#     def sampling_type(self):
-#         r"""
-#         Return sampling type of the controlled variable.
-
-#         This attribute cannot be modified. ::
-
-#             >>> print(x.sampling_type)
-#             grid
-
-#         :returns: A string.
-#         :raises AttributeError: When the attribute is modified.
-#         """
-#         return deepcopy(self.subtype._sampling_type)
 
 # =========================================================================== #
 #                             Derived Attributes                              #
@@ -316,12 +348,12 @@ class IndependentVariable:
     @property
     def coordinates(self):
         r"""
-        Returns an array of reference coordinates, :math:`\mathbf{X}_k`, along the dimension.
+        Return an array of reference coordinates, :math:`\mathbf{X}_k`, along the dimension.
 
         The order of the reference coordinates
         depends on the value of the :attr:`~csdfpy.IndependentVariable.reverse`
         and the :attr:`~csdfpy.IndependentVariable.fft_output_order`
-        (only applicable for `linearly_sampled` subtype)
+        (only applicable for `linear_spacing` subtype)
         attributes of the class instance. This attribute cannot be modified.
 
         .. doctest::
@@ -333,27 +365,27 @@ class IndependentVariable:
         :returns: A ``Numpy array`` for labeled dimensions.
         :raises AttributeError: When the attribute is modified.
         """
-
-        coordinates = self.subtype._coordinates[:self.subtype._number_of_points]
-        if self._reverse:
-            coordinates = coordinates[::-1]
-        if self.subtype == 'labeled':
+        _n = self.subtype._number_of_points
+        coordinates = self.subtype._coordinates[:_n]
+        # if self.reverse:
+        #     coordinates = coordinates[::-1]
+        if self.dimension_type == 'labeled':
             return coordinates
         else:
-            return (coordinates - self.reference_offset).to(self.subtype._unit)
+            return (coordinates + self.reference_offset).to(self.subtype._unit)
 
 # absolute_coordinates
     @property
     def absolute_coordinates(self):
         r"""
-        Returns an array of absolute coordinates, :math:`\mathbf{X}_k^\mathrm{abs}`, along the dimension.
+        Return an array of absolute coordinates, :math:`\mathbf{X}_k^\mathrm{abs}`, along the dimension.
 
         The order of the absolute coordinates depends on the value of the
-        :attr:`~csdfpy.IndependentVariable.reverse` and the 
+        :attr:`~csdfpy.IndependentVariable.reverse` and the
         :attr:`~csdfpy.IndependentVariable.fft_output_order`
-        (only applicable for `linearly_sampled` subtype)
+        (only applicable for `linear_spacing` subtype)
         attributes of the IndependentVariable instance. This attribute cannot
-        be modified. This attribute is `invalid` for the labeled dimensions. 
+        be modified. This attribute is `invalid` for the labeled dimensions.
 
         .. doctest::
 
@@ -368,19 +400,14 @@ class IndependentVariable:
         :raises AttributeError: When the attribute is modified.
         """
         if self.subtype != 'labeled':
-            return (self.coordinates + self.origin_offset).to(self.subtype._unit)
+            return (self.coordinates + self.origin_offset).to(
+                self.subtype._unit
+            )
         else:
             raise AttributeError((
                 "{0} has no attribute '{1}'.".format(
                     self.subtype.__class__.__name__, 'absolute_coordinates')
             ))
-        # return self.subtype.absolute_coordinates
-        # if self.variable_type in _quantitative_variable_types:
-        #     return self.subtype.coordinates + \
-        #         self.subtype._origin_offset.to(self.subtype.unit)
-
-        # raise AttributeError(_attribute_message(self.variable_type,
-        #                                         'absolute_coordinates'))
 
 # # reciprocal_coordinates
 #     @property
@@ -431,7 +458,7 @@ class IndependentVariable:
     @property
     def reference_offset(self):
         r"""
-        Returns the reference offset, :math:`c_k`, along the dimension.
+        Return the reference offset, :math:`c_k`, along the dimension.
 
         When assigning a value, the dimensionality of the value
         must be consistent with the dimensionality of the other members
@@ -454,11 +481,6 @@ class IndependentVariable:
         :raises TypeError: When the assigned value is not a string.
         """
         return self.subtype.reference_offset
-        # if self.variable_type in _quantitative_variable_types:
-        #     return deepcopy(self.subtype._reference_offset)
-
-        # raise AttributeError(_attribute_message(self.variable_type,
-        #                                         'reference_offset'))
 
     @reference_offset.setter
     def reference_offset(self, value):
@@ -527,7 +549,7 @@ class IndependentVariable:
     @property
     def origin_offset(self):
         r"""
-        Returns the origin offset, :math:`o_k`, along the dimension.
+        Return the origin offset, :math:`o_k`, along the dimension.
 
         When assigning a value, the dimensionality of the value
         must be consistent with the dimensionality of other members specifying
@@ -549,26 +571,10 @@ class IndependentVariable:
         :raises TypeError: When the assigned value is not a string.
         """
         return self.subtype.origin_offset
-        # if self.variable_type in _quantitative_variable_types:
-        #     return deepcopy(self.subtype._origin_offset)
-
-        # raise AttributeError(_attribute_message(self.variable_type,
-        #                                         'origin_offset'))
 
     @origin_offset.setter
     def origin_offset(self, value):
         self.subtype.origin_offset = value
-
-        # if self.variable_type in _quantitative_variable_types:
-        #     if not isinstance(value, str):
-        #         raise TypeError(_type_message(str, type(value)))
-
-        #     _value = _assign_and_check_unit_consistency(value, self.subtype.unit)
-        #     self.subtype.set_attribute('_origin_offset', _value)
-        #     return
-
-        # raise AttributeError(_attribute_message(self.variable_type,
-        #                                         'origin_offset'))
 
 # # reciprocal origin offset
 #     @property
@@ -616,12 +622,12 @@ class IndependentVariable:
 
 # sampling interval
     @property
-    def sampling_interval(self):
+    def increment(self):
         r"""
-        Returns the sampling interval, :math:`m_k`, along the dimension.
+        Return the sampling interval, :math:`m_k`, along the dimension.
 
         The attribute is only `valid` for IndependentVariable instances with
-        the subtype `linearly_sampled`. When assigning,
+        the subtype `linear_spacing`. When assigning,
         the dimensionality of the value must be consistent with the
         dimensionality of other members specifying the dimension.
         Additionally, the sampling interval must be a positive real number.
@@ -630,44 +636,37 @@ class IndependentVariable:
 
         .. doctest::
 
-            >>> print(x.sampling_interval)
+            >>> print(x.increment)
             5.0 G
-            >>> x.sampling_interval = "0.1 G"
+            >>> x.increment = "0.1 G"
             >>> print(x.coordinates)
             [100.  100.1 100.2 100.3 100.4] G
 
         :returns: A ``Quantity`` instance with the sampling interval.
-        :raises AttributeError: For dimension with subtypes other than `linearly_sampled`.
+        :raises AttributeError: For dimension with subtypes other than
+                                `linear_spacing`.
         :raises TypeError: When the assigned value is not a string.
         """
         # .. note:: The sampling interval along a grid dimension and the
         #     respective reciprocal grid dimension follow the Nyquist–Shannon
-        #     sampling theorem. Therefore, updating the ``sampling_interval``
+        #     sampling theorem. Therefore, updating the ``increment``
         #     will automatically trigger an update on its reciprocal counterpart.
         # if self.variable_type == _quantitative_variable_types[0]:
-        return self.subtype.sampling_interval
+        return self.subtype.increment
 
         # raise AttributeError(_attribute_message(self.variable_type,
-        #                                         'sampling_interval'))
+        #                                         'increment'))
 
-    @sampling_interval.setter
-    def sampling_interval(self, value):
-        self.subtype.sampling_interval = value
-        # if self.variable_type == _quantitative_variable_types[0]:
-        #     if not isinstance(value, str):
-        #         raise TypeError(_type_message(str, type(value)))
-        #     self.subtype.sampling_interval = value
-        #     return
-
-        # raise AttributeError(_attribute_message(self.variable_type,
-        #                                         'sampling_interval'))
+    @increment.setter
+    def increment(self, value):
+        self.subtype.increment = value
 # --------------------------------------------------------------------------- #
 
 # number_of_points
     @property
     def number_of_points(self):
         r"""
-        Returns the number of points, :math:`N_k \ge 1`, along the dimension.
+        Return the number of points, :math:`N_k \ge 1`, along the dimension.
 
         The attribute is modified with an integer specifying the number of
         points along the dimension, for example,
@@ -722,18 +721,18 @@ class IndependentVariable:
     @property
     def values(self):
         r"""
-        An ordered array of values, :math:`\mathbf{A}_k`, along the independent variable dimension.
+        Ordered array of values, :math:`\mathbf{A}_k`, along the independent variable dimension.
 
         For dimensions with arbitrarily spaced coordinates, this array is
         an ascending order of physical quantities.
 
         .. doctest::
 
-            >>> x1 = IndependentVariable(type='arbitrarily_sampled', values=['cm'])
+            >>> x1 = IndependentVariable(type='arbitrary_spacing', values=['cm'])
             >>> x1.values = ['0cm', '4.1µm', '0.3mm', '5.8m', '32.4km']
             >>> print(x1.data_structure)
             {
-              "type": "arbitrarily_sampled",
+              "type": "arbitrary_spacing",
               "values": [
                 "0cm",
                 "4.1µm",
@@ -746,8 +745,9 @@ class IndependentVariable:
                 "quantity": "wavenumber"
               }
             }
-        
-        For labeled dimensions, this array is an ordered collection of UTF-8 allowed strings.
+
+        For labeled dimensions, this array is an ordered collection of UTF-8
+        allowed strings.
 
         .. doctest::
 
@@ -767,9 +767,10 @@ class IndependentVariable:
         :ref:`iv_api` class associated with the arbitrarily sampled
         and the labeled dimensions respectively.
 
-        :returns: A ``Quantity array`` for dimensions with subtype `arbitarily_sampled`.
+        :returns: A ``Quantity array`` for dimensions with subtype
+                  `arbitarily_sampled`.
         :returns: A ``Numpy array`` for dimensions with subtype `labeled`.
-        :raises AttributeError: For dimensions with subtype `linearly_sampled`.
+        :raises AttributeError: For dimensions with subtype `linear_spacing`.
 
         """
         # .. todo:
@@ -784,9 +785,6 @@ class IndependentVariable:
 
     @values.setter
     def values(self, array):
-        # if self.variable_type == _quantitative_variable_types[0]:
-        #     raise AttributeError(_attribute_message(self.variable_type,
-        #                                             'values'))
         self.subtype.values = array
         self.subtype._get_coordinates(array)
 
@@ -794,131 +792,109 @@ class IndependentVariable:
 # Attributes affecting the order of the controlled variable coordinates #
 # ===================================================================== #
 
-# fft_ouput_order
-    @property
-    def fft_output_order(self):
-        r"""
-        Returns the coordinates along the dimension according to the fft order.
+# # fft_ouput_order
+#     @property
+#     def fft_output_order(self):
+#         r"""
+#         Return the coordinates along the dimension according to the fft order.
 
-        This attribute is only `valid` for the IndependentVariable instances with
-        subtype `linearly_sampled`.
-        The value of the attribute is a boolean specifying if the coordinates
-        along the dimension are ordered according to the output of a
-        fast Fourier transform (FFT) routine. The
-        universal behavior of all FFT routine is to order the :math:`N_k`
-        output amplitudes by placing the zero `frequency` at the start
-        of the output array, with positive `frequencies` increasing in
-        magnitude placed at increasing array offset until reaching
-        :math:`\frac{N_k}{2} -1` if :math:`N_k` is even, otherwise
-        :math:`\frac{N_k-1}{2}`, followed by negative frequencies
-        decreasing in magnitude until reaching :math:`N_k-1`.
-        This is also the ordering needed for the input of the inverse FFT.
-        For example, consider the coordinates along the dimension as
+#         This attribute is only `valid` for the IndependentVariable instances
+#         with subtype `linear_spacing`.
+#         The value of the attribute is a boolean specifying if the coordinates
+#         along the dimension are ordered according to the output of a
+#         fast Fourier transform (FFT) routine. The
+#         universal behavior of all FFT routine is to order the :math:`N_k`
+#         output amplitudes by placing the zero `frequency` at the start
+#         of the output array, with positive `frequencies` increasing in
+#         magnitude placed at increasing array offset until reaching
+#         :math:`\frac{N_k}{2} -1` if :math:`N_k` is even, otherwise
+#         :math:`\frac{N_k-1}{2}`, followed by negative frequencies
+#         decreasing in magnitude until reaching :math:`N_k-1`.
+#         This is also the ordering needed for the input of the inverse FFT.
+#         For example, consider the coordinates along the dimension as
 
-        .. math ::
+#         .. math ::
 
-            \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3, 4, 5] \mathrm{~m/s}
+#             \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3, 4, 5] \mathrm{~m/s}
 
-        when the value of the fft_output_order attribute is `false`, then when
-        the value is `true`, the order follows
+#         when the value of the fft_output_order attribute is `false`, then when
+#         the value is `true`, the order follows
 
-        .. math ::
+#         .. math ::
 
-            \mathbf{X}_k^\mathrm{ref} = [0 ,1, 2, -3, -2, -1] \mathrm{~m/s}
+#             \mathbf{X}_k^\mathrm{ref} = [0 ,1, 2, -3, -2, -1] \mathrm{~m/s}
 
-        The following is a test example.
+#         The following is a test example.
 
-        .. doctest::
+#         .. doctest::
 
-            >>> test = IndependentVariable(type='linearly_sampled',
-            ...							   sampling_interval = '1',
-            ...                            number_of_points = 10)
+#             >>> test = IndependentVariable(type='linear_spacing',
+#             ...							   increment = '1',
+#             ...                            number_of_points = 10)
 
-            >>> print(test.coordinates)
-            [0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]
-            >>> test.fft_output_order
-            False
+#             >>> print(test.coordinates)
+#             [0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]
+#             >>> test.fft_output_order
+#             False
 
-            >>> test.fft_output_order = True
-            >>> print(test.coordinates)
-            [ 0.  1.  2.  3.  4. -5. -4. -3. -2. -1.]
+#             >>> test.fft_output_order = True
+#             >>> print(test.coordinates)
+#             [ 0.  1.  2.  3.  4. -5. -4. -3. -2. -1.]
 
-        :returns: A ``Boolean``.
-        :raises TypeError: When the assigned value is not a boolean.
-        """
-        # if self.variable_type == _quantitative_variable_types[0]:
-        return self.subtype.fft_output_order
+#         :returns: A ``Boolean``.
+#         :raises TypeError: When the assigned value is not a boolean.
+#         """
+#         return self.subtype.fft_output_order
 
-        # raise AttributeError(_attribute_message(self.variable_type,
-        #                                         'fft_output_order'))
-
-    @fft_output_order.setter
-    def fft_output_order(self, value):
-        self.subtype.fft_output_order = value
-        # if self.variable_type == _quantitative_variable_types[0]:
-        #     if not isinstance(value, bool):
-        #         raise TypeError(_type_message(bool, type(value)))
-
-        #     # print('in fft output order')
-
-        #     self.subtype.set_attribute('_fft_output_order', value)
-        #     self.subtype._get_coordinates()
-        #     return
-
-        # raise AttributeError(_attribute_message(self.variable_type,
-        #                                         'fft_output_order'))
+#     @fft_output_order.setter
+#     def fft_output_order(self, value):
+#         self.subtype.fft_output_order = value
 # --------------------------------------------------------------------------- #
 
-# reverse
-    @property
-    def reverse(self):
-        r"""
-        Returns the coordinates along the dimension in the reverse order.
+# # reverse
+#     @property
+#     def reverse(self):
+#         r"""
+#         Return the coordinates along the dimension in the reverse order.
 
-        The order in which the :math:`\mathbf{X}_k` and
-        :math:`\mathbf{X}_k^\mathrm{abs}` coordinates map to the grid indices,
-        :math:`\mathbf{G}_k = [0,1,2,...,N_k-1]`. For example, consider
+#         The order in which the :math:`\mathbf{X}_k` and
+#         :math:`\mathbf{X}_k^\mathrm{abs}` coordinates map to the grid indices,
+#         :math:`\mathbf{G}_k = [0,1,2,...,N_k-1]`. For example, consider
 
-        .. math ::
+#         .. math ::
 
-            \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3,...N_{k-1}] \mathrm{~m/s},
+#             \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3,...N_{k-1}] \mathrm{~m/s},
 
-        when the value of the reverse attribute is `false`, then when the value
-        of the reverse attribute is `true`, the mapping follows
+#         when the value of the reverse attribute is `false`, then when the value
+#         of the reverse attribute is `true`, the mapping follows
 
-        .. math ::
+#         .. math ::
 
-            \mathbf{X}_k^\mathrm{ref} = [N_{k-1},...3, 2, 1, 0] \mathrm{~m/s}.
+#             \mathbf{X}_k^\mathrm{ref} = [N_{k-1},...3, 2, 1, 0] \mathrm{~m/s}.
 
-        .. doctest::
+#         .. doctest::
 
-            >>> x.reverse
-            False
-            >>> print(x.coordinates)
-            [0.  0.1 0.2 0.3 0.4] G
-            >>> x.reverse = True
-            >>> print(x.coordinates)
-            [0.4 0.3 0.2 0.1 0. ] G
+#             >>> x.reverse
+#             False
+#             >>> print(x.coordinates)
+#             [0.  0.1 0.2 0.3 0.4] G
+#             >>> x.reverse = True
+#             >>> print(x.coordinates)
+#             [0.4 0.3 0.2 0.1 0. ] G
 
-        :returns: A ``Boolean``.
-        :raises TypeError: When the assigned value is not a boolean.
-        """
-        return deepcopy(self._reverse)
+#         :returns: A ``Boolean``.
+#         :raises TypeError: When the assigned value is not a boolean.
+#         """
+#         return self.subtype.reverse
 
-    @reverse.setter
-    def reverse(self, value=False):
-        if not isinstance(value, bool):
-            raise TypeError(_type_message(bool, type(value)))
+#     @reverse.setter
+#     def reverse(self, value=False):
+#         self.subtype.reverse = value
+#         # if not isinstance(value, bool):
+#         #     raise TypeError(_type_message(bool, type(value)))
 
-        _value = _check_and_assign_bool(value)
-        self._reverse = _value
-
-        # self.subtype.reverse = value
-        # if not isinstance(value, bool):
-        #     raise TypeError(_type_message(bool, type(value)))
-
-        # _value = _check_and_assign_bool(value)
-        # self.subtype.set_attribute('_reverse', _value)
+#         # _value = _check_and_assign_bool(value)
+#         # self._reverse = _value
 
 # # reciprocal reverse
 #     @property
@@ -961,7 +937,7 @@ class IndependentVariable:
     @property
     def period(self):
         r"""
-        Returns the period of a quantitative independent variable dimension.
+        Return the period of a quantitative independent variable dimension.
 
         The default value of the period is infinity, i.e., the dimension is
         non-periodic. The attribute is modified with a
@@ -983,35 +959,16 @@ class IndependentVariable:
             >>> x.period = 'infinity µT'
             >>> x.period = '∞ G'
 
-        :return: A ``Quantity`` instance with the period of the independent variables.
+        :return: A ``Quantity`` instance with the period of the independent
+                 variables.
         :raises AttributeError: For the labeled dimensions.
         :raises TypeError: When the assigned value is not a string.
         """
-        # if self.variable_type in _quantitative_variable_types:
         return self.subtype.period
-
-        # raise AttributeError(_attribute_message(
-        #                     self.variable_type, 'period'))
 
     @period.setter
     def period(self, value=None):
         self.subtype.period = value
-        # if self.variable_type in _quantitative_variable_types:
-        #     if not isinstance(value, str):
-        #         raise TypeError(_type_message(str, type(value)))
-
-        #     lst = ['inf', 'Inf', 'infinity', 'Infinity', '∞']
-        #     if value.strip().split()[0] in lst:
-        #         value = inf*self.subtype.unit
-        #         self.subtype.set_attribute('_period', value)
-        #     else:
-        #         self.subtype.set_attribute(
-        #             '_period', _check_value_object(
-        #                 value, self.subtype.unit)
-        #             )
-        #     return
-        # raise AttributeError(_attribute_message(
-        #                     self.variable_type, 'period'))
 
 # # reciprocal period
 #     @property
@@ -1064,7 +1021,7 @@ class IndependentVariable:
     @property
     def quantity(self):
         r"""
-        Returns the `quantity name` associated with the dimension.
+        Return the `quantity name` associated with the dimension.
 
         The attribute is `invalid` for the labeled dimension.
 
@@ -1078,16 +1035,10 @@ class IndependentVariable:
         :raises NotImplementedError: When assigning a value.
         """
         return self.subtype.quantity
-        # if self.variable_type in _quantitative_variable_types:
-        #     return deepcopy(self.subtype._quantity)
-
-        # raise AttributeError(_attribute_message(self.variable_type,
-        #                                         'quantity'))
 
     @quantity.setter
     def quantity(self, value):
         self.subtype.quantity = value
-        # raise NotImplementedError('This attribute is not yet implemented.')
 
 # # reciprocal Quantity
 #     @property
@@ -1127,7 +1078,7 @@ class IndependentVariable:
     @property
     def label(self):
         r"""
-        Returns the label associated with the dimension.
+        Return the label associated with the dimension.
 
         The attribute is modified with a string containing the label, for
         example,
@@ -1141,18 +1092,14 @@ class IndependentVariable:
         :returns: A ``String`` containing the label.
         :raises TypeError: When the assigned value is not a string.
         """
-        return deepcopy(self._label)
+        return self.subtype.label
 
     @label.setter
     def label(self, label=''):
-        if not isinstance(label, str):
-            raise TypeError(_type_message(str, type(label)))
-        self._label = label
-
-        # self.subtype.label = label
+        self.subtype.label = label
         # if not isinstance(label, str):
         #     raise TypeError(_type_message(str, type(label)))
-        # self.subtype.set_attribute('_label', label)
+        # self._label = label
 
 # # reciprocal_label
 #     @property
@@ -1177,7 +1124,7 @@ class IndependentVariable:
     @property
     def axis_label(self):
         r"""
-        Returns a formatted string for displaying the label along the dimension.
+        Return a formatted string for displaying the label along the dimension.
 
         This supplementary attribute is convenient for labeling axes.
         For quantitative independent variables, this attributes returns a
@@ -1201,7 +1148,7 @@ class IndependentVariable:
         :raises AttributeError: When assigned a value.
         """
         if hasattr(self.subtype, 'quantity'):
-            if self._label.strip() == '':
+            if self.label.strip() == '':
                 label = self.quantity
             else:
                 label = self.label
@@ -1212,25 +1159,11 @@ class IndependentVariable:
         else:
             return self.label
 
-        # return self.subtype.axis_label
-        # if self.label.strip() == '':
-        #     label = self.quantity
-        # else:
-        #     label = self.label
-        # if self.variable_type in _quantitative_variable_types:
-        #     return _axis_label(
-        #         label,
-        #         self.subtype._unit,
-        #         self.subtype.made_dimensionless,
-        #         self.subtype._dimensionless_unit
-        #     )
-        # return deepcopy(self.label)
-
 # data_structure()
     @property
     def data_structure(self):
         r"""
-        Returns the :ref:`iv_api` instance as a JSON object.
+        Return an :ref:`iv_api` instance as a JSON object.
 
         This supplementary attribute is useful for a quick preview of the data
         structure. The attribute cannot be modified.
@@ -1239,12 +1172,11 @@ class IndependentVariable:
 
             >>> print(x.data_structure)
             {
-              "type": "linearly_sampled",
+              "type": "linear_spacing",
               "number_of_points": 5,
-              "sampling_interval": "0.1 G",
+              "increment": "0.1 G",
               "origin_offset": "100000.0 G",
               "quantity": "magnetic flux density",
-              "reverse": true,
               "label": "field strength"
             }
 
@@ -1254,25 +1186,52 @@ class IndependentVariable:
         return (json.dumps(dictionary, ensure_ascii=False,
                            sort_keys=False, indent=2))
 
+# reciprocal
+    @property
+    def reciprocal(self):
+        r"""
+        Return an instance of the ReciprocalVariable class.
+
+        The attributes of ReciprocalVariable class are:
+            - reference_offset
+            - origin_offset
+            - period
+            - quantity
+            - label
+        where the definision of each attribute is the same as the corresponding
+        attribure from the IndependentVariable instance.
+
+        .. doctest
+
+            >>> x.reciprocal.reference_offset
+        """
+        return self.subtype.reciprocal
+
 # =========================================================================== #
 #                                  Methods                                    #
 # =========================================================================== #
 
 # _get_python_dictionary()
     def _get_python_dictionary(self):
-        r"""Return the ControlledVariable object as a python dictionary."""
-        dictionary = self.subtype._get_python_dictionary()
+        r"""Return the IndependentVariable instance as a python dictionary."""
 
-        if self._reverse is True:
-            dictionary['reverse'] = True
+        dictionary = {}
+        if self.description.strip() != '':
+            dictionary['description'] = self.description
+        
+        dictionary2 = self.subtype._get_python_dictionary()
 
-        if self._label.strip() != "":
+        dictionary.update(dictionary2)
+        # if self.reverse is True:
+        #     dictionary['reverse'] = True
+
+        if self.label.strip() != "":
             dictionary['label'] = self.label
 
-        keys = dictionary.keys()
-        if 'fft_output_order' in keys:
-            dictionary.pop('fft_output_order')
-            dictionary['fft_output_order'] = True
+        # keys = dictionary.keys()
+        # if 'fft_output_order' in keys:
+        #     dictionary.pop('fft_output_order')
+        #     dictionary['fft_output_order'] = True
 
         if 'reciprocal' in dictionary.keys():
             reciprocal = dictionary['reciprocal']
@@ -1283,13 +1242,8 @@ class IndependentVariable:
 
 # is_quantitative()
     def is_quantitative(self):
-        r"""
-        Reture True if the independent variable is quantitative otherwise False.
-        """
+        r"""Return True if the independent variable is quantitative."""
         return self.subtype._is_quantitative()
-        # if self.variable_type in _quantitative_variable_types:
-        #     return True
-        # return False
 
 # to()
     def to(self, unit='', equivalencies=None):
@@ -1316,19 +1270,3 @@ class IndependentVariable:
         :raise AttributeError: For the labeled dimensions.
         """
         self.subtype._to(unit, equivalencies)
-        # if self.variable_type in _quantitative_variable_types:
-        #     if not isinstance(unit, str):
-        #         raise TypeError(_type_message(str, type(unit)))
-
-        #     if unit.strip() == 'ppm':
-        #         self.subtype.set_attribute('_dimensionless_unit', _ppm)
-        #     else:
-        #         self.subtype.set_attribute(
-        #             '_unit', _check_unit_consistency(
-        #                 1.0*string_to_unit(unit), self.subtype.unit
-        #             ).unit
-        #         )
-        #         self.subtype.set_attribute('_equivalencies', equivalencies)
-
-        # else:
-        #     raise AttributeError(_attribute_message(self.variable_type, 'to'))

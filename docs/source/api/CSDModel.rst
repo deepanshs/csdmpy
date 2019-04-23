@@ -16,6 +16,7 @@ CSDModel
 
       ~CSDModel.independent_variables
       ~CSDModel.dependent_variables
+      ~CSDModel.description
       ~CSDModel.filename
       ~CSDModel.version
       ~CSDModel.data_structure
@@ -32,6 +33,7 @@ CSDModel
 
    .. autoattribute:: independent_variables
    .. autoattribute:: dependent_variables
+   .. autoattribute:: description
    .. autoattribute:: filename
    .. autoattribute:: version
    .. autoattribute:: data_structure

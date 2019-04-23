@@ -4,21 +4,24 @@
 from __future__ import print_function, division
 from .independent_variable import IndependentVariable
 from .dependent_variable import DependentVariable
+from ._version import __version__
 import numpy as np
 import json
 from scipy.fftpack import fft, fftshift
 
 from copy import deepcopy
-from .__version__ import __version__ as version
-from ._utils_download_file import download_file_from_url
+from ._utils_download_file import _download_file_from_url
 
 from urllib.parse import urlparse
 from os import path
 
-# from test_files import test_file
+
+__author__ = "Deepansh J. Srivastava"
+__email__ = "srivastava.89@osu.edu"
+# __version__ = "0.0.10dev0"
+
 
 script_path = path.dirname(path.abspath(__file__))
-# print(script_path)
 
 
 test_file = {
@@ -30,7 +33,7 @@ test_file = {
 def _import_json(filename):
     res = urlparse(filename)
     if res[0] not in ['file', '']:
-        filename = download_file_from_url(filename)
+        filename = _download_file_from_url(filename)
     with open(filename, "rb") as f:
         content = f.read()
         return (json.loads(str(content, encoding="UTF-8")))
@@ -38,7 +41,7 @@ def _import_json(filename):
 
 def load(filename=None):
     r"""
-    Opens a `.csdf` or `.csdfe` file and returns an instance of the :ref:`csdm_api` class.
+    Open a `.csdf` or `.csdfe` file and returns an instance of the :ref:`csdm_api` class.
 
     The file must be a JSON serialization of the CSD Model.
 
@@ -71,6 +74,7 @@ def load(filename=None):
     for dat in dictionary['CSDM']['dependent_variables']:
         csdm.add_dependent_variable(dat)    # filename)
 
+    csdm.description = dictionary['CSDM']['description'].strip()
     # if np.all(_type):
     npts = [item.number_of_points for item in csdm.independent_variables]
     if npts != []:
@@ -83,7 +87,7 @@ def load(filename=None):
 
 def new():
     r"""
-    Returns an instance of the CSDModel class corresponding a :math:`0\mathrm{D}\{0\}` dataset.
+    Return an instance of the CSDModel class corresponding a :math:`0\mathrm{D}\{0\}` dataset.
 
     .. doctest::
 
@@ -108,40 +112,43 @@ class CSDModel:
     Instantiate a CSDModel class.
 
     The CSDModel class is based on the core scientific dataset (CSD) model.
-    The class is a composition of the :ref:`dv_api` and :ref:`iv_api` instances,
+    The class is a composition of the :ref:`dv_api` and :ref:`iv_api`
+    instances,
     where every instance of the :ref:`dv_api` class is a :math:`p`-component
     independent variable, :math:`y` and every instance of :ref:`iv_api` class
     is a dimension of a :math:`d`-dimensional independent variable space
-    :math:`(x_0, x_1, ... x_k, ... x_{d-1})`. 
+    :math:`(x_0, x_1, ... x_k, ... x_{d-1})`.
 
     :returns: A ``CSDModel`` instance.
     """
 
-    __version__ = version
-    _old_compatible_versions = ('0.0.9')
-    _old_incompatible_versions = ()
+    __file_version__ = "0.0.10"
+    _old_compatible_versions = ()
+    _old_incompatible_versions = ('0.0.9')
 
     __slots__ = [
             '_independent_variables',
             '_dependent_variables',
             '_version',
+            '_description',
             '_filename',
         ]
 
     def __init__(self, filename='', version=None):
         """Python module from reading and writing CSDM files."""
         if version is None:
-            version = self.__version__
+            version = self.__file_version__
         elif version in self._old_incompatible_versions:
             raise Exception(
                 (
-                    "Files created with the version {0} of the CSDModel "
+                    "Files created with version {0} of the CSDModel "
                     "are no longer supported."
                 ).format(version)
             )
 
         self._independent_variables = ()
         self._dependent_variables = ()
+        self._description = ''
         self._version = version
         self._filename = filename
 
@@ -149,26 +156,52 @@ class CSDModel:
 # controlled variables
     @property
     def independent_variables(self):
-        """Returns a tuple of the :ref:`iv_api` instances."""
+        """Return a tuple of the :ref:`iv_api` instances."""
         return self._independent_variables
 
 # uncontrolled variables
     @property
     def dependent_variables(self):
-        """Returns a tuple of the :ref:`dv_api` instances."""
+        """Return a tuple of the :ref:`dv_api` instances."""
         return self._dependent_variables
 
 # CSD model version on file
     @property
     def version(self):
-        """Returns the version number of the :ref:`csdm_api` on file."""
+        """
+        Return the version number of the :ref:`csdm_api` on file.
+        
+        The attribute cannot be modified.
+        """
         return self._version
+
+# CSD model description
+    @property
+    def description(self):
+        """
+        Return a string with the description of the datasets within the CSD model.
+        
+        The default value is an empty string, ''.
+
+        :returns: A ``string`` with UTF-8 allows characters.
+        :raises ValueError: When the non-string value is assigned.
+        """
+        return self._description
+    
+    @description.setter
+    def description(self, value):
+        if isinstance(value, str):
+            self._description = value
+        else:
+            raise ValueError(
+                ("Description requires a string, {0} given".format(type(value)))
+            )
 
 # CSD model version on file
     @property
     def filename(self):
         """
-        Returns the local file address of the current JSON file.
+        Return the local file address of the current JSON file.
 
         The file extensions includes the `.csdf` and the `.csdfe` files.
         """
@@ -177,14 +210,14 @@ class CSDModel:
     @property
     def data_structure(self):
         r"""
-        Returns the :ref:`csdm_api` instance as a JSON serialization.
+        Return the :ref:`csdm_api` instance as a JSON serialization.
 
         The data_structure attribute is only intended for a quick preview of
         the dataset. This JSON serialized output from this attribute avoids
         displaying large datasets. Do not use the value of this attribute to
         save the data to a file, instead use the :meth:`~csdfpy.CSDModel.save`
-        methods of the instance. 
-        
+        methods of the instance.
+
         The attribute cannot be modified.
 
         :raises AttributeError: When modified.
@@ -220,7 +253,7 @@ class CSDModel:
 
     def add_independent_variable(self, *arg, **kwargs):
         """
-        Adds a new :ref:`iv_api` instance to the :ref:`csdm_api` instance.
+        Add a new :ref:`iv_api` instance to the :ref:`csdm_api` instance.
 
         There are three ways to add a new independent variable.
 
@@ -233,7 +266,7 @@ class CSDModel:
             >>> datamodel = cp.new()
             >>> py_dictionary = {
             ...     'type': 'linearly_sampled',
-            ...     'sampling_interval': '5 G',
+            ...     'increment': '5 G',
             ...     'number_of_points': 50,
             ...     'reference_offset': '-10 mT'
             ... }
@@ -245,7 +278,7 @@ class CSDModel:
 
             >>> datamodel.add_independent_variable(
             ...     type = 'linearly_sampled',
-            ...     sampling_interval = '5 G',
+            ...     increment = '5 G',
             ...     number_of_points = 50,
             ...     reference_offset = '-10 mT'
             ... )
@@ -257,7 +290,7 @@ class CSDModel:
             >>> from csdfpy import IndependentVariable
             >>> datamodel = cp.new()
             >>> var1 = IndependentVariable(type = 'linearly_sampled',
-            ...                            sampling_interval = '5 G',
+            ...                            increment = '5 G',
             ...                            number_of_points = 50,
             ...                            reference_offset = '-10 mT')
             >>> datamodel.add_independent_variable(var1)
@@ -269,7 +302,7 @@ class CSDModel:
                   {
                     "type": "linearly_sampled",
                     "number_of_points": 50,
-                    "sampling_interval": "5.0 G",
+                    "increment": "5.0 G",
                     "reference_offset": "-10.0 mT",
                     "quantity": "magnetic flux density"
                   }
@@ -278,10 +311,10 @@ class CSDModel:
               }
             }
 
-        For the last method, the instance ``var1`` is added to the ``datamodel``
-        as a reference, `i.e.`, if the instance ``var1`` is destroyed, the
-        ``datamodel`` instance will become corrupt. As a recommendation always pass
-        a copy of the :ref:`iv_api` instance to the
+        For the last method, the instance ``var1`` is added to the
+        ``datamodel`` as a reference, `i.e.`, if the instance ``var1`` is
+        destroyed, the ``datamodel`` instance will become corrupt. As a
+        recommendation always pass a copy of the :ref:`iv_api` instance to the
         :meth:`~csdfpy.CSDModel.add_independent_variable` method. We provide
         the later alternative for it is useful for copying an :ref:`iv_api`
         instance from one :ref:`csdm_api` instance to another.
@@ -296,7 +329,7 @@ class CSDModel:
 
     def add_dependent_variable(self, *arg, **kwargs):
         """
-        Adds a new :ref:`dv_api` instance to the :ref:`csdm_api` instance.
+        Add a new :ref:`dv_api` instance to the :ref:`csdm_api` instance.
 
         There are again three ways to add a new dependent variable instance.
 
@@ -357,11 +390,12 @@ class CSDModel:
         self._dependent_variables[-1].type = 'internal'
 
     def _get_python_dictionary(self, filename, print_function=False,
-                               version=__version__):
-        """Returns the CSDModel instance as a python dictionary."""
+                               version=__file_version__):
+        """Return the CSDModel instance as a python dictionary."""
         dictionary = {}
 
         dictionary["version"] = version
+        dictionary["description"] = self.description
         dictionary["independent_variables"] = []
         dictionary["dependent_variables"] = []
 
@@ -378,22 +412,22 @@ class CSDModel:
                     filename=filename,
                     dataset_index=i,
                     for_display=print_function,
-                    version=self.__version__)
+                    version=self.__file_version__)
                 )
 
         csdm = {}
         csdm['CSDM'] = dictionary
         return csdm
 
-    def save(self, filename, version=__version__):
+    def save(self, filename, version=__file_version__):
         """
-        Serializes the :ref:`CSDM_api` instance as a JSON data-exchange data file.
+        Serialize the :ref:`CSDM_api` instance as a JSON data-exchange data file.
 
         The serialized file is saved with two file extensions.
         When every instance of the DependentVariable class from the CSDModel
         instance has
-        an `internal` subtype, the corresponding CSDModel instance is serialized
-        with a `.csdf` file extension.
+        an `internal` subtype, the corresponding CSDModel instance is
+        serialized with a `.csdf` file extension.
         If any single DependentVariable instance has an `external` subtype, the
         CSDModel instance is serialized with a `.csdfe` file extension.
         We use the two different file extensions to alert the end use of the
@@ -401,17 +435,18 @@ class CSDModel:
         extensions when the external data file is inaccessible.
 
         Irrespective of the subtypes from the serialized JSON file, by default,
-        all instances of DependentVariable class are assigned an `internal` subtype
-        with `base64` as the value of the `encoding` attribute upon the import.
-        The user may, however, change these attribute at any time after the file
-        import and before serializing to a file. The syntax follows,
+        all instances of DependentVariable class are assigned an `internal`
+        subtype with `base64` as the value of the `encoding` attribute upon
+        the import.
+        The user may, however, change these attribute at any time after the
+        file import and before serializing to a file. The syntax follows,
 
         .. doctest::
 
             >>> datamodel.save('myfile.csdf')
 
         .. testcleanup::
-        
+
             import os
             os.remove('myfile.csdf')
 
@@ -420,11 +455,11 @@ class CSDModel:
         dictionary = self._get_python_dictionary(filename, version=version)
         with open(filename, 'w', encoding='utf8') as outfile:
             json.dump(dictionary, outfile, ensure_ascii=False,
-                      sort_keys=False, indent=2)
+                      sort_keys=False, indent=2, allow_nan=False)
 
-#     def copy(self):
-#         """Return a copy of the current CSDModel instance."""
-#         return deepcopy(self)
+    def copy(self):
+        """Return a copy of the current CSDModel instance."""
+        return deepcopy(self)
 
 #     def replace(self,
 #                 controlled_variable=None,
@@ -449,99 +484,147 @@ class CSDModel:
 #         """
 #         pass
 
-#     def sum(self, cv=-1):
-#         """
-#         Project the data values onto the control variable at index, `cv`.
+    def _check_independent_variable_indicies(self, index=-1):
 
-#         :params: cv: An integer cooresponding to the control variable onto
-#             which the data values are projected.
-#         :returns: A ``CSDModel`` object.
-#         """
-#         new = CSDModel()
-#         d = len(self.independent_variables)
-#         if cv > d:
-#             raise ValueError(
-#                 (
-#                     "`cv` {0} cannot be greater than number of control"
-#                     "variables, {1}."
-#                 ).format(cv, d)
-#             )
-#         for variable in self.dependent_variables:
-#             y = variable.components.sum(axis=-1-cv)
-#             new.add_dependent_variable(
-#                 components=y,
-#                 name=variable.name,
-#                 quantity=variable.quantity,
-#                 encoding=variable.encoding,
-#                 numeric_type=variable.numeric_type,
-#                 quantity_type=variable.quantity_type,
-#                 component_labels=variable.component_labels,
-#                 components_uri=variable.components_uri,
-#             )
-#         for i, variable in enumerate(self.independent_variables):
-#             if i != cv:
-#                 new.add_independent_variable(variable)
+        def _correct_index(i):
+            if not isinstance(i, int):
+                raise TypeError(message)
+            if i < 0:
+                i += d
+            if i > d-1:
+                raise ValueError((
+                    "`index` {0} cannot be greater than the number of "
+                    "independent variables, {1}."
+                    ).format(index, d)
+                )
+            return -1-i
 
-#         return new
+        message = "Index/Indicies are expected as integer(s)."
 
-#     def fft(self, cv=0):
-#         """
-#         Perform a FFT along the specified control variable (cv).
+        d = len(self.independent_variables)
 
-#         Needs debugging.
-#         """
-#         if not self.independent_variables[cv].is_quantitative():
-#             raise ValueError(
-#                 'Non-quantitative dimensions cannot be Fourier transformed.'
-#             )
+        if isinstance(index, tuple) or \
+                isinstance(index, list) or \
+                isinstance(index, np.ndarray):
+            for i, item in enumerate(index):
+                index[i] = _correct_index(item)
+            return index, 'list'
 
-#         s = "Arbitrarily sampled grid controlled variable"
-#         if self.independent_variables[cv].variable_type == s:
-#             raise NotImplementedError(
-#                 (
-#                     "Fourier tranform of an arbitrarily sampled "
-#                     "grid dimension is not implemanted."
-#                 )
-#             )
+        elif isinstance(index, int):
+            return _correct_index(index), 'number'
 
-#         if self.independent_variables[cv].sampling_type == 'scatter':
-#             raise NotImplementedError(
-#                 (
-#                     "Fourier transform of a scattered "
-#                     "dimensions is not implemented."
-#                 )
-#             )
+        else:
+            raise TypeError(message)
 
-#         cs = self.independent_variables[cv].reciprocal_coordinates
+    def _get_new_csdmodel_object(self, func, index):
+        index = self._check_independent_variable_indicies(index)
+        new = CSDModel()
+        for variable in self.dependent_variables:
+            y = func(variable.components, axis=index)
+            new.add_dependent_variable(
+                components=y,
+                name=variable.name,
+                quantity=variable.quantity,
+                encoding=variable.encoding,
+                numeric_type=variable.numeric_type,
+                quantity_type=variable.quantity_type,
+                component_labels=variable.component_labels,
+                components_uri=variable.components_uri,
+            )
+        for i, variable in enumerate(self.independent_variables):
+            if index[1] == 'number':
+                if i != index[0]:
+                    new.add_independent_variable(variable)
+            else:
+                if i not in index[0]:
+                    new.add_independent_variable(variable)
+        return new
 
-#         # + \
-#         # self.independent_variables[cv].reciprocal_reference_offset
+    # def split_dependent_variables(self):
+    #     for y in self.dependent_variables
+    #     new = CSDModel()
 
-#         phase = np.exp(
-#             1j * 2*np.pi *
-#             self.independent_variables[cv].reference_offset * cs
-#         )
+    def sum(self, index=0):
+        """
+        Sum of data values along the independent variable indicies.
 
-#         ndim = len(self.independent_variables)
+        Sum the dependent variable data values along the independent variable
+        at indicies given by `index`. The default value is index 0. The index
+        can be an interger or a tuple of intergers.
 
-#         for i in range(len(self.dependent_variables)):
-#             signal_ft = fftshift(
-#                 fft(self.dependent_variables[i].components,
-#                     axis=-cv-1), axes=-cv-1
-#                 ) * get_broadcase_shape(phase, ndim, axis=-cv-1)
+        :params: index: An integer or tuple of imtegers cooresponding to the
+                index/indicies of the independent variable along which the sum
+                of data values is performed .
+        :returns: A ``CSDModel`` object.
+        """
+        func = np.sum
+        return self._get_new_csdmodel_object(func, index)
 
-#             self.dependent_variables[i].uv.set_attribute(
-#                 '_components', signal_ft
-#             )
+    def prod(self, index=0):
+        """
+        Product of data values along the independent variable indicies.
 
-#         self.independent_variables[cv].gcv._reciprocal()
-#         self._toggle_fft_output_order(self.independent_variables[cv])
+        The default value is index 0. The `index` is either an integer or a
+        tuple of intergers.
 
-#     def _toggle_fft_output_order(self, control_variable):
-#         if control_variable.fft_output_order:
-#             control_variable.fft_output_order = False
-#         else:
-#             control_variable.fft_output_order = True
+        :params: index: An integer or tuple of integers cooresponding to the
+                index/indicies of the independent variable along which the
+                product of data values is performed.
+        :returns: A ``CSDModel`` object.
+        """
+        func = np.prod
+        return self._get_new_csdmodel_object(func, index)
+
+    def fft(self, index=0):
+        """
+        Perform a FFT along the specified control variable (cv).
+
+        Needs debugging.
+        """
+        if self.independent_variables[index].dimension_type != 'linear_spacing':
+            raise NotImplementedError(
+                "FFT is available for dimensions with type 'linear_spacing'."
+            )
+
+        object_id = self.independent_variables[index].subtype
+        # swap the values of object with the respective reciprocal object.
+        object_id._swap()
+
+        # compute the reciprocal increment using Nyquist shannan theorm.
+        _reciprocal_increment = 1.0/(
+            object_id._number_of_points * object_id._increment.value
+        )
+        object_id._increment = _reciprocal_increment * object_id._unit
+
+        # toggle the value of the fft_output_order attribute
+        # if object_id._fft_output_order:
+        #     object_id._fft_output_order = False
+        # else:
+        #     object_id._fft_output_order = True
+
+        # get the coordinates of the reciprocal dimension.
+        object_id._get_coordinates()
+
+        # calculate the phase that will be applied to the fft amplitudes.
+        phase = np.exp(
+            1j * 2*np.pi *
+            object_id.reciprocal._reference_offset * object_id._coordinates
+        )
+
+        ndim = len(self.independent_variables)
+
+        for i in range(len(self.dependent_variables)):
+            signal_ft = fftshift(
+                fft(self.dependent_variables[i].subtype._components,
+                    axis=-index-1) * get_broadcase_shape(
+                        phase, ndim, axis=-index-1
+                        ), axes=-index-1
+                )
+
+            self.dependent_variables[i].subtype._components = signal_ft
+
+        # self.independent_variables[index].gcv._reciprocal()
+        # self._toggle_fft_output_order(self.independent_variables[index])
 
 #     def __add__(self, other):
 #         """
@@ -607,11 +690,11 @@ class CSDModel:
 #         pass
 
 
-# def get_broadcase_shape(array, ndim, axis):
-#     """Return the broadcast array for numpy ndarray operations."""
-#     s = [None for i in range(ndim)]
-#     s[axis] = slice(None, None, None)
-#     return array[tuple(s)]
+def get_broadcase_shape(array, ndim, axis):
+    """Return the broadcast array for numpy ndarray operations."""
+    s = [None for i in range(ndim)]
+    s[axis] = slice(None, None, None)
+    return array[tuple(s)]
 
 
 # def _compare_cv_object(cv1, cv2):

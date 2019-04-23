@@ -7,6 +7,10 @@ import warnings
 from .unit import string_to_quantity, value_object_format
 
 
+__author__ = "Deepansh J. Srivastava"
+__email__ = "srivastava.89@osu.edu"
+
+
 def _type_message(a, b):
     return (
         'Expecting instance of type, `{0}`, but got `{1}`.'
@@ -114,9 +118,11 @@ class QuantityType:
     )
 
     def __init__(self, element):
+        r"""Instantiate a QuantityType class instance."""
         self._update(element)
 
     def __str__(self):
+        r"""Return a string with the quantity type."""
         return self._value
 
     def _update(self, element):
@@ -142,13 +148,14 @@ class QuantityType:
         numbers = np.asarray(
             [int(item) for item in list_values if item.isnumeric()]
         )
-        keyword = '_'.join([item for item in list_values if not item.isnumeric()])
+        keyword = '_'.join([item for item in list_values
+                            if not item.isnumeric()])
 
         lst = self.__class__.literals
         if keyword not in lst:
             message = (
-                "`{0}` is not a valid `quantity_type` value. Available options "
-                "are {1}, {2}, {3}, {4}, {5} and {6}."
+                "`{0}` is not a valid `quantity_type` value. Available "
+                "options are {1}, {2}, {3}, {4}, {5} and {6}."
             )
             raise ValueError(message.format(keyword, *lst))
 
@@ -204,17 +211,18 @@ def numpy_dtype_to_numeric_type(element):
 
 class NumericType:
     """
-        Validate the numeric_type string value.
+    Validate the numeric_type string value.
 
-        The valid options are
-        `uint8`, `uint16`, `uint32`, `uint64`, `int8`, `int16`, `int32`, `int64`,
-        `float16`, `float32`, `float64`, `complex64`, and `complex128`. The byte
-        order for multi-byte numeric_types are assumed to follow the little
-        endianness format.
+    The valid options are
+    `uint8`, `uint16`, `uint32`, `uint64`, `int8`, `int16`, `int32`, `int64`,
+    `float16`, `float32`, `float64`, `complex64`, and `complex128`.
+    The byte order for multi-byte numeric_types are assumed to follow the
+    little endianness format.
 
-        :returns: The numeric_type value, if the value is valid.
-        :raises KeyError: Otherwise.
+    :returns: The numeric_type value, if the value is valid.
+    :raises KeyError: Otherwise.
     """
+
     __slots__ = (
         '_value',
         '_nptype'
@@ -255,6 +263,7 @@ class NumericType:
                 'complex64', 'complex128')
 
     def __init__(self, element='float32'):
+        """Instantiate a NumericType class instance."""
         self._update(element)
 
     def _update(self, element):
@@ -264,6 +273,7 @@ class NumericType:
         self._check_numeric_type(element)
 
     def __str__(self):
+        """Return a string with the numeric type."""
         return self._value
 
     def _check_numeric_type(self, element):

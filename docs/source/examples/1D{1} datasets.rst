@@ -29,7 +29,7 @@ with a `.csdf` file extension. Let's import this file.
 
 .. doctest::
 
-    >>> filename = '../../test-datasets0.0.9/gmsl/sea_level.csdf'
+    >>> filename = '../../test-datasets0.0.10/gmsl/sea_level.csdf'
     >>> sea_level = cp.load(filename)
 
 The variable `filename` is a string with the local address to the
@@ -45,12 +45,12 @@ instance,
     >>> print(sea_level.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
         "independent_variables": [
           {
             "type": "linearly_sampled",
             "number_of_points": 1608,
-            "sampling_interval": "0.08333333333333333 yr",
+            "increment": "0.08333333333333333 yr",
             "reference_offset": "-1880.0417 yr",
             "quantity": "time",
             "label": "Time",
@@ -177,17 +177,17 @@ structure.
 
 .. doctest::
 
-    >>> filename = '../../test-datasets0.0.9/NMR/blochDecay/blochDecay_raw.csdfe'
+    >>> filename = '../../test-datasets0.0.10/NMR/blochDecay/blochDecay_raw.csdfe'
     >>> NMRdata = cp.load(filename)
     >>> print(NMRdata.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
         "independent_variables": [
           {
             "type": "linearly_sampled",
             "number_of_points": 4096,
-            "sampling_interval": "0.1 ms",
+            "increment": "0.1 ms",
             "reference_offset": "0.3 ms",
             "quantity": "time",
             "reciprocal": {
@@ -250,17 +250,17 @@ plot follows,
 
 .. doctest::
 
-    >>> filename = '../../test-datasets0.0.9/EPR/xyinc2_base64.csdf'
+    >>> filename = '../../test-datasets0.0.10/EPR/xyinc2_base64.csdf'
     >>> EPRdata = cp.load(filename)
     >>> print(EPRdata.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
         "independent_variables": [
           {
             "type": "linearly_sampled",
             "number_of_points": 298,
-            "sampling_interval": "4.0 G",
+            "increment": "4.0 G",
             "reference_offset": "-2750.0 G",
             "quantity": "magnetic flux density"
           }
@@ -292,17 +292,17 @@ follows,
 
 .. doctest::
 
-    >>> filename = '../../test-datasets0.0.9/GC/cinnamon_none.csdf'
+    >>> filename = '../../test-datasets0.0.10/GC/cinnamon_none.csdf'
     >>> GCData = cp.load(filename)
     >>> print(GCData.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
         "independent_variables": [
           {
             "type": "linearly_sampled",
             "number_of_points": 6001,
-            "sampling_interval": "0.0034 min",
+            "increment": "0.0034 min",
             "quantity": "time",
             "reciprocal": {
               "quantity": "frequency"
@@ -336,17 +336,17 @@ structure and the plot of the FTIR dataset follows
 
 .. doctest::
 
-    >>> filename = '../../test-datasets0.0.9/IR/caffeine_none.csdf'
+    >>> filename = '../../test-datasets0.0.10/IR/caffeine_none.csdf'
     >>> FTIRData = cp.load(filename)
     >>> print(FTIRData.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
         "independent_variables": [
           {
             "type": "linearly_sampled",
             "number_of_points": 1842,
-            "sampling_interval": "1.930548614883216 cm^-1",
+            "increment": "1.930548614883216 cm^-1",
             "reference_offset": "-449.41 cm^-1",
             "quantity": "wavenumber",
             "reverse": true,
@@ -383,17 +383,17 @@ model format. The data structure and the plot of the UV-vis dataset follows,
 
 .. doctest::
 
-    >>> filename = '../../test-datasets0.0.9/UV-Vis/benzeneVapour_base64.csdf'
+    >>> filename = '../../test-datasets0.0.10/UV-Vis/benzeneVapour_base64.csdf'
     >>> UVdata = cp.load(filename)
     >>> print(UVdata.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
         "independent_variables": [
           {
             "type": "linearly_sampled",
             "number_of_points": 4001,
-            "sampling_interval": "0.01 nm",
+            "increment": "0.01 nm",
             "reference_offset": "-230.0 nm",
             "quantity": "length",
             "reverse": true,
