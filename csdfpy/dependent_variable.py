@@ -49,6 +49,7 @@ class DependentVariable:
         >>> numpy_array = np.arange(30).reshape(3,10).astype(np.uint8)
 
         >>> py_dictionary = {
+        ...     'type': 'internal',
         ...     'components': numpy_array,
         ...     'name': 'star',
         ...     'unit': 'W s',
@@ -63,7 +64,8 @@ class DependentVariable:
 
     .. doctest::
 
-        >>> y = DependentVariable(name='star',
+        >>> y = DependentVariable(type='internal',
+        ...                       name='star',
         ...                       unit='W s',
         ...                       quantity_type='RGB',
         ...                       components=numpy_array)
@@ -78,6 +80,8 @@ class DependentVariable:
         '_component_labels',
         '_description'
     )
+
+    _immutable_objects_ = ()
 
     def __init__(self, *args, **kwargs):
         """Initialize an instance of DependentVariable class."""
@@ -101,6 +105,13 @@ class DependentVariable:
         input_dict = _get_dictionary(*args, **kwargs)
         input_keys = input_dict.keys()
 
+        for item in self.__class__._immutable_objects_:
+            if item in input_keys:
+                dictionary[item] = input_dict[item]
+
+        if 'type' not in input_keys:
+            raise ValueError("Missing a required 'type' key in the dependent variable object.")
+
         for key in input_keys:
             if key in default_keys:
                 dictionary[key] = input_dict[key]
@@ -109,7 +120,7 @@ class DependentVariable:
 
         if dictionary['type'] not in ['internal', 'external']:
             raise ValueError((
-                "'{0}' is an invalid value for 'type' key. The allowed values "
+                "'{0}' is an invalid DependentVariable 'type'. The allowed values "
                 "are 'internal', 'external'.".format(dictionary['type'])
             ))
 
@@ -587,6 +598,7 @@ class DependentVariable:
 
             >>> print(y.data_structure)
             {
+              "description": "The variable is a simulation.",
               "name": "rock star",
               "unit": "s * W",
               "quantity": "energy",
@@ -659,7 +671,7 @@ class DependentVariable:
         if str(self._unit) != '':
             dictionary['unit'] = value_object_format(
                 1.0*self._unit, numerical_value=False
-            )[1:]
+            )
 
         if self._quantity not in ['dimensionless', 'unknown', None]:
             dictionary['quantity'] = self._quantity

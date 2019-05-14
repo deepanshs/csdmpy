@@ -11,6 +11,22 @@ __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 
 
+literals_quantity_type = {
+    'RGB': lambda n: 3,
+    'RGBA': lambda n: 4,
+    'scalar': lambda n: 1,
+    'vector': lambda n: n,
+    'matrix': lambda n: n,
+    'audio': lambda n: n,
+    'symmetric_matrix': lambda n: int(n*(n+1)/2)
+}
+
+literals_encoding = (
+    'base64',
+    'none',
+    'raw'
+)
+
 def _type_message(a, b):
     return (
         'Expecting instance of type, `{0}`, but got `{1}`.'
@@ -31,7 +47,7 @@ def _axis_label(label, unit, made_dimensionless=False,
     if unit != '':
         if label_type == '':
             return '{0} / ({1})'.format(
-                label, value_object_format(1*unit, numerical_value=False)[1:]
+                label, value_object_format(1*unit, numerical_value=False)
             )
         if label_type == 'latex':
             return '{0} / ({1})'.format(label, unit.to_string('latex'))
@@ -76,20 +92,15 @@ def _check_encoding(element):
     :returns: The encoding key-value, if the value is valid.
     :raises KeyError: Otherwise.
     """
-    lst = [
-        'base64',
-        'none',
-        'raw'
-    ]
 
-    if element in lst:
+    if element in literals_encoding:
         return element
 
     message = (
         "`{0}` is an not a valid `encoding` value. "
         "Available options are '{1}', '{2}' and '{3}'."
     )
-    raise ValueError(message.format(element, *lst))
+    raise ValueError(message.format(element, *literals_encoding))
 
 
 class QuantityType:
@@ -108,15 +119,6 @@ class QuantityType:
         '_p'
     )
 
-    literals = (
-        'RGB',
-        'RGBA',
-        'scalar',
-        'vector',
-        'matrix',
-        'symmetric_matrix'
-    )
-
     def __init__(self, element):
         r"""Instantiate a QuantityType class instance."""
         self._update(element)
@@ -133,15 +135,7 @@ class QuantityType:
 
     @classmethod
     def _get_number_of_components(cls, keyword, numbers):
-        x = {
-            'RGB': 3,
-            'RGBA': 4,
-            'scalar': 1,
-            'vector': numbers.prod(),
-            'matrix': numbers.prod(),
-            'symmetric_matrix': int(numbers.prod() * (numbers.prod() + 1)/2.0)
-        }
-        return int(x[keyword])
+        return int(literals_quantity_type[keyword](numbers.prod()))
 
     def _check_quantity_type(self, element):
         list_values = element.strip().split('_')
@@ -151,7 +145,7 @@ class QuantityType:
         keyword = '_'.join([item for item in list_values
                             if not item.isnumeric()])
 
-        lst = self.__class__.literals
+        lst = literals_quantity_type.keys() 
         if keyword not in lst:
             message = (
                 "`{0}` is not a valid `quantity_type` value. Available "

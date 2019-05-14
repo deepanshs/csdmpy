@@ -17,26 +17,27 @@ Let's import the CSD model data-file and look at its data structure.
     >>> import csdfpy as cp
     >>> import matplotlib.pyplot as plt
 
-    >>> filename = '../../test-datasets0.0.9/ssTEM/TEM.csdf'
+    >>> filename = '../../test-datasets0.0.10/ssTEM/TEM.csdf'
     >>> TEM = cp.load(filename)
     >>> print(TEM.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
+        "description": "TEM image of the early larval brain of Drosophila melanogaster used in the analysis of neuronal microcircuitry.",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 512,
-            "sampling_interval": "4.0 nm",
+            "increment": "4.0 nm",
             "quantity": "length",
             "reciprocal": {
               "quantity": "wavenumber"
             }
           },
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 512,
-            "sampling_interval": "4.0 nm",
+            "increment": "4.0 nm",
             "quantity": "length",
             "reciprocal": {
               "quantity": "wavenumber"

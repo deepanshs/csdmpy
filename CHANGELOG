@@ -5,7 +5,6 @@ version0.0.10
 - Changed 'sampling_interval' key to 'increment'.
 - Changed 'linearly_sampled' key to 'linear_spacing'.
 - Changed 'arbitrarily_sampled' key to 'arbitrary_spacing'.
-- Removed fft_output_order key. Reasons unkown.
 - Changed the equation defining the coordinates from 
         $X^(ref) = m_k J_k - c_k$
   to

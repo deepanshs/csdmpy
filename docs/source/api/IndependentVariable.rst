@@ -25,7 +25,7 @@ IndependentVariable
         ~IndependentVariable.origin_offset
 
 ..        ~IndependentVariable.reverse
-..        ~IndependentVariable.fft_output_order
+..        ~IndependentVariable.FFT_output_order
 
         ~IndependentVariable.quantity
         ~IndependentVariable.label
@@ -52,7 +52,7 @@ IndependentVariable
     .. autoattribute:: origin_offset
 
 ..    .. autoattribute:: reverse
-..    .. autoattribute:: fft_output_order
+..    .. autoattribute:: FFT_output_order
 
     .. autoattribute:: quantity
     .. autoattribute:: label

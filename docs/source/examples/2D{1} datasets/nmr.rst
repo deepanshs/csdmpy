@@ -15,29 +15,30 @@ Let's load the file and look at its data structure.
 
     >>> import csdfpy as cp
 
-    >>> filename = '../../test-datasets0.0.9/NMR/satrec/satRec_raw.csdfe'
+    >>> filename = '../../test-datasets0.0.10/NMR/satrec/satRec_raw.csdfe'
     >>> NMR2Ddata = cp.load(filename)
     >>> print(NMR2Ddata.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
+        "description": "A $^{29}$Si NMR saturation recovery measurement of highly siliceous zeolite ZSM-12.",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "description": "A full echo echo acquisition along the $t_2$ dimension using a Hahn echo.",
+            "type": "linear_spacing",
             "number_of_points": 1024,
-            "sampling_interval": "8e-05 s",
-            "reference_offset": "0.04104 s",
+            "increment": "8e-05 s",
+            "reference_offset": "-0.04104 s",
             "quantity": "time",
             "label": "$t_2$",
             "reciprocal": {
               "origin_offset": "79578822.26202029 Hz",
               "quantity": "frequency",
-              "reverse": true,
-              "label": "$^{29}$ frequency shift"
+              "label": "$^{29}$Si frequency shift"
             }
           },
           {
-            "type": "arbitrarily_sampled",
+            "type": "arbitrary_spacing",
             "values": [
               "1.0 s",
               "5.0 s",
@@ -145,7 +146,7 @@ exhaustingly long. Here is one such example.
     ... and the last coordinate, respectively, of the linearly sampled
     ... dimension, i.e., x0.
     ... """  # doctest: +SKIP
-    >>> si=x[0].sampling_interval
+    >>> si=x[0].increment
     >>> extent = ((x0[0]-0.5*si).value, 
     ...           (x0[-1]+0.5*si).value, 
     ...           x1[0].value,

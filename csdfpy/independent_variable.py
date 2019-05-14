@@ -151,31 +151,21 @@ class IndependentVariable:
         'subtype',
         '_label',
         '_description'
-        # '_reverse'
     )
 
-    # def __new__(cls, *args, **kwargs):
-    #     """Create a new instance of ControlVariable object."""
-    #     # if args != () and isinstance(args[0], ControlledVariable):
-    #     #     print('inside __new__. arg')
-    #     #     return args[0]
-    #     # else:
-    #     instance = super(ControlledVariable, cls).__new__(cls)
-    #     # instance.__init__(*args, **kwargs)
-    #     return instance
+    _immutable_objects_ = ()
 
     def __init__(self, *args, **kwargs):
         """Initialize an instance of IndependentVariable object."""
         dictionary = {
-            'type': '',
+            'type': None,
             'description': '',
             'number_of_points': None,
             'increment': None,
             'values': None,
             'reference_offset': None,
             'origin_offset': None,
-            # 'reverse': False,
-            # 'fft_output_order': False,
+            'FFT_output_order': False,
             'period': None,
             'quantity': None,
             'label': '',
@@ -183,7 +173,6 @@ class IndependentVariable:
                 'increment': None,
                 'reference_offset': None,
                 'origin_offset': None,
-                # 'reverse': False,
                 'period': None,
                 'quantity': None,
                 'label': ''}
@@ -192,6 +181,13 @@ class IndependentVariable:
         default_keys = dictionary.keys()
         input_dict = _get_dictionary(*args, **kwargs)
         input_keys = input_dict.keys()
+
+        for item in self.__class__._immutable_objects_:
+            if item in input_keys:
+                dictionary[item] = input_dict[item]
+
+        if 'type' not in input_keys:
+            raise ValueError("Missing a required 'type' key in the independent variable object.")
 
         if 'reciprocal' in input_keys:
             input_subkeys = input_dict['reciprocal'].keys()
@@ -221,7 +217,6 @@ class IndependentVariable:
             _independent_variable_object = DimensionWithLabels(
                     _values=dictionary['values'],
                     _label=dictionary['label'],
-                    # _reverse=dictionary['reverse']
                     )
 
         if dictionary['type'] == 'arbitrary_spacing':
@@ -238,14 +233,12 @@ class IndependentVariable:
                 _quantity=dictionary['quantity'],
                 _period=dictionary['period'],
                 _label=dictionary['label'],
-                # _reverse=dictionary['reverse'],
 
                 _reciprocal_reference_offset=dictionary['reciprocal']
                                                        ['reference_offset'],
                 _reciprocal_origin_offset=dictionary['reciprocal']
                                                     ['origin_offset'],
                 _reciprocal_quantity=dictionary['reciprocal']['quantity'],
-                # _reciprocal_reverse=dictionary['reciprocal']['reverse'],
                 _reciprocal_period=dictionary['reciprocal']['period'],
                 _reciprocal_label=dictionary['reciprocal']['label'])
 
@@ -260,6 +253,11 @@ class IndependentVariable:
                     "'number_of_points' key is missing for the "
                     "linearly space dimension."   
                 ))
+            if not isinstance(dictionary['number_of_points'], int):
+                raise ValueError((
+                    f"An integer value is required for the 'number_of_points' "
+                    f"key, {type(dictionary['number_of_points'])} is provided."
+                ))
             _independent_variable_object = DimensionWithLinearSpacing(
                 _number_of_points=dictionary['number_of_points'],
                 _increment=dictionary['increment'],
@@ -268,22 +266,18 @@ class IndependentVariable:
                 _quantity=dictionary['quantity'],
                 _period=dictionary['period'],
                 _label=dictionary['label'],
-                # _reverse=dictionary['reverse'],
-                # _fft_output_order=dictionary['fft_output_order'],
+                _fft_output_order=dictionary['FFT_output_order'],
 
                 _reciprocal_reference_offset=dictionary['reciprocal']
                                                        ['reference_offset'],
                 _reciprocal_origin_offset=dictionary['reciprocal']
                                                     ['origin_offset'],
                 _reciprocal_quantity=dictionary['reciprocal']['quantity'],
-                # _reciprocal_reverse=dictionary['reciprocal']['reverse'],
                 _reciprocal_period=dictionary['reciprocal']['period'],
                 _reciprocal_label=dictionary['reciprocal']['label'])
 
         self.subtype = _independent_variable_object
         self._description = dictionary['description']
-        # self.reverse = dictionary['reverse']
-        # self.label = dictionary['label']
 
 # --------------------------------------------------------------------------- #
 #                          IndependentVariable Attributes                     #
@@ -352,7 +346,7 @@ class IndependentVariable:
 
         The order of the reference coordinates
         depends on the value of the :attr:`~csdfpy.IndependentVariable.reverse`
-        and the :attr:`~csdfpy.IndependentVariable.fft_output_order`
+        and the :attr:`~csdfpy.IndependentVariable.FFT_output_order`
         (only applicable for `linear_spacing` subtype)
         attributes of the class instance. This attribute cannot be modified.
 
@@ -382,7 +376,7 @@ class IndependentVariable:
 
         The order of the absolute coordinates depends on the value of the
         :attr:`~csdfpy.IndependentVariable.reverse` and the
-        :attr:`~csdfpy.IndependentVariable.fft_output_order`
+        :attr:`~csdfpy.IndependentVariable.FFT_output_order`
         (only applicable for `linear_spacing` subtype)
         attributes of the IndependentVariable instance. This attribute cannot
         be modified. This attribute is `invalid` for the labeled dimensions.
@@ -792,63 +786,63 @@ class IndependentVariable:
 # Attributes affecting the order of the controlled variable coordinates #
 # ===================================================================== #
 
-# # fft_ouput_order
-#     @property
-#     def fft_output_order(self):
-#         r"""
-#         Return the coordinates along the dimension according to the fft order.
+# fft_ouput_order
+    @property
+    def FFT_output_order(self):
+        r"""
+        Return the coordinates along the dimension according to the fft order.
 
-#         This attribute is only `valid` for the IndependentVariable instances
-#         with subtype `linear_spacing`.
-#         The value of the attribute is a boolean specifying if the coordinates
-#         along the dimension are ordered according to the output of a
-#         fast Fourier transform (FFT) routine. The
-#         universal behavior of all FFT routine is to order the :math:`N_k`
-#         output amplitudes by placing the zero `frequency` at the start
-#         of the output array, with positive `frequencies` increasing in
-#         magnitude placed at increasing array offset until reaching
-#         :math:`\frac{N_k}{2} -1` if :math:`N_k` is even, otherwise
-#         :math:`\frac{N_k-1}{2}`, followed by negative frequencies
-#         decreasing in magnitude until reaching :math:`N_k-1`.
-#         This is also the ordering needed for the input of the inverse FFT.
-#         For example, consider the coordinates along the dimension as
+        This attribute is only `valid` for the IndependentVariable instances
+        with subtype `linear_spacing`.
+        The value of the attribute is a boolean specifying if the coordinates
+        along the dimension are ordered according to the output of a
+        fast Fourier transform (FFT) routine. The
+        universal behavior of all FFT routine is to order the :math:`N_k`
+        output amplitudes by placing the zero `frequency` at the start
+        of the output array, with positive `frequencies` increasing in
+        magnitude placed at increasing array offset until reaching
+        :math:`\frac{N_k}{2} -1` if :math:`N_k` is even, otherwise
+        :math:`\frac{N_k-1}{2}`, followed by negative frequencies
+        decreasing in magnitude until reaching :math:`N_k-1`.
+        This is also the ordering needed for the input of the inverse FFT.
+        For example, consider the coordinates along the dimension as
 
-#         .. math ::
+        .. math ::
 
-#             \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3, 4, 5] \mathrm{~m/s}
+            \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3, 4, 5] \mathrm{~m/s}
 
-#         when the value of the fft_output_order attribute is `false`, then when
-#         the value is `true`, the order follows
+        when the value of the FFT_output_order attribute is `false`, then when
+        the value is `true`, the order follows
 
-#         .. math ::
+        .. math ::
 
-#             \mathbf{X}_k^\mathrm{ref} = [0 ,1, 2, -3, -2, -1] \mathrm{~m/s}
+            \mathbf{X}_k^\mathrm{ref} = [0 ,1, 2, -3, -2, -1] \mathrm{~m/s}
 
-#         The following is a test example.
+        The following is a test example.
 
-#         .. doctest::
+        .. doctest::
 
-#             >>> test = IndependentVariable(type='linear_spacing',
-#             ...							   increment = '1',
-#             ...                            number_of_points = 10)
+            >>> test = IndependentVariable(type='linear_spacing',
+            ...							   increment = '1',
+            ...                            number_of_points = 10)
 
-#             >>> print(test.coordinates)
-#             [0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]
-#             >>> test.fft_output_order
-#             False
+            >>> print(test.coordinates)
+            [0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]
+            >>> test.FFT_output_order
+            False
 
-#             >>> test.fft_output_order = True
-#             >>> print(test.coordinates)
-#             [ 0.  1.  2.  3.  4. -5. -4. -3. -2. -1.]
+            >>> test.FFT_output_order = True
+            >>> print(test.coordinates)
+            [ 0.  1.  2.  3.  4. -5. -4. -3. -2. -1.]
 
-#         :returns: A ``Boolean``.
-#         :raises TypeError: When the assigned value is not a boolean.
-#         """
-#         return self.subtype.fft_output_order
+        :returns: A ``Boolean``.
+        :raises TypeError: When the assigned value is not a boolean.
+        """
+        return self.subtype.FFT_output_order
 
-#     @fft_output_order.setter
-#     def fft_output_order(self, value):
-#         self.subtype.fft_output_order = value
+    @FFT_output_order.setter
+    def FFT_output_order(self, value):
+        self.subtype.FFT_output_order = value
 # --------------------------------------------------------------------------- #
 
 # # reverse
@@ -1229,9 +1223,9 @@ class IndependentVariable:
             dictionary['label'] = self.label
 
         # keys = dictionary.keys()
-        # if 'fft_output_order' in keys:
-        #     dictionary.pop('fft_output_order')
-        #     dictionary['fft_output_order'] = True
+        # if 'FFT_output_order' in keys:
+        #     dictionary.pop('FFT_output_order')
+        #     dictionary['FFT_output_order'] = True
 
         if 'reciprocal' in dictionary.keys():
             reciprocal = dictionary['reciprocal']

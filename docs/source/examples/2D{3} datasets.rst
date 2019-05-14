@@ -21,22 +21,23 @@ The following is an example of the RGB image dataset.
 
     >>> import csdfpy as cp
 
-    >>> filename = '../../test-datasets0.0.9/image/raccoon_raw.csdfe'
+    >>> filename = '../../test-datasets0.0.10/image/raccoon_raw.csdfe'
     >>> ImageData = cp.load(filename)
     >>> print (ImageData.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
+        "description": "An RBG image of a raccoon face.",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 1024,
-            "sampling_interval": "1.0 "
+            "increment": "1.0"
           },
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 768,
-            "sampling_interval": "1.0 "
+            "increment": "1.0"
           }
         ],
         "dependent_variables": [

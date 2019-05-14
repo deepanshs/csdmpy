@@ -14,6 +14,10 @@ from numpy import inf
 
 # cds.enable()
 
+__author__ = "Deepansh J. Srivastava"
+__email__ = "srivastava.89@osu.edu"
+
+
 _ppm = u.def_unit('ppm', 1e-6*u.Unit(1))
 _tr = u.def_unit(['tr', 'turn', 'cycle', 'revolution'], 1*u.Unit(1))
 
@@ -158,7 +162,7 @@ def value_object_format(quantity, numerical_value=True):
     string = string.replace('* / *', '/')
     # string = string.replace('* ( *', '(')
     # string = string.replace('* ) *', ')')
-    return string
+    return string.strip()
 
 
 def unit_to_latex(unit):
@@ -224,5 +228,5 @@ if __name__ == '__main__':
     # print(timer() - start)
     print(a)
     # print(type(a.unit), a.unit.physical_type)
-    print('val_object', value_object_format(a, unit=True))
+    print('val_object', value_object_format(a, numerical_value=True))
     print(unit_to_latex(a.unit))

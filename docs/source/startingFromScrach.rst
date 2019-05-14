@@ -24,7 +24,8 @@ The data structure of this instance is
     >>> print(new.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
+        "description": "",
         "independent_variables": [],
         "dependent_variables": []
       }
@@ -52,12 +53,12 @@ coordinates follows,
 
 .. doctest::
 
-    >>> d0 = {'type': 'linearly_sampled',
+    >>> d0 = {'type': 'linear_spacing',
     ...       'number_of_points': 10,
-    ...       'sampling_interval': '0.1 s'
+    ...       'increment': '0.1 s'
     ...      }
 
-Here, we define the `type` as `linearly_sampled` and provide a sampling
+Here, we define the `type` as `linear_spacing` and provide a sampling
 interval and number of points along the independent variable dimension. Add
 this dictionary as an argument of the
 :meth:`~csdfpy.IndependentVariable.add_independent_variable` method.
@@ -74,12 +75,13 @@ dataset is now a 1D{0} dataset with the data structure -
     >>> print(new.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
+        "description": "",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 10,
-            "sampling_interval": "0.1 s",
+            "increment": "0.1 s",
             "quantity": "time",
             "reciprocal": {
               "quantity": "frequency"
@@ -104,7 +106,7 @@ shown below.
 
 .. doctest::
 
-    >>> new.add_independent_variable(type='arbitrarily_sampled',
+    >>> new.add_independent_variable(type='arbitrary_spacing',
     ...                              values=['1 µG', '2.1 mG', '12.4 G', '0.5 T', '2 T'])
 
 The above operation creates and adds another independent variable instance,
@@ -116,19 +118,20 @@ instance is
     >>> print(new.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
+        "description": "",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 10,
-            "sampling_interval": "0.1 s",
+            "increment": "0.1 s",
             "quantity": "time",
             "reciprocal": {
               "quantity": "frequency"
             }
           },
           {
-            "type": "arbitrarily_sampled",
+            "type": "arbitrary_spacing",
             "values": [
               "1 µG",
               "2.1 mG",
@@ -183,19 +186,20 @@ This generates a 3D{0} dataset with the data structure -
     >>> print(new.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
+        "description": "",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 10,
-            "sampling_interval": "0.1 s",
+            "increment": "0.1 s",
             "quantity": "time",
             "reciprocal": {
               "quantity": "frequency"
             }
           },
           {
-            "type": "arbitrarily_sampled",
+            "type": "arbitrary_spacing",
             "values": [
               "1 µG",
               "2.1 mG",

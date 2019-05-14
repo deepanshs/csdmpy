@@ -1,6 +1,5 @@
 
 """CSDModel."""
-
 from __future__ import print_function, division
 from .independent_variable import IndependentVariable
 from .dependent_variable import DependentVariable
@@ -15,20 +14,17 @@ from ._utils_download_file import _download_file_from_url
 from urllib.parse import urlparse
 from os import path
 
+import sys
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-# __version__ = "0.0.10dev0"
 
 
-script_path = path.dirname(path.abspath(__file__))
-
-
-test_file = {
-    "test01": path.normpath(script_path+'/../tests/test01.csdf'),
-    "test02": path.normpath(script_path+'/../tests/test02.csdf')
-    }
-
+# script_path = path.dirname(path.abspath(__file__))
+# test_file = {
+#     "test01": path.normpath(script_path+'/../tests/test01.csdf'),
+#     "test02": path.normpath(script_path+'/../tests/test02.csdf')
+#     }
 
 def _import_json(filename):
     res = urlparse(filename)
@@ -63,24 +59,41 @@ def load(filename=None):
     except Exception as e:
         raise Exception(e)
 
+    key_list_root = dictionary.keys()
     # Create the CSDModel and populate the attribures
+
+    if 'CSDM' not in key_list_root:
+        raise KeyError("'CSDM' key is not present.")
+    
     _version = dictionary['CSDM']['version']
+
+    key_list_CSDM = dictionary['CSDM'].keys()
 
     csdm = CSDModel(filename, _version)
 
-    for dim in dictionary['CSDM']['independent_variables']:
-        csdm.add_independent_variable(dim)
+    if 'independent_variables' in key_list_CSDM:
+        for dim in dictionary['CSDM']['independent_variables']:
+            csdm.add_independent_variable(dim)
 
-    for dat in dictionary['CSDM']['dependent_variables']:
-        csdm.add_dependent_variable(dat)    # filename)
+    if 'dependent_variables' in key_list_CSDM:
+        for dat in dictionary['CSDM']['dependent_variables']:
+            csdm.add_dependent_variable(dat)    # filename)
 
-    csdm.description = dictionary['CSDM']['description'].strip()
+    if 'description' in key_list_CSDM:
+        csdm.description = dictionary['CSDM']['description'].strip()
+    else:
+        csdm.description = ''
     # if np.all(_type):
     npts = [item.number_of_points for item in csdm.independent_variables]
     if npts != []:
         csdm._reshape(npts[::-1])
 
 # Create the augmentation layer model #
+    if 'transient' in key_list_root:
+        csdm._transient = dictionary['transient']
+
+    if 'persistent' in key_list_root:
+        csdm._transient = dictionary['persistent']
 
     return csdm
 
@@ -96,7 +109,8 @@ def new():
         >>> print(emptydata.data_structure)
         {
           "CSDM": {
-            "version": "0.0.9",
+            "version": "0.0.10",
+            "description": "",
             "independent_variables": [],
             "dependent_variables": []
           }
@@ -132,6 +146,8 @@ class CSDModel:
             '_version',
             '_description',
             '_filename',
+            '_persistent',
+            '_transient',
         ]
 
     def __init__(self, filename='', version=None):
@@ -151,6 +167,8 @@ class CSDModel:
         self._description = ''
         self._version = version
         self._filename = filename
+        self._persistent = {}
+        self._transient = {}
 
 # ---- Attribute ----#
 # controlled variables
@@ -265,7 +283,7 @@ class CSDModel:
 
             >>> datamodel = cp.new()
             >>> py_dictionary = {
-            ...     'type': 'linearly_sampled',
+            ...     'type': 'linear_spacing',
             ...     'increment': '5 G',
             ...     'number_of_points': 50,
             ...     'reference_offset': '-10 mT'
@@ -277,7 +295,7 @@ class CSDModel:
         .. doctest::
 
             >>> datamodel.add_independent_variable(
-            ...     type = 'linearly_sampled',
+            ...     type = 'linear_spacing',
             ...     increment = '5 G',
             ...     number_of_points = 50,
             ...     reference_offset = '-10 mT'
@@ -289,7 +307,7 @@ class CSDModel:
 
             >>> from csdfpy import IndependentVariable
             >>> datamodel = cp.new()
-            >>> var1 = IndependentVariable(type = 'linearly_sampled',
+            >>> var1 = IndependentVariable(type = 'linear_spacing',
             ...                            increment = '5 G',
             ...                            number_of_points = 50,
             ...                            reference_offset = '-10 mT')
@@ -297,10 +315,11 @@ class CSDModel:
             >>> print(datamodel.data_structure)
             {
               "CSDM": {
-                "version": "0.0.9",
+                "version": "0.0.10",
+                "description": "",
                 "independent_variables": [
                   {
-                    "type": "linearly_sampled",
+                    "type": "linear_spacing",
                     "number_of_points": 50,
                     "increment": "5.0 G",
                     "reference_offset": "-10.0 mT",
@@ -343,6 +362,7 @@ class CSDModel:
 
             >>> numpy_array = (100*np.random.rand(3,50)).astype(np.uint8)
             >>> py_dictionary = {
+            ...     'type': 'internal',
             ...     'components': numpy_array,
             ...     'name': 'star',
             ...     'unit': 'W s',
@@ -355,7 +375,8 @@ class CSDModel:
 
         .. doctest::
 
-            >>> datamodel.add_dependent_variable(name='star',
+            >>> datamodel.add_dependent_variable(type='internal',
+            ...                                  name='star',
             ...                                  unit='W s',
             ...                                  quantity_type='RGB',
             ...                                  components=numpy_array)
@@ -365,7 +386,8 @@ class CSDModel:
         .. doctest::
 
             >>> from csdfpy import DependentVariable
-            >>> var1 = DependentVariable(name='star',
+            >>> var1 = DependentVariable(type='internal',
+            ...                          name='star',
             ...                          unit='W s',
             ...                          quantity_type='RGB',
             ...                          components=numpy_array)
@@ -417,6 +439,10 @@ class CSDModel:
 
         csdm = {}
         csdm['CSDM'] = dictionary
+        
+        if self._persistent != {}:
+            csdm['persistent'] = self._persistent
+
         return csdm
 
     def save(self, filename, version=__file_version__):
@@ -596,7 +622,7 @@ class CSDModel:
         )
         object_id._increment = _reciprocal_increment * object_id._unit
 
-        # toggle the value of the fft_output_order attribute
+        # toggle the value of the FFT_output_order attribute
         # if object_id._fft_output_order:
         #     object_id._fft_output_order = False
         # else:

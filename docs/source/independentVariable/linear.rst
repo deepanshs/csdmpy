@@ -42,14 +42,9 @@ the dimension using examples. Consider the following test file.
 
     >>> import csdfpy as cp
     >>> url = 'https://github.com/DeepanshS/NMRLineshape/raw/master/test1.csdf'
-    >>> testdata1 = cp.load(url)
-    Downloading '/DeepanshS/NMRLineshape/raw/master/NMR_CSA_lineshape_simulation.csdf' from 'github.com' to file 'NMR_CSA_lineshape_simulation.csdf'.
-    [█████████████████████████████████████████]
+    >>> filename = '../../test-datasets0.0.10/test/test01.csdf'
+    >>> testdata1 = cp.load(filename)
 
-.. testcleanup::
-
-    import os
-    os.remove('test1.csdf')
 
 The above snippet downloads and loads a test file containing a linearly
 sampled independent variable.
@@ -64,12 +59,13 @@ In the above example, ``testdata1`` is an instance of the
     >>> print(testdata1.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
+        "description": "",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 10,
-            "sampling_interval": "0.1 s",
+            "increment": "0.1 s",
             "quantity": "time",
             "reciprocal": {
               "quantity": "frequency"
@@ -78,7 +74,11 @@ In the above example, ``testdata1`` is an instance of the
         ],
         "dependent_variables": [
           {
+            "name": "sine curve",
             "numeric_type": "float32",
+            "component_labels": [
+              "response"
+            ],
             "components": "[0.0, 0.0, ...... -0.95105654, -0.95105654]"
           }
         ]
@@ -136,7 +136,7 @@ examples demonstrating its effect on the coordinates along the dimension.
     .. doctest::
 
         >>> print(x0.dimension_type)
-        linearly_sampled
+        linear_spacing
 
 **The attributes that modify the coordinates**
 
@@ -160,17 +160,17 @@ examples demonstrating its effect on the coordinates along the dimension.
         >>> print('new coordinates =', x0.coordinates)
         new coordinates = [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.  1.1] s
 
-* :py:attr:`~csdfpy.IndependentVariable.sampling interval`
-    Similarly, the sampling interval
+* :py:attr:`~csdfpy.IndependentVariable.increment`
+    Similarly, the increment
 
     .. doctest::
 
-        >>> print('old sampling interval =', x0.sampling_interval)
-        old sampling interval = 0.1 s
+        >>> print('old increment =', x0.increment)
+        old increment = 0.1 s
 
-        >>> x0.sampling_interval = "10 s"
-        >>> print('new sampling interval =', x0.sampling_interval)
-        new sampling interval = 10.0 s
+        >>> x0.increment = "10 s"
+        >>> print('new increment =', x0.increment)
+        new increment = 10.0 s
 
         >>> print('new coordinates =', x0.coordinates)
         new coordinates = [  0.  10.  20.  30.  40.  50.  60.  70.  80.  90. 100. 110.] s
@@ -182,9 +182,9 @@ examples demonstrating its effect on the coordinates along the dimension.
         >>> print('old reference offset =', x0.reference_offset)
         old reference offset = 0.0 s
 
-        >>> x0.reference_offset = "-1 s"
+        >>> x0.reference_offset = "1 s"
         >>> print('new reference offset =', x0.reference_offset)
-        new reference offset = -1.0 s
+        new reference offset = 1.0 s
 
         >>> print('new coordinates =', x0.coordinates)
         new coordinates = [  1.  11.  21.  31.  41.  51.  61.  71.  81.  91. 101. 111.] s
@@ -220,7 +220,7 @@ examples demonstrating its effect on the coordinates along the dimension.
 
 **The attributes that modify the order of coordinates**
 
-* :py:attr:`~csdfpy.IndependentVariable.fft_output_order`
+* :py:attr:`~csdfpy.IndependentVariable.FFT_output_order`
     Orders the coordinates along the dimension according to the output of a
     Fast Fourier Transform (FFT) routine.
 
@@ -229,21 +229,9 @@ examples demonstrating its effect on the coordinates along the dimension.
         >>> print('old coordinates =', x0.coordinates)
         old coordinates = [  1.  11.  21.  31.  41.  51.  61.  71.  81.  91. 101. 111.] s
 
-        >>> x0.fft_output_order = True
+        >>> x0.FFT_output_order = True
         >>> print('new coordinates =', x0.coordinates)
         new coordinates = [  1.  11.  21.  31.  41.  51. -59. -49. -39. -29. -19.  -9.] s
-
-* :py:attr:`~csdfpy.IndependentVariable.reverse`
-    Reverse the order of the coordinates.
-
-    .. doctest::
-
-        >>> print('old coordinates =', x0.coordinates)
-        old coordinates = [  1.  11.  21.  31.  41.  51. -59. -49. -39. -29. -19.  -9.] s
-
-        >>> x0.reverse = True
-        >>> print('new coordinates =', x0.coordinates)
-        new coordinates = [ -9. -19. -29. -39. -49. -59.  51.  41.  31.  21.  11.   1.] s
 
 
 **Other attributes**

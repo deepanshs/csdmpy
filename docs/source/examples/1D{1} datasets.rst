@@ -46,12 +46,13 @@ instance,
     {
       "CSDM": {
         "version": "0.0.10",
+        "description": "Global Mean Sea Level (GMSL) rise from the late 19th to the Early 21st Century.",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 1608,
             "increment": "0.08333333333333333 yr",
-            "reference_offset": "-1880.0417 yr",
+            "reference_offset": "1880.0417 yr",
             "quantity": "time",
             "label": "Time",
             "reciprocal": {
@@ -134,9 +135,6 @@ examples form a variety of scientific datasets. The method follows-
     ...     ax.set_ylabel(y[0].axis_label[0])
     ...     ax.set_title(y[0].name)
 
-    ...     if x[0].reverse:
-    ...         ax.invert_xaxis()
-
     ...     ax.grid(color='gray', linestyle='--', linewidth=0.5)
     ...     ax.set_xlim([x0[0].value, x0[-1].value])
     ...     plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
@@ -152,9 +150,7 @@ next line adds a plot of `y00` vs. `x0` to the figure. For labeling the
 axes, we use the  :py:attr:`~csdfpy.IndependentVariable.axis_label` attribute
 of both independent and dependent variable instances. For the figure title,
 we use the :py:attr:`~csdfpy.DependentVariable.name` attribute of the
-dependent variable instance. The following `if` statement plot the figure with
-the x-axis in reverse, if the :py:attr:`~csdfpy.IndependentVariable.reverse`
-attribute of the independent variable instance is True. The following two lines
+dependent variable instance. The following two lines
 add the grid lines and set the range of the x-axis, respectively.
 For additional information refer to the :ref:`iv_api`, :ref:`dv_api`, and the
 `Matplotlib <https://matplotlib.org>`_ documentation.
@@ -183,18 +179,18 @@ structure.
     {
       "CSDM": {
         "version": "0.0.10",
+        "description": "A time domain NMR $^{13}$C Bloch decay signal of ethanol.",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 4096,
             "increment": "0.1 ms",
-            "reference_offset": "0.3 ms",
+            "reference_offset": "-0.3 ms",
             "quantity": "time",
             "reciprocal": {
               "reference_offset": "-3005.363 Hz",
               "origin_offset": "75426328.864 Hz",
               "quantity": "frequency",
-              "reverse": true,
               "label": "$^{13}$C frequency shift"
             }
           }
@@ -256,12 +252,13 @@ plot follows,
     {
       "CSDM": {
         "version": "0.0.10",
+        "description": "A Electron Paramagnetic Resonance simulated dataset.",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 298,
             "increment": "4.0 G",
-            "reference_offset": "-2750.0 G",
+            "reference_offset": "2750.0 G",
             "quantity": "magnetic flux density"
           }
         ],
@@ -298,9 +295,10 @@ follows,
     {
       "CSDM": {
         "version": "0.0.10",
+        "description": "A Gas Chromatography dataset of cinnamon stick.",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 6001,
             "increment": "0.0034 min",
             "quantity": "time",
@@ -342,14 +340,14 @@ structure and the plot of the FTIR dataset follows
     {
       "CSDM": {
         "version": "0.0.10",
+        "description": "An IR spectrum of caffeine.",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 1842,
             "increment": "1.930548614883216 cm^-1",
-            "reference_offset": "-449.41 cm^-1",
+            "reference_offset": "449.41 cm^-1",
             "quantity": "wavenumber",
-            "reverse": true,
             "reciprocal": {
               "quantity": "length"
             }
@@ -362,7 +360,7 @@ structure and the plot of the FTIR dataset follows
             "component_labels": [
               "Transmittance"
             ],
-            "components": "[100.22944, 100.22944, ...... 99.08212, 99.08212]"
+            "components": "[99.31053, 99.31053, ...... 100.22944, 100.22944]"
           }
         ]
       }
@@ -371,7 +369,6 @@ structure and the plot of the FTIR dataset follows
 
 .. image:: /_static/caffeine_none.csdf.pdf
 
-Notice, the reverse axis of the FTIR wavenumber dimension.
 
 Ultraviolet–visible (UV-vis) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -389,14 +386,14 @@ model format. The data structure and the plot of the UV-vis dataset follows,
     {
       "CSDM": {
         "version": "0.0.10",
+        "description": "A UV-vis spectra of benzene vapours.",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 4001,
             "increment": "0.01 nm",
-            "reference_offset": "-230.0 nm",
+            "reference_offset": "230.0 nm",
             "quantity": "length",
-            "reverse": true,
             "label": "wavelength",
             "reciprocal": {
               "quantity": "wavenumber"
@@ -410,7 +407,7 @@ model format. The data structure and the plot of the UV-vis dataset follows,
             "component_labels": [
               "Absorbance"
             ],
-            "components": "[0.16786034, 0.16786034, ...... 0.25923702, 0.25923702]"
+            "components": "[0.25890622, 0.25890622, ...... 0.16814752, 0.16814752]"
           }
         ]
       }

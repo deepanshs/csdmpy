@@ -28,8 +28,8 @@ sample test file.
 
 .. doctest::
 
-    >>> test_file = cp.test_file['test01']  # replace this with the filename.
-    >>> testdata1 = cp.load(test_file)
+    >>> filename = '../../test-datasets0.0.10/test/test01.csdf' # replace this with the filename.
+    >>> testdata1 = cp.load(filename)
 
 Here, ``testdata1`` is an instance of the :ref:`csdm_api` class which holds the
 contents of the ``test_file``.

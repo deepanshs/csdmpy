@@ -16,26 +16,26 @@ Let's load the `.csdfe` file and take a quick look at its data structure.
 
     >>> import csdfpy as cp
 
-    >>> bubble_data = cp.load('../../test-datasets0.0.9/astronomy/source/Bubble Nebula/Bubble.csdfe')
+    >>> bubble_data = cp.load('../../test-datasets0.0.10/astronomy/source/Bubble Nebula/Bubble.csdfe')
     >>> print(bubble_data.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
+        "description": "The dataset is a new observation of the Bubble Nebula acquired by The Hubble Heritage Team, in February 2016.",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 11596,
-            "sampling_interval": "2.279306196154649e-05 °",
-            "reference_offset": "-350.04758940351087 °",
+            "increment": "-2.279306196154649e-05 °",
+            "reference_offset": "350.311874957 °",
             "quantity": "angle",
-            "reverse": true,
             "label": "Right Ascension"
           },
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 11351,
-            "sampling_interval": "1.1005521846938031e-05 °",
-            "reference_offset": "-61.128514949691635 °",
+            "increment": "1.1005521846938031e-05 °",
+            "reference_offset": "61.128514949691635 °",
             "quantity": "angle",
             "label": "Declination"
           }

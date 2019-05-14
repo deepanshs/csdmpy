@@ -16,7 +16,7 @@ The following snippet loads a test file with a linearly sampled grid dimension,
 .. doctest::
 
     >>> import csdfpy as cp
-    >>> filename = cp.test_file['test01']
+    >>> filename = '../../test-datasets0.0.10/test/test02.csdf'
     >>> testdata1 = cp.load(filename)
 
 The variable ``testdata1`` is an instance of the
@@ -126,7 +126,7 @@ The attributes that modify the order of coordinates
 the output order from a Fast Fourier Transform (FFT) routine. ::
 
     >>> print ('coordinates before =', x[0].coordinates)
-    >>> x[0].fft_output_order = True
+    >>> x[0].FFT_output_order = True
     >>> print ('coordinates after =', x[0].coordinates)
     before coordinates = [  1.  11.  21.  31.  41.  51.  61.  71.  81.  91. 101. 111.] s
     after coordinates = [  1.  11.  21.  31.  41.  51. -59. -49. -39. -29. -19.  -9.] s

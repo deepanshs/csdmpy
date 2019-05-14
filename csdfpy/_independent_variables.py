@@ -38,7 +38,6 @@ class BaseIndependentVariable:
         '_quantity',
         '_period',
         '_label',
-        # '_reverse',
         '_equivalencies',
         '_unit',
     )
@@ -50,7 +49,6 @@ class BaseIndependentVariable:
             _quantity=None,
             _period=None,
             _label='',
-            # _reverse=False,
             _unit=None
             ):
         r"""Instantiate a BaseIndependentVariable class instance."""
@@ -60,7 +58,6 @@ class BaseIndependentVariable:
             _quantity,
             _period,
             _label,
-            # _reverse,
             _unit)
 
     def _set_parameters(
@@ -70,7 +67,6 @@ class BaseIndependentVariable:
             _quantity=None,
             _period=None,
             _label='',
-            # _reverse=False,
             _unit=None):
 
         # unit
@@ -93,9 +89,6 @@ class BaseIndependentVariable:
         # quantity
         _value = _check_quantity(_quantity, _unit)
         self._quantity = _value
-
-        # # reverse
-        # self.reverse = _reverse
 
         # label
         self.label = _label
@@ -172,19 +165,7 @@ class BaseIndependentVariable:
             raise TypeError(_type_message(str, type(label)))
         self._label = label
 
-# # reverse
-#     @property
-#     def reverse(self):
-#         r"""The order of coordinates along the dimension."""
-#         return deepcopy(self._reverse)
 
-#     @reverse.setter
-#     def reverse(self, value=False):
-#         if not isinstance(value, bool):
-#             raise TypeError(_type_message(bool, type(value)))
-
-#         _value = _check_and_assign_bool(value)
-#         self._reverse = _value
 # --------------------------------------------------------------------------- #
 #                       QuantitativeVariable Methods                          #
 # --------------------------------------------------------------------------- #
@@ -208,9 +189,6 @@ class BaseIndependentVariable:
 
         if self._period.value not in [0.0, np.inf]:
             dictionary['period'] = value_object_format(self._period)
-
-        # if self.reverse is True:
-        #     dictionary['reverse'] = True
 
         if self.label.strip() != "":
             dictionary['label'] = self.label
@@ -350,7 +328,7 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
     __slots__ = (
         '_number_of_points',
         '_increment',
-        # '_fft_output_order',
+        '_fft_output_order',
         'reciprocal',
         '_reciprocal_number_of_points',
         '_reciprocal_increment',
@@ -368,16 +346,15 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
             _quantity=None,
             _period=None,
             _label='',
-            # _reverse=False,
-            # _fft_output_order=False,
+            _fft_output_order=False,
 
             _reciprocal_reference_offset=None,
             _reciprocal_origin_offset=None,
             _reciprocal_quantity=None,
-            # _reciprocal_reverse=False,
             _reciprocal_label='',
             _reciprocal_period=None):
         r"""Instantiate a DimensionWithLinearSpacing class instance."""
+
         # number of points
         self._number_of_points = _number_of_points
 
@@ -386,8 +363,8 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
         self._increment = _value
 
         # fft_ouput_order
-        # _value = _check_and_assign_bool(_fft_output_order)
-        # self._fft_output_order = _value
+        _value = _check_and_assign_bool(_fft_output_order)
+        self._fft_output_order = _value
 
         self._unit = self._increment.unit
 
@@ -397,7 +374,6 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
             _quantity,
             _period,
             _label,
-            # _reverse,
             self._unit)
 
         # create a reciprocal dimension
@@ -408,7 +384,6 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
                                 _reciprocal_quantity,
                                 _reciprocal_period,
                                 _reciprocal_label,
-                                # _reciprocal_reverse,
                                 _reciprocal_unit
                             )
 
@@ -428,10 +403,6 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
         # origin offset
         self._origin_offset, self.reciprocal._origin_offset = \
             self.reciprocal._origin_offset, self._origin_offset
-
-        # # reverse
-        # self._reverse, self.reciprocal._reverse = \
-        #     self.reciprocal._reverse, self._reverse
 
         # period
         self._period, self.reciprocal._period = \
@@ -456,13 +427,13 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
 
         _index = np.arange(_number_of_points, dtype=np.float64)
 
-        # if self._fft_output_order:
-        #     _index = np.empty(_number_of_points, dtype=np.int)
-        #     n = (_number_of_points-1)//2 + 1
-        #     p1 = np.arange(0, n, dtype=np.int)
-        #     _index[:n] = p1
-        #     p2 = np.arange(-(_number_of_points//2), 0, dtype=np.int)
-        #     _index[n:] = p2
+        if self._fft_output_order:
+            _index = np.empty(_number_of_points, dtype=np.int)
+            n = (_number_of_points-1)//2 + 1
+            p1 = np.arange(0, n, dtype=np.int)
+            _index[:n] = p1
+            p2 = np.arange(-(_number_of_points//2), 0, dtype=np.int)
+            _index[n:] = p2
 
         _value = _index * _increment
         self._coordinates = _value
@@ -478,8 +449,8 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
 
         dictionary.update(self._get_quantitative_dictionary())
 
-        # if self.fft_output_order is True:
-        #     dictionary['fft_output_order'] = True
+        if self.FFT_output_order is True:
+            dictionary['FFT_output_order'] = True
 
         reciprocal_dictionary = self.reciprocal._get_quantitative_dictionary()
 
@@ -520,20 +491,20 @@ class DimensionWithLinearSpacing(BaseIndependentVariable):
         self._increment = _value
         self._get_coordinates()
 
-# # fft_ouput_order
-#     @property
-#     def fft_output_order(self):
-#         r"""The coordinates are ordered according to the fft output order."""
-#         return deepcopy(self._fft_output_order)
+# fft_ouput_order
+    @property
+    def FFT_output_order(self):
+        r"""The coordinates are ordered according to the fft output order."""
+        return deepcopy(self._fft_output_order)
 
-#     @fft_output_order.setter
-#     def fft_output_order(self, value):
-#         if not isinstance(value, bool):
-#             raise TypeError(_type_message(bool, type(value)))
+    @FFT_output_order.setter
+    def FFT_output_order(self, value):
+        if not isinstance(value, bool):
+            raise TypeError(_type_message(bool, type(value)))
 
-#         self._fft_output_order = value
-#         self._get_coordinates()
-#         return
+        self._fft_output_order = value
+        self._get_coordinates()
+        return
 
 
 # =========================================================================== #
@@ -588,12 +559,10 @@ class DimensionWithArbitrarySpacing(BaseIndependentVariable):
             _quantity=None,
             _period=None,
             _label='',
-            # _reverse=False,
 
             _reciprocal_reference_offset=None,
             _reciprocal_origin_offset=None,
             _reciprocal_quantity=None,
-            # _reciprocal_reverse=False,
             _reciprocal_label='',
             _reciprocal_period=None):
         """Instantiate a DimensionWithArbitrarySpacing class instance."""
@@ -606,7 +575,6 @@ class DimensionWithArbitrarySpacing(BaseIndependentVariable):
             _quantity,
             _period,
             _label,
-            # _reverse,
             self._unit)
 
         # reciprocal dimension attributes
@@ -617,7 +585,6 @@ class DimensionWithArbitrarySpacing(BaseIndependentVariable):
                             _reciprocal_quantity,
                             _reciprocal_period,
                             _reciprocal_label,
-                            # _reciprocal_reverse,
                             _reciprocal_unit
                         )
 

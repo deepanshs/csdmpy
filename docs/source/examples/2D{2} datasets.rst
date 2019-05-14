@@ -17,18 +17,19 @@ as a function of two spatial dimensions.
 
     >>> import csdfpy as cp
 
-    >>> filename = '../../test-datasets0.0.9/vector/electricField/electric_field_raw.csdfe'
+    >>> filename = '../../test-datasets0.0.10/vector/electricField/electric_field_raw.csdfe'
     >>> vectordata = cp.load(filename)
     >>> print (vectordata.data_structure)
     {
       "CSDM": {
-        "version": "0.0.9",
+        "version": "0.0.10",
+        "description": "A simulated electric field dataset from an electric dipole.",
         "independent_variables": [
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 64,
-            "sampling_interval": "0.0625 cm",
-            "reference_offset": "2.0 cm",
+            "increment": "0.0625 cm",
+            "reference_offset": "-2.0 cm",
             "quantity": "length",
             "label": "x",
             "reciprocal": {
@@ -36,10 +37,10 @@ as a function of two spatial dimensions.
             }
           },
           {
-            "type": "linearly_sampled",
+            "type": "linear_spacing",
             "number_of_points": 64,
-            "sampling_interval": "0.0625 cm",
-            "reference_offset": "2.0 cm",
+            "increment": "0.0625 cm",
+            "reference_offset": "-2.0 cm",
             "quantity": "length",
             "label": "y",
             "reciprocal": {
