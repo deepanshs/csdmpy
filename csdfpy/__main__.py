@@ -3,10 +3,7 @@
 import sys
 import csdfpy as cp
 from csdfpy.helper_functions import quick_preview
-try:
-    import pyqtgraph as pg
-except:
-    import matplotlib.pyplot as plt
+
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"

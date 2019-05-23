@@ -25,12 +25,11 @@ REQUIRED = [
     'requests>=2.21.0',
     'astropy>=3.0',
     'scipy>=0.16.0',
-    'numpy>=1.10.1'
-]
+    'numpy>=1.10.1']
 
 # What packages are optional?
 EXTRAS = {
-     'fancy feature': ['matplotlib>=3.0.2'],
+     'fancy feature': ['matplotlib>=3.0.2', 'sounddevice'],
 }
 
 # The rest you shouldn't have to touch too much :)

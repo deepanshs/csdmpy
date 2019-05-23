@@ -2,8 +2,20 @@
 
 global SOUND
 from warnings import warn
+import sys
 
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError as e:
+    # string = ((
+    #     "Module 'matplotlib' is not installed. To enable the quick preview "
+    #     "feature of csdfpy module, install 'matplotlib' using "
+    #     "'pip install matplotlib'."
+    #     )
+    # )
+    print(str(e))
+    sys.exit()
+
 import numpy as np
 import matplotlib
 try:
@@ -39,7 +51,7 @@ __email__ = "srivastava.89@osu.edu"
 
 
 def quick_preview(data):
-    if matplotlib.get_backend() == 'Qt5Agg':
+    if matplotlib.get_backend() in ['Qt5Agg', 'QT4Agg']:
         # print(f"using {matplotlib.get_backend()} backend.")
         qapp = QtWidgets.QApplication(sys.argv)
         app = ApplicationWindow(data)
@@ -90,6 +102,7 @@ def quick_display(data):
         plt.tight_layout(w_pad=0.0, h_pad=0.0)
         plt.show()
 
+## ========================================================= ##
 
 def plot1D(x, y, i0, ax):
     i = int(i0/2); j= int(i0%2)
@@ -138,19 +151,22 @@ def vector_plot(x, y, i0, fig, ax):
     x0, x1 = np.meshgrid(x0, x1)
     u1 = y[i0].components[0]
     v1 = y[i0].components[1]
-    ax[i][j].quiver(x0, x1, u1, v1)
+    ax[i][j].quiver(x0, x1, u1, v1,  pivot='middle')
     ax[i][j].set_xlabel(x[0].axis_label)
-    ax[i][j].set_ylabel(x[1].axis_label)
     ax[i][j].set_xlim(x[0].coordinates[0].value, x[0].coordinates[-1].value)
-    ax[i][j].set_ylim(x[1].coordinates[0].value, x[1].coordinates[-1].value)
+    if len(x) == 2:
+        ax[i][j].set_ylim(x[1].coordinates[0].value, x[1].coordinates[-1].value)
+        ax[i][j].set_ylabel(x[1].axis_label)
+    else:
+        ax[i][j].set_ylim([-y.components.max(),y.components.max()])
     ax[i][j].set_title(f"{y[i0].name}")
     ax[i][j].grid(color='gray', linestyle='--', linewidth=0.5)
 
 def audio(x, y, i0, fig, ax):
     plot1D(x, y, i0, ax)
     if SOUND == 1:
-        data_max = 0.1*y[i0].components.max()
-        sd.play(y[i0].components.T/data_max, 1/x[0].increment.to('s').value)
+        data_max = y[i0].components.max()
+        sd.play(0.9*y[i0].components.T/data_max, 1/x[0].increment.to('s').value)
 
 
 
@@ -158,22 +174,27 @@ def audio(x, y, i0, fig, ax):
 
 ## ========================================================= ##
 
+
 def plot_line(x, y, ax):
     components = y.components.shape[0]
     for k in range(components):
-        ax.plot(x[0].coordinates, y.components[k].real)
+        ax.plot(x[0].coordinates, y.components[k].T.real)
         if 'complex' in y.numeric_type:
-            ax.plot(x[0].coordinates, y.components[k].imag)
+            ax.plot(x[0].coordinates, y.components[k].T.imag)
 
-        ax.set_xlim(x[0].coordinates[0].value, x[0].coordinates[-1].value)
+        if x[0].dimension_type != 'labeled':
+            ax.set_xlim(x[0].coordinates[0].value, x[0].coordinates[-1].value)
+
         ax.set_xlabel(x[0].axis_label)
         ax.set_ylabel(y.axis_label[0])
         ax.set_title(f"{y.name}")
         ax.grid(color='gray', linestyle='-', linewidth=0.5)
 
 def plot_image(x, y, fig, ax):
-    extent = [x[0].coordinates[0].value, x[0].coordinates[-1].value,
-              x[1].coordinates[0].value, x[1].coordinates[-1].value]
+    if x[0].dimension_type != 'labeled':
+        extent = [x[0].coordinates[0].value, x[0].coordinates[-1].value,
+                x[1].coordinates[0].value, x[1].coordinates[-1].value]
+                
     cs = ax.imshow(y.components[0].real.astype(np.float64), extent=extent,
                    origin='lower', aspect='auto', cmap='viridis', interpolation='none')
     cbar = fig.colorbar(cs, ax=ax)
@@ -187,20 +208,24 @@ def plot_image(x, y, fig, ax):
 
 def plot_vector(x, y, ax):
 #     i = int(i0/2); j=i0%2
-    x0 = x[0].coordinates.value
-    if len(x) == 2:
-        x1 = x[1].coordinates.value
-    else:
-        x1 = np.zeros(1)
+    if x[0].dimension_type != 'labeled':
+        x0 = x[0].coordinates.value
+        if len(x) == 2:
+            x1 = x[1].coordinates.value
+        else:
+            x1 = np.zeros(1)
 
     x0, x1 = np.meshgrid(x0, x1)
     u1 = y.components[0]
     v1 = y.components[1]
-    ax.quiver(x0, x1, u1, v1)
+    ax.quiver(x0, x1, u1, v1, pivot='middle')
     ax.set_xlabel(x[0].axis_label)
-    ax.set_ylabel(x[1].axis_label)
     ax.set_xlim(x[0].coordinates[0].value, x[0].coordinates[-1].value)
-    ax.set_ylim(x[1].coordinates[0].value, x[1].coordinates[-1].value)
+    if len(x) == 2:
+        ax.set_ylim(x[1].coordinates[0].value, x[1].coordinates[-1].value)
+        ax.set_ylabel(x[1].axis_label)
+    else:
+        ax.set_ylim([-y.components.max(),y.components.max()])
     ax.set_title(f"{y.name}")
     ax.grid(color='gray', linestyle='--', linewidth=0.5)
 
@@ -213,8 +238,8 @@ def plot_audio(x, y, ax):
     plot_line(x, y, ax)
     # print (SOUND)
     if SOUND == 1:
-        data_max = 0.1*y.components.max()
-        sd.play(y.components.T/data_max, 1/x[0].increment.to('s').value)
+        data_max = y.components.max()
+        sd.play(0.9*y.components.T/data_max, 1/x[0].increment.to('s').value)
     
 class ApplicationWindow(QtWidgets.QMainWindow):
     def __init__(self, dictionary):
@@ -251,6 +276,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         number_of_independents = len(dictionary.independent_variables)
         # tab_ = []
         # layout_ = []
+        
         for i in range(number_of_dependents):
             # tab_.append(QtWidgets.QWidget())
             # layout_.append(QtWidgets.QVBoxLayout(tab_[-1]))
@@ -265,23 +291,35 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             # fig = canvas.figure
             # cid = canvas.mpl_connect('axes_enter_event', display)
 
+            x = dictionary.independent_variables
+            y = dictionary.dependent_variables[i]
+
+
+            # for j in range(number_of_independents):
+            #     if x[j].FFT_output_order:
+            #         x[j].FFT_output_order = False
 
             if (number_of_independents == 1):
-                x = dictionary.independent_variables
-                y = dictionary.dependent_variables[i]
+                
                 if y.quantity_type == 'scalar':
                     fig, ax = set_gui()
                     plot_line(x, y, ax)
                 if 'audio' in y.quantity_type:
                     fig, ax = set_gui()
                     plot_audio(x, y, ax)
+                if y.quantity_type == 'vector_2':
+                    fig, ax = set_gui()
+                    plot_vector(x, y, ax)
                     
             if (number_of_independents == 2):
-                x = dictionary.independent_variables
-                y = dictionary.dependent_variables[i]
+                # x = dictionary.independent_variables
+                # y = dictionary.dependent_variables[i]
                 if y.quantity_type == 'scalar':
                     fig, ax = set_gui()
-                    plot_image(x, y, fig, ax)
+                    if np.any([x[i].dimension_type=='labeled' for i in [0,1]]):
+                        plot_line(x, y, ax)
+                    else:
+                        plot_image(x, y, fig, ax)
                 if y.quantity_type == 'vector_2':
                     fig, ax = set_gui()
                     plot_vector(x, y, ax)

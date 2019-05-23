@@ -211,7 +211,7 @@ class IndependentVariable:
         if dictionary['type'] == 'labeled':
             if dictionary['values'] is None:
                 raise KeyError(
-                    "'value' key is missing for the labeled dimension."
+                    "'values' key is missing for the labeled dimension."
                 )
 
             _independent_variable_object = DimensionWithLabels(
@@ -222,7 +222,7 @@ class IndependentVariable:
         if dictionary['type'] == 'arbitrary_spacing':
             if dictionary['values'] is None:
                 raise KeyError((
-                    "'value' key is missing for the "
+                    "'values' key is missing for the "
                     "arbitrarily space dimension."   
                 ))
     
