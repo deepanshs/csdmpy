@@ -1,21 +1,31 @@
-version0.0.10
+version0.0.11
 
-- Added the reciprocal attribute to the IndependentVariable class.
-- Removed the reverse key.
-- Changed 'sampling_interval' key to 'increment'.
-- Changed 'linearly_sampled' key to 'linear_spacing'.
-- Changed 'arbitrarily_sampled' key to 'arbitrary_spacing'.
-- Changed the equation defining the coordinates from 
-        $X^(ref) = m_k J_k - c_k$
+- Renamed IndependentVariable class to Dimension.
+- Renamed LinearlySpacedDimension class to LinearDimension.
+- Renamed ArbitrarilySpacedDimension class to MonotonicDimension.
+
+- Added a reciprocal attribute to LinearDimension and MonotonicDimension classes.
+- Removed the reverse attribute from all Dimension classes.
+
+- Changed 'sampling_interval' keyword to 'increment'.
+- Changed 'reference_offset' keyword to 'index_zero_value'.
+- Changed 'linear_spacing' literal to 'linear'.
+- Changed 'arbitrarily_sampled' literal to 'monotonic'.
+- Changed the defining of the coordinates from LinearDimension to
+        $X^(ref) = m_k J_k - c_k 1$
   to
-        $X^(ref) = m_k J_k + c_k$,
+        $X^(ref) = m_k J_k + c_k 1$,
   where $c_k$ is the reference offset, $m_k$ is the increment, and $J_k$ is the
-  set of interger indicies along the dimensoin.
-- Added 'description' key to 'IndependentVariable', 'DependentVariable' and 'CSDM' object.
+  set of integer indices along the dimension.
+
+- Added 'description' key to 'Dimension', 'DependentVariable' and 'CSDM' object.
+- Changed 'CSDM' keyword to 'csdm'
+- Changed 'FFT_output_order' keyword to 'fft_output_order'
+- Changed 'components_URL' keyword to 'components_url'
 
 New methods
 
 - sum(index=0) Sum of data values from the dependent variable along the
-        independent variable at indicies given by `index`.
+        independent variable at indices given by `index`.
 - prop(index=0) Product of data values from the dependent variable along the
-        independent variable at indicies given by `index`.
+        independent variable at indices given by `index`.

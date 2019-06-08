@@ -6,7 +6,7 @@ Reference/API documentation
 .. toctree::
     api/csdfpy
     api/CSDModel
-    api/IndependentVariable
+    api/Dimensions
     api/DependentVariable
 
 

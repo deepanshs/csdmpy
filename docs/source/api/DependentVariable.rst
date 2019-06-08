@@ -24,7 +24,7 @@ DependentVariable
         ~DependentVariable.quantity_type
         ~DependentVariable.component_labels
         ~DependentVariable.components
-        ~DependentVariable.components_uri
+        ~DependentVariable.components_url
         ~DependentVariable.axis_label
         ~DependentVariable.data_structure
 
@@ -45,7 +45,7 @@ DependentVariable
     .. autoattribute:: quantity_type
     .. autoattribute:: component_labels
     .. autoattribute:: components
-    .. autoattribute:: components_uri
+    .. autoattribute:: components_url
     .. autoattribute:: axis_label
     .. autoattribute:: data_structure
 

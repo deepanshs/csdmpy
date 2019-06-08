@@ -14,32 +14,42 @@ CSDModel
 
    .. autosummary::
 
-      ~CSDModel.independent_variables
-      ~CSDModel.dependent_variables
-      ~CSDModel.description
-      ~CSDModel.filename
       ~CSDModel.version
+      ~CSDModel.description
+      ~CSDModel.read_only
+      ~CSDModel.timestamp
+      ~CSDModel.geographic_coordinate
+      ~CSDModel.dimensions
+      ~CSDModel.dependent_variables
+      ~CSDModel.application
       ~CSDModel.data_structure
+      ~CSDModel.filename
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
-      ~CSDModel.add_independent_variable
+      ~CSDModel.add_dimension
       ~CSDModel.add_dependent_variable
       ~CSDModel.save
+      ~CSDModel.copy
 
    .. rubric:: Attributes Documentation
 
-   .. autoattribute:: independent_variables
-   .. autoattribute:: dependent_variables
-   .. autoattribute:: description
-   .. autoattribute:: filename
    .. autoattribute:: version
+   .. autoattribute:: description
+   .. autoattribute:: read_only
+   .. autoattribute:: timestamp
+   .. autoattribute:: geographic_coordinate
+   .. autoattribute:: dimensions
+   .. autoattribute:: dependent_variables
+   .. autoattribute:: application
    .. autoattribute:: data_structure
+   .. autoattribute:: filename
 
    .. rubric:: Methods Documentation
 
-   .. automethod:: add_independent_variable
+   .. automethod:: add_dimension
    .. automethod:: add_dependent_variable
    .. automethod:: save
+   .. automethod:: copy

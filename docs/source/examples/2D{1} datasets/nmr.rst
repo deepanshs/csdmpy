@@ -5,7 +5,7 @@ Nuclear Magnetic Resonance (NMR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following example is a :math:`^{29}\mathrm{Si}` NMR time domain
-saturation recovery measurement of a highly siliceous zeolite Silicalite-I.
+saturation recovery measurement of a highly siliceous zeolite ZSM-12.
 Usually, the spin recovery measurements are acquired over a rectilinear grid
 where the grid spacing along one dimension is non-linear.
 
@@ -15,20 +15,20 @@ Let's load the file and look at its data structure.
 
     >>> import csdfpy as cp
 
-    >>> filename = '../../test-datasets0.0.10/NMR/satrec/satRec_raw.csdfe'
+    >>> filename = '../test-datasets0.0.11/NMR/satrec/satRec_raw.csdfe'
     >>> NMR2Ddata = cp.load(filename)
     >>> print(NMR2Ddata.data_structure)
     {
-      "CSDM": {
-        "version": "0.0.10",
+      "csdm": {
+        "version": "0.0.11",
         "description": "A $^{29}$Si NMR saturation recovery measurement of highly siliceous zeolite ZSM-12.",
-        "independent_variables": [
+        "dimensions": [
           {
+            "type": "linear",
             "description": "A full echo echo acquisition along the $t_2$ dimension using a Hahn echo.",
-            "type": "linear_spacing",
             "number_of_points": 1024,
             "increment": "8e-05 s",
-            "reference_offset": "-0.04104 s",
+            "index_zero_value": "-0.04104 s",
             "quantity": "time",
             "label": "$t_2$",
             "reciprocal": {
@@ -38,7 +38,7 @@ Let's load the file and look at its data structure.
             }
           },
           {
-            "type": "arbitrary_spacing",
+            "type": "monotonic",
             "values": [
               "1.0 s",
               "5.0 s",
@@ -56,8 +56,13 @@ Let's load the file and look at its data structure.
         ],
         "dependent_variables": [
           {
+            "type": "internal",
             "numeric_type": "complex64",
-            "components": "[(182.26953+136.4989j), (182.26953+136.4989j), ...... (-1765.7441-375.72888j), (-1765.7441-375.72888j)]"
+            "components": [
+              [
+                "(182.26953+136.4989j), (182.26953+136.4989j), ..., (-1765.7441-375.72888j), (-1765.7441-375.72888j)"
+              ]
+            ]
           }
         ]
       }
@@ -68,15 +73,15 @@ the ``NMR2Ddata`` instance are
 
 .. doctest::
 
-    >>> x = NMR2Ddata.independent_variables
+    >>> x = NMR2Ddata.dimensions
     >>> y = NMR2Ddata.dependent_variables
 
 respectively.
 There are two independent variable instances in this example. The coordinates
-of the first independent variable, labeled as `$t_2$`, are spaced linearly
-while the coordinate spacing is non-linear, or arbitrary, for the second
+of the first independent variable, labeled as `$t_2$`, are uniformly spaced
+while the coordinate spacing is non-linear, or monotonic, for the second
 independent variable, labeled as `$t_1$`.
-The coordinates of the two independent variables are
+The coordinates of the two dimensions are
 
 .. doctest::
 
@@ -90,7 +95,7 @@ The coordinates of the two independent variables are
 
 Notice, the unit of `x0` is in seconds. Since all the values are less than one
 second, it might be convenient to convert the unit to milliseconds.
-Use the :py:meth:`~csdfpy.IndependentVariable.to` method of the respective
+Use the :py:meth:`~csdfpy.Dimension.to` method of the respective
 :ref:`iv_api` instance for the unit conversion. In this case,
 it follows
 
@@ -99,7 +104,7 @@ it follows
     >>> x[0].to('ms')
     >>> print(x[0].coordinates)
     [-41.04 -40.96 -40.88 ...  40.64  40.72  40.8 ] ms
-    
+
 
 As before, the components of the dependent variable is accessed using the
 :py:attr:`~csdfpy.DependentVariable.components` attribute.
@@ -130,8 +135,8 @@ As before, the components of the dependent variable is accessed using the
 
 **Plotting the dataset**
 
-More often than not, the code required to plot the data become 
-exhaustingly long. Here is one such example.
+More often than not, the code required to plot the data become
+exhaustive. Here is one such example.
 
 .. doctest::
 
@@ -139,7 +144,7 @@ exhaustingly long. Here is one such example.
     >>> from matplotlib.image import NonUniformImage
     >>> import numpy as np
 
-    >>> """ 
+    >>> """
     ... Set the extents of the image.
     ... To set the independent variable coordinates at the center of each image
     ... pixel, subtract and add half the sampling interval from the first
@@ -147,18 +152,18 @@ exhaustingly long. Here is one such example.
     ... dimension, i.e., x0.
     ... """  # doctest: +SKIP
     >>> si=x[0].increment
-    >>> extent = ((x0[0]-0.5*si).value, 
-    ...           (x0[-1]+0.5*si).value, 
+    >>> extent = ((x0[0]-0.5*si).value,
+    ...           (x0[-1]+0.5*si).value,
     ...           x1[0].value,
     ...           x1[-1].value)
-    
+
     >>> """
     ... Create a 2x2 subplot grid. The subplot at the lower-left corner is for
     ... the image intensity plot. The subplots at the top-left and bottom-right
     ... are for the data slice at the horizontal and vertical cross-section,
     ... respectively. The subplot at the top-right corner is empty.
     ... """  # doctest: +SKIP
-    >>> fig, axi = plt.subplots(2,2, gridspec_kw = {'width_ratios':[4,1], 
+    >>> fig, axi = plt.subplots(2,2, gridspec_kw = {'width_ratios':[4,1],
     ...                                             'height_ratios':[1,4]})
 
     >>> """
@@ -167,7 +172,7 @@ exhaustingly long. Here is one such example.
     ... data values is used.
     ... """  # doctest: +SKIP
     >>> ax = axi[1,0]
-    >>> im = NonUniformImage(ax, interpolation='nearest', 
+    >>> im = NonUniformImage(ax, interpolation='nearest',
     ...                      extent=extent, cmap='bone_r')
     >>> im.set_data(x0, x1, y00.real/y00.real.max())
 
@@ -210,6 +215,5 @@ exhaustingly long. Here is one such example.
     >>> plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
     >>> plt.subplots_adjust(wspace=0.025, hspace=0.05)
     >>> plt.savefig(NMR2Ddata.filename+'.pdf')
-    >>> plt.show()
 
-.. image:: /_static/satRec_raw.csdfx.pdf
+.. image:: /_static/satRec_raw.csdfe.pdf

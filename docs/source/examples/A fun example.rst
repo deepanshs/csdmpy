@@ -22,47 +22,45 @@ package.
     >>> fundata = cp.new()
 
 This will create an instance of the :ref:`csdm_api` class with a 0D{0} dataset,
-`i.e.`, a dataset with no dependent or independent variables.
+`i.e.`, a dataset with no dependent variable or dimensions.
 
 .. doctest::
 
     >>> print(fundata.data_structure)
     {
-      "CSDM": {
-        "version": "0.0.10",
-        "description": "",
-        "independent_variables": [],
+      "csdm": {
+        "version": "0.0.11",
+        "dimensions": [],
         "dependent_variables": []
       }
     }
-  
+
 There are three ways to add an independent variable to an instance of the
 :ref:`csdm_api` class. Here, we'll make use a python dictionary to create an
-:ref:`iv_api` instance. 
+:ref:`iv_api` instance.
 
 .. doctest::
 
     >>> x = {
     ...     'type': 'labeled',
-    ...     'values': ['🍈','🍉','🍋','🍌','🥑','🍍'] 
+    ...     'values': ['🍈','🍉','🍋','🍌','🥑','🍍']
     ... }
 
 The above python dictionary contains two keys. The `type` key identifies the
 independent variable as a labeled dimension while the `values` key holds an
 array of labels. In this example, the labels are emoji. To create an instance
 of the independent variable, simply add this dictionary as an argument of the
-:meth:`~csdfpy.CSDModel.add_independent_variable` method of the ``fundata``
+:meth:`~csdfpy.CSDModel.add_dimension` method of the ``fundata``
 instance.
 
 .. doctest::
 
-    >>> fundata.add_independent_variable(x)
+    >>> fundata.add_dimension(x)
     >>> print(fundata.data_structure)
     {
-      "CSDM": {
-        "version": "0.0.10",
-        "description": "",
-        "independent_variables": [
+      "csdm": {
+        "version": "0.0.11",
+        "dimensions": [
           {
             "type": "labeled",
             "values": [
@@ -80,13 +78,13 @@ instance.
     }
 
 We have successfully added one independent variable to the ``fundata``
-instance. To add more independent variables, simply write a python
+instance. To add more dimensions, simply set up a python
 dictionary corresponding to each independent variable and sequentially add it
 to the ``fundata`` instance using the
-:meth:`~csdfpy.CSDModel.add_independent_variable` method.
+:meth:`~csdfpy.CSDModel.add_dimension` method.
 In this example, we'll limit to one independent variable.
 
-Similary to add a dependent variable, again write a python dictionary
+Similarly to add a dependent variable, again write a python dictionary
 corresponding to the dependent variable. Only this time pass the dictionary as
 an argument of the :meth:`~csdfpy.CSDModel.add_dependent_variable` method of
 the ``fundata`` instance.
@@ -95,8 +93,7 @@ the ``fundata`` instance.
 
     >>> y ={
     ...     'type': 'internal',
-    ...     'encoding': 'none',
-    ...     'numeric_type': 'float16',
+    ...     'numeric_type': 'float32',
     ...     'components': [[0.5, 0.25, 1, 2, 1, 0.25]]
     ... }
 
@@ -115,10 +112,9 @@ Now, we have a 😂 dataset...
 
     >>> print(fundata.data_structure)
     {
-      "CSDM": {
-        "version": "0.0.10",
-        "description": "",
-        "independent_variables": [
+      "csdm": {
+        "version": "0.0.11",
+        "dimensions": [
           {
             "type": "labeled",
             "values": [
@@ -133,8 +129,13 @@ Now, we have a 😂 dataset...
         ],
         "dependent_variables": [
           {
-            "numeric_type": "float16",
-            "components": "[0.5, 0.5, ...... 1.0, 1.0]"
+            "type": "internal",
+            "numeric_type": "float32",
+            "components": [
+              [
+                "0.5, 0.5, ..., 1.0, 1.0"
+              ]
+            ]
           }
         ]
       }
@@ -151,7 +152,7 @@ To save the file, use the :meth:`~csdfpy.CSDModel.save` method of the
 .. testcleanup::
 
     import os
-    os.remove('myfile.csdf')
+    os.remove('csdfpy/myfile.csdf')
 
 In the above code, the data values from the
 :attr:`~csdfpy.CSDModel.dependent_variables` attribute are encoded as

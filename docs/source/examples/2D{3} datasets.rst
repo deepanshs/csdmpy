@@ -4,44 +4,45 @@
 2D{3} datasets
 --------------
 
-The 2D{3} datasets have two independent variables, :math:`d=2` and
-one three-component dependent variable, :math:`p=3`.
+The 2D{3} datasets is two dimensional, :math:`d=2` dataset with
+a single three-component dependent variable, :math:`p=3`.
 
 Image datasets
 ^^^^^^^^^^^^^^
 
 A common example from this subset is perhaps the RGB image dataset.
-An image dataset has two spatially independent variables and one dependent
+An image dataset has two spatial dimensions and one dependent
 variable with three components corresponding to the red, green, and blue color
 intensities.
- 
+
 The following is an example of the RGB image dataset.
 
 .. doctest::
 
     >>> import csdfpy as cp
 
-    >>> filename = '../../test-datasets0.0.10/image/raccoon_raw.csdfe'
+    >>> filename = '../test-datasets0.0.11/image/raccoon_raw.csdfe'
     >>> ImageData = cp.load(filename)
     >>> print (ImageData.data_structure)
     {
-      "CSDM": {
-        "version": "0.0.10",
+      "csdm": {
+        "version": "0.0.11",
         "description": "An RBG image of a raccoon face.",
-        "independent_variables": [
+        "dimensions": [
           {
-            "type": "linear_spacing",
+            "type": "linear",
             "number_of_points": 1024,
             "increment": "1.0"
           },
           {
-            "type": "linear_spacing",
+            "type": "linear",
             "number_of_points": 768,
             "increment": "1.0"
           }
         ],
         "dependent_variables": [
           {
+            "type": "internal",
             "name": "raccoon face",
             "numeric_type": "uint8",
             "quantity_type": "RGB",
@@ -50,7 +51,17 @@ The following is an example of the RGB image dataset.
               "green",
               "blue"
             ],
-            "components": "[121, 121, ...... 119, 119], [112, 112, ...... 155, 155], [131, 131, ...... 93, 93]"
+            "components": [
+              [
+                "121, 121, ..., 119, 119"
+              ],
+              [
+                "112, 112, ..., 155, 155"
+              ],
+              [
+                "131, 131, ..., 93, 93"
+              ]
+            ]
           }
         ]
       }
@@ -61,12 +72,11 @@ The tuples of the independent and dependent variable instances from
 
 .. doctest::
 
-    >>> x = ImageData.independent_variables
+    >>> x = ImageData.dimensions
     >>> y = ImageData.dependent_variables
 
-resepctively.
-Since there are two independent variables, the coordinates
-along each independent variable are
+respectively.
+Since there are two dimensions, the coordinates along each dimension are
 
 .. doctest::
 
@@ -108,7 +118,7 @@ For example,
 will return an array with the first component of all data values. Here, these
 components correspond to the red color intensity. The label corresponding to
 this component array is accessed through the
-:attr:`~csdfpy.DependentVariable.component_labels` attrbibute with appropriate
+:attr:`~csdfpy.DependentVariable.component_labels` attribute with appropriate
 indexing, that is
 
 .. doctest::
@@ -156,6 +166,5 @@ Now, to visualize the dataset.
     >>> plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
     >>> plt.subplots_adjust(wspace=0.025, hspace=0.05, left=0., right=1, top=1, bottom=0)
     >>> plt.savefig(ImageData.filename+'.pdf')
-    >>> plt.show()
 
-.. image:: /_static/raccoon_raw.csdfx.png
+.. image:: /_static/raccoon_raw.csdfe.png

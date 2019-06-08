@@ -1,0 +1,32 @@
+dist: xenial
+language: python
+python:
+  - "3.0"
+  - "3.1"
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "3.7"
+
+sudo: false
+cache: pip
+
+
+# safelist
+branches:
+  only:
+  - master
+
+before_install:
+  - "pip install --upgrade pip"
+  - "pip install -r requirements.txt"
+
+install:
+  - "python setup.py sdist"
+  - "pip install ."
+
+# command to run tests
+script:
+  - "python setup.py test"

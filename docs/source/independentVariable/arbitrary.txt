@@ -6,7 +6,7 @@ DimensionWithArbitrarySpacing
 -----------------------------
 
 In this subsection, we describe an independent variable dimension which is
-discretized at arbitrary spacing. This subtypes of independent variables are
+monotonically spacing. This subtypes of dimensions are
 the instances of the :ref:`dwas_api` class.
 
 In the following we illustrate the various features :ref:`dwas_api` instance.
@@ -16,7 +16,7 @@ The following snippet loads a test file with a linearly sampled grid dimension,
 .. doctest::
 
     >>> import csdfpy as cp
-    >>> filename = '../../test-datasets0.0.10/test/test02.csdf'
+    >>> filename = '../test-datasets0.0.11/test/test02.csdf'
     >>> testdata1 = cp.load(filename)
 
 The variable ``testdata1`` is an instance of the
@@ -25,9 +25,7 @@ we will focus on its :py:attr:~csdfpy.CSDModel.controlled_variables attribute,
 
 .. doctest::
 
-    >>> x = testdata1.independent_variables
-    >>> print(x)
-    (<csdfpy.controlled_variables._arbitrarilySampledGridDimension object at 0xa1c9f6e48>,)
+    >>> x = testdata1.dimensions
 
 In this case, the variable x is a tuple with a single object,
 only now, it contains a :ref:`cv_api` object. The controlled
@@ -90,8 +88,8 @@ attribute, ::
 **The reference offset** ::
 
     >>> print ('old reference offset =', x[0].sampling_interval)
-    >>> x[0].reference_offset = "-1 s"
-    >>> print ('new reference offset =', x[0].reference_offset)
+    >>> x[0].index_zero_value = "-1 s"
+    >>> print ('new reference offset =', x[0].index_zero_value)
     >>> print ('new coordinates =', x[0].coordinates)
     old reference offset = 0.0 s
     new reference offset = -1.0 s

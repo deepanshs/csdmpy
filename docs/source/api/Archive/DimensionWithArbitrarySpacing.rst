@@ -18,4 +18,3 @@
 ..     .. rubric:: Attributes Documentation
 
 ..     .. autoattribute:: coordinates
-

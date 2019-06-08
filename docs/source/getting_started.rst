@@ -28,39 +28,45 @@ sample test file.
 
 .. doctest::
 
-    >>> filename = '../../test-datasets0.0.10/test/test01.csdf' # replace this with the filename.
+    >>> filename = '../test-datasets0.0.11/test/test01.csdf' # replace this with the filename.
     >>> testdata1 = cp.load(filename)
 
-Here, ``testdata1`` is an instance of the :ref:`csdm_api` class which holds the
-contents of the ``test_file``.
+Here, ``testdata1`` is an instance of the :ref:`csdm_api` class.
 
-------------------------------
-Accessing the file description
-------------------------------
 
-A CSD model serialized data file may contain an optional description key.
-This key is intended to provide a quick description of the data content. In the
-`csdfpy` module, one can access the file description using the
-:py:attr:`~csdfpy.CSDModel.description` attribute of the respective
-:ref:`csdm_api` class instance, in this case, the ``testdata1`` instance.
+---------------------------------
+Understanding the CSDModel object
+---------------------------------
+
+The instance of the CSDModel class is what you will interact to access
+data. Every CSDModel object have attributes that describe the dataset
+
+description
+^^^^^^^^^^^
+
+A CSD model serialized data file may contain an optional description key within
+every object in the CSD model hierarchy. At the root level, this key holds the
+value that briefly describes the dataset. To access the value of this key use
+the :py:attr:`~csdfpy.CSDModel.description` attribute.
+In this example, the description of the ``testdata1`` instance is
 
 .. doctest::
 
     >>> print(testdata1.description)
-    'A simulated sine curve.'
+    A simulated sine curve.
 
 -------------------------------------------------
 Accessing the independent and dependent variables
 -------------------------------------------------
 
-To access the dependent and independent variables of the dataset, use the
+To access the dependent variables and dimensions of the dataset, use the
 :py:attr:`~csdfpy.CSDModel.dependent_variables` and the
-:py:attr:`~csdfpy.CSDModel.independent_variables` attribute,
+:py:attr:`~csdfpy.CSDModel.dimensions` attribute,
 respectively, of the ``testdata1`` instance. For example,
 
 .. doctest::
 
-    >>> x = testdata1.independent_variables
+    >>> x = testdata1.dimensions
     >>> y = testdata1.dependent_variables
 
 where `x` and `y` are the tuples of :ref:`iv_api` and :ref:`dv_api` instances.
@@ -74,7 +80,7 @@ In the above example, both `x` and `y` are tuples with a single instance.
     y is a tuple of length 1.
 
 To access the list of coordinates along the independent variable dimension, use
-the :py:attr:`~csdfpy.IndependentVariable.coordinates` attribute of the
+the :py:attr:`~csdfpy.Dimension.coordinates` attribute of the
 respective :ref:`iv_api` instance. In this example, the coordinates are
 
 .. doctest::
@@ -114,7 +120,7 @@ respective :ref:`dv_api` instance. For example,
 
 The value of the :py:attr:`~csdfpy.DependentVariable.components` attribute
 is a Numpy array. Note, the number of dimensions of this array is :math:`d+1`
-where :math:`d` is the number of independent variables.
+where :math:`d` is the number of dimensions.
 The additional dimension corresponds to
 the number of components of the dependent variable. For instance, in this
 example, there is a single independent variable, `i.e.`, :math:`d=1` and
@@ -153,7 +159,7 @@ library.
     module does not include any plotting library.
 
 The following snippet plots the dataset from this example. Here, the
-`axis_label` is an attribute of both IndependentVariable and DependentVariable
+`axis_label` is an attribute of both Dimension and DependentVariable
 instances and `name` is an attribute of the DependentVariable instance.
 
 .. doctest::

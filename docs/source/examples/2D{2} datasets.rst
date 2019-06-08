@@ -4,8 +4,8 @@
 2D{2} datasets
 --------------
 
-The 2D{2} datasets have two independent variables, :math:`d=2`,
-and one two-component dependent variable, :math:`p=2`.
+The 2D{2} datasets is two-dimensional, :math:`d=2`, dataset
+with one two-component dependent variable, :math:`p=2`.
 
 Vector dataset
 ^^^^^^^^^^^^^^
@@ -17,19 +17,19 @@ as a function of two spatial dimensions.
 
     >>> import csdfpy as cp
 
-    >>> filename = '../../test-datasets0.0.10/vector/electricField/electric_field_raw.csdfe'
-    >>> vectordata = cp.load(filename)
-    >>> print (vectordata.data_structure)
+    >>> filename = '../test-datasets0.0.11/vector/electricField/electric_field_raw.csdfe'
+    >>> vector_data = cp.load(filename)
+    >>> print (vector_data.data_structure)
     {
-      "CSDM": {
-        "version": "0.0.10",
+      "csdm": {
+        "version": "0.0.11",
         "description": "A simulated electric field dataset from an electric dipole.",
-        "independent_variables": [
+        "dimensions": [
           {
-            "type": "linear_spacing",
+            "type": "linear",
             "number_of_points": 64,
             "increment": "0.0625 cm",
-            "reference_offset": "-2.0 cm",
+            "index_zero_value": "-2.0 cm",
             "quantity": "length",
             "label": "x",
             "reciprocal": {
@@ -37,10 +37,10 @@ as a function of two spatial dimensions.
             }
           },
           {
-            "type": "linear_spacing",
+            "type": "linear",
             "number_of_points": 64,
             "increment": "0.0625 cm",
-            "reference_offset": "-2.0 cm",
+            "index_zero_value": "-2.0 cm",
             "quantity": "length",
             "label": "y",
             "reciprocal": {
@@ -50,12 +50,20 @@ as a function of two spatial dimensions.
         ],
         "dependent_variables": [
           {
+            "type": "internal",
             "name": "Electric field lines",
             "unit": "C^-1 * N",
             "quantity": "electrical field strength",
             "numeric_type": "float32",
             "quantity_type": "vector_2",
-            "components": "[3.7466873e-07, 3.7466873e-07, ...... 3.5343004e-07, 3.5343004e-07], [1.6129676e-06, 1.6129676e-06, ...... 1.846712e-06, 1.846712e-06]"
+            "components": [
+              [
+                "3.7466873e-07, 3.7466873e-07, ..., 3.5343004e-07, 3.5343004e-07"
+              ],
+              [
+                "1.6129676e-06, 1.6129676e-06, ..., 1.846712e-06, 1.846712e-06"
+              ]
+            ]
           }
         ]
       }
@@ -67,8 +75,8 @@ from this example are
 
 .. doctest::
 
-    >>> x = vectordata.independent_variables
-    >>> y = vectordata.dependent_variables
+    >>> x = vector_data.dimensions
+    >>> y = vector_data.dependent_variables
 
 with the respective coordinates (viewed only up to five values).
 
@@ -130,7 +138,6 @@ And now, the plot.
 
     >>> plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
     >>> plt.subplots_adjust(wspace=0.025, hspace=0.05)
-    >>> plt.savefig(vectordata.filename+'.pdf')
-    >>> plt.show()
+    >>> plt.savefig(vector_data.filename+'.pdf')
 
-.. image:: /_static/electric_field_raw.csdfx.pdf
+.. image:: /_static/electric_field_raw.csdfe.pdf

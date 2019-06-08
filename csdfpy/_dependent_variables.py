@@ -1,23 +1,26 @@
+# -*- coding: utf-8 -*-
 """The DependentVariable SubType classes."""
+from __future__ import division
+from __future__ import print_function
 
-from __future__ import print_function, division
-import numpy as np
 import base64
-from os import path
-
-from urllib.request import urlopen
-from urllib.parse import urlparse
-
 import warnings
 from copy import deepcopy
+from os import path
+from urllib.parse import urlparse
+from urllib.request import urlopen
 
-from ._utils import (
-    numpy_dtype_to_numeric_type,
-    _check_encoding,
-    _type_message,
-    NumericType,
-    QuantityType
-)
+import numpy as np
+
+from ._utils import _assign_and_check_unit_consistency
+from ._utils import _check_encoding
+from ._utils import _check_quantity
+from ._utils import _type_message
+from ._utils import NumericType
+from ._utils import numpy_dtype_to_numeric_type
+from ._utils import QuantityType
+from ._utils_download_file import _get_proper_url_parse
+from .units import value_object_format
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -25,40 +28,36 @@ __email__ = "srivastava.89@osu.edu"
 
 
 # Decode data functions #
-
 def _decode_base64(_components, _dtype):
-    _components = np.asarray([np.frombuffer(base64.b64decode(item),
-                             dtype=_dtype)
-                             for item in _components])
-
-    # _components.setflags(write=1)
+    _components = np.asarray(
+        [
+            np.frombuffer(base64.b64decode(item), dtype=_dtype)
+            for item in _components
+        ]
+    )
     return _components
 
 
 def _decode_none(_components, _dtype):
-    if _dtype in ['<c8', '<c16']:
+    if _dtype in ["<c8", "<c16"]:
         _components = np.asarray(
-            [np.asarray(item[0::2]) + 1j*np.asarray(item[1::2])
-                for item in _components], dtype=_dtype
+            [
+                np.asarray(item[0::2]) + 1j * np.asarray(item[1::2])
+                for item in _components
+            ],
+            dtype=_dtype,
         )
     else:
         _components = np.asarray(
-            [np.asarray(item) for item in _components],
-            dtype=_dtype
+            [np.asarray(item) for item in _components], dtype=_dtype
         )
-
-    # _components.setflags(write=1)
     return _components
 
 
 def _decode_raw(_components, _dtype, _component_num):
-    _components = np.fromstring(_components, dtype=_dtype)
-    # print(_components.flags)
-    # _components = np.array(_components, copy=True)
-    # _components.setflags(write=1)
-    _components.shape = _component_num, int(_components.size/_component_num)
+    _components = np.frombuffer(_components, dtype=_dtype)
+    _components.shape = _component_num, int(_components.size / _component_num)
     return _components
-# --------------------------------------------------------------
 
 
 def _get_absolute_data_address(data_path, file):
@@ -71,42 +70,154 @@ def _get_absolute_data_address(data_path, file):
     _path, _file = path.split(_file_abs_path)
     _join = path.join(_path, data_path)
     _join = path.normpath(_join)
-
-    return 'file:'+_join
-
-
-# def _get_relative_data_address(data_absolute_uri, file):
-#     res = urlparse(data_absolute_uri)
-#     _data_abs_path = path.abspath(res.path)
-#     _file_abs_path = path.split(path.abspath(file))[0]
-#     _data_rel_path = path.relpath(_data_abs_path, start=_file_abs_path)
-#     return 'file:./'+_data_rel_path
+    return "file:" + _join
 
 
-def _get_absolute_uri_path(uri, file):
-    res = urlparse(uri)
-    path = uri
-    # print(res)
-    if res.scheme in ['file', '']:
-        if res.netloc == '':
+def _get_absolute_uri_path(url, file):
+    res = _get_proper_url_parse(url)
+    path = res.geturl()
+    if res.scheme in ["file", ""]:
+        if res.netloc == "":
             path = _get_absolute_data_address(res.path, file)
     return path
 
 
 def _get_relative_uri_path(dataset_index, filename):
     index = str(dataset_index)
-    file_save_path_abs = _get_absolute_uri_path('', filename)
+    _absolute_path = _get_absolute_uri_path("", filename)
 
-    _name = path.splitext(path.split(filename)[1])[0] + '_' + index + '.dat'
+    _name = path.splitext(path.split(filename)[1])[0] + "_" + index + ".dat"
 
-    _URI_data_path_relative = path.join('file:.', _name)
+    _url_relative_path = path.join("file:.", _name)
 
-    data_path_absolute = path.abspath(
-        urlparse(path.join(
-            file_save_path_abs, urlparse(_URI_data_path_relative).path
-        )).path
+    absolute_path = path.abspath(
+        urlparse(
+            path.join(_absolute_path, urlparse(_url_relative_path).path)
+        ).path
     )
-    return _URI_data_path_relative, data_path_absolute
+    return _url_relative_path, absolute_path
+
+
+# =========================================================================== #
+#                             SparseSampling Class                            #
+# =========================================================================== #
+
+
+class SparseSampling:
+    r"""Declare a SparseSampling class."""
+
+    __slots__ = (
+        "_sparse_dimensions",
+        "_sparse_grid_vertexes",
+        "_encoding",
+        "_quantity_type",
+        "_numeric_type",
+        "_description",
+        "_application",
+    )
+
+    def __init__(
+        self,
+        _sparse_dimensions,
+        _sparse_grid_vertexes,
+        _encoding="none",
+        _quantity_type="scalar",
+        _numeric_type="int64",
+        _description="",
+        _application={},
+    ):
+        """Initialize a SparseDimension class."""
+        # encoding
+        self.encoding = _encoding
+
+        # numeric type
+        self._numeric_type = NumericType(_numeric_type)
+
+        # quantity_type
+        self._quantity_type = QuantityType(_quantity_type)
+
+        # description
+        self.description = _description
+
+        # application
+        self.application = _application
+
+        # sparse dimensions
+        self._sparse_dimensions = _sparse_dimensions
+
+        # sparse grid vertexes
+        self._sparse_grid_vertexes = _decode_components(
+            [_sparse_grid_vertexes], self
+        )
+
+    # encoding
+    @property
+    def encoding(self):
+        r"""Return the data encoding method."""
+        return deepcopy(self._encoding)
+
+    @encoding.setter
+    def encoding(self, value):
+        if not isinstance(value, str):
+            raise TypeError(_type_message(str, type(value)))
+        value = _check_encoding(value)
+        self._encoding = value
+
+    # numeric type
+    @property
+    def numeric_type(self):
+        r"""Return the numeric type of data values."""
+        return deepcopy(self._numeric_type)
+
+    @numeric_type.setter
+    def numeric_type(self, value):
+        self._numeric_type._update(value)
+
+    # application
+    @property
+    def application(self):
+        """Return an application metadata dictionary."""
+        return deepcopy(self._application)
+
+    @application.setter
+    def application(self, value):
+        if not isinstance(value, dict):
+            raise ValueError(
+                "A dict value is required, found {0}".format(type(value))
+            )
+        self._application = value
+
+    # description
+    @property
+    def description(self):
+        r"""Return the description of the object."""
+        return deepcopy(self._description)
+
+    @description.setter
+    def description(self, value):
+        if isinstance(value, str):
+            self._description = value
+        else:
+            raise ValueError(
+                (
+                    "Description requires a string, {0} given".format(
+                        type(value)
+                    )
+                )
+            )
+
+    # sparse dimensions
+    @property
+    def sparse_dimensions(self):
+        """List of dimension indexes corresponding to sparse dimensions."""
+        return deepcopy(self._sparse_dimensions)
+
+    # sparse grid vertexes
+    @property
+    def sparse_grid_vertexes(self):
+        """List of grid vertexes corresponding to sparse dimensions."""
+        return deepcopy(self._sparse_dimensions)
+
 
 # =========================================================================== #
 #               	       BaseDependentVariable Class      			      #
@@ -117,34 +228,42 @@ class BaseDependentVariable:
     r"""Declare a BaseDependentVariable class."""
 
     __slots__ = (
-        '_encoding',
-        '_numeric_type',
-        '_quantity_type',
-        '_component_labels',
-        '_total_components',
+        "_name",
+        "_unit",
+        "_quantity",
+        "_encoding",
+        "_numeric_type",
+        "_quantity_type",
+        "_component_labels",
+        "_components",
+        "_total_components",
+        "_application",
+        "_description",
     )
 
     def __init__(
-            self,
-            _encoding='none',
-            _numeric_type='float32',
-            _quantity_type='scalar',
-            _component_labels=None):
-
+        self,
+        _name="",
+        _unit="",
+        _quantity=None,
+        _encoding="none",
+        _numeric_type="float32",
+        _quantity_type="scalar",
+        _components=None,
+        _component_labels=None,
+        _description="",
+        _application={},
+    ):
         r"""Instantiate a BaseDependentVariable class."""
+        # name
+        self.name = _name
 
-        self._set_parameters(
-            _encoding,
-            _numeric_type,
-            _quantity_type,
-            _component_labels)
+        # unit
+        _va = _assign_and_check_unit_consistency(_unit, None)
+        self._unit = _va.unit
 
-    def _set_parameters(
-            self,
-            _encoding='none',
-            _numeric_type='float32',
-            _quantity_type='scalar',
-            _component_labels=None):
+        # quantity
+        self._quantity = _check_quantity(_quantity, self._unit)
 
         # encoding
         self.encoding = _encoding
@@ -152,11 +271,20 @@ class BaseDependentVariable:
         # numeric type
         self._numeric_type = NumericType(_numeric_type)
 
-        # dataset_tpye
+        # quantity_type
         self._quantity_type = QuantityType(_quantity_type)
 
         # components label
         self.set_components_label(_component_labels)
+
+        # description
+        self.description = _description
+
+        # application
+        self.application = _application
+
+        # components
+        self._components = _components
 
     def set_components_label(self, component_labels):
         """
@@ -170,20 +298,21 @@ class BaseDependentVariable:
         """
         _n = self._quantity_type._p
         if component_labels is None:
-            _labels = ['' for i in range(_n)]
+            _labels = ["" for i in range(_n)]
             self._component_labels = _labels
             return
 
         if not isinstance(component_labels, list):
-            raise ValueError((
-                    "A list of string labels is required, "
-                    "{0} provided."
+            raise ValueError(
+                (
+                    "A list of string labels is required, " "{0} provided."
                 ).format(type(component_labels))
             )
 
         _component_length = len(component_labels)
         if _component_length != _n:
-            warnings.warn((
+            warnings.warn(
+                (
                     "The number of component labels, {0}, is not equal to the "
                     "number of components, {1}. The inconsistency is resolved "
                     "by appropriate truncation or addition of the strings."
@@ -193,7 +322,7 @@ class BaseDependentVariable:
             if _component_length > _n:
                 self._component_labels = component_labels[:_n]
             else:
-                _lables = ['' for i in range(_n)]
+                _lables = ["" for i in range(_n)]
                 for i, item in enumerate(component_labels):
                     _lables[i] = item
                 self._component_labels = _lables
@@ -201,11 +330,41 @@ class BaseDependentVariable:
 
         self._component_labels = component_labels
 
-# --------------------------------------------------------------------------- #
-#                     BaseIndependentVariable Attributes                      #
-# --------------------------------------------------------------------------- #
+    # ----------------------------------------------------------------------- #
+    #                     BaseIndependentVariable Attributes                  #
+    # ----------------------------------------------------------------------- #
 
-# encoding
+    # name
+    @property
+    def name(self):
+        """Dependent variable name."""
+        return deepcopy(self._name)
+
+    @name.setter
+    def name(self, value):
+        if not isinstance(value, str):
+            raise TypeError(_type_message(str, type(value)))
+        self._name = value
+
+    # unit
+    @property
+    def unit(self):
+        """Dependent variable name."""
+        return deepcopy(self._unit)
+
+    # quantity
+    @property
+    def quantity(self):
+        """Return quantity name."""
+        return deepcopy(self._quantity)
+
+    @quantity.setter
+    def quantity(self, value=""):
+        raise NotImplementedError(
+            ("The `quantity` attribute cannot be modified.")
+        )
+
+    # encoding
     @property
     def encoding(self):
         r"""Return the data encoding method."""
@@ -218,7 +377,7 @@ class BaseDependentVariable:
         value = _check_encoding(value)
         self._encoding = value
 
-# numeric type
+    # numeric type
     @property
     def numeric_type(self):
         r"""Return the numeric type of data values."""
@@ -228,247 +387,59 @@ class BaseDependentVariable:
     def numeric_type(self, value):
         self._numeric_type._update(value)
 
-# quantity type
+    # quantity type
     @property
     def quantity_type(self):
-        r"""Returns the quantity type of the dataset."""
+        r"""Return the quantity type of the dataset."""
         return deepcopy(self._quantity_type)
 
     @quantity_type.setter
     def quantity_type(self, value):
         self._quantity_type._update(value)
 
-# component labels
+    # component labels
     @property
     def component_labels(self):
-        r"""Returns an ordered array of labels."""
-        return deepcopy(self._component_labels)
+        r"""Return an ordered array of labels."""
+        return self._component_labels
 
     @component_labels.setter
     def component_labels(self, value):
         self.set_components_label(value)
 
-# --------------------------------------------------------------------------- #
-#                      BaseIndependentVariable Methods                        #
-# --------------------------------------------------------------------------- #
+    # application
+    @property
+    def application(self):
+        """Return application metadata dictionary."""
+        return deepcopy(self._application)
 
-    def _get_dictionary(self):
-        r"""Return a dictionary object of the base class."""
-
-        dictionary = {}
-
-        dictionary['encoding'] = str(self._encoding)
-        dictionary['numeric_type'] = str(self._numeric_type)
-
-        if str(self._quantity_type) != 'scalar':
-            dictionary['quantity_type'] = str(self._quantity_type)
-
-        print_label = False
-        for label in self._component_labels:
-            if label.strip() != '':
-                print_label = True
-                break
-
-        if print_label:
-            dictionary['component_labels'] = self._component_labels
-
-        return dictionary
-
-
-# =========================================================================== #
-#                             InternalDataset Class                           #
-# =========================================================================== #
-
-
-class InternalDataset(BaseDependentVariable):
-
-    __slots__ = (
-        '_components',
-    )
-
-    def __init__(
-            self,
-            _name='',
-            _unit='',
-            # _type='internal',
-            _quantity=None,
-            _encoding='none',
-            _numeric_type=None,
-            _quantity_type='scalar',
-            _component_labels=None,
-            _components=None):
-
-        # self._type = internal
-
-        # if components is a python list
-        if isinstance(_components, list) and _components != []:
-            if isinstance(_components[0], np.ndarray):
-                _components = np.asarray(_components)
-            # if isinstance(_components[0], list):
-            #     if _numeric_type not in ['complex64', 'complex128']:
-            #         _components = np.asarray(_components)
-
-        # if components is numpy array
-        if isinstance(_components, np.ndarray):
-            # if _numeric_type not in ['complex64', 'complex128']:
-            _numeric_type = numpy_dtype_to_numeric_type(
-                str(_components.dtype)
+    @application.setter
+    def application(self, value):
+        if not isinstance(value, dict):
+            raise ValueError(
+                "A dict value is required, found {0}".format(type(value))
             )
+        self._application = value
 
-            self._components = _components
+    # description
+    @property
+    def description(self):
+        r"""Return the description of the object."""
+        return deepcopy(self._description)
 
-        self._set_parameters(
-            _encoding,
-            _numeric_type,
-            _quantity_type,
-            _component_labels)
-
-        if not isinstance(_components, np.ndarray):
-            _components = self._decode_components(_components)
-            self._components = _components
-
-        # sampling schedule
-        """
-        .. todo::
-            Support for under sampled orthogonal grid based datasets
-        """
-        # self.set_attribute('_sampling_schedule', _sampling_schedule)
-
-# --------------------------------------------------------------------------- #
-#                          InternalDataset Methods                            #
-# --------------------------------------------------------------------------- #
-
-    def _check_number_of_components_and_encoding_key(self, length):
-        """Verify the consistency of encoding wrt the number of components."""
-        if length != self._quantity_type._p:
-            raise Exception((
-                "quantity_type '{0}' requires exactly {1} component(s), "
-                "found {2}."
-                ).format(
-                    self._quantity_type._value,
-                    self._quantity_type._p,
-                    length
-                )
-            )
-
-    def _set_components(self, _components, _numeric_type=None):
-        # numeric type
-        if _numeric_type is None:
-            _numeric_type = numpy_dtype_to_numeric_type(
-                str(_components.dtype)
-            )
-        self._numeric_type._update(_numeric_type)
-
-        # components
-        self._components = np.asarray(_components, self._numeric_type._nptype)
-
-    def _decode_components(self, _components):
-        """
-        Decode the components based on the encoding key value.
-
-        The valid encodings are 'base64', 'none' (text), and 'raw' (binary).
-        """
-        _val_len = len(_components)
-
-        if self.encoding == 'base64':
-            self._check_number_of_components_and_encoding_key(_val_len)
-            return _decode_base64(_components, self._numeric_type._nptype)
-
-        if self._encoding == 'none':
-            self._check_number_of_components_and_encoding_key(_val_len)
-            return _decode_none(_components, self._numeric_type._nptype)
-
-        if self._encoding == 'raw':
-            _dtype = self._numeric_type._nptype
-            _component_num = self._quantity_type._p
-            return _decode_raw(_components, _dtype, _component_num)
-
-        raise Exception(
-            "'{0}' is an invalid data 'encoding'.".format(self._encoding)
-        )
-
-    def _ravel_data(self):
-        """Encode data based on the encoding key value."""
-        _n = self._quantity_type._p
-        size = self._components[0].size
-        if self._numeric_type._value in ['complex64', 'complex128']:
-
-            if self._numeric_type._value == 'complex64':
-                c = np.empty((_n, size*2), dtype=np.float32)
-
-            if self._numeric_type._value == 'complex128':
-                c = np.empty((_n, size*2), dtype=np.float64)
-
-            for i in range(_n):
-                c[i, 0::2] = self._components.real[i].ravel()
-                c[i, 1::2] = self._components.imag[i].ravel()
-
+    @description.setter
+    def description(self, value):
+        if isinstance(value, str):
+            self._description = value
         else:
-            c = np.empty((_n, size), dtype=self._numeric_type._nptype)
-            for i in range(_n):
-                c[i] = self._components[i].ravel()
+            raise ValueError(
+                "Description requires a string, {0} given".format(type(value))
+            )
 
-        return c
-
-    def _reduced_display(self):
-        """
-            Reduced display for quick view of the data structure. The method
-            shows the first and the last two data values.
-        """
-        _str = ''
-        for i in range(len(self._components)):
-            temp = self._components[i].ravel()
-            lst = [str(temp[0]), str(temp[0]),
-                   str(temp[-2]), str(temp[-2])]
-            _string = (
-                "[{0}, {1}, ...... {2}, {3}], "
-            ).format(*lst)
-            _str = _str + _string
-        temp = None
-        return _str
-
-    def _get_python_dictionary(self, filename=None, dataset_index=None,
-                               for_display=True, version=None):
-        """Return the InternalData object as a python dictionary."""
-        dictionary = {}
-
-        if for_display:
-            dictionary.update(self._get_dictionary())
-            dictionary['components'] = self._reduced_display()[:-2]
-            del dictionary['encoding']
-            return dictionary
-
-        c = self._ravel_data()
-
-        if self.encoding == 'none':
-            dictionary['type'] = 'internal'
-            dictionary.update(self._get_dictionary())
-            dictionary['components'] = c.tolist()
-        if self.encoding == 'base64':
-            dictionary['type'] = 'internal'
-            dictionary.update(self._get_dictionary())
-            dictionary['components'] = [base64.b64encode(item).decode(
-                "utf-8") for item in c]
-
-        if self.encoding == 'raw':
-            _URI_data_path_relative, data_path_absolute = \
-                _get_relative_uri_path(dataset_index, filename)
-
-            c.ravel().tofile(data_path_absolute)
-
-            dictionary['type'] = 'external'
-            dictionary.update(self._get_dictionary())
-            dictionary['components_URI'] = _URI_data_path_relative
-
-        del c
-        return dictionary
-
-# --------------------------------------------------------------------------- #
-#                        InternalDataset Attributes                           #
-# --------------------------------------------------------------------------- #
-
+    # components
     @property
     def components(self):
+        """Return components array."""
         dtype = self._numeric_type._nptype
         if self._components.dtype != dtype:
             self._components = np.asarray(self._components, dtype)
@@ -478,61 +449,344 @@ class InternalDataset(BaseDependentVariable):
     def components(self, value):
         value = np.asarray(value)
         if value.shape == self.components.shape:
-            self._set_components(value)
+            _set_components(self, value)
         else:
             raise ValueError(
                 (
-                    "The shape of `{0}`, `{1}`, is not consistent with the "
+                    "The shape of `{0}`, `{1}`, is not consistent\nwith the "
                     "shape of the components array, `{2}`."
                 ).format(
                     value.__class__.__name__,
                     value.shape,
-                    self.components.shape
+                    self.components.shape,
                 )
             )
+
+    # ----------------------------------------------------------------------- #
+    #                      BaseIndependentVariable Methods                    #
+    # ----------------------------------------------------------------------- #
+
+    def _get_dictionary(
+        self, filename=None, dataset_index=None, for_display=True, version=None
+    ):
+        r"""Return a dictionary object of the base class."""
+        dictionary = {}
+        if self._description.strip() != "":
+            dictionary["description"] = str(self._description)
+
+        if self._name.strip() != "":
+            dictionary["name"] = self._name
+
+        if str(self._unit) != "":
+            dictionary["unit"] = value_object_format(
+                1.0 * self._unit, numerical_value=False
+            )
+
+        if self._quantity not in ["dimensionless", "unknown", None]:
+            dictionary["quantity"] = self._quantity
+
+        dictionary["encoding"] = str(self._encoding)
+        dictionary["numeric_type"] = str(self._numeric_type)
+
+        if str(self._quantity_type) != "scalar":
+            dictionary["quantity_type"] = str(self._quantity_type)
+
+        print_label = False
+        for label in self._component_labels:
+            if label.strip() != "":
+                print_label = True
+                break
+
+        if print_label:
+            dictionary["component_labels"] = self._component_labels
+
+        if self._application != {}:
+            dictionary["application"] = self._application
+
+        if for_display:
+            dictionary["components"] = _reduced_display(
+                self._components
+            )  # [:-2]
+            del dictionary["encoding"]
+            return dictionary
+
+        c = _ravel_data(self)
+
+        if self.encoding == "none":
+            dictionary["components"] = c.tolist()
+
+        if self.encoding == "base64":
+            dictionary["components"] = [
+                base64.b64encode(item).decode("utf-8") for item in c
+            ]
+
+        if self.encoding == "raw":
+            _url_relative_path, absolute_path = _get_relative_uri_path(
+                dataset_index, filename
+            )
+
+            c.ravel().tofile(absolute_path)
+
+            dictionary["type"] = "external"
+            dictionary["components_url"] = _url_relative_path
+
+        del c
+        return dictionary
+
+
+def _check_number_of_components_and_encoding_key(length, obj_):
+    """Verify the consistency of encoding wrt the number of components."""
+    if length != obj_._quantity_type._p:
+        raise Exception(
+            (
+                "quantity_type '{0}' requires exactly {1} component(s), "
+                "found {2}."
+            ).format(
+                obj_._quantity_type._value, obj_._quantity_type._p, length
+            )
+        )
+
+
+def _decode_components(_components, obj):
+    """
+    Decode the components based on the encoding key value.
+
+    The valid encodings are 'base64', 'none' (text), and 'raw' (binary).
+    """
+    _val_len = len(_components)
+
+    if obj._encoding == "base64":
+        _check_number_of_components_and_encoding_key(_val_len, obj)
+        return _decode_base64(_components, obj._numeric_type._nptype)
+
+    if obj._encoding == "none":
+        _check_number_of_components_and_encoding_key(_val_len, obj)
+        return _decode_none(_components, obj._numeric_type._nptype)
+
+    if obj._encoding == "raw":
+        _dtype = obj._numeric_type._nptype
+        _component_num = obj._quantity_type._p
+        return _decode_raw(_components, _dtype, _component_num)
+
+    raise Exception(
+        "'{0}' is an invalid data 'encoding'.".format(obj._encoding)
+    )
+
+
+def _set_components(member, _components, _numeric_type=None):
+    # numeric type
+    if _numeric_type is None:
+        _numeric_type = numpy_dtype_to_numeric_type(str(_components.dtype))
+    member._numeric_type._update(_numeric_type)
+
+    # components
+    member._components = np.asarray(_components, member._numeric_type._nptype)
+
+
+def _ravel_data(member):
+    """Encode data based on the encoding key value."""
+    _n = member._quantity_type._p
+    size = member._components[0].size
+    if member._numeric_type._value in ["complex64", "complex128"]:
+
+        if member._numeric_type._value == "complex64":
+            c = np.empty((_n, size * 2), dtype=np.float32)
+
+        if member._numeric_type._value == "complex128":
+            c = np.empty((_n, size * 2), dtype=np.float64)
+
+        for i in range(_n):
+            c[i, 0::2] = member._components.real[i].ravel()
+            c[i, 1::2] = member._components.imag[i].ravel()
+
+    else:
+        c = np.empty((_n, size), dtype=member._numeric_type._nptype)
+        for i in range(_n):
+            c[i] = member._components[i].ravel()
+
+    return c
+
+
+def _reduced_display(_components):
+    r"""
+        Reduced display for quick view of the data structure.
+
+        The method shows the first and the last two data values.
+    """
+    # _str = ""
+    _string = []
+    for i in range(len(_components)):
+        temp = _components[i].ravel()
+        lst = [str(temp[0]), str(temp[0]), str(temp[-2]), str(temp[-2])]
+        _string.append([("{0}, {1}, ..., {2}, {3}").format(*lst)])
+        # _str = _str + _string
+    temp = None
+    return _string
+
+
+# =========================================================================== #
+#                             InternalDataset Class                           #
+# =========================================================================== #
+
+
+class InternalDataset(BaseDependentVariable):
+    """InternalDataset class."""
+
+    __slots__ = ("_components", "_sparse_sampling")
+
+    def __init__(
+        self,
+        _name="",
+        _unit="",
+        _quantity=None,
+        _encoding="none",
+        _numeric_type=None,
+        _quantity_type="scalar",
+        _component_labels=None,
+        _components=None,
+        _description="",
+        _application={},
+        _sparse_dimensions=None,
+        _sparse_grid_vertexes=None,
+        _sparse_encoding="none",
+        _sparse_numeric_type="int64",
+        _sparse_description="",
+        _sparse_application={},
+    ):
+        """Initialize."""
+        self._sparse_sampling = {}
+
+        if isinstance(_components, list) and _components != []:
+            if isinstance(_components[0], np.ndarray):
+                _components = np.asarray(_components)
+
+        if isinstance(_components, np.ndarray):
+            if _numeric_type is None:
+                _numeric_type = numpy_dtype_to_numeric_type(
+                    str(_components.dtype)
+                )
+                self._components = _components
+            else:
+                self._components = _components.astype(_numeric_type)
+
+        super(InternalDataset, self).__init__(
+            _name=_name,
+            _unit=_unit,
+            _quantity=_quantity,
+            _encoding=_encoding,
+            _numeric_type=_numeric_type,
+            _quantity_type=_quantity_type,
+            _components=_components,
+            _component_labels=_component_labels,
+            _description=_description,
+            _application=_application,
+        )
+
+        # super base class must be initialized before retrieving
+        # the components array.
+
+        if not isinstance(_components, np.ndarray):
+            _components = _decode_components(_components, self)
+            self._components = _components
+
+        if _sparse_dimensions is not None:
+            self._sparse_sampling = SparseSampling(
+                _sparse_dimensions=_sparse_dimensions,
+                _sparse_grid_vertexes=_sparse_grid_vertexes,
+                _encoding=_sparse_encoding,
+                _numeric_type=_sparse_numeric_type,
+                _application=_sparse_application,
+                _description=_sparse_description,
+            )
+
+    def _get_python_dictionary(
+        self, filename=None, dataset_index=None, for_display=True, version=None
+    ):
+        """Return the InternalData object as a python dictionary."""
+        dictionary = {}
+
+        dictionary["type"] = "internal"
+        dictionary.update(
+            self._get_dictionary(filename, dataset_index, for_display, version)
+        )
+        return dictionary
+
 
 # =========================================================================== #
 #                            ExternalDataset Class                            #
 # =========================================================================== #
 
 
-class ExternalDataset(InternalDataset):
+class ExternalDataset(BaseDependentVariable):
+    """ExternalDataset class."""
 
-    __slots__ = (
-        '_components_uri'
-    )
+    __slots__ = ("_components", "_components_url", "_sparse_sampling")
 
     def __init__(
-            self,
-            _name='',
-            _unit='',
-            _quantity=None,
-            _encoding='none',
-            _numeric_type=None,
-            _quantity_type='scalar',
-            _component_labels=None,
-            _components_uri=None,
-            _filename=''):
+        self,
+        _name="",
+        _unit="",
+        _quantity=None,
+        _encoding="none",
+        _numeric_type=None,
+        _quantity_type="scalar",
+        _component_labels=None,
+        _components_url=None,
+        _filename="",
+        _description="",
+        _application={},
+        _sparse_dimensions=None,
+        _sparse_grid_vertexes=None,
+        _sparse_encoding="none",
+        _sparse_numeric_type="int64",
+        _sparse_description="",
+        _sparse_application={},
+    ):
+        """Initialize."""
+        self._sparse_sampling = {}
 
-        self._set_parameters(
-            _encoding,
-            _numeric_type,
-            _quantity_type,
-            _component_labels)
-
-        # self._type = 'external'
-
-        _absolute_URI = _get_absolute_uri_path(
-            _components_uri, _filename
+        super(ExternalDataset, self).__init__(
+            _name=_name,
+            _unit=_unit,
+            _quantity=_quantity,
+            _encoding=_encoding,
+            _numeric_type=_numeric_type,
+            _quantity_type=_quantity_type,
+            _components=None,
+            _component_labels=_component_labels,
+            _description=_description,
+            _application=_application,
         )
-        self._components_uri = _components_uri
+
+        _absolute_URI = _get_absolute_uri_path(_components_url, _filename)
+        self._components_url = _components_url
 
         _components = urlopen(_absolute_URI).read()
-        self._components = self._decode_components(_components)
+        self._components = _decode_components(_components, self)
+
+        if _sparse_dimensions is not None:
+            self._sparse_sampling = SparseSampling(
+                _sparse_dimensions=_sparse_dimensions,
+                _sparse_grid_vertexes=_sparse_grid_vertexes,
+                _encoding=_sparse_encoding,
+                _numeric_type=_sparse_numeric_type,
+                _application=_sparse_application,
+                _description=_sparse_description,
+            )
 
     @property
-    def components_uri(self):
-        return self._components_uri
+    def components_url(self):
+        """Return components_url of the CSDM serialized file."""
+        return self._components_url
 
-    def _download_file_contents_from_url(self, filename):
-        pass
+    def _get_python_dictionary(
+        self, filename=None, dataset_index=None, for_display=True, version=None
+    ):
+        """Return the InternalData object as a python dictionary."""
+        dictionary = {}
+
+        dictionary["type"] = "internal"
+        dictionary.update(
+            self._get_dictionary(filename, dataset_index, for_display, version)
+        )
+        return dictionary

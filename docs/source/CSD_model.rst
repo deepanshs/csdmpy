@@ -53,10 +53,10 @@ end user to a possible risk of failure if the external data file is
 inaccessible when deserializing a file with the .csdfe file extensions.
 
 .. The model allows two types of file extensions for the JSON file-serialization,
-.. `.csdf` and `.csdfx`, the acronyms for the Core Scientific Dataset Format and
+.. `.csdf` and `.csdfe`, the acronyms for the Core Scientific Dataset Format and
 .. the Core Scientific Dataset Format eXternal. The two file extensions act as a
 .. medium to convey the end users whether the data values are present within the
-.. file (`.csdf`) or in an external file on a local or remote server (`.csdfx`).
+.. file (`.csdf`) or in an external file on a local or remote server (`.csdfe`).
 
 **CSD model expression**
 
@@ -66,5 +66,5 @@ In mathematical notations, the CSD model is expressed as,
 
     y = f(x_0, x_1, ... x_k, ... x_{d-1})
 
-where :math:`y` is the dependent variable and the :math:`x_k`,
-:math:`k \in \{0, 1, ... ,d-1\}`, are the independent variables.
+where :math:`y` is the dependent variable and :math:`x_k`,
+:math:`k \in \{0, 1, ... ,d-1\}`, are the dimensions of the coordinate grid.

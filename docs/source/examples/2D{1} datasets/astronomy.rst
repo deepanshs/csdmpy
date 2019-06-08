@@ -4,7 +4,7 @@
 Astronomy dataset
 ^^^^^^^^^^^^^^^^^
 
-The following dataset is a new observation of the Bubble Nebula 
+The following dataset is a new observation of the Bubble Nebula
 acquired by
 `The Hubble Heritage Team <https://archive.stsci.edu/prepds/heritage/bubble/introduction.html>`_,
 on February 2016. The original dataset was downloaded in the FITS format
@@ -16,42 +16,47 @@ Let's load the `.csdfe` file and take a quick look at its data structure.
 
     >>> import csdfpy as cp
 
-    >>> bubble_data = cp.load('../../test-datasets0.0.10/astronomy/source/Bubble Nebula/Bubble.csdfe')
-    >>> print(bubble_data.data_structure)
+    >>> bubble_nebula = cp.load('../test-datasets0.0.11/astronomy/source/Bubble Nebula/Bubble.csdfe')
+    >>> print(bubble_nebula.data_structure)
     {
-      "CSDM": {
-        "version": "0.0.10",
+      "csdm": {
+        "version": "0.0.11",
         "description": "The dataset is a new observation of the Bubble Nebula acquired by The Hubble Heritage Team, in February 2016.",
-        "independent_variables": [
+        "dimensions": [
           {
-            "type": "linear_spacing",
+            "type": "linear",
             "number_of_points": 11596,
             "increment": "-2.279306196154649e-05 °",
-            "reference_offset": "350.311874957 °",
+            "index_zero_value": "350.311874957 °",
             "quantity": "angle",
             "label": "Right Ascension"
           },
           {
-            "type": "linear_spacing",
+            "type": "linear",
             "number_of_points": 11351,
             "increment": "1.1005521846938031e-05 °",
-            "reference_offset": "61.128514949691635 °",
+            "index_zero_value": "61.128514949691635 °",
             "quantity": "angle",
             "label": "Declination"
           }
         ],
         "dependent_variables": [
           {
+            "type": "internal",
             "name": "hlsp_heritage_hst_wfc3-uvis_bubble_nebula_f656n_v1_drc",
             "numeric_type": "float32",
-            "components": "[0.0, 0.0, ...... 0.0, 0.0]"
+            "components": [
+              [
+                "0.0, 0.0, ..., 0.0, 0.0"
+              ]
+            ]
           }
         ]
       }
     }
 
-Here, the variable ``bubble_data`` is an instance of the :ref:`csdm_api` class.
-From the data structure, one finds two independent variables, labeled as
+Here, the variable ``bubble_nebula`` is an instance of the :ref:`csdm_api` class.
+From the data structure, one finds a two dimensions, labeled as
 *Right Ascension* and *Declination*, and a single one-component dependent
 variable named as *hlsp_heritage_hst_wfc3-uvis_bubble_nebula_f656n_v1_drc*.
 During the file conversion to the CSD model, we retained the original FITS
@@ -59,16 +64,16 @@ standard naming convention.
 
 
 Let's get the tuples of the independent and dependent variable instances from
-the ``bubble_data`` instance following,
+the ``bubble_nebula`` instance following,
 
 .. doctest::
 
-    >>> x = bubble_data.independent_variables
-    >>> y = bubble_data.dependent_variables
+    >>> x = bubble_nebula.dimensions
+    >>> y = bubble_nebula.dependent_variables
 
 Because there are two independent variable instances in `x`, let's take a look
-at the coordinates of each independent variable, `x0`, and `x1` respectively, 
-using the :py:attr:`~csdfpy.IndependentVariable.coordinates` attribute of the
+at the coordinates of each independent variable, `x0`, and `x1` respectively,
+using the :py:attr:`~csdfpy.Dimension.coordinates` attribute of the
 respective instances.
 
 .. doctest::
@@ -82,12 +87,12 @@ respective instances.
     >>> print(x1)
     [61.12851495 61.12852596 61.12853696 ... 61.25340561 61.25341662
      61.25342762] deg
- 
+
 Notice, the descending order of coordinates in `x0` which is a
-consequence of  the :py:attr:`~csdfpy.IndependentVariable.reverse` attribute set
+consequence of  the :py:attr:`~csdfpy.Dimension.reverse` attribute set
 to `True` for the corresponding :ref:`iv_api` instance. This is also
 observed from the data structure view shown above. As before, the component of the
-dependent variable is accessed through the 
+dependent variable is accessed through the
 :py:attr:`~csdfpy.DependentVariable.components` attribute.
 
 .. doctest::
@@ -119,7 +124,7 @@ Now, to plot the data.
     >>> ax.set_xlabel(x[0].axis_label)  # doctest: +SKIP
     >>> ax.set_ylabel(x[1].axis_label)  # doctest: +SKIP
     >>> ax.set_title(y[0].name)  # doctest: +SKIP
-    
+
     >>> # Add a colorbar.
     >>> cbar = fig.colorbar(im)
     >>> cbar.ax.set_ylabel(y[0].axis_label[0])  # doctest: +SKIP
@@ -132,8 +137,6 @@ Now, to plot the data.
     >>> ax.grid(color='gray', linestyle='--', linewidth=0.5)
 
     >>> plt.tight_layout(pad=0, w_pad=0, h_pad=0)
-    >>> plt.savefig(bubble_data.filename+'.pdf', dpi=450)
-    >>> plt.show()
+    >>> plt.savefig(bubble_nebula.filename+'.pdf', dpi=450)
 
-.. image:: /_static/Bubble.csdfx.png
-
+.. image:: /_static/Bubble.csdfe.png

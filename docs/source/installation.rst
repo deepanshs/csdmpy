@@ -22,7 +22,7 @@ chances are that you already have the requirements installed.
 
 To install the required packages type the following in the command line. ::
 
-    >>> pip install numpy scipy requests astropy
+    pip install numpy scipy requests astropy
 
 The users may optionally install the matplotlib package if they prefer to use
 this package for generating plots and figures.
@@ -33,13 +33,13 @@ this package for generating plots and figures.
 
 To install the matplotlib package type the following in the command line ::
 
-    >>> pip install matplotlib
+    pip install matplotlib
 
 Now install the test `csdfpy` module using ::
 
-    >>> pip install -i https://test.pypi.org/simple/ csdfpy==0.0.9alpha0
+    pip install -i https://test.pypi.org/simple/csdfpy==0.0.9alpha0
 
-.. This is the recommened installation method.
+.. This is the recommend installation method.
 
 .. **Using source code**:
 

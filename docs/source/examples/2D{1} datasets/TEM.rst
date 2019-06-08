@@ -8,7 +8,7 @@ The following `TEM dataset <https://doi.org/10.1371/journal.pbio.1000502>`_ is
 a section of an early larval brain of *Drosophila melanogaster* used in the
 analysis of neuronal microcircuitry. The dataset was obtained
 from the `TrakEM2 tutorial <http://www.ini.uzh.ch/~acardona/data.html>`_ and
-subsequently converted to the CSD model file-format. 
+subsequently converted to the CSD model file-format.
 
 Let's import the CSD model data-file and look at its data structure.
 
@@ -17,16 +17,16 @@ Let's import the CSD model data-file and look at its data structure.
     >>> import csdfpy as cp
     >>> import matplotlib.pyplot as plt
 
-    >>> filename = '../../test-datasets0.0.10/ssTEM/TEM.csdf'
+    >>> filename = '../test-datasets0.0.11/ssTEM/TEM.csdf'
     >>> TEM = cp.load(filename)
     >>> print(TEM.data_structure)
     {
-      "CSDM": {
-        "version": "0.0.10",
+      "csdm": {
+        "version": "0.0.11",
         "description": "TEM image of the early larval brain of Drosophila melanogaster used in the analysis of neuronal microcircuitry.",
-        "independent_variables": [
+        "dimensions": [
           {
-            "type": "linear_spacing",
+            "type": "linear",
             "number_of_points": 512,
             "increment": "4.0 nm",
             "quantity": "length",
@@ -35,7 +35,7 @@ Let's import the CSD model data-file and look at its data structure.
             }
           },
           {
-            "type": "linear_spacing",
+            "type": "linear",
             "number_of_points": 512,
             "increment": "4.0 nm",
             "quantity": "length",
@@ -46,21 +46,26 @@ Let's import the CSD model data-file and look at its data structure.
         ],
         "dependent_variables": [
           {
+            "type": "internal",
             "numeric_type": "uint8",
-            "components": "[126, 126, ...... 164, 164]"
+            "components": [
+              [
+                "126, 126, ..., 164, 164"
+              ]
+            ]
           }
         ]
       }
     }
 
-This dataset contains two linearly sampled independent variables and one
+This dataset contains two uniformly spaced ,linear dimensions and one
 single-component dependent variable.
 The tuples of the independent and the dependent variable instances from this
 example are
 
 .. doctest::
 
-    >>> x = TEM.independent_variables
+    >>> x = TEM.dimensions
     >>> y = TEM.dependent_variables
 
 with the respective coordinates (viewed only for the first ten coordinates),
@@ -95,7 +100,7 @@ and plot the data.
     ...           x1[0].value, x1[-1].value]
 
     >>> # Add the image plot.
-    >>> im = ax.imshow(y[0].components[0], extent=extent, cmap='bone') 
+    >>> im = ax.imshow(y[0].components[0], extent=extent, cmap='bone')
 
     >>> # Add a colorbar.
     >>> cbar = fig.colorbar(im)
@@ -108,9 +113,8 @@ and plot the data.
 
     >>> # Set up the grid lines.
     >>> ax.grid(color='k', linestyle='--', linewidth=0.5)
-    
+
     >>> plt.tight_layout(pad=0, w_pad=0, h_pad=0)
     >>> plt.savefig(TEM.filename+'.pdf')
-    >>> plt.show()
 
 .. image:: /_static/TEM.csdf.pdf

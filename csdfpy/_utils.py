@@ -1,10 +1,13 @@
-
+# -*- coding: utf-8 -*-
 """Helper methods for CSDModel class."""
-
 from __future__ import print_function
-import numpy as np
+
 import warnings
-from .unit import string_to_quantity, value_object_format
+
+import numpy as np
+
+from .units import string_to_quantity
+from .units import value_object_format
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -12,45 +15,56 @@ __email__ = "srivastava.89@osu.edu"
 
 
 literals_quantity_type = {
-    'RGB': lambda n: 3,
-    'RGBA': lambda n: 4,
-    'scalar': lambda n: 1,
-    'vector': lambda n: n,
-    'matrix': lambda n: n,
-    'audio': lambda n: n,
-    'symmetric_matrix': lambda n: int(n*(n+1)/2)
+    "RGB": lambda n: 3,
+    "RGBA": lambda n: 4,
+    "scalar": lambda n: 1,
+    "vector": lambda n: n,
+    "matrix": lambda n: n,
+    "audio": lambda n: n,
+    "symmetric_matrix": lambda n: int(n * (n + 1) / 2),
 }
 
-literals_encoding = (
-    'base64',
-    'none',
-    'raw'
-)
+literals_encoding = ("base64", "none", "raw")
+literals_quantity_type_ = [
+    "RGB",
+    "RGBA",
+    "scalar",
+    "vector_n",
+    "matrix_n_m",
+    "audio_n",
+    "symmetric_matrix_n",
+]
+
 
 def _type_message(a, b):
-    return (
-        'Expecting instance of type, `{0}`, but got `{1}`.'
-    ).format(a.__name__, b.__name__)
+    return ("Expecting instance of type, `{0}`, but got `{1}`.").format(
+        a.__name__, b.__name__
+    )
 
 
 def _attribute_message(a, b):
-    return '{0} has no attribute `{1}`.'.format(a, b)
+    return "{0} has no attribute `{1}`.".format(a, b)
 
 
-def _axis_label(label, unit, made_dimensionless=False,
-                dimensionless_unit=None, label_type=''):
+def _axis_label(
+    label,
+    unit,
+    made_dimensionless=False,
+    dimensionless_unit=None,
+    label_type="",
+):
     if made_dimensionless:
-        if dimensionless_unit != '':
-            return '{0} / {1}'.format(label, dimensionless_unit)
+        if dimensionless_unit != "":
+            return "{0} / {1}".format(label, dimensionless_unit)
         return label
 
-    if unit != '':
-        if label_type == '':
-            return '{0} / ({1})'.format(
-                label, value_object_format(1*unit, numerical_value=False)
+    if unit != "":
+        if label_type == "":
+            return "{0} / ({1})".format(
+                label, value_object_format(1 * unit, numerical_value=False)
             )
-        if label_type == 'latex':
-            return '{0} / ({1})'.format(label, unit.to_string('latex'))
+        if label_type == "latex":
+            return "{0} / ({1})".format(label, unit.to_string("latex"))
     return label
 
 
@@ -79,9 +93,6 @@ def _is_numeric(element):
 def _is_physical_quantity(element=None):
     print(element)
 
-# class EncodingType(Enum):
-#     base64
-
 
 def _check_encoding(element):
     """
@@ -92,13 +103,12 @@ def _check_encoding(element):
     :returns: The encoding key-value, if the value is valid.
     :raises KeyError: Otherwise.
     """
-
     if element in literals_encoding:
         return element
 
     message = (
-        "`{0}` is an not a valid `encoding` value. "
-        "Available options are '{1}', '{2}' and '{3}'."
+        "`{0}` is not a valid `encoding` enumeration literal. "
+        "The allowed values are '{1}', '{2}' and '{3}'."
     )
     raise ValueError(message.format(element, *literals_encoding))
 
@@ -114,10 +124,7 @@ class QuantityType:
     :raises KeyError: Otherwise.
     """
 
-    __slots__ = (
-        '_value',
-        '_p'
-    )
+    __slots__ = ("_value", "_p")
 
     def __init__(self, element):
         r"""Instantiate a QuantityType class instance."""
@@ -128,7 +135,7 @@ class QuantityType:
         return self._value
 
     def _update(self, element):
-        """Update the quantity tpye."""
+        """Update the quantity type."""
         if not isinstance(element, str):
             raise TypeError(_type_message(str, type(element)))
         self._check_quantity_type(element)
@@ -138,20 +145,22 @@ class QuantityType:
         return int(literals_quantity_type[keyword](numbers.prod()))
 
     def _check_quantity_type(self, element):
-        list_values = element.strip().split('_')
+        list_values = element.strip().split("_")
         numbers = np.asarray(
             [int(item) for item in list_values if item.isnumeric()]
         )
-        keyword = '_'.join([item for item in list_values
-                            if not item.isnumeric()])
+        keyword = "_".join(
+            [item for item in list_values if not item.isnumeric()]
+        )
 
-        lst = literals_quantity_type.keys() 
+        lst = literals_quantity_type
         if keyword not in lst:
             message = (
-                "`{0}` is not a valid `quantity_type` value. Available "
-                "options are {1}, {2}, {3}, {4}, {5} and {6}."
+                "`{0}` is not a valid `quantity_type` enumeration literal. "
+                "The allowed values are '{1}', '{2}', '{3}', '{4}', '{5}' and "
+                "'{6}'."
             )
-            raise ValueError(message.format(keyword, *lst))
+            raise ValueError(message.format(keyword, *literals_quantity_type_))
 
         components = self._get_number_of_components(keyword, numbers)
         self._value = element
@@ -161,46 +170,55 @@ class QuantityType:
 def numpy_dtype_to_numeric_type(element):
     """Return a valid numeric_type value based on the dtype of nunpy array."""
     lst = {
-        '<u1': 'uint8',
-        '<u2': 'uint16',
-        '<u4': 'uint32',
-        '<u8': 'uint64',
-        '<i1': 'int8',
-        '<i2': 'int16',
-        '<i4': 'int32',
-        '<i8': 'int64',
-        '<f2': 'float16',
-        '<f4': 'float32',
-        '<f8': 'float64',
-        '<c8': 'complex64',
-        '<c16': 'complex128',
-        '>u1': 'uint8',
-        '>u2': 'uint16',
-        '>u4': 'uint32',
-        '>u8': 'uint64',
-        '>i1': 'int8',
-        '>i2': 'int16',
-        '>i4': 'int32',
-        '>i8': 'int64',
-        '>f2': 'float16',
-        '>f4': 'float32',
-        '>f8': 'float64',
-        '>c8': 'complex64',
-        '>c16': 'complex128',
+        "<u1": "uint8",
+        "<u2": "uint16",
+        "<u4": "uint32",
+        "<u8": "uint64",
+        "<i1": "int8",
+        "<i2": "int16",
+        "<i4": "int32",
+        "<i8": "int64",
+        "<f2": "float16",
+        "<f4": "float32",
+        "<f8": "float64",
+        "<c8": "complex64",
+        "<c16": "complex128",
+        ">u1": "uint8",
+        ">u2": "uint16",
+        ">u4": "uint32",
+        ">u8": "uint64",
+        ">i1": "int8",
+        ">i2": "int16",
+        ">i4": "int32",
+        ">i8": "int64",
+        ">f2": "float16",
+        ">f4": "float32",
+        ">f8": "float64",
+        ">c8": "complex64",
+        ">c16": "complex128",
     }
 
-    lst2 = ('uint8', 'uint16', 'uint32', 'uint64',
-            'int8', 'int16', 'int32', 'int64',
-            'float16', 'float32', 'float64',
-            'complex64', 'complex128')
+    lst2 = (
+        "uint8",
+        "uint16",
+        "uint32",
+        "uint64",
+        "int8",
+        "int16",
+        "int32",
+        "int64",
+        "float16",
+        "float32",
+        "float64",
+        "complex64",
+        "complex128",
+    )
 
     if element in lst.keys():
         return lst[element]
     if element in lst2:
         return element
-    raise ValueError(
-        "The dtype, {0}, is not supported.".format(element)
-    )
+    raise ValueError("The dtype, {0}, is not supported.".format(element))
 
 
 class NumericType:
@@ -217,51 +235,59 @@ class NumericType:
     :raises KeyError: Otherwise.
     """
 
-    __slots__ = (
-        '_value',
-        '_nptype'
-    )
+    __slots__ = ("_value", "_nptype")
 
     _lst = {
-        'uint8': '<u1',
-        'uint16': '<u2',
-        'uint32': '<u4',
-        'uint64': '<u8',
-        'int8': '<i1',
-        'int16': '<i2',
-        'int32': '<i4',
-        'int64': '<i8',
-        'float16': '<f2',
-        'float32': '<f4',
-        'float64': '<f8',
-        'complex64': '<c8',
-        'complex128': '<c16',
-        '>u1': '<u1',
-        '>u2': '<u2',
-        '>u4': '<u4',
-        '>u8': '<u8',
-        '>i1': '<i1',
-        '>i2': '<i2',
-        '>i4': '<i4',
-        '>i8': '<i8',
-        '>f2': '<f2',
-        '>f4': '<f4',
-        '>f8': '<f8',
-        '>c8': '<c8',
-        '>c16': '<c16'
-        }
+        "uint8": "<u1",
+        "uint16": "<u2",
+        "uint32": "<u4",
+        "uint64": "<u8",
+        "int8": "<i1",
+        "int16": "<i2",
+        "int32": "<i4",
+        "int64": "<i8",
+        "float16": "<f2",
+        "float32": "<f4",
+        "float64": "<f8",
+        "complex64": "<c8",
+        "complex128": "<c16",
+        ">u1": "<u1",
+        ">u2": "<u2",
+        ">u4": "<u4",
+        ">u8": "<u8",
+        ">i1": "<i1",
+        ">i2": "<i2",
+        ">i4": "<i4",
+        ">i8": "<i8",
+        ">f2": "<f2",
+        ">f4": "<f4",
+        ">f8": "<f8",
+        ">c8": "<c8",
+        ">c16": "<c16",
+    }
 
-    literals = ('uint8', 'uint16', 'uint32', 'uint64',
-                'int8', 'int16', 'int32', 'int64',
-                'float16', 'float32', 'float64',
-                'complex64', 'complex128')
+    literals = (
+        "uint8",
+        "uint16",
+        "uint32",
+        "uint64",
+        "int8",
+        "int16",
+        "int32",
+        "int64",
+        "float16",
+        "float32",
+        "float64",
+        "complex64",
+        "complex128",
+    )
 
-    def __init__(self, element='float32'):
+    def __init__(self, element="float32"):
         """Instantiate a NumericType class instance."""
         self._update(element)
 
     def _update(self, element):
-        """Update the numeric tpye."""
+        """Update the numeric type."""
         if not isinstance(element, str):
             raise TypeError(_type_message(str, type(element)))
         self._check_numeric_type(element)
@@ -274,13 +300,15 @@ class NumericType:
         lst = self.__class__._lst
         # print(lst.keys())
         if element not in lst.keys():
-            raise ValueError((
-                "The `numeric_type`, `{0}`, is not a valid enumeration literal"
-                ". The allowed values are {1}".format(
-                    element,
-                    "'"+"', '".join(self.__class__.literals)+"'"
+            raise ValueError(
+                (
+                    "`{0}`, is not a valid `numeric_type` enumeration literal."
+                    " The allowed values are {1}".format(
+                        element,
+                        "'" + "', '".join(self.__class__.literals) + "'",
+                    )
                 )
-            ))
+            )
 
         self._value = element
         self._nptype = np.dtype(lst[element])
@@ -307,7 +335,7 @@ def _check_value_object(element, unit=None):
 
 def _check_assignment_and_then_check_unit_consistency(element, unit):
     if element is None:
-        element = 0.0*unit
+        element = 0.0 * unit
     else:
         element = _assign_and_check_unit_consistency(element, unit)
     return element
@@ -315,7 +343,7 @@ def _check_assignment_and_then_check_unit_consistency(element, unit):
 
 def _assign_and_check_unit_consistency(element, unit):
     element = _default_units(string_to_quantity(str(element)))
-    _fitsUnitFormat = element.unit.to_string('fits').strip()
+    _fitsUnitFormat = element.unit.to_string("fits").strip()
     element = element.to(_fitsUnitFormat)
     if unit is not None:
         return _check_unit_consistency(element, unit)
@@ -328,7 +356,7 @@ def _check_unit_consistency(element, unit):
             str(element.unit),
             str(element.unit.physical_type),
             str(unit),
-            unit.physical_type
+            unit.physical_type,
         ]
         message = (
             "The unit '{0}' ({1}) is inconsistent with the unit '{2}' ({3})."
@@ -338,8 +366,8 @@ def _check_unit_consistency(element, unit):
 
 
 def _default_units(element):
-    if element.unit.physical_type == 'frequency':
-        element = element.to('Hz')
+    if element.unit.physical_type == "frequency":
+        element = element.to("Hz")
     return element
 
 
@@ -348,34 +376,35 @@ def _check_quantity(element, unit):
         element = unit.physical_type
         return element
 
-    if unit.physical_type == 'unknown':
+    if unit.physical_type == "unknown":
         warnings.warn(
             (
-                "The quantity name associated with the unit, {0}, "
-                "is not defined in astropy.units package. Continuing "
-                "with '{1}' as the quantity name."
+                "The physical quantity name associated with the unit, {0}, "
+                "is not defined in astropy.units package. Continuing with "
+                "'{1}' as the physical quantity name."
             ).format(str(unit), element)
         )
         return element
 
     if element.lower() != unit.physical_type:
-        raise Exception(
+        warnings.warn(
             (
-                "The physical quantity name, '{0}', is not consistent "
-                "with the unit, '{1}'."
+                "The physical quantity name, '{0}', is not defined in the "
+                "astropy.units package. Continuing with '{1}' as the physical "
+                "quantity name."
             ).format(element, str(unit))
         )
 
     return element.lower()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # print (_check_encoding('base64'))
     # print (_check_encoding('raw'))
     # print (_check_encoding('none'))
     # print (_check_encoding('text'))
 
-    print(_check_quantity('time', string_to_quantity('1 s/m').unit))
+    print(_check_quantity("time", string_to_quantity("1 s/m").unit))
 
     # print (_check_quantity_type('RgB'))
     # print (_check_quantity_type('RGBA'))
