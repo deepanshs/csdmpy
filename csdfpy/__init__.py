@@ -7,6 +7,7 @@ import json
 from copy import deepcopy
 from os import listdir
 from os.path import isdir
+from os.path import join
 from urllib.parse import urlparse
 
 import numpy as np
@@ -33,7 +34,7 @@ def _import_json(filename):
         return json.loads(str(content, encoding="UTF-8"))
 
 
-def load(filename=None, application=False):
+def load(filename=None, application=False, sort_fft_order=False):
     r"""
     Load a .csdf/.csdfe file and return an instance of :ref:`csdm_api` class.
 
@@ -61,18 +62,44 @@ def load(filename=None, application=False):
             raise Exception(
                 ("More that one csdf(e) files encountered in the .csdm folder")
             )
-        csd_file = csdm_files[0]
+        csd_file = join(filename, csdm_files[0])
     else:
         csd_file = filename
 
-    return _load(csd_file, application=application)
+    csdm_object = _load(csd_file)
+
+    if sort_fft_order:
+        axes = np.asarray(
+            [
+                i
+                for i, dim in enumerate(csdm_object.dimensions)
+                if dim.fft_output_order
+            ]
+        )
+
+        for var in csdm_object.dependent_variables:
+            var.components = fftshift(var.components, axes=-axes - 1)
+
+        for i in axes:
+            csdm_object.dimensions[i].fft_output_order = False
+
+    if application is False:
+        csdm_object.application = {}
+        for dim in csdm_object.dimensions:
+            dim.application = {}
+            if hasattr(dim, "reciprocal") and dim.type != "label":
+                dim.reciprocal.application = {}
+        for dim in csdm_object.dependent_variables:
+            dim.application = {}
+            # if hasattr(dim., 'sparse_dimensions'):
+            #     dim.reciprocal.application = {}
     # csdm_objects = []
     # for file_ in csdm_files:
     #     csdm_objects.append(_load(file_, application=application))
-    #     return csdm_objects
+    return csdm_object
 
 
-def _load(filename, application=False):
+def _load(filename):
     try:
         dictionary = _import_json(filename)
     except Exception as e:
@@ -122,11 +149,8 @@ def _load(filename, application=False):
     if "geographic_coordinate" in key_list_root:
         csdm._geographic_coordinate = dictionary["geographic_coordinate"]
 
-    if application:
-        if "application" in key_list_root:
-            csdm._application = dictionary["application"]
-    else:
-        csdm._application = {}
+    if "application" in key_list_root:
+        csdm._application = dictionary["application"]
 
     return csdm
 

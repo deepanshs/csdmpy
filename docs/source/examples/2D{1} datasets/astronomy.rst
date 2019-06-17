@@ -12,10 +12,10 @@ and then converted to the CSD model file-format.
 
 Let's load the `.csdfe` file and take a quick look at its data structure.
 
+
 .. doctest::
 
     >>> import csdfpy as cp
-
     >>> bubble_nebula = cp.load('../test-datasets0.0.11/astronomy/source/Bubble Nebula/Bubble.csdfe')
     >>> print(bubble_nebula.data_structure)
     {

@@ -521,7 +521,7 @@ class LinearDimension(BaseIndependentVariable):
         self._increment = _value
         self._get_coordinates()
 
-    # fft_ouput_order
+    # fft_output_order
     @property
     def fft_output_order(self):
         """If True, orders the coordinates according to FFT output order."""
@@ -793,3 +793,13 @@ class LabeledDimension:
     @values.setter
     def values(self, _values):
         self._get_coordinates(_values)
+
+    # values
+    @property
+    def application(self):
+        r"""Return a list of values along the dimension."""
+        return deepcopy(self._application)
+
+    @application.setter
+    def application(self, _value):
+        self._application = _value

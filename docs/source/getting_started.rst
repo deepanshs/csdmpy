@@ -153,7 +153,7 @@ We make use of Python's `Matplotlib library <https://matplotlib.org>`_
 for generating the figures. The users may, however, use their favorite plotting
 library.
 
-.. note::
+.. cssclass:: alert alert-dismissible alert-info
 
     This documentation is not a guide for data visualization, and the `csdfpy`
     module does not include any plotting library.

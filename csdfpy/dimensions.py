@@ -95,7 +95,7 @@ class Dimension:
 
     Here, ``dimension_dictionary`` is the python dictionary.
 
-    `From valid keyword arguaments.`
+    `From valid keyword arguments.`
 
     .. doctest::
 
@@ -183,7 +183,7 @@ class Dimension:
                 _values=dictionary["values"],
                 _label=dictionary["label"],
                 _description=dictionary["description"],
-                _application={},
+                _application=dictionary["application"],
             )
 
         if dictionary["type"] == "monotonic":
@@ -200,7 +200,7 @@ class Dimension:
                 _period=dictionary["period"],
                 _label=dictionary["label"],
                 _description=dictionary["description"],
-                _application={},
+                _application=dictionary["application"],
                 _reciprocal_index_zero_value=dictionary["reciprocal"][
                     "index_zero_value"
                 ],
@@ -213,7 +213,9 @@ class Dimension:
                 _reciprocal_description=dictionary["reciprocal"][
                     "description"
                 ],
-                _reciprocal_application={},
+                _reciprocal_application=dictionary["reciprocal"][
+                    "application"
+                ],
             )
 
         if dictionary["type"] == "linear":
@@ -246,7 +248,7 @@ class Dimension:
                 _label=dictionary["label"],
                 _fft_output_order=dictionary["fft_output_order"],
                 _description=dictionary["description"],
-                _application={},
+                _application=dictionary["application"],
                 _reciprocal_index_zero_value=dictionary["reciprocal"][
                     "index_zero_value"
                 ],
@@ -259,7 +261,9 @@ class Dimension:
                 _reciprocal_description=dictionary["reciprocal"][
                     "description"
                 ],
-                _reciprocal_application={},
+                _reciprocal_application=dictionary["reciprocal"][
+                    "application"
+                ],
             )
 
         self.subtype = _dimension_object
@@ -281,13 +285,13 @@ class Dimension:
         attributes of the Dimension instance. This attribute cannot
         be modified. This attribute is `invalid` for the labeled dimensions.
 
-.. doctest::
+        .. doctest::
 
-    >>> print(x.origin_offset)
-    10.0 T
-    >>> print(x.absolute_coordinates)
-    [100100. 100105. 100110. 100115. 100120. 100125. 100130. 100135. 100140.
-        100145.] G
+            >>> print(x.origin_offset)
+            10.0 T
+            >>> print(x.absolute_coordinates)
+            [100100. 100105. 100110. 100115. 100120. 100125. 100130. 100135.
+            100140. 100145.] G
 
         :returns: A ``Quantity array`` for quantitative independent variables.
         :raises AttributeError: For labeled dimension.
@@ -838,7 +842,7 @@ class Dimension:
         and the labeled dimensions respectively.
 
         :returns: A ``Quantity array`` for dimensions with subtype
-                  `arbitarily_sampled`.
+                  `arbitrarily_sampled`.
         :returns: A ``Numpy array`` for dimensions with subtype `labeled`.
         :raises AttributeError: For dimensions with subtype `linear`.
 
@@ -871,8 +875,8 @@ class Dimension:
             - period
             - quantity
             - label
-        where the definision of each attribute is the same as the corresponding
-        attribure from the Dimension instance.
+        where the definition of each attribute is the same as the corresponding
+        attribute from the Dimension instance.
         """
         return self.subtype.reciprocal
 

@@ -615,7 +615,7 @@ class DependentVariable:
             'RGB'
             >>> y.quantity_type = 'vector_3'
 
-        :returs: A ``String``.
+        :return: A ``String``.
         :raise ValueError: If an invalid value is assigned.
         :raises TypeError: When the assigned value is not a string.
         """
@@ -643,7 +643,7 @@ class DependentVariable:
 
             >>> y.type = 'external'
 
-        The allowed `tyoe` enumeration literals are
+        The allowed `type` enumeration literals are
 
         | ``internal``
         | ``external``

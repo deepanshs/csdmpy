@@ -34,10 +34,10 @@ with any third party package(s) compatible with Numpy and Scipy.
     examples/examples
     examples/A fun example
     referenceAPI
-
+    startingFromScratch
 
 ..    independent_variable
-..    startingFromScrach
+
 
 ------------------
 Indices and tables
