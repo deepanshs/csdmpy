@@ -25,18 +25,18 @@ Let's load the `.csdfe` file and take a quick look at its data structure.
         "dimensions": [
           {
             "type": "linear",
-            "number_of_points": 11596,
+            "count": 11596,
             "increment": "-2.279306196154649e-05 °",
-            "index_zero_value": "350.311874957 °",
-            "quantity": "angle",
+            "index_zero_coordinate": "350.311874957 °",
+            "quantity_name": "angle",
             "label": "Right Ascension"
           },
           {
             "type": "linear",
-            "number_of_points": 11351,
+            "count": 11351,
             "increment": "1.1005521846938031e-05 °",
-            "index_zero_value": "61.128514949691635 °",
-            "quantity": "angle",
+            "index_zero_coordinate": "61.128514949691635 °",
+            "quantity_name": "angle",
             "label": "Declination"
           }
         ],

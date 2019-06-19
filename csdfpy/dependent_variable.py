@@ -44,7 +44,7 @@ class DependentVariable:
         ...     'components': numpy_array,
         ...     'name': 'star',
         ...     'unit': 'W s',
-        ...     'quantity': 'energy',
+        ...     'quantity_name': 'energy',
         ...     'quantity_type': 'RGB'
         ... }
         >>> y = DependentVariable(dependent_variable_dictionary)
@@ -75,7 +75,7 @@ class DependentVariable:
             "description": "",
             "name": "",
             "unit": "",
-            "quantity": None,
+            "quantity_name": None,
             "component_labels": None,
             "encoding": "none",
             "numeric_type": None,
@@ -147,7 +147,7 @@ class DependentVariable:
             _uv_object = InternalDataset(
                 _name=dictionary["name"],
                 _unit=dictionary["unit"],
-                _quantity=dictionary["quantity"],
+                _quantity_name=dictionary["quantity_name"],
                 _encoding=dictionary["encoding"],
                 _numeric_type=dictionary["numeric_type"],
                 _quantity_type=dictionary["quantity_type"],
@@ -176,7 +176,7 @@ class DependentVariable:
             _uv_object = ExternalDataset(
                 _name=dictionary["name"],
                 _unit=dictionary["unit"],
-                _quantity=dictionary["quantity"],
+                _quantity_name=dictionary["quantity_name"],
                 _encoding="raw",
                 _numeric_type=dictionary["numeric_type"],
                 _quantity_type=dictionary["quantity_type"],
@@ -241,8 +241,8 @@ class DependentVariable:
         It returns an array of strings where every string at a given index
         is formatted as 'label / unit'  if the corresponding index of the
         `component_labels` array is not an empty string, otherwise,
-        'quantity / unit’. Here, the `quantity`, `component_labels`, and `unit`
-        are the attributes of the :ref:`dv_api` instance.
+        'quantity_name / unit’. Here, the `quantity_name`, `component_labels`,
+        and `unit`are the attributes of the :ref:`dv_api` instance.
         For example,
 
         .. doctest::
@@ -256,7 +256,7 @@ class DependentVariable:
         labels = []
         for label in self.component_labels:
             if label.strip() == "":
-                label = self.quantity
+                label = self.quantity_name
             labels.append(_axis_label(label, self.unit))
         return labels
 
@@ -410,7 +410,7 @@ class DependentVariable:
               "description": "A test image",
               "name": "star",
               "unit": "s * W",
-              "quantity": "energy",
+              "quantity_name": "energy",
               "numeric_type": "float32",
               "quantity_type": "RGB",
               "components": [
@@ -571,25 +571,25 @@ class DependentVariable:
     def numeric_type(self, value):
         self.subtype._numeric_type._update(value)
 
-    # quantity--------------------------------------------------------------- #
+    # quantity_name---------------------------------------------------------- #
     @property
-    def quantity(self):
+    def quantity_name(self):
         """
         Return a string with the `quantity name` of the dependent variable.
 
         .. doctest::
 
-            >>> y.quantity
+            >>> y.quantity_name
             'energy'
 
         :returns: A ``String``.
         :raises NotImplementedError: When assigning a value.
         """
-        return self.subtype.quantity
+        return self.subtype.quantity_name
 
-    @quantity.setter
-    def quantity(self, value=""):
-        self.subtype.quantity = value
+    @quantity_name.setter
+    def quantity_name(self, value=""):
+        self.subtype.quantity_name = value
 
     # quantity type--------------------------------------------------------- #
     @property

@@ -27,20 +27,20 @@ Let's import the CSD model data-file and look at its data structure.
         "dimensions": [
           {
             "type": "linear",
-            "number_of_points": 512,
+            "count": 512,
             "increment": "4.0 nm",
-            "quantity": "length",
+            "quantity_name": "length",
             "reciprocal": {
-              "quantity": "wavenumber"
+              "quantity_name": "wavenumber"
             }
           },
           {
             "type": "linear",
-            "number_of_points": 512,
+            "count": 512,
             "increment": "4.0 nm",
-            "quantity": "length",
+            "quantity_name": "length",
             "reciprocal": {
-              "quantity": "wavenumber"
+              "quantity_name": "wavenumber"
             }
           }
         ],

@@ -26,9 +26,9 @@
     "dimensions": [
       {
         "type": "linear",
-        "number_of_points": 10,
+        "count": 10,
         "increment": "0.1 s",
-        "quantity": "time"
+        "quantity_name": "time"
       }
     ]
   }

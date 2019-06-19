@@ -18,7 +18,7 @@ DependentVariable
         ~DependentVariable.description
         ~DependentVariable.name
         ~DependentVariable.unit
-        ~DependentVariable.quantity
+        ~DependentVariable.quantity_name
         ~DependentVariable.encoding
         ~DependentVariable.numeric_type
         ~DependentVariable.quantity_type
@@ -39,7 +39,7 @@ DependentVariable
     .. autoattribute:: description
     .. autoattribute:: name
     .. autoattribute:: unit
-    .. autoattribute:: quantity
+    .. autoattribute:: quantity_name
     .. autoattribute:: encoding
     .. autoattribute:: numeric_type
     .. autoattribute:: quantity_type

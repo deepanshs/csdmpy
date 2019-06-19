@@ -26,14 +26,14 @@ Let's load the file and look at its data structure.
           {
             "type": "linear",
             "description": "A full echo echo acquisition along the $t_2$ dimension using a Hahn echo.",
-            "number_of_points": 1024,
+            "count": 1024,
             "increment": "8e-05 s",
-            "index_zero_value": "-0.04104 s",
-            "quantity": "time",
+            "index_zero_coordinate": "-0.04104 s",
+            "quantity_name": "time",
             "label": "$t_2$",
             "reciprocal": {
               "origin_offset": "79578822.26202029 Hz",
-              "quantity": "frequency",
+              "quantity_name": "frequency",
               "label": "$^{29}$Si frequency shift"
             }
           },
@@ -47,10 +47,10 @@ Let's load the file and look at its data structure.
               "40.0 s",
               "80.0 s"
             ],
-            "quantity": "time",
+            "quantity_name": "time",
             "label": "$t_1$",
             "reciprocal": {
-              "quantity": "frequency"
+              "quantity_name": "frequency"
             }
           }
         ],

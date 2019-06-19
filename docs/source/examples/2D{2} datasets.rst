@@ -27,24 +27,24 @@ as a function of two spatial dimensions.
         "dimensions": [
           {
             "type": "linear",
-            "number_of_points": 64,
+            "count": 64,
             "increment": "0.0625 cm",
-            "index_zero_value": "-2.0 cm",
-            "quantity": "length",
+            "index_zero_coordinate": "-2.0 cm",
+            "quantity_name": "length",
             "label": "x",
             "reciprocal": {
-              "quantity": "wavenumber"
+              "quantity_name": "wavenumber"
             }
           },
           {
             "type": "linear",
-            "number_of_points": 64,
+            "count": 64,
             "increment": "0.0625 cm",
-            "index_zero_value": "-2.0 cm",
-            "quantity": "length",
+            "index_zero_coordinate": "-2.0 cm",
+            "quantity_name": "length",
             "label": "y",
             "reciprocal": {
-              "quantity": "wavenumber"
+              "quantity_name": "wavenumber"
             }
           }
         ],
@@ -53,7 +53,7 @@ as a function of two spatial dimensions.
             "type": "internal",
             "name": "Electric field lines",
             "unit": "C^-1 * N",
-            "quantity": "electrical field strength",
+            "quantity_name": "electrical field strength",
             "numeric_type": "float32",
             "quantity_type": "vector_2",
             "components": [

@@ -50,13 +50,13 @@ instance,
         "dimensions": [
           {
             "type": "linear",
-            "number_of_points": 1608,
+            "count": 1608,
             "increment": "0.08333333333 yr",
-            "index_zero_value": "1880.0416666667 yr",
-            "quantity": "time",
+            "index_zero_coordinate": "1880.0416666667 yr",
+            "quantity_name": "time",
             "label": "Time",
             "reciprocal": {
-              "quantity": "frequency"
+              "quantity_name": "frequency"
             }
           }
         ],
@@ -65,7 +65,7 @@ instance,
             "type": "internal",
             "name": "Global Mean Sea Level",
             "unit": "mm",
-            "quantity": "length",
+            "quantity_name": "length",
             "numeric_type": "float32",
             "component_labels": [
               "Global Mean Sea Level"
@@ -80,7 +80,7 @@ instance,
             "type": "internal",
             "name": "Global Mean Sea Level",
             "unit": "mm",
-            "quantity": "length",
+            "quantity_name": "length",
             "numeric_type": "float32",
             "component_labels": [
               "GMSL uncertainty"
@@ -202,14 +202,14 @@ structure.
         "dimensions": [
           {
             "type": "linear",
-            "number_of_points": 4096,
+            "count": 4096,
             "increment": "0.1 ms",
-            "index_zero_value": "-0.3 ms",
-            "quantity": "time",
+            "index_zero_coordinate": "-0.3 ms",
+            "quantity_name": "time",
             "reciprocal": {
-              "index_zero_value": "-3005.363 Hz",
+              "index_zero_coordinate": "-3005.363 Hz",
               "origin_offset": "75426328.864 Hz",
-              "quantity": "frequency",
+              "quantity_name": "frequency",
               "label": "$^{13}$C frequency shift"
             }
           }
@@ -280,10 +280,10 @@ plot follows,
         "dimensions": [
           {
             "type": "linear",
-            "number_of_points": 298,
+            "count": 298,
             "increment": "4.0 G",
-            "index_zero_value": "2750.0 G",
-            "quantity": "magnetic flux density"
+            "index_zero_coordinate": "2750.0 G",
+            "quantity_name": "magnetic flux density"
           }
         ],
         "dependent_variables": [
@@ -328,11 +328,11 @@ follows,
         "dimensions": [
           {
             "type": "linear",
-            "number_of_points": 6001,
+            "count": 6001,
             "increment": "0.0034 min",
-            "quantity": "time",
+            "quantity_name": "time",
             "reciprocal": {
-              "quantity": "frequency"
+              "quantity_name": "frequency"
             }
           }
         ],
@@ -378,12 +378,12 @@ structure and the plot of the FTIR dataset follows
         "dimensions": [
           {
             "type": "linear",
-            "number_of_points": 1842,
+            "count": 1842,
             "increment": "1.930548614883216 cm^-1",
-            "index_zero_value": "449.41 cm^-1",
-            "quantity": "wavenumber",
+            "index_zero_coordinate": "449.41 cm^-1",
+            "quantity_name": "wavenumber",
             "reciprocal": {
-              "quantity": "length"
+              "quantity_name": "length"
             }
           }
         ],
@@ -429,13 +429,13 @@ model format. The data structure and the plot of the UV-vis dataset follows,
         "dimensions": [
           {
             "type": "linear",
-            "number_of_points": 4001,
+            "count": 4001,
             "increment": "0.01 nm",
-            "index_zero_value": "230.0 nm",
-            "quantity": "length",
+            "index_zero_coordinate": "230.0 nm",
+            "quantity_name": "length",
             "label": "wavelength",
             "reciprocal": {
-              "quantity": "wavenumber"
+              "quantity_name": "wavenumber"
             }
           }
         ],

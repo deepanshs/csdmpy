@@ -54,7 +54,7 @@ method. The Python dictionary for a LinearDimension follows,
     >>> d0 = {
     ...     'type': 'linear',
     ...     'description': 'This is a linear dimension',
-    ...     'number_of_points': 10,
+    ...     'count': 10,
     ...     'increment': '0.1 s'
     ... }
 
@@ -81,11 +81,11 @@ dataset is now a 1D{0} dataset with the data structure as
           {
             "type": "linear",
             "description": "This is a linear dimension",
-            "number_of_points": 10,
+            "count": 10,
             "increment": "0.1 s",
-            "quantity": "time",
+            "quantity_name": "time",
             "reciprocal": {
-              "quantity": "frequency"
+              "quantity_name": "frequency"
             }
           }
         ],
@@ -126,11 +126,11 @@ instance is
           {
             "type": "linear",
             "description": "This is a linear dimension",
-            "number_of_points": 10,
+            "count": 10,
             "increment": "0.1 s",
-            "quantity": "time",
+            "quantity_name": "time",
             "reciprocal": {
-              "quantity": "frequency"
+              "quantity_name": "frequency"
             }
           },
           {
@@ -143,7 +143,7 @@ instance is
               "0.5 T",
               "2 T"
             ],
-            "quantity": "magnetic flux density"
+            "quantity_name": "magnetic flux density"
           }
         ],
         "dependent_variables": []
@@ -152,7 +152,7 @@ instance is
 
 Notice, every time a new independent variable corresponding to a physical
 dimension is added, the value of the
-:attr:`~csdfp.Dimension.quantity` attribute is self-generated, if
+:attr:`~csdfp.Dimension.quantity_name` attribute is self-generated, if
 possible.
 
 ^^^^^^^^^^^^^^^^
@@ -199,11 +199,11 @@ This generates a 3D{0} dataset with the data structure -
           {
             "type": "linear",
             "description": "This is a linear dimension",
-            "number_of_points": 10,
+            "count": 10,
             "increment": "0.1 s",
-            "quantity": "time",
+            "quantity_name": "time",
             "reciprocal": {
-              "quantity": "frequency"
+              "quantity_name": "frequency"
             }
           },
           {
@@ -216,7 +216,7 @@ This generates a 3D{0} dataset with the data structure -
               "0.5 T",
               "2 T"
             ],
-            "quantity": "magnetic flux density"
+            "quantity_name": "magnetic flux density"
           },
           {
             "type": "labeled",

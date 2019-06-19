@@ -230,7 +230,7 @@ class BaseDependentVariable:
     __slots__ = (
         "_name",
         "_unit",
-        "_quantity",
+        "_quantity_name",
         "_encoding",
         "_numeric_type",
         "_quantity_type",
@@ -245,7 +245,7 @@ class BaseDependentVariable:
         self,
         _name="",
         _unit="",
-        _quantity=None,
+        _quantity_name=None,
         _encoding="none",
         _numeric_type="float32",
         _quantity_type="scalar",
@@ -262,8 +262,8 @@ class BaseDependentVariable:
         _va = _assign_and_check_unit_consistency(_unit, None)
         self._unit = _va.unit
 
-        # quantity
-        self._quantity = _check_quantity(_quantity, self._unit)
+        # quantity_name
+        self._quantity_name = _check_quantity(_quantity_name, self._unit)
 
         # encoding
         self.encoding = _encoding
@@ -293,7 +293,7 @@ class BaseDependentVariable:
         If no label is provided, a default values,
         :math:`['', '', N_k]`, is assigned. If the number of component labels
         does not match the total number of components, a warning is raised and
-        the inconsistency is resolved by appropriate truncating or additing the
+        the inconsistency is resolved by appropriate truncating or adding the
         required number of strings.
         """
         _n = self._quantity_type._p
@@ -352,16 +352,16 @@ class BaseDependentVariable:
         """Dependent variable name."""
         return deepcopy(self._unit)
 
-    # quantity
+    # quantity_name
     @property
-    def quantity(self):
+    def quantity_name(self):
         """Return quantity name."""
-        return deepcopy(self._quantity)
+        return deepcopy(self._quantity_name)
 
-    @quantity.setter
-    def quantity(self, value=""):
+    @quantity_name.setter
+    def quantity_name(self, value=""):
         raise NotImplementedError(
-            ("The `quantity` attribute cannot be modified.")
+            ("The `quantity_name` attribute cannot be modified.")
         )
 
     # encoding
@@ -482,8 +482,8 @@ class BaseDependentVariable:
                 1.0 * self._unit, numerical_value=False
             )
 
-        if self._quantity not in ["dimensionless", "unknown", None]:
-            dictionary["quantity"] = self._quantity
+        if self._quantity_name not in ["dimensionless", "unknown", None]:
+            dictionary["quantity_name"] = self._quantity_name
 
         dictionary["encoding"] = str(self._encoding)
         dictionary["numeric_type"] = str(self._numeric_type)
@@ -638,7 +638,7 @@ class InternalDataset(BaseDependentVariable):
         self,
         _name="",
         _unit="",
-        _quantity=None,
+        _quantity_name=None,
         _encoding="none",
         _numeric_type=None,
         _quantity_type="scalar",
@@ -672,7 +672,7 @@ class InternalDataset(BaseDependentVariable):
         super(InternalDataset, self).__init__(
             _name=_name,
             _unit=_unit,
-            _quantity=_quantity,
+            _quantity_name=_quantity_name,
             _encoding=_encoding,
             _numeric_type=_numeric_type,
             _quantity_type=_quantity_type,
@@ -726,7 +726,7 @@ class ExternalDataset(BaseDependentVariable):
         self,
         _name="",
         _unit="",
-        _quantity=None,
+        _quantity_name=None,
         _encoding="none",
         _numeric_type=None,
         _quantity_type="scalar",
@@ -748,7 +748,7 @@ class ExternalDataset(BaseDependentVariable):
         super(ExternalDataset, self).__init__(
             _name=_name,
             _unit=_unit,
-            _quantity=_quantity,
+            _quantity_name=_quantity_name,
             _encoding=_encoding,
             _numeric_type=_numeric_type,
             _quantity_type=_quantity_type,

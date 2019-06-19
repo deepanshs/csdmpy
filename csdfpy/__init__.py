@@ -3,6 +3,7 @@
 from __future__ import division
 from __future__ import print_function
 
+import datetime
 import json
 from copy import deepcopy
 from os import listdir
@@ -69,19 +70,21 @@ def load(filename=None, application=False, sort_fft_order=False):
     csdm_object = _load(csd_file)
 
     if sort_fft_order:
-        axes = np.asarray(
-            [
-                i
-                for i, dim in enumerate(csdm_object.dimensions)
-                if dim.fft_output_order
-            ]
-        )
+        axes = []
+        for i, dim in enumerate(csdm_object.dimensions):
+            if dim.fft_output_order:
+                npts = dim.count
+                if npts % 2 == 0:
+                    temp = npts * dim.increment / 2.0
+                else:
+                    temp = (npts - 1) * dim.increment / 2.0
+                dim.index_zero_coordinate = dim.index_zero_coordinate - temp
+
+                axes.append(-i - 1)
+                dim.fft_output_order = False
 
         for var in csdm_object.dependent_variables:
-            var.components = fftshift(var.components, axes=-axes - 1)
-
-        for i in axes:
-            csdm_object.dimensions[i].fft_output_order = False
+            var.components = fftshift(var.components, axes=axes)
 
     if application is False:
         csdm_object.application = {}
@@ -106,13 +109,13 @@ def _load(filename):
         raise Exception(e)
 
     key_list_root = dictionary.keys()
-
+    # print(key_list_root)
     # ----------------------------------------------------------------------- #
     # Create the CSDModel and populate the attributes
     # ----------------------------------------------------------------------- #
 
     if "CSDM" in key_list_root:
-        raise KeyError("'CSDM' is not a valid keyword. Dit you mean 'csdm'?")
+        raise KeyError("'CSDM' is not a valid keyword. Did you mean 'csdm'?")
 
     if "csdm" not in key_list_root:
         raise KeyError("'csdm' key is not present.")
@@ -120,37 +123,42 @@ def _load(filename):
     _version = dictionary["csdm"]["version"]
     # is version required?
 
-    key_list_CSDM = dictionary["csdm"].keys()
+    key_list_csdm = dictionary["csdm"].keys()
+    # print(key_list_csdm)
 
     csdm = CSDModel(filename, _version)
 
-    if "dimensions" in key_list_CSDM:
+    if "dimensions" in key_list_csdm:
         for dim in dictionary["csdm"]["dimensions"]:
             csdm.add_dimension(dim)
 
-    if "dependent_variables" in key_list_CSDM:
+    if "dependent_variables" in key_list_csdm:
         for dat in dictionary["csdm"]["dependent_variables"]:
             csdm.add_dependent_variable(dat)
 
-    if "description" in key_list_CSDM:
-        csdm.description = dictionary["csdm"]["description"].strip()
+    if "description" in key_list_csdm:
+        csdm._description = dictionary["csdm"]["description"].strip()
 
-    npts = [item.number_of_points for item in csdm.dimensions]
+    npts = [item.count for item in csdm.dimensions]
     if npts != []:
         csdm._reshape(npts[::-1])
 
-    # Create the augmentation layer model #
-    if "read_only" in key_list_root:
-        csdm._read_only = dictionary["read_only"]
+    if "read_only" in key_list_csdm:
+        csdm._read_only = dictionary["csdm"]["read_only"]
 
-    if "timestamp" in key_list_root:
-        csdm._timestamp = dictionary["timestamp"]
+    if "timestamp" in key_list_csdm:
+        csdm._timestamp = dictionary["csdm"]["timestamp"]
 
-    if "geographic_coordinate" in key_list_root:
-        csdm._geographic_coordinate = dictionary["geographic_coordinate"]
+    if "geographic_coordinate" in key_list_csdm:
+        csdm._geographic_coordinate = dictionary["csdm"][
+            "geographic_coordinate"
+        ]
 
-    if "application" in key_list_root:
-        csdm._application = dictionary["application"]
+    if "application" in key_list_csdm:
+        csdm._application = dictionary["csdm"]["application"]
+
+    if "tags" in key_list_csdm:
+        csdm._tags = dictionary["csdm"]["tags"]
 
     return csdm
 
@@ -203,6 +211,7 @@ class CSDModel:
     __slots__ = [
         "_dimensions",
         "_dependent_variables",
+        "_tags",
         "_read_only",
         "_version",
         "_timestamp",
@@ -210,7 +219,6 @@ class CSDModel:
         "_description",
         "_application",
         "_filename",
-        "_persistent",
     ]
 
     def __init__(self, filename="", version=None, description=""):
@@ -227,15 +235,15 @@ class CSDModel:
 
         self._dependent_variables = ()
         self._dimensions = ()
+        self._tags = []
         self._read_only = False
         self._version = version
         self._timestamp = ""
+        self._geographic_coordinate = {}
         self._description = description
-        self._geographic_coordinate = ""
         self._application = {}
 
         self._filename = filename
-        self._persistent = {}
 
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
@@ -253,7 +261,28 @@ class CSDModel:
         """Return a tuple of the :ref:`iv_api` instances."""
         return self._dimensions
 
+    # tags
+    @property
+    def tags(self):
+        """
+        Return a list of tags attached to the dataset.
+        """
+        return deepcopy(self._tags)
+
+    @tags.setter
+    def tags(self, value):
+        if isinstance(value, list):
+            self._tags = value
+        else:
+            raise ValueError(
+                (
+                    "Expecting a list of strings for the `tags` attribute,"
+                    " found {0}."
+                ).format(type(value))
+            )
+
     # read only
+
     @property
     def read_only(self):
         """
@@ -490,8 +519,8 @@ class CSDModel:
             >>> py_dictionary = {
             ...     'type': 'linear',
             ...     'increment': '5 G',
-            ...     'number_of_points': 50,
-            ...     'index_zero_value': '-10 mT'
+            ...     'count': 50,
+            ...     'index_zero_coordinate': '-10 mT'
             ... }
             >>> datamodel.add_dimension(py_dictionary)
 
@@ -502,8 +531,8 @@ class CSDModel:
             >>> datamodel.add_dimension(
             ...     type = 'linear',
             ...     increment = '5 G',
-            ...     number_of_points = 50,
-            ...     index_zero_value = '-10 mT'
+            ...     count = 50,
+            ...     index_zero_coordinate = '-10 mT'
             ... )
 
         *From an* :ref:`iv_api` *instance.*
@@ -514,8 +543,8 @@ class CSDModel:
             >>> datamodel = cp.new()
             >>> var1 = Dimension(type = 'linear',
             ...                  increment = '5 G',
-            ...                  number_of_points = 50,
-            ...                  index_zero_value = '-10 mT')
+            ...                  count = 50,
+            ...                  index_zero_coordinate = '-10 mT')
             >>> datamodel.add_dimension(var1)
             >>> print(datamodel.data_structure)
             {
@@ -524,10 +553,10 @@ class CSDModel:
                 "dimensions": [
                   {
                     "type": "linear",
-                    "number_of_points": 50,
+                    "count": 50,
                     "increment": "5.0 G",
-                    "index_zero_value": "-10.0 mT",
-                    "quantity": "magnetic flux density"
+                    "index_zero_coordinate": "-10.0 mT",
+                    "quantity_name": "magnetic flux density"
                   }
                 ],
                 "dependent_variables": []
@@ -568,7 +597,7 @@ class CSDModel:
             ...     'components': numpy_array,
             ...     'name': 'star',
             ...     'unit': 'W s',
-            ...     'quantity': 'energy',
+            ...     'quantity_name': 'energy',
             ...     'quantity_type': 'RGB'
             ... }
             >>> datamodel.add_dependent_variable(py_dictionary)
@@ -617,12 +646,32 @@ class CSDModel:
         """Return the CSDModel instance as a python dictionary."""
         dictionary = {}
 
+        # version
         dictionary["version"] = version
+
+        # timestamp
+        if self.timestamp != "":
+            dictionary["timestamp"] = self.timestamp
+
+        # read_only
+        if self.read_only:
+            dictionary["read_only"] = self.read_only
+
+        # geographic_coordinate
+        if self.geographic_coordinate != {}:
+            dictionary["geographic_coordinate"] = self.geographic_coordinate
+
+        # tags
+        if self.tags != []:
+            dictionary["tags"] = self.tags
+
+        # description
         if self.description.strip() != "":
             dictionary["description"] = self.description
         dictionary["dimensions"] = []
         dictionary["dependent_variables"] = []
 
+        # dimensions
         for i in range(len(self.dimensions)):
             dictionary["dimensions"].append(
                 self.dimensions[i]._get_python_dictionary()
@@ -630,6 +679,7 @@ class CSDModel:
 
         _length_of_dependent_variables = len(self.dependent_variables)
 
+        # dependent variables
         for i in range(_length_of_dependent_variables):
             dictionary["dependent_variables"].append(
                 self.dependent_variables[i]._get_python_dictionary(
@@ -643,12 +693,12 @@ class CSDModel:
         csdm = {}
         csdm["csdm"] = dictionary
 
-        if self._persistent != {}:
-            csdm["persistent"] = self._persistent
+        # if self._persistent != {}:
+        #     csdm["persistent"] = self._persistent
 
         return csdm
 
-    def save(self, filename, version=__file_version__):
+    def save(self, filename, read_only=False, version=__file_version__):
         """
         Serialize the :ref:`CSDM_api` instance as a JSON data-exchange file.
 
@@ -682,6 +732,13 @@ class CSDModel:
         where ``datamodel`` is an instance of the CSDModel class.
         """
         dictionary = self._get_python_dictionary(filename, version=version)
+
+        timestamp = datetime.datetime.utcnow().isoformat()[:-7] + "Z"
+        dictionary["timestamp"] = timestamp
+
+        if read_only:
+            dictionary["read_only"] = read_only
+
         with open(filename, "w", encoding="utf8") as outfile:
             json.dump(
                 dictionary,
@@ -762,7 +819,7 @@ class CSDModel:
             new.add_dependent_variable(
                 components=y,
                 name=variable.name,
-                quantity=variable.quantity,
+                quantity_name=variable.quantity_name,
                 encoding=variable.encoding,
                 numeric_type=variable.numeric_type,
                 quantity_type=variable.quantity_type,
@@ -830,7 +887,7 @@ class CSDModel:
 
         # compute the reciprocal increment using Nyquist shannan theorem.
         _reciprocal_increment = 1.0 / (
-            object_id._number_of_points * object_id._increment.value
+            object_id._count * object_id._increment.value
         )
         object_id._increment = _reciprocal_increment * object_id._unit
 
@@ -972,13 +1029,13 @@ def get_broadcase_shape(array, ndim, axis):
 # def _compare_uv(uv1, uv2):
 #     # a = {
 #     #     'unit': True,
-#     #     'quantity': True,
+#     #     'quantity_name': True,
 #     #     'quantity_type': True
 #     # }
 #     a = True
 #     if uv1.unit.physical_type != uv2.unit.physical_type:
 #         a = False
-#     if uv1.quantity != uv2.quantity:
+#     if uv1.quantity_name != uv2.quantity_name:
 #         raise Exception(
 #             (
 #                 "Binary operates are not supported for "

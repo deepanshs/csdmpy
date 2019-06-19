@@ -20,9 +20,9 @@ def add_cp_dimension(doctest_namespace):
     doctest_namespace["x"] = Dimension(
         type="linear",
         description="This is a test",
-        number_of_points=10,
+        count=10,
         increment="5 G",
-        index_zero_value="10 mT",
+        index_zero_coordinate="10 mT",
         origin_offset="10 T",
         label="field strength",
     )
@@ -30,9 +30,9 @@ def add_cp_dimension(doctest_namespace):
     doctest_namespace["dimension_dictionary"] = {
         "type": "linear",
         "description": "This is a test",
-        "number_of_points": 10,
+        "count": 10,
         "increment": "5 G",
-        "index_zero_value": "10 mT",
+        "index_zero_coordinate": "10 mT",
         "origin_offset": "10 T",
         "label": "field strength",
     }
@@ -43,7 +43,7 @@ def add_cp_dimension(doctest_namespace):
         description="A test image",
         name="star",
         unit="W s",
-        quantity="energy",
+        quantity_name="energy",
         quantity_type="RGB",
         components=numpy_array,
     )
@@ -53,7 +53,7 @@ def add_cp_dimension(doctest_namespace):
         "description": "A test image",
         "name": "star",
         "unit": "W s",
-        "quantity": "energy",
+        "quantity_name": "energy",
         "quantity_type": "RGB",
         "components": numpy_array,
     }

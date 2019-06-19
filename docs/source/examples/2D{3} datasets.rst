@@ -31,12 +31,12 @@ The following is an example of the RGB image dataset.
         "dimensions": [
           {
             "type": "linear",
-            "number_of_points": 1024,
+            "count": 1024,
             "increment": "1.0"
           },
           {
             "type": "linear",
-            "number_of_points": 768,
+            "count": 768,
             "increment": "1.0"
           }
         ],

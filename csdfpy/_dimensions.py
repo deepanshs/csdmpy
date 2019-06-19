@@ -32,9 +32,9 @@ class BaseIndependentVariable:
     r"""Declare a BaseIndependentVariable class."""
 
     __slots__ = (
-        "_index_zero_value",
+        "_index_zero_coordinate",
         "_origin_offset",
-        "_quantity",
+        "_quantity_name",
         "_period",
         "_label",
         "_description",
@@ -47,36 +47,14 @@ class BaseIndependentVariable:
         self,
         _description="",
         _application={},
-        _index_zero_value=None,
+        _index_zero_coordinate=None,
         _origin_offset=None,
-        _quantity=None,
+        _quantity_name=None,
         _period=None,
         _label="",
         _unit=None,
     ):
         r"""Instantiate a BaseIndependentVariable class instance."""
-        #     self._set_parameters(
-        #         _description,
-        #         _application,
-        #         _index_zero_value,
-        #         _origin_offset,
-        #         _quantity,
-        #         _period,
-        #         _label,
-        #         _unit,
-        #     )
-
-        # def _set_parameters(
-        #     self,
-        #     _description="",
-        #     _application={},
-        #     _index_zero_value=None,
-        #     _origin_offset=None,
-        #     _quantity=None,
-        #     _period=None,
-        #     _label="",
-        #     _unit=None,
-        # ):
 
         # description
         self._description = _description
@@ -88,8 +66,8 @@ class BaseIndependentVariable:
         self._unit = _unit
 
         # reference Offset
-        _value = _check_value_object(_index_zero_value, _unit)
-        self._index_zero_value = _value
+        _value = _check_value_object(_index_zero_coordinate, _unit)
+        self._index_zero_coordinate = _value
 
         # origin offset
         _value = _check_value_object(_origin_offset, _unit)
@@ -101,9 +79,9 @@ class BaseIndependentVariable:
             _value = np.inf * _value.unit
         self._period = _value
 
-        # quantity
-        _value = _check_quantity(_quantity, _unit)
-        self._quantity = _value
+        # quantity_name
+        _value = _check_quantity(_quantity_name, _unit)
+        self._quantity_name = _value
 
         # label
         self.label = _label
@@ -128,19 +106,19 @@ class BaseIndependentVariable:
 
     # reference offset
     @property
-    def index_zero_value(self):
+    def index_zero_coordinate(self):
         r"""Value at index zero, :math:`c_k`, along the dimension."""
-        return deepcopy(self._index_zero_value)
+        return deepcopy(self._index_zero_coordinate)
 
-    @index_zero_value.setter
-    def index_zero_value(self, value):
+    @index_zero_coordinate.setter
+    def index_zero_coordinate(self, value):
         if isinstance(value, Quantity):
             value = str(value)
         if not isinstance(value, str):
             raise TypeError(_type_message(str, type(value)))
 
         _value = _assign_and_check_unit_consistency(value, self._unit)
-        self._index_zero_value = _value
+        self._index_zero_coordinate = _value
 
     # origin offset
     @property
@@ -178,14 +156,14 @@ class BaseIndependentVariable:
         else:
             self._period = _check_value_object(value, self._unit)
 
-    # Quantity
+    # quantity_name
     @property
-    def quantity(self):
+    def quantity_name(self):
         r"""Quantity name associated with this dimension."""
-        return deepcopy(self._quantity)
+        return deepcopy(self._quantity_name)
 
-    @quantity.setter
-    def quantity(self, value):
+    @quantity_name.setter
+    def quantity_name(self, value):
         raise NotImplementedError("This attribute is not yet implemented.")
 
     # label
@@ -228,9 +206,9 @@ class BaseIndependentVariable:
         dictionary = {}
 
         # The description key is added to the child class.
-        if self._index_zero_value.value != 0.0:
-            dictionary["index_zero_value"] = value_object_format(
-                self._index_zero_value
+        if self._index_zero_coordinate.value != 0.0:
+            dictionary["index_zero_coordinate"] = value_object_format(
+                self._index_zero_coordinate
             )
 
         if self._origin_offset.value != 0.0:
@@ -238,8 +216,8 @@ class BaseIndependentVariable:
                 self._origin_offset
             )
 
-        if self._quantity not in [None, "unknown", "dimensionless"]:
-            dictionary["quantity"] = self._quantity
+        if self._quantity_name not in [None, "unknown", "dimensionless"]:
+            dictionary["quantity_name"] = self._quantity_name
 
         if self._period.value not in [0.0, np.inf]:
             dictionary["period"] = value_object_format(self._period)
@@ -248,7 +226,7 @@ class BaseIndependentVariable:
             dictionary["label"] = self.label
 
         if self._application != {}:
-            dictionary["application"] == self._application
+            dictionary["application"] = self._application
 
         return dictionary
 
@@ -319,11 +297,11 @@ class LinearDimension(BaseIndependentVariable):
     """
 
     __slots__ = (
-        "_number_of_points",
+        "_count",
         "_increment",
         "_fft_output_order",
         "reciprocal",
-        "_reciprocal_number_of_points",
+        "_reciprocal_count",
         "_reciprocal_increment",
         "_coordinates",
     )
@@ -332,19 +310,19 @@ class LinearDimension(BaseIndependentVariable):
 
     def __init__(
         self,
-        _number_of_points,
+        _count,
         _increment,
-        _index_zero_value=None,
+        _index_zero_coordinate=None,
         _origin_offset=None,
-        _quantity=None,
+        _quantity_name=None,
         _period=None,
         _label="",
         _fft_output_order=False,
         _description="",
         _application={},
-        _reciprocal_index_zero_value=None,
+        _reciprocal_index_zero_coordinate=None,
         _reciprocal_origin_offset=None,
-        _reciprocal_quantity=None,
+        _reciprocal_quantity_name=None,
         _reciprocal_label="",
         _reciprocal_period=None,
         _reciprocal_description="",
@@ -352,7 +330,7 @@ class LinearDimension(BaseIndependentVariable):
     ):
         r"""Instantiate a DimensionWithLinearSpacing class instance."""
         # number of points
-        self._number_of_points = _number_of_points
+        self._count = _count
 
         # increment
         _value = _assign_and_check_unit_consistency(_increment, None)
@@ -368,9 +346,9 @@ class LinearDimension(BaseIndependentVariable):
             # self._set_parameters(
             _description,
             _application,
-            _index_zero_value,
+            _index_zero_coordinate,
             _origin_offset,
-            _quantity,
+            _quantity_name,
             _period,
             _label,
             self._unit,
@@ -381,9 +359,9 @@ class LinearDimension(BaseIndependentVariable):
         self.reciprocal = ReciprocalVariable(
             _reciprocal_description,
             _reciprocal_application,
-            _reciprocal_index_zero_value,
+            _reciprocal_index_zero_coordinate,
             _reciprocal_origin_offset,
-            _reciprocal_quantity,
+            _reciprocal_quantity_name,
             _reciprocal_period,
             _reciprocal_label,
             _reciprocal_unit,
@@ -408,10 +386,10 @@ class LinearDimension(BaseIndependentVariable):
             self._application,
         )
 
-        # index_zero_value
-        self._index_zero_value, self.reciprocal._index_zero_value = (
-            self.reciprocal._index_zero_value,
-            self._index_zero_value,
+        # index_zero_coordinate
+        self._index_zero_coordinate, self.reciprocal._index_zero_coordinate = (
+            self.reciprocal._index_zero_coordinate,
+            self._index_zero_coordinate,
         )
 
         # origin offset
@@ -426,10 +404,10 @@ class LinearDimension(BaseIndependentVariable):
             self._period,
         )
 
-        # quantity
-        self._quantity, self.reciprocal._quantity = (
-            self.reciprocal._quantity,
-            self._quantity,
+        # quantity_name
+        self._quantity_name, self.reciprocal._quantity_name = (
+            self.reciprocal._quantity_name,
+            self._quantity_name,
         )
 
         # label
@@ -443,17 +421,17 @@ class LinearDimension(BaseIndependentVariable):
 
     def _get_coordinates(self):
         _unit = self._unit
-        _number_of_points = self._number_of_points
+        _count = self._count
         _increment = self._increment.to(_unit)
 
-        _index = np.arange(_number_of_points, dtype=np.float64)
+        _index = np.arange(_count, dtype=np.float64)
 
         if self._fft_output_order:
-            _index = np.empty(_number_of_points, dtype=np.int)
-            n = (_number_of_points - 1) // 2 + 1
+            _index = np.empty(_count, dtype=np.int)
+            n = (_count - 1) // 2 + 1
             p1 = np.arange(0, n, dtype=np.int)
             _index[:n] = p1
-            p2 = np.arange(-(_number_of_points // 2), 0, dtype=np.int)
+            p2 = np.arange(-(_count // 2), 0, dtype=np.int)
             _index[n:] = p2
 
         _value = _index * _increment
@@ -468,7 +446,7 @@ class LinearDimension(BaseIndependentVariable):
         if self._description.strip() != "":
             dictionary["description"] = self._description.strip()
 
-        dictionary["number_of_points"] = self._number_of_points
+        dictionary["count"] = self._count
         dictionary["increment"] = value_object_format(self.increment)
 
         dictionary.update(self._get_quantitative_dictionary())
@@ -499,11 +477,11 @@ class LinearDimension(BaseIndependentVariable):
     #                   LinearlySampledDimension Attributes                   #
     # ----------------------------------------------------------------------- #
 
-    # number_of_points
+    # count
     @property
-    def number_of_points(self):
+    def count(self):
         r"""Total number of points along the linear dimension."""
-        return deepcopy(self._number_of_points)
+        return deepcopy(self._count)
 
     # increment
     @property
@@ -571,29 +549,23 @@ class MonotonicDimension(BaseIndependentVariable):
     :math:`\mathbf{1}` is an array of ones.
     """
 
-    __slots__ = (
-        "_unit",
-        "reciprocal",
-        "_number_of_points",
-        "_values",
-        "_coordinates",
-    )
+    __slots__ = ("_unit", "reciprocal", "_count", "_values", "_coordinates")
 
     _type = "monotonic"
 
     def __init__(
         self,
         _values,
-        _index_zero_value=None,
+        _index_zero_coordinate=None,
         _origin_offset=None,
-        _quantity=None,
+        _quantity_name=None,
         _period=None,
         _label="",
         _description="",
         _application={},
-        _reciprocal_index_zero_value=None,
+        _reciprocal_index_zero_coordinate=None,
         _reciprocal_origin_offset=None,
-        _reciprocal_quantity=None,
+        _reciprocal_quantity_name=None,
         _reciprocal_label="",
         _reciprocal_period=None,
         _reciprocal_description="",
@@ -607,9 +579,9 @@ class MonotonicDimension(BaseIndependentVariable):
             # self._set_parameters(
             _description,
             _application,
-            _index_zero_value,
+            _index_zero_coordinate,
             _origin_offset,
-            _quantity,
+            _quantity_name,
             _period,
             _label,
             self._unit,
@@ -620,9 +592,9 @@ class MonotonicDimension(BaseIndependentVariable):
         self.reciprocal = ReciprocalVariable(
             _reciprocal_description,
             _reciprocal_application,
-            _reciprocal_index_zero_value,
+            _reciprocal_index_zero_coordinate,
             _reciprocal_origin_offset,
-            _reciprocal_quantity,
+            _reciprocal_quantity_name,
             _reciprocal_period,
             _reciprocal_label,
             _reciprocal_unit,
@@ -644,7 +616,7 @@ class MonotonicDimension(BaseIndependentVariable):
 
         _value = np.asarray(_value, dtype=np.float64) * _unit
 
-        self._number_of_points = _value.size
+        self._count = _value.size
         self._values = values
         self._coordinates = _value
 
@@ -703,7 +675,7 @@ class LabeledDimension:
     """Declare a LabeledDimension class."""
 
     __slots__ = (
-        "_number_of_points",
+        "_count",
         "_coordinates",
         "_values",
         "_label",
@@ -758,7 +730,7 @@ class LabeledDimension:
     def _get_coordinates(self, _values):
         self._coordinates = np.asarray(_values)
         self._values = _values
-        self._number_of_points = len(_values)
+        self._count = len(_values)
 
     # is_quantitative
     def _is_quantitative(self):

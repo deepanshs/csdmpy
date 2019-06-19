@@ -3,7 +3,7 @@
 import sys
 
 import csdfpy as cp
-from csdfpy.helper_functions import quick_preview
+from csdfpy.helper_functions import preview
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -15,4 +15,4 @@ if __name__ == "__main__":
 
     for i in range(len(sys.argv) - 1):
         data = cp.load(sys.argv[i + 1])
-        quick_preview(data)
+        preview(data)

@@ -19,12 +19,12 @@ Dimension
         ~Dimension.coordinates
         ~Dimension.absolute_coordinates
         ~Dimension.values
-        ~Dimension.number_of_points
+        ~Dimension.count
         ~Dimension.increment
-        ~Dimension.index_zero_value
+        ~Dimension.index_zero_coordinate
         ~Dimension.origin_offset
         ~Dimension.fft_output_order
-        ~Dimension.quantity
+        ~Dimension.quantity_name
         ~Dimension.label
         ~Dimension.period
         ~Dimension.axis_label
@@ -43,12 +43,12 @@ Dimension
     .. autoattribute:: coordinates
     .. autoattribute:: absolute_coordinates
     .. autoattribute:: values
-    .. autoattribute:: number_of_points
+    .. autoattribute:: count
     .. autoattribute:: increment
-    .. autoattribute:: index_zero_value
+    .. autoattribute:: index_zero_coordinate
     .. autoattribute:: origin_offset
     .. autoattribute:: fft_output_order
-    .. autoattribute:: quantity
+    .. autoattribute:: quantity_name
     .. autoattribute:: label
     .. autoattribute:: period
     .. autoattribute:: axis_label

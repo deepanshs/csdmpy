@@ -3,6 +3,8 @@
 import sys
 from warnings import warn
 
+from numpy.fft import fftshift
+
 try:
     import matplotlib
     import matplotlib.pyplot as plt
@@ -12,9 +14,6 @@ except ImportError as e:
     sys.exit()
 
 import numpy as np
-
-# from numpy.fft import fft, fftshift
-
 
 global SOUND
 
@@ -40,10 +39,25 @@ __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 
 
-def quick_preview(data):
+def preview(data):
     """Quick preview od the dataset."""
-    if matplotlib.get_backend() in ["Qt5Agg", "Qt4Agg"]:
+    axes = []
+    for i, dim in enumerate(data.dimensions):
+        if dim.fft_output_order:
+            npts = dim.number_of_points
+            if npts % 2 == 0:
+                temp = npts * dim.increment / 2.0
+            else:
+                temp = (npts - 1) * dim.increment / 2.0
+            dim.index_zero_coordinate = dim.index_zero_coordinate - temp
 
+            axes.append(-i - 1)
+            dim.fft_output_order = False
+
+    for var in data.dependent_variables:
+        var.components = fftshift(var.components, axes=axes)
+
+    if matplotlib.get_backend() in ["Qt5Agg", "Qt4Agg"]:
         x = data.dimensions
         number_of_independents = len(x)
         if number_of_independents == 0:
@@ -66,10 +80,10 @@ def quick_preview(data):
         app.show()
         sys.exit(qapp.exec_())
     else:
-        quick_display(data)
+        _preview(data)
 
 
-def quick_display(data):
+def _preview(data):
     """Quick display of the data."""
     x = data.dimensions
     y = data.dependent_variables
@@ -404,21 +418,7 @@ try:
             number_of_dependents = len(dictionary.dependent_variables)
             number_of_independents = len(dictionary.dimensions)
 
-            # fft_flags = tuple(
-            #     [
-            #         -i - 1
-            #         for i in range(number_of_independents)
-            #         if dictionary.dimensions[i].fft_output_order
-            #     ]
-            # )
-            # print(fft_flags)
-
             for i in range(number_of_dependents):
-                # print(dictionary.dependent_variables[i].components.shape)
-                # dictionary.dependent_variables[i].components = fftshift(
-                #     dictionary.dependent_variables[i].components,
-                #     axes=fft_flags,
-                # )
                 # tab_.append(QtWidgets.QWidget())
                 # layout_.append(QtWidgets.QVBoxLayout(tab_[-1]))
                 # layout_[-1].setSpacing(0)
@@ -434,10 +434,6 @@ try:
 
                 x = dictionary.dimensions
                 y = dictionary.dependent_variables[i]
-
-                # for j in range(number_of_independents):
-                #     if x[j].fft_output_order:
-                #         x[j].fft_output_order = False
 
                 if number_of_independents == 1:
 

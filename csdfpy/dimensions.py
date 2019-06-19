@@ -87,8 +87,8 @@ class Dimension:
         ...     'type': 'linear',
         ...     'description': 'test',
         ...     'increment': '5 G',
-        ...     'number_of_points': 10,
-        ...     'index_zero_value': '10 mT',
+        ...     'count': 10,
+        ...     'index_zero_coordinate': '10 mT',
         ...     'origin_offset': '10 T'
         ... }
         >>> x = Dimension(dimension_dictionary)
@@ -102,8 +102,8 @@ class Dimension:
         >>> x = Dimension(type = 'linear',
         ...               description = 'test',
         ...               increment = '5 G',
-        ...               number_of_points = 10,
-        ...               index_zero_value = '10 mT',
+        ...               count = 10,
+        ...               index_zero_coordinate = '10 mT',
         ...               origin_offset = '10 T')
 
     """
@@ -117,22 +117,22 @@ class Dimension:
         dictionary = {
             "type": None,
             "description": "",
-            "number_of_points": None,
+            "count": None,
             "increment": None,
             "values": None,
-            "index_zero_value": None,
+            "index_zero_coordinate": None,
             "origin_offset": None,
             "fft_output_order": False,
             "period": None,
-            "quantity": None,
+            "quantity_name": None,
             "label": "",
             "application": {},
             "reciprocal": {
                 "increment": None,
-                "index_zero_value": None,
+                "index_zero_coordinate": None,
                 "origin_offset": None,
                 "period": None,
-                "quantity": None,
+                "quantity_name": None,
                 "label": "",
                 "description": "",
                 "application": {},
@@ -194,20 +194,22 @@ class Dimension:
 
             _dimension_object = MonotonicDimension(
                 _values=dictionary["values"],
-                _index_zero_value=dictionary["index_zero_value"],
+                _index_zero_coordinate=dictionary["index_zero_coordinate"],
                 _origin_offset=dictionary["origin_offset"],
-                _quantity=dictionary["quantity"],
+                _quantity_name=dictionary["quantity_name"],
                 _period=dictionary["period"],
                 _label=dictionary["label"],
                 _description=dictionary["description"],
                 _application=dictionary["application"],
-                _reciprocal_index_zero_value=dictionary["reciprocal"][
-                    "index_zero_value"
+                _reciprocal_index_zero_coordinate=dictionary["reciprocal"][
+                    "index_zero_coordinate"
                 ],
                 _reciprocal_origin_offset=dictionary["reciprocal"][
                     "origin_offset"
                 ],
-                _reciprocal_quantity=dictionary["reciprocal"]["quantity"],
+                _reciprocal_quantity_name=dictionary["reciprocal"][
+                    "quantity_name"
+                ],
                 _reciprocal_period=dictionary["reciprocal"]["period"],
                 _reciprocal_label=dictionary["reciprocal"]["label"],
                 _reciprocal_description=dictionary["reciprocal"][
@@ -223,39 +225,38 @@ class Dimension:
                 raise KeyError(
                     ("'increment' key is missing for the linear dimension.")
                 )
-            if dictionary["number_of_points"] is None:
+            if dictionary["count"] is None:
                 raise KeyError(
-                    (
-                        "'number_of_points' key is missing for the "
-                        "linear dimension."
-                    )
+                    ("'count' key is missing for the " "linear dimension.")
                 )
-            if not isinstance(dictionary["number_of_points"], int):
+            if not isinstance(dictionary["count"], int):
                 raise ValueError(
                     (
                         "An integer value is required for the "
-                        "'number_of_points' key, {0} is provided."
-                    ).format(type(dictionary["number_of_points"]))
+                        "'count' key, {0} is provided."
+                    ).format(type(dictionary["count"]))
                 )
 
             _dimension_object = LinearDimension(
-                _number_of_points=dictionary["number_of_points"],
+                _count=dictionary["count"],
                 _increment=dictionary["increment"],
-                _index_zero_value=dictionary["index_zero_value"],
+                _index_zero_coordinate=dictionary["index_zero_coordinate"],
                 _origin_offset=dictionary["origin_offset"],
-                _quantity=dictionary["quantity"],
+                _quantity_name=dictionary["quantity_name"],
                 _period=dictionary["period"],
                 _label=dictionary["label"],
                 _fft_output_order=dictionary["fft_output_order"],
                 _description=dictionary["description"],
                 _application=dictionary["application"],
-                _reciprocal_index_zero_value=dictionary["reciprocal"][
-                    "index_zero_value"
+                _reciprocal_index_zero_coordinate=dictionary["reciprocal"][
+                    "index_zero_coordinate"
                 ],
                 _reciprocal_origin_offset=dictionary["reciprocal"][
                     "origin_offset"
                 ],
-                _reciprocal_quantity=dictionary["reciprocal"]["quantity"],
+                _reciprocal_quantity_name=dictionary["reciprocal"][
+                    "quantity_name"
+                ],
                 _reciprocal_period=dictionary["reciprocal"]["period"],
                 _reciprocal_label=dictionary["reciprocal"]["label"],
                 _reciprocal_description=dictionary["reciprocal"][
@@ -349,8 +350,8 @@ class Dimension:
         This supplementary attribute is convenient for labeling axes.
         For quantitative independent variables, this attributes returns a
         string, `label / unit`,  if the `label` is not an empty string. If the
-        `label` is an empty string, `quantity / unit` is returned instead. Here
-        :attr:`~csdfpy.Dimension.quantity` and
+        `label` is an empty string, `quantity_name / unit` is returned instead.
+        Here :attr:`~csdfpy.Dimension.quantity_name` and
         :attr:`~csdfpy.Dimension.label` are the attributes of the
         :ref:`iv_api` instances, and `unit` is the unit associated with the
         coordinates along the dimension.
@@ -367,9 +368,9 @@ class Dimension:
         :returns: A ``String``.
         :raises AttributeError: When assigned a value.
         """
-        if hasattr(self.subtype, "quantity"):
+        if hasattr(self.subtype, "quantity_name"):
             if self.label.strip() == "":
-                label = self.quantity
+                label = self.quantity_name
             else:
                 label = self.label
             return _axis_label(label, self.subtype._unit)
@@ -397,12 +398,14 @@ class Dimension:
         :returns: A ``Numpy array`` for labeled dimensions.
         :raises AttributeError: When the attribute is modified.
         """
-        _n = self.subtype._number_of_points
+        _n = self.subtype._count
         coordinates = self.subtype._coordinates[:_n]
         if self.type != "linear":
             return coordinates
         else:
-            return (coordinates + self.index_zero_value).to(self.subtype._unit)
+            return (coordinates + self.index_zero_coordinate).to(
+                self.subtype._unit
+            )
 
     # data_structure--------------------------------------------------------- #
     @property
@@ -419,11 +422,11 @@ class Dimension:
             {
               "type": "linear",
               "description": "This is a test",
-              "number_of_points": 10,
+              "count": 10,
               "increment": "5.0 G",
-              "index_zero_value": "10.0 mT",
+              "index_zero_coordinate": "10.0 mT",
               "origin_offset": "10.0 T",
-              "quantity": "magnetic flux density",
+              "quantity_name": "magnetic flux density",
               "label": "field strength"
             }
 
@@ -498,7 +501,7 @@ class Dimension:
             >>> test = Dimension(
             ...            type='linear',
             ...	           increment = '1',
-            ...            number_of_points = 10
+            ...            count = 10
             ...        )
 
             >>> print(test.coordinates)
@@ -559,7 +562,7 @@ class Dimension:
 
     # index zero value------------------------------------------------------- #
     @property
-    def index_zero_value(self):
+    def index_zero_coordinate(self):
         r"""
         Return the value at the zeroth index of the dimension.
 
@@ -571,9 +574,9 @@ class Dimension:
 
         .. doctest::
 
-            >>> print(x.index_zero_value)
+            >>> print(x.index_zero_coordinate)
             10.0 mT
-            >>> x.index_zero_value = "0 T"
+            >>> x.index_zero_coordinate = "0 T"
             >>> print(x.coordinates)
             [ 0.  5. 10. 15. 20. 25. 30. 35. 40. 45.] G
 
@@ -584,17 +587,17 @@ class Dimension:
         :raises TypeError: When the assigned value is not a string.
         """
         if self.type == "linear":
-            return self.subtype.index_zero_value
+            return self.subtype.index_zero_coordinate
         else:
             raise AttributeError(
-                ("`{0}` has no attribute `index_zero_value`.").format(
+                ("`{0}` has no attribute `index_zero_coordinate`.").format(
                     self.subtype.__class__.__name__
                 )
             )
 
-    @index_zero_value.setter
-    def index_zero_value(self, value):
-        self.subtype.index_zero_value = value
+    @index_zero_coordinate.setter
+    def index_zero_coordinate(self, value):
+        self.subtype.index_zero_coordinate = value
 
     # label------------------------------------------------------------------ #
     @property
@@ -622,9 +625,9 @@ class Dimension:
     def label(self, label=""):
         self.subtype.label = label
 
-    # number_of_points------------------------------------------------------- #
+    # count------------------------------------------------------- #
     @property
-    def number_of_points(self):
+    def count(self):
         r"""
         Return the number of points, :math:`N_k \ge 1`, along the dimension.
 
@@ -633,17 +636,17 @@ class Dimension:
 
         .. doctest::
 
-            >>> print(x.number_of_points)
+            >>> print(x.count)
             10
-            >>> x.number_of_points = 5
+            >>> x.count = 5
 
         :returns: An ``Integer`` with the number of points.
         :raises TypeError: When the assigned value is not an integer.
         """
-        return self.subtype._number_of_points
+        return self.subtype._count
 
-    @number_of_points.setter
-    def number_of_points(self, value):
+    @count.setter
+    def count(self, value):
         if not isinstance(value, int):
             raise TypeError(_type_message(int, type(value)))
 
@@ -655,25 +658,25 @@ class Dimension:
             )
 
         if self.type not in _dimension_generators:
-            if value > self.number_of_points:
+            if value > self.count:
                 raise ValueError(
                     (
                         "Cannot set the number of points, {0}, more than the"
                         "number of coordinates, {1}, for monotonic and labeled"
                         " dimensions."
-                    ).format(value, self.number_of_points)
+                    ).format(value, self.count)
                 )
 
-            if value < self.number_of_points:
+            if value < self.count:
                 warnings.warn(
                     (
                         "The number of coordinates, {0}, are truncated to {1}."
-                    ).format(self.number_of_points, value)
+                    ).format(self.count, value)
                 )
-                self.subtype._number_of_points = value
+                self.subtype._count = value
 
         else:
-            self.subtype._number_of_points = value
+            self.subtype._count = value
             self.subtype._get_coordinates()
 
     # origin offset---------------------------------------------------------- #
@@ -743,9 +746,9 @@ class Dimension:
     def period(self, value=None):
         self.subtype.period = value
 
-    # quantity--------------------------------------------------------------- #
+    # quantity_name---------------------------------------------------------- #
     @property
-    def quantity(self):
+    def quantity_name(self):
         r"""
         Return the `quantity name` associated with the dimension.
 
@@ -753,18 +756,18 @@ class Dimension:
 
         .. doctest::
 
-            >>> print(x.quantity)
+            >>> print(x.quantity_name)
             magnetic flux density
 
         :returns: A string with the `quantity name`.
         :raises AttributeError: For labeled dimensions.
         :raises NotImplementedError: When assigning a value.
         """
-        return self.subtype.quantity
+        return self.subtype.quantity_name
 
-    @quantity.setter
-    def quantity(self, value):
-        self.subtype.quantity = value
+    @quantity_name.setter
+    def quantity_name(self, value):
+        self.subtype.quantity_name = value
 
     # type------------------------------------------------------------------- #
     @property
@@ -812,9 +815,9 @@ class Dimension:
                 "5.8m",
                 "32.4km"
               ],
-              "quantity": "length",
+              "quantity_name": "length",
               "reciprocal": {
-                "quantity": "wavenumber"
+                "quantity_name": "wavenumber"
               }
             }
 
@@ -870,10 +873,10 @@ class Dimension:
         Return an instance of the ReciprocalVariable class.
 
         The attributes of ReciprocalVariable class are:
-            - index_zero_value
+            - index_zero_coordinate
             - origin_offset
             - period
-            - quantity
+            - quantity_name
             - label
         where the definition of each attribute is the same as the corresponding
         attribute from the Dimension instance.
