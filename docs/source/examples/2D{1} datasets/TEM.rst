@@ -17,12 +17,12 @@ Let's import the CSD model data-file and look at its data structure.
     >>> import csdfpy as cp
     >>> import matplotlib.pyplot as plt
 
-    >>> filename = '../test-datasets0.0.11/ssTEM/TEM.csdf'
+    >>> filename = '../test-datasets0.0.12/ssTEM/TEM.csdf'
     >>> TEM = cp.load(filename)
     >>> print(TEM.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "description": "TEM image of the early larval brain of Drosophila melanogaster used in the analysis of neuronal microcircuitry.",
         "dimensions": [
           {

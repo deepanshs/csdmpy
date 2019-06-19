@@ -119,7 +119,8 @@ class Dimension:
             "description": "",
             "count": None,
             "increment": None,
-            "values": None,
+            "labels": None,
+            "coordinates": None,
             "index_zero_coordinate": None,
             "origin_offset": None,
             "fft_output_order": False,
@@ -174,26 +175,26 @@ class Dimension:
             )
 
         if dictionary["type"] == "labeled":
-            if dictionary["values"] is None:
+            if dictionary["labels"] is None:
                 raise KeyError(
-                    "'values' key is missing for the labeled dimension."
+                    "'labels' key is missing for the labeled dimension."
                 )
 
             _dimension_object = LabeledDimension(
-                _values=dictionary["values"],
+                _labels=dictionary["labels"],
                 _label=dictionary["label"],
                 _description=dictionary["description"],
                 _application=dictionary["application"],
             )
 
         if dictionary["type"] == "monotonic":
-            if dictionary["values"] is None:
+            if dictionary["coordinates"] is None:
                 raise KeyError(
-                    "'values' key is missing for the monotonic dimension."
+                    "'coordinates' key is missing for the monotonic dimension."
                 )
 
             _dimension_object = MonotonicDimension(
-                _values=dictionary["values"],
+                _values=dictionary["coordinates"],
                 _index_zero_coordinate=dictionary["index_zero_coordinate"],
                 _origin_offset=dictionary["origin_offset"],
                 _quantity_name=dictionary["quantity_name"],
@@ -400,14 +401,24 @@ class Dimension:
         """
         _n = self.subtype._count
         coordinates = self.subtype._coordinates[:_n]
-        if self.type != "linear":
+        if self.type == "monotonic":
             return coordinates
-        else:
+        if self.type == "linear":
             return (coordinates + self.index_zero_coordinate).to(
                 self.subtype._unit
             )
+        if self.type == "labeled":
+            raise AttributeError(
+                "Labeled dimensions have no 'coordinates' attribute."
+            )
+
+    @coordinates.setter
+    def coordinates(self, value):
+        if self.type not in ["linear", "labeled"]:
+            self.subtype.values = value
 
     # data_structure--------------------------------------------------------- #
+
     @property
     def data_structure(self):
         r"""
@@ -790,50 +801,22 @@ class Dimension:
         """
         return self.subtype.__class__._type
 
-    # values----------------------------------------------------------------- #
+    # labels----------------------------------------------------------------- #
     @property
-    def values(self):
+    def labels(self):
         r"""
-        Ordered array of values along the dimension.
-
-        For dimensions with monotonically spaced coordinates, this array is
-        an ascending order of physical quantities.
-
-        .. doctest::
-
-            >>> x1 = Dimension(
-            ...         type='monotonic',
-            ...         values=['0cm', '4.1µm', '0.3mm', '5.8m', '32.4km']
-            ...      )
-            >>> print(x1.data_structure)
-            {
-              "type": "monotonic",
-              "values": [
-                "0cm",
-                "4.1µm",
-                "0.3mm",
-                "5.8m",
-                "32.4km"
-              ],
-              "quantity_name": "length",
-              "reciprocal": {
-                "quantity_name": "wavenumber"
-              }
-            }
-
-        For labeled dimensions, this array is an ordered collection of UTF-8
-        allowed strings.
+        Ordered array of labels along the Labeled dimension.
 
         .. doctest::
 
             >>> x2 = Dimension(
             ...         type='labeled',
-            ...         values=['Cu', 'Ag', 'Au']
+            ...         labels=['Cu', 'Ag', 'Au']
             ...      )
             >>> print(x2.data_structure)
             {
               "type": "labeled",
-              "values": [
+              "labels": [
                 "Cu",
                 "Ag",
                 "Au"
@@ -850,15 +833,11 @@ class Dimension:
         :raises AttributeError: For dimensions with subtype `linear`.
 
         """
-        # .. todo:
-        #     raise type error if the values are not strings or numpy array
-        #     of stings.
-        # """
-        return self.subtype.values
+        return self.subtype.labels
 
-    @values.setter
-    def values(self, array):
-        self.subtype.values = array
+    @labels.setter
+    def labels(self, array):
+        self.subtype.labels = array
         self.subtype._get_coordinates(array)
 
     # ======================================================================= #

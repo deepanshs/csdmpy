@@ -28,7 +28,7 @@ sample test file.
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.11/test/test01.csdf' # replace this with the filename.
+    >>> filename = '../test-datasets0.0.12/test/test01.csdf' # replace this with the filename.
     >>> testdata1 = cp.load(filename)
 
 Here, ``testdata1`` is an instance of the :ref:`csdm_api` class.
@@ -141,10 +141,6 @@ number of points along the independent variable, `i.e.`, ``x[0].coordinates``.
 --------------------
 Plotting the dataset
 --------------------
-
-.. "A picture is worth a thousand words" is an English language idiom and it
-.. applies to the scientific dataset as well, that is, a plot of a scientific
-.. dataset is more informative than just the series of number.
 
 It is always helpful to present the scientific datasets with visual aids
 such as plots and figures rather than columns of numbers. As such, throughout

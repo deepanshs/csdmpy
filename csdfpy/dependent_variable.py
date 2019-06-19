@@ -740,7 +740,6 @@ class DependentVariable:
         self, filename=None, dataset_index=None, for_display=True, version=None
     ):
         """Return the DependentVariable instance as a python dictionary."""
-        # dictionary = {}
         dictionary = self.subtype._get_python_dictionary(
             filename, dataset_index, for_display, version
         )

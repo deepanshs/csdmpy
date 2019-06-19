@@ -29,7 +29,7 @@ This will create an instance of the :ref:`csdm_api` class with a 0D{0} dataset,
     >>> print(fundata.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "dimensions": [],
         "dependent_variables": []
       }
@@ -59,11 +59,11 @@ instance.
     >>> print(fundata.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "dimensions": [
           {
             "type": "labeled",
-            "values": [
+            "labels": [
               "🍈",
               "🍉",
               "🍋",
@@ -113,11 +113,11 @@ Now, we have a 😂 dataset...
     >>> print(fundata.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "dimensions": [
           {
             "type": "labeled",
-            "values": [
+            "labels": [
               "🍈",
               "🍉",
               "🍋",

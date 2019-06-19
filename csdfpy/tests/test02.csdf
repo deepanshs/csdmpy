@@ -1,6 +1,6 @@
 {
   "csdm": {
-    "version": "0.0.11",
+    "version": "0.0.12",
     "description": "Base64 encoding test",
     "dependent_variables": [
       {
@@ -16,7 +16,7 @@
     "dimensions": [
       {
         "type": "monotonic",
-        "values": [
+        "coordinates": [
             "-0.28758166 cm",
             "-0.22712233 cm",
             "-0.19913859 cm",

@@ -29,7 +29,7 @@ with a `.csdf` file extension. Let's import this file.
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.11/gmsl/sea_level_none.csdf'
+    >>> filename = '../test-datasets0.0.12/gmsl/sea_level_none.csdf'
     >>> sea_level = cp.load(filename)
 
 The variable `filename` is a string with the local address to the
@@ -45,7 +45,8 @@ instance,
     >>> print(sea_level.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
+        "read_only": true,
         "description": "Global Mean Sea Level (GMSL) rise from the late 19th to the Early 21st Century.",
         "dimensions": [
           {
@@ -192,12 +193,12 @@ structure.
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.11/NMR/blochDecay/blochDecay_raw.csdfe'
+    >>> filename = '../test-datasets0.0.12/NMR/blochDecay/blochDecay_raw.csdfe'
     >>> NMRdata = cp.load(filename)
     >>> print(NMRdata.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "description": "A time domain NMR $^{13}$C Bloch decay signal of ethanol.",
         "dimensions": [
           {
@@ -270,12 +271,12 @@ plot follows,
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.11/EPR/xyinc2_base64.csdf'
+    >>> filename = '../test-datasets0.0.12/EPR/xyinc2_base64.csdf'
     >>> EPRdata = cp.load(filename)
     >>> print(EPRdata.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "description": "A Electron Paramagnetic Resonance simulated dataset.",
         "dimensions": [
           {
@@ -318,12 +319,12 @@ follows,
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.11/GC/cinnamon_none.csdf'
+    >>> filename = '../test-datasets0.0.12/GC/cinnamon_none.csdf'
     >>> GCData = cp.load(filename)
     >>> print(GCData.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "description": "A Gas Chromatography dataset of cinnamon stick.",
         "dimensions": [
           {
@@ -368,12 +369,12 @@ structure and the plot of the FTIR dataset follows
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.11/IR/caffeine_none.csdf'
+    >>> filename = '../test-datasets0.0.12/IR/caffeine_none.csdf'
     >>> FTIRData = cp.load(filename)
     >>> print(FTIRData.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "description": "An IR spectrum of caffeine.",
         "dimensions": [
           {
@@ -419,12 +420,12 @@ model format. The data structure and the plot of the UV-vis dataset follows,
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.11/UV-Vis/benzeneVapour_base64.csdf'
+    >>> filename = '../test-datasets0.0.12/UV-Vis/benzeneVapour_base64.csdf'
     >>> UVdata = cp.load(filename)
     >>> print(UVdata.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "description": "A UV-vis spectra of benzene vapours.",
         "dimensions": [
           {

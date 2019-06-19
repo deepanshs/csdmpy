@@ -16,11 +16,11 @@ Let's load the `.csdfe` file and take a quick look at its data structure.
 .. doctest::
 
     >>> import csdfpy as cp
-    >>> bubble_nebula = cp.load('../test-datasets0.0.11/astronomy/source/Bubble Nebula/Bubble.csdfe')
+    >>> bubble_nebula = cp.load('../test-datasets0.0.12/astronomy/source/Bubble Nebula/Bubble.csdfe')
     >>> print(bubble_nebula.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "description": "The dataset is a new observation of the Bubble Nebula acquired by The Hubble Heritage Team, in February 2016.",
         "dimensions": [
           {

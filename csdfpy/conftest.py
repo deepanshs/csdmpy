@@ -12,7 +12,7 @@ from csdfpy import Dimension
 
 @pytest.fixture(autouse=True)
 def add_cp_dimension(doctest_namespace):
-    # doctest_namespace["cp"] = cp
+    doctest_namespace["cp"] = cp
     # doctest_namespace["cp.new"] = cp.new
     doctest_namespace["np"] = np
     doctest_namespace["Dimension"] = Dimension

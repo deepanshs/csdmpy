@@ -628,7 +628,7 @@ class MonotonicDimension(BaseIndependentVariable):
         if self._description.strip() != "":
             dictionary["description"] = self._description.strip()
 
-        dictionary["values"] = self._values
+        dictionary["coordinates"] = self._values
 
         dictionary.update(self._get_quantitative_dictionary())
 
@@ -677,7 +677,7 @@ class LabeledDimension:
     __slots__ = (
         "_count",
         "_coordinates",
-        "_values",
+        "_labels",
         "_label",
         "_description",
         "_application",
@@ -685,12 +685,12 @@ class LabeledDimension:
 
     _type = "labeled"
 
-    def __init__(self, _values, _label="", _description="", _application={}):
+    def __init__(self, _labels, _label="", _description="", _application={}):
         r"""Instantiate a LabeledDimension class instance."""
         self._description = _description
         self._application = _application
 
-        self._get_coordinates(_values)
+        self._get_coordinates(_labels)
         self._label = _label
 
     # ----------------------------------------------------------------------- #
@@ -727,10 +727,10 @@ class LabeledDimension:
                 )
             )
 
-    def _get_coordinates(self, _values):
-        self._coordinates = np.asarray(_values)
-        self._values = _values
-        self._count = len(_values)
+    def _get_coordinates(self, _labels):
+        self._coordinates = np.asarray(_labels)
+        self._labels = _labels
+        self._count = len(_labels)
 
     # is_quantitative
     def _is_quantitative(self):
@@ -748,7 +748,7 @@ class LabeledDimension:
         if self._description.strip() != "":
             dictionary["description"] = self._description.strip()
 
-        dictionary["values"] = self._coordinates.tolist()
+        dictionary["labels"] = self._coordinates.tolist()
 
         return dictionary
 
@@ -756,17 +756,17 @@ class LabeledDimension:
     #                        LabeledDimension Attributes                      #
     # ----------------------------------------------------------------------- #
 
-    # values
+    # labels
     @property
-    def values(self):
-        r"""Return a list of values along the dimension."""
-        return deepcopy(self._values)
+    def labels(self):
+        r"""Return a list of labels along the dimension."""
+        return deepcopy(self._labels)
 
-    @values.setter
-    def values(self, _values):
-        self._get_coordinates(_values)
+    @labels.setter
+    def labels(self, _labels):
+        self._get_coordinates(_labels)
 
-    # values
+    # application
     @property
     def application(self):
         r"""Return a list of values along the dimension."""

@@ -21,12 +21,12 @@ The following is an example of the RGB image dataset.
 
     >>> import csdfpy as cp
 
-    >>> filename = '../test-datasets0.0.11/image/raccoon_raw.csdfe'
+    >>> filename = '../test-datasets0.0.12/image/raccoon_raw.csdfe'
     >>> ImageData = cp.load(filename)
     >>> print (ImageData.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "description": "An RBG image of a raccoon face.",
         "dimensions": [
           {

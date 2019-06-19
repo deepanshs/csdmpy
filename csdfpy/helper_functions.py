@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Helper functions."""
 import sys
+from copy import deepcopy
 from warnings import warn
 
 from numpy.fft import fftshift
@@ -39,23 +40,27 @@ __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 
 
-def preview(data):
+def preview(data_object):
     """Quick preview od the dataset."""
     axes = []
+    data = deepcopy(data_object)
     for i, dim in enumerate(data.dimensions):
-        if dim.fft_output_order:
-            npts = dim.number_of_points
-            if npts % 2 == 0:
-                temp = npts * dim.increment / 2.0
-            else:
-                temp = (npts - 1) * dim.increment / 2.0
-            dim.index_zero_coordinate = dim.index_zero_coordinate - temp
+        if hasattr(dim, "fft_output_order"):
+            if dim.fft_output_order:
+                npts = dim.count
+                if npts % 2 == 0:
+                    temp = npts * dim.increment / 2.0
+                else:
+                    temp = (npts - 1) * dim.increment / 2.0
+                dim.index_zero_coordinate = dim.index_zero_coordinate - temp
 
-            axes.append(-i - 1)
-            dim.fft_output_order = False
+                axes.append(-i - 1)
+                dim.fft_output_order = False
 
     for var in data.dependent_variables:
         var.components = fftshift(var.components, axes=axes)
+
+    # print(matplotlib.get_backend())
 
     if matplotlib.get_backend() in ["Qt5Agg", "Qt4Agg"]:
         x = data.dimensions

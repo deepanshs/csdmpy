@@ -24,7 +24,7 @@ The data structure of this instance is
     >>> print(new.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "description": "A new test dataset",
         "dimensions": [],
         "dependent_variables": []
@@ -75,7 +75,7 @@ dataset is now a 1D{0} dataset with the data structure as
     >>> print(new.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "description": "A new test dataset",
         "dimensions": [
           {
@@ -120,7 +120,7 @@ instance is
     >>> print(new.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "description": "A new test dataset",
         "dimensions": [
           {
@@ -136,7 +136,7 @@ instance is
           {
             "type": "monotonic",
             "description": "This is a monotonic dimension",
-            "values": [
+            "coordinates": [
               "1 µG",
               "2.1 mG",
               "12.4 G",
@@ -193,7 +193,7 @@ This generates a 3D{0} dataset with the data structure -
     >>> print(new.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "description": "A new test dataset",
         "dimensions": [
           {
@@ -209,7 +209,7 @@ This generates a 3D{0} dataset with the data structure -
           {
             "type": "monotonic",
             "description": "This is a monotonic dimension",
-            "values": [
+            "coordinates": [
               "1 µG",
               "2.1 mG",
               "12.4 G",
@@ -221,7 +221,7 @@ This generates a 3D{0} dataset with the data structure -
           {
             "type": "labeled",
             "description": "This is a labeled dimensions.",
-            "values": [
+            "labels": [
               "Cu",
               "Ag",
               "Au"

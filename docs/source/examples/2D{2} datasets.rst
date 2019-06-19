@@ -17,12 +17,12 @@ as a function of two spatial dimensions.
 
     >>> import csdfpy as cp
 
-    >>> filename = '../test-datasets0.0.11/vector/electricField/electric_field_raw.csdfe'
+    >>> filename = '../test-datasets0.0.12/vector/electricField/electric_field_raw.csdfe'
     >>> vector_data = cp.load(filename)
     >>> print (vector_data.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "description": "A simulated electric field dataset from an electric dipole.",
         "dimensions": [
           {

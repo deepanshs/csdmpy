@@ -15,12 +15,12 @@ Let's load the file and look at its data structure.
 
     >>> import csdfpy as cp
 
-    >>> filename = '../test-datasets0.0.11/NMR/satrec/satRec_raw.csdfe'
+    >>> filename = '../test-datasets0.0.12/NMR/satrec/satRec_raw.csdfe'
     >>> NMR2Ddata = cp.load(filename)
     >>> print(NMR2Ddata.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
         "description": "A $^{29}$Si NMR saturation recovery measurement of highly siliceous zeolite ZSM-12.",
         "dimensions": [
           {
@@ -39,7 +39,7 @@ Let's load the file and look at its data structure.
           },
           {
             "type": "monotonic",
-            "values": [
+            "coordinates": [
               "1.0 s",
               "5.0 s",
               "10.0 s",

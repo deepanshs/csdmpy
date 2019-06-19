@@ -109,7 +109,6 @@ def _load(filename):
         raise Exception(e)
 
     key_list_root = dictionary.keys()
-    # print(key_list_root)
     # ----------------------------------------------------------------------- #
     # Create the CSDModel and populate the attributes
     # ----------------------------------------------------------------------- #
@@ -124,7 +123,6 @@ def _load(filename):
     # is version required?
 
     key_list_csdm = dictionary["csdm"].keys()
-    # print(key_list_csdm)
 
     csdm = CSDModel(filename, _version)
 
@@ -177,7 +175,7 @@ def new(description=""):
         >>> print(emptydata.data_structure)
         {
           "csdm": {
-            "version": "0.0.11",
+            "version": "0.0.12",
             "description": "Testing Testing 1 2 3",
             "dimensions": [],
             "dependent_variables": []
@@ -204,9 +202,9 @@ class CSDModel:
     :returns: A ``CSDModel`` instance.
     """
 
-    __file_version__ = "0.0.11"
+    __file_version__ = __version__
     _old_compatible_versions = ()
-    _old_incompatible_versions = ("0.0.9", "0.0.10")
+    _old_incompatible_versions = ("0.0.9", "0.0.10", "0.0.11")
 
     __slots__ = [
         "_dimensions",
@@ -549,7 +547,7 @@ class CSDModel:
             >>> print(datamodel.data_structure)
             {
               "csdm": {
-                "version": "0.0.11",
+                "version": "0.0.12",
                 "dimensions": [
                   {
                     "type": "linear",
