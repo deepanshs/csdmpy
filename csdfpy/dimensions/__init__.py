@@ -212,8 +212,6 @@ class Dimension:
     # ======================================================================= #
     #                          Dimension Attributes                           #
     # ======================================================================= #
-
-    # absolute_coordinates--------------------------------------------------- #
     @property
     def absolute_coordinates(self):
         r"""
@@ -246,7 +244,6 @@ class Dimension:
             n = self.subtype.__class__.__name__
             raise AttributeError(f"{n} has no attribute absolute_coordinates.")
 
-    # application------------------------------------------------------------ #
     @property
     def application(self):
         """
@@ -276,7 +273,6 @@ class Dimension:
     def application(self, value):
         self.subtype.application = value
 
-    # axis label------------------------------------------------------------- #
     @property
     def axis_label(self):
         r"""
@@ -312,7 +308,6 @@ class Dimension:
         else:
             return self.label
 
-    # coordinates------------------------------------------------------------ #
     @property
     def coordinates(self):
         r"""
@@ -351,8 +346,6 @@ class Dimension:
         if self.type not in ["linear", "labeled"]:
             self.subtype.values = value
 
-    # data_structure--------------------------------------------------------- #
-
     @property
     def data_structure(self):
         r"""
@@ -382,7 +375,6 @@ class Dimension:
             dictionary, ensure_ascii=False, sort_keys=False, indent=2
         )
 
-    # description------------------------------------------------------------ #
     @property
     def description(self):
         """
@@ -407,7 +399,6 @@ class Dimension:
     def description(self, value):
         self.subtype._description = value
 
-    # fft_output_order------------------------------------------------------- #
     @property
     def fft_output_order(self):
         r"""
@@ -467,7 +458,6 @@ class Dimension:
     def fft_output_order(self, value):
         self.subtype.fft_output_order = value
 
-    # increment------------------------------------------------------------ #
     @property
     def increment(self):
         r"""
@@ -505,7 +495,6 @@ class Dimension:
     def increment(self, value):
         self.subtype.increment = value
 
-    # index zero value------------------------------------------------------- #
     @property
     def index_zero_coordinate(self):
         r"""
@@ -544,7 +533,6 @@ class Dimension:
     def index_zero_coordinate(self, value):
         self.subtype.index_zero_coordinate = value
 
-    # label------------------------------------------------------------------ #
     @property
     def label(self):
         r"""
@@ -570,7 +558,6 @@ class Dimension:
     def label(self, label=""):
         self.subtype.label = label
 
-    # count------------------------------------------------------- #
     @property
     def count(self):
         r"""
@@ -616,8 +603,6 @@ class Dimension:
             )
             self.subtype._count = value
 
-    # origin offset---------------------------------------------------------- #
-
     @property
     def origin_offset(self):
         r"""
@@ -647,7 +632,6 @@ class Dimension:
     def origin_offset(self, value):
         self.subtype.origin_offset = value
 
-    # period----------------------------------------------------------------- #
     @property
     def period(self):
         r"""
@@ -684,7 +668,6 @@ class Dimension:
     def period(self, value=None):
         self.subtype.period = value
 
-    # quantity_name---------------------------------------------------------- #
     @property
     def quantity_name(self):
         r"""
@@ -707,7 +690,6 @@ class Dimension:
     def quantity_name(self, value):
         self.subtype.quantity_name = value
 
-    # type------------------------------------------------------------------- #
     @property
     def type(self):
         r"""
@@ -728,7 +710,6 @@ class Dimension:
         """
         return self.subtype.__class__._type
 
-    # labels----------------------------------------------------------------- #
     @property
     def labels(self):
         r"""
@@ -767,12 +748,6 @@ class Dimension:
         self.subtype.labels = array
         self.subtype._get_coordinates(array)
 
-    # ======================================================================= #
-    #                            Additional Attributes                        #
-    # ======================================================================= #
-
-    # reciprocal
-
     @property
     def reciprocal(self):
         r"""
@@ -790,20 +765,17 @@ class Dimension:
         return self.subtype.reciprocal
 
     # ======================================================================= #
-    #                                  Methods                                #
+    #                           Dimension Methods                             #
     # ======================================================================= #
 
-    # _get_python_dictionary()
     def _get_python_dictionary(self):
         r"""Return the Dimension instance as a python dictionary."""
         return self.subtype._get_python_dictionary()
 
-    # is_quantitative()
     def is_quantitative(self):
         r"""Return True if the independent variable is quantitative."""
         return self.subtype._is_quantitative()
 
-    # to()
     def to(self, unit="", equivalencies=None):
         r"""
         Convert the unit of the independent variable coordinates to `unit`.

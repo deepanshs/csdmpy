@@ -8,7 +8,6 @@ csdfpy.egg-info/**
 .eggs/**
 build/**
 dist/**
-tests/**
 .ipynb_checkpoints/**
 archive/**
 .eggs/**
@@ -58,10 +57,8 @@ Thumbs.db
 # files
 files.txt
 info.txt
-**_test.py
 *.png
 *.ipynb
-myfile
 *.pdf
 *schema
 
@@ -69,6 +66,4 @@ myfile
 # files #
 #########
 myfile.csdf
-new.py
-widgets.py
 .coverage

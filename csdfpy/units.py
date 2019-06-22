@@ -174,12 +174,9 @@ class ScalarQuantity:
 
     def __init__(self, quantity_string=None, unit=None):
         self.quantity = self.quantity_object(quantity_string, unit)
-        # print(self.quantity)
 
     @classmethod
     def quantity_object(cls, quantity_string, unit):
-        # print(quantity_string)
-        # print(type(quantity_string))
         if isinstance(quantity_string, ScalarQuantity):
             return quantity_string
 
@@ -194,7 +191,6 @@ class ScalarQuantity:
 
         if isinstance(quantity_string, str):
             quantity = string_to_quantity(quantity_string)
-            # print(quantity)
             if unit is not None:
                 return check_unit_consistency(quantity, unit)
             else:

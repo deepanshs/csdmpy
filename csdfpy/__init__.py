@@ -24,7 +24,6 @@ from csdfpy.version import __version__
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-__version__ = __version__
 
 
 def _import_json(filename):
@@ -110,10 +109,8 @@ def _load(filename):
         raise Exception(e)
 
     key_list_root = dictionary.keys()
-    # ----------------------------------------------------------------------- #
-    # Create the CSDModel and populate the attributes
-    # ----------------------------------------------------------------------- #
 
+    # Create the CSDModel and populate the attributes
     if "CSDM" in key_list_root:
         raise KeyError("'CSDM' is not a valid keyword. Did you mean 'csdm'?")
 
@@ -121,7 +118,7 @@ def _load(filename):
         raise KeyError("'csdm' key is not present.")
 
     _version = dictionary["csdm"]["version"]
-    # is version required?
+    # is version key required?
 
     key_list_csdm = dictionary["csdm"].keys()
 
@@ -241,26 +238,21 @@ class CSDModel:
         self._geographic_coordinate = {}
         self._description = description
         self._application = {}
-
         self._filename = filename
 
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
     # ----------------------------------------------------------------------- #
-
-    # dependent variables
     @property
     def dependent_variables(self):
         """Return a tuple of the :ref:`dv_api` instances."""
         return self._dependent_variables
 
-    # dimensions
     @property
     def dimensions(self):
         """Return a tuple of the :ref:`iv_api` instances."""
         return self._dimensions
 
-    # tags
     @property
     def tags(self):
         """
@@ -279,8 +271,6 @@ class CSDModel:
                     " found {0}."
                 ).format(type(value))
             )
-
-    # read only
 
     @property
     def read_only(self):
@@ -309,7 +299,6 @@ class CSDModel:
                 ).format(type(value))
             )
 
-    # version
     @property
     def version(self):
         """
@@ -319,7 +308,6 @@ class CSDModel:
         """
         return deepcopy(self._version)
 
-    # timestamp
     @property
     def timestamp(self):
         """
@@ -332,7 +320,6 @@ class CSDModel:
         """
         return deepcopy(self._timestamp)
 
-    # geographic coordinate
     @property
     def geographic_coordinate(self):
         """
@@ -348,7 +335,6 @@ class CSDModel:
         """
         return deepcopy(self._geographic_coordinate)
 
-    # description
     @property
     def description(self):
         """
@@ -417,7 +403,6 @@ class CSDModel:
                 ).format(type(value))
             )
 
-    # filename of the current file
     @property
     def filename(self):
         """
@@ -427,7 +412,6 @@ class CSDModel:
         """
         return self._filename
 
-    # data structure
     @property
     def data_structure(self):
         r"""
@@ -452,7 +436,7 @@ class CSDModel:
         )
 
     # ----------------------------------------------------------------------- #
-    #                              Private methods                            #
+    #                                  Methods                                #
     # ----------------------------------------------------------------------- #
 
     def _reshape(self, shape):
@@ -508,10 +492,6 @@ class CSDModel:
 
         _components[vertexes] = _item.components.reshape(_new_shape)
         return _components
-
-    # ----------------------------------------------------------------------- #
-    #                              Public methods                             #
-    # ----------------------------------------------------------------------- #
 
     def add_dimension(self, *args, **kwargs):
         """
@@ -655,40 +635,31 @@ class CSDModel:
         """Return the CSDModel instance as a python dictionary."""
         dictionary = {}
 
-        # version
         dictionary["version"] = version
 
-        # timestamp
         if self.timestamp != "":
             dictionary["timestamp"] = self.timestamp
 
-        # read_only
         if self.read_only:
             dictionary["read_only"] = self.read_only
 
-        # geographic_coordinate
         if self.geographic_coordinate != {}:
             dictionary["geographic_coordinate"] = self.geographic_coordinate
 
-        # tags
         if self.tags != []:
             dictionary["tags"] = self.tags
 
-        # description
         if self.description.strip() != "":
             dictionary["description"] = self.description
         dictionary["dimensions"] = []
         dictionary["dependent_variables"] = []
 
-        # dimensions
         for i in range(len(self.dimensions)):
             dictionary["dimensions"].append(
                 self.dimensions[i]._get_python_dictionary()
             )
 
         _length_of_dependent_variables = len(self.dependent_variables)
-
-        # dependent variables
         for i in range(_length_of_dependent_variables):
             dictionary["dependent_variables"].append(
                 self.dependent_variables[i]._get_python_dictionary(
@@ -701,10 +672,6 @@ class CSDModel:
 
         csdm = {}
         csdm["csdm"] = dictionary
-
-        # if self._persistent != {}:
-        #     csdm["persistent"] = self._persistent
-
         return csdm
 
     def save(self, filename, read_only=False, version=__file_version__):

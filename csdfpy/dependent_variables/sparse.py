@@ -12,11 +12,6 @@ __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 
 
-# =========================================================================== #
-#                             SparseSampling Class                            #
-# =========================================================================== #
-
-
 class SparseSampling:
     r"""Declare a SparseSampling class."""
 
@@ -42,25 +37,12 @@ class SparseSampling:
         **kwargs,
     ):
         """Initialize a SparseDimension class."""
-        # encoding
         self.encoding = encoding
-
-        # numeric type
         self._numeric_type = NumericType(numeric_type)
-
-        # quantity_type
         self._quantity_type = QuantityType(quantity_type)
-
-        # description
         self.description = description
-
-        # application
         self.application = application
-
-        # sparse dimensions
         self._sparse_dimensions = dimensions
-
-        # sparse grid vertexes
         self._sparse_grid_vertexes = Decoder(
             self._encoding,
             self._quantity_type,
@@ -68,7 +50,10 @@ class SparseSampling:
             self._numeric_type._nptype,
         )
 
-    # encoding
+    # ----------------------------------------------------------------------- #
+    #                                 Attributes                              #
+    # ----------------------------------------------------------------------- #
+
     @property
     def encoding(self):
         r"""Return the data encoding method."""
@@ -81,7 +66,6 @@ class SparseSampling:
         value = _check_encoding(value)
         self._encoding = value
 
-    # numeric type
     @property
     def numeric_type(self):
         r"""Return the numeric type of data values."""
@@ -91,7 +75,6 @@ class SparseSampling:
     def numeric_type(self, value):
         self._numeric_type.update(value)
 
-    # application
     @property
     def application(self):
         """Return an application metadata dictionary."""
@@ -105,7 +88,6 @@ class SparseSampling:
             )
         self._application = value
 
-    # description
     @property
     def description(self):
         r"""Return the description of the object."""
@@ -124,13 +106,11 @@ class SparseSampling:
                 )
             )
 
-    # sparse dimensions
     @property
     def sparse_dimensions(self):
         """List of dimension indexes corresponding to sparse dimensions."""
         return deepcopy(self._sparse_dimensions)
 
-    # sparse grid vertexes
     @property
     def sparse_grid_vertexes(self):
         """List of grid vertexes corresponding to sparse dimensions."""

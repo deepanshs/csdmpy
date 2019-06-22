@@ -15,11 +15,6 @@ __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 
 
-# =========================================================================== #
-#                             InternalDataset Class                           #
-# =========================================================================== #
-
-
 class InternalDataset(BaseDependentVariable):
     """InternalDataset class."""
 

@@ -14,12 +14,12 @@ __email__ = "srivastava.89@osu.edu"
 
 
 # =========================================================================== #
-#               		   Base Quantitative Class      				      #
+#                          Base Quantitative Class                            #
 # =========================================================================== #
 
 
 class BaseQuantitativeDimension:
-    r"""Declare a BaseQuantitativeDimension class."""
+    r"""A BaseQuantitativeDimension class."""
 
     __slots__ = (
         "_index_zero_coordinate",
@@ -29,8 +29,8 @@ class BaseQuantitativeDimension:
         "_label",
         "_description",
         "_application",
-        "_equivalencies",
         "_unit",
+        "_equivalencies",
     )
 
     def __init__(
@@ -45,43 +45,28 @@ class BaseQuantitativeDimension:
         unit=None,
         **kwargs,
     ):
-        r"""Instantiate a BaseIndependentVariable class instance."""
+        r"""Instantiate a BaseIndependentVariable class."""
 
-        # description
         self._description = description
-
-        # application
         self._application = application
+        self._index_zero_coordinate = ScalarQuantity(
+            index_zero_coordinate, unit
+        ).quantity
+        self._origin_offset = ScalarQuantity(origin_offset, unit).quantity
+        self._quantity_name = check_quantity_name(quantity_name, unit)
 
-        # unit
-        self._unit = unit
-
-        # reference Offset
-        value = ScalarQuantity(index_zero_coordinate, unit).quantity
-        self._index_zero_coordinate = value
-
-        # origin offset
-        value = ScalarQuantity(origin_offset, unit).quantity
-        self._origin_offset = value
-
-        # period
         value = ScalarQuantity(period, unit).quantity
         if value.value == 0.0:
             value = inf * value.unit
         self._period = value
 
-        # quantity_name
-        value = check_quantity_name(quantity_name, unit)
-        self._quantity_name = value
-
-        # label
         self.label = label
+        self._unit = unit
 
     # ----------------------------------------------------------------------- #
-    #                     QuantitativeVariable Attributes                     #
+    #                                Attributes                               #
     # ----------------------------------------------------------------------- #
 
-    # application
     @property
     def application(self):
         """Return application metadata, if available."""
@@ -95,7 +80,6 @@ class BaseQuantitativeDimension:
             )
         self._application = value
 
-    # reference offset
     @property
     def index_zero_coordinate(self):
         r"""Value at index zero, :math:`c_k`, along the dimension."""
@@ -111,7 +95,6 @@ class BaseQuantitativeDimension:
         value = ScalarQuantity(value, self._unit).quantity
         self._index_zero_coordinate = value
 
-    # origin offset
     @property
     def origin_offset(self):
         r"""Origin offset, :math:`o_k`, along the dimension."""
@@ -127,7 +110,6 @@ class BaseQuantitativeDimension:
         value = ScalarQuantity(value, self._unit).quantity
         self._origin_offset = value
 
-    # period
     @property
     def period(self):
         r"""Period of the data along this dimension."""
@@ -147,7 +129,6 @@ class BaseQuantitativeDimension:
         else:
             self._period = ScalarQuantity(value, self._unit).quantity
 
-    # quantity_name
     @property
     def quantity_name(self):
         r"""Quantity name associated with this dimension."""
@@ -157,7 +138,6 @@ class BaseQuantitativeDimension:
     def quantity_name(self, value):
         raise NotImplementedError("This attribute is not yet implemented.")
 
-    # label
     @property
     def label(self):
         r"""Label associated with this dimension."""
@@ -169,7 +149,6 @@ class BaseQuantitativeDimension:
             raise TypeError(_type_message(str, type(label)))
         self._label = label
 
-    # description
     @property
     def description(self):
         r"""Brief description of the dimension object."""
@@ -189,14 +168,14 @@ class BaseQuantitativeDimension:
             )
 
     # ----------------------------------------------------------------------- #
-    #                       QuantitativeVariable Methods                      #
+    #                                  Methods                                #
     # ----------------------------------------------------------------------- #
 
     def _get_quantitative_dictionary(self):
         r"""Return the object as a python dictionary."""
         obj = {}
 
-        # The description key is added to the child class.
+        # The description key is added at the child class level.
         if self._index_zero_coordinate.value != 0.0:
             obj["index_zero_coordinate"] = ScalarQuantity(
                 self._index_zero_coordinate
@@ -219,15 +198,12 @@ class BaseQuantitativeDimension:
 
         return obj
 
-    # is_quantitative
     def _is_quantitative(self):
         r"""Return `True`, if the dimension is quantitative, otherwise `False`.
-
         :returns: A Boolean.
         """
         return True
 
-    # to()
     def _to(self, unit="", equivalencies=None):
         r"""Convert the unit to given value `unit`."""
         if not isinstance(unit, str):

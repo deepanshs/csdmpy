@@ -10,10 +10,6 @@ from csdfpy.dependent_variables.decoder import Decoder
 from csdfpy.dependent_variables.download import _get_absolute_uri_path
 from csdfpy.dependent_variables.sparse import SparseSampling
 
-# =========================================================================== #
-#                            ExternalDataset Class                            #
-# =========================================================================== #
-
 
 class ExternalDataset(BaseDependentVariable):
     """ExternalDataset class."""

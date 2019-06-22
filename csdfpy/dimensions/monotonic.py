@@ -55,22 +55,19 @@ class MonotonicDimension(BaseQuantitativeDimension):
     _type = "monotonic"
 
     def __init__(self, values, **kwargs):
-        """Instantiate a MonotonicDimension class instance."""
-        # unit
+        """Instantiate a MonotonicDimension class."""
         self._unit = ScalarQuantity(values[0]).quantity.unit
         super(MonotonicDimension, self).__init__(unit=self._unit, **kwargs)
 
-        # reciprocal dimension attributes
         _reciprocal_unit = self._unit ** -1
         self.reciprocal = ReciprocalVariable(
             unit=_reciprocal_unit, **kwargs["reciprocal"]
         )
 
-        # coordinates
         self._get_coordinates(values)
 
     # ----------------------------------------------------------------------- #
-    #                  ArbitrarilySampledDimension Methods                    #
+    #                                 Methods                                 #
     # ----------------------------------------------------------------------- #
 
     def _get_coordinates(self, values):
@@ -79,37 +76,30 @@ class MonotonicDimension(BaseQuantitativeDimension):
             ScalarQuantity(item, _unit).quantity.to(_unit).value
             for item in values
         ]
-
         _value = np.asarray(_value, dtype=np.float64) * _unit
-
         self._count = _value.size
         self._values = values
         self._coordinates = _value
 
     def _get_python_dictionary(self):
-        # dictionary
         dictionary = {}
+
         dictionary["type"] = self.__class__._type
 
         if self._description.strip() != "":
             dictionary["description"] = self._description.strip()
 
         dictionary["coordinates"] = self._values
-
         dictionary.update(self._get_quantitative_dictionary())
 
-        # reciprocal dictionary
         reciprocal_dictionary = {}
-
         if self.reciprocal._description.strip() != "":
             reciprocal_dictionary[
                 "description"
             ] = self.reciprocal._description.strip()
-
         reciprocal_dictionary.update(
             self.reciprocal._get_quantitative_dictionary()
         )
-
         if reciprocal_dictionary == {}:
             del reciprocal_dictionary
         else:
@@ -118,10 +108,8 @@ class MonotonicDimension(BaseQuantitativeDimension):
         return dictionary
 
     # ----------------------------------------------------------------------- #
-    #                  ArbitrarilySampledDimension Attributes                 #
+    #                                 Attributes                              #
     # ----------------------------------------------------------------------- #
-
-    # values
     @property
     def values(self):
         r"""Return a list of values along the dimension."""
@@ -130,8 +118,3 @@ class MonotonicDimension(BaseQuantitativeDimension):
     @values.setter
     def values(self, array):
         self._get_coordinates(array)
-
-
-# =========================================================================== #
-#                           LabeledDimension Class                            #
-# =========================================================================== #

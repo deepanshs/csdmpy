@@ -86,10 +86,6 @@ def _is_numeric(element):
     return element.isnumeric()
 
 
-# def _is_physical_quantity(element=None):
-#     print(element)
-
-
 def _check_encoding(element):
     """
     Validate the encoding string value.

@@ -21,10 +21,6 @@ from csdfpy.utils import QuantityType
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 
-# =========================================================================== #
-#               	       BaseDependentVariable Class      			      #
-# =========================================================================== #
-
 
 class BaseDependentVariable:
     r"""Declare a BaseDependentVariable class."""
@@ -58,35 +54,15 @@ class BaseDependentVariable:
         **kwargs,
     ):
         r"""Instantiate a BaseDependentVariable class."""
-        # name
         self.name = name
-
-        # unit
-        _va = ScalarQuantity(f"1 {unit}").quantity
-        self._unit = _va.unit
-
-        # quantity_name
+        self._unit = ScalarQuantity(f"1 {unit}").quantity.unit
         self._quantity_name = check_quantity_name(quantity_name, self._unit)
-
-        # encoding
         self.encoding = encoding
-
-        # numeric type
         self._numeric_type = NumericType(numeric_type)
-
-        # quantity_type
         self._quantity_type = QuantityType(quantity_type)
-
-        # components label
         self.set_components_label(component_labels)
-
-        # description
         self.description = description
-
-        # application
         self.application = application
-
-        # components
         self._components = components
 
     def set_components_label(self, component_labels):
@@ -134,10 +110,8 @@ class BaseDependentVariable:
         self._component_labels = component_labels
 
     # ----------------------------------------------------------------------- #
-    #                     BaseIndependentVariable Attributes                  #
+    #                                Attributes                               #
     # ----------------------------------------------------------------------- #
-
-    # name
     @property
     def name(self):
         """Dependent variable name."""
@@ -149,13 +123,11 @@ class BaseDependentVariable:
             raise TypeError(_type_message(str, type(value)))
         self._name = value
 
-    # unit
     @property
     def unit(self):
         """Dependent variable name."""
         return deepcopy(self._unit)
 
-    # quantity_name
     @property
     def quantity_name(self):
         """Return quantity name."""
@@ -167,7 +139,6 @@ class BaseDependentVariable:
             ("The `quantity_name` attribute cannot be modified.")
         )
 
-    # encoding
     @property
     def encoding(self):
         r"""Return the data encoding method."""
@@ -180,7 +151,6 @@ class BaseDependentVariable:
         value = _check_encoding(value)
         self._encoding = value
 
-    # numeric type
     @property
     def numeric_type(self):
         r"""Return the numeric type of data values."""
@@ -190,7 +160,6 @@ class BaseDependentVariable:
     def numeric_type(self, value):
         self._numeric_type.update(value)
 
-    # quantity type
     @property
     def quantity_type(self):
         r"""Return the quantity type of the dataset."""
@@ -200,7 +169,6 @@ class BaseDependentVariable:
     def quantity_type(self, value):
         self._quantity_type.update(value)
 
-    # component labels
     @property
     def component_labels(self):
         r"""Return an ordered array of labels."""
@@ -210,7 +178,6 @@ class BaseDependentVariable:
     def component_labels(self, value):
         self.set_components_label(value)
 
-    # application
     @property
     def application(self):
         """Return application metadata dictionary."""
@@ -224,7 +191,6 @@ class BaseDependentVariable:
             )
         self._application = value
 
-    # description
     @property
     def description(self):
         r"""Return the description of the object."""
@@ -239,7 +205,6 @@ class BaseDependentVariable:
                 "Description requires a string, {0} given".format(type(value))
             )
 
-    # components
     @property
     def components(self):
         """Return components array."""
@@ -266,7 +231,7 @@ class BaseDependentVariable:
             )
 
     # ----------------------------------------------------------------------- #
-    #                      BaseIndependentVariable Methods                    #
+    #                                  Methods                                #
     # ----------------------------------------------------------------------- #
 
     def _get_dictionary(
@@ -334,12 +299,10 @@ class BaseDependentVariable:
 
 
 def _set_components(member, _components, _numeric_type=None):
-    # numeric type
     if _numeric_type is None:
         _numeric_type = numpy_dtype_to_numeric_type(str(_components.dtype))
     member._numeric_type.update(_numeric_type)
 
-    # components
     member._components = np.asarray(_components, member._numeric_type._nptype)
 
 
@@ -373,7 +336,6 @@ def _reduced_display(_components):
 
         The method shows the first and the last two data values.
     """
-    # _str = ""
     _string = []
     for i in range(len(_components)):
         temp = _components[i].ravel()

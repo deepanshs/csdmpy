@@ -16,7 +16,7 @@ from csdfpy.utils import _type_message
 
 
 # =========================================================================== #
-#                          LinearDimension Class                        #
+#                          LinearDimension Class                              #
 # =========================================================================== #
 
 
@@ -63,18 +63,11 @@ class LinearDimension(BaseQuantitativeDimension):
 
     def __init__(self, count, increment, fft_output_order=False, **kwargs):
         r"""Instantiate a DimensionWithLinearSpacing class instance."""
-        # number of points
         self._count = count
-
-        # increment
-        value = ScalarQuantity(increment).quantity
-        self._increment = value
-
-        # fft_output_order
-        value = _check_and_assign_bool(fft_output_order)
-        self._fft_output_order = value
-
+        self._increment = ScalarQuantity(increment).quantity
+        self._fft_output_order = _check_and_assign_bool(fft_output_order)
         self._unit = self._increment.unit
+
         super(LinearDimension, self).__init__(unit=self._unit, **kwargs)
 
         # create a reciprocal dimension
@@ -82,57 +75,47 @@ class LinearDimension(BaseQuantitativeDimension):
         self.reciprocal = ReciprocalVariable(
             unit=_reciprocal_unit, **kwargs["reciprocal"]
         )
-
         self._get_coordinates()
 
     # ----------------------------------------------------------------------- #
-    #                    LinearlySampledDimension Methods                     #
+    #                                  Methods                                #
     # ----------------------------------------------------------------------- #
     def _swap(self):
-
-        # description
         self._description, self.reciprocal._description = (
             self.reciprocal._description,
             self._description,
         )
 
-        # application
         self._application, self.reciprocal._application = (
             self.reciprocal._application,
             self._application,
         )
 
-        # index_zero_coordinate
         self._index_zero_coordinate, self.reciprocal._index_zero_coordinate = (
             self.reciprocal._index_zero_coordinate,
             self._index_zero_coordinate,
         )
 
-        # origin offset
         self._origin_offset, self.reciprocal._origin_offset = (
             self.reciprocal._origin_offset,
             self._origin_offset,
         )
 
-        # period
         self._period, self.reciprocal._period = (
             self.reciprocal._period,
             self._period,
         )
 
-        # quantity_name
         self._quantity_name, self.reciprocal._quantity_name = (
             self.reciprocal._quantity_name,
             self._quantity_name,
         )
 
-        # label
         self._label, self.reciprocal._label = (
             self.reciprocal._label,
             self._label,
         )
 
-        # unit
         self._unit, self.reciprocal._unit = self.reciprocal._unit, self._unit
 
     def _get_coordinates(self):
@@ -153,9 +136,7 @@ class LinearDimension(BaseQuantitativeDimension):
         _value = _index * _increment
         self._coordinates = _value
 
-    # _get_python_dictionary()
     def _get_python_dictionary(self):
-        # dictionary
         obj = {}
         obj["type"] = self.__class__._type
 
@@ -164,7 +145,6 @@ class LinearDimension(BaseQuantitativeDimension):
 
         obj["count"] = self._count
         obj["increment"] = ScalarQuantity(self.increment).format()
-
         obj.update(self._get_quantitative_dictionary())
 
         if self.fft_output_order:
@@ -172,14 +152,11 @@ class LinearDimension(BaseQuantitativeDimension):
 
         # reciprocal dictionary
         reciprocal_obj = {}
-
         if self.reciprocal._description.strip() != "":
             reciprocal_obj[
                 "description"
             ] = self.reciprocal._description.strip()
-
         reciprocal_obj.update(self.reciprocal._get_quantitative_dictionary())
-
         if reciprocal_obj == {}:
             del reciprocal_obj
         else:
@@ -188,16 +165,13 @@ class LinearDimension(BaseQuantitativeDimension):
         return obj
 
     # ----------------------------------------------------------------------- #
-    #                   LinearlySampledDimension Attributes                   #
+    #                                  Attributes                             #
     # ----------------------------------------------------------------------- #
-
-    # count
     @property
     def count(self):
         r"""Total number of points along the linear dimension."""
         return deepcopy(self._count)
 
-    # increment
     @property
     def increment(self):
         r"""Increment of the grid points along the linear dimension."""
@@ -213,7 +187,6 @@ class LinearDimension(BaseQuantitativeDimension):
         self._increment = value
         self._get_coordinates()
 
-    # fft_output_order
     @property
     def fft_output_order(self):
         """If True, orders the coordinates according to FFT output order."""

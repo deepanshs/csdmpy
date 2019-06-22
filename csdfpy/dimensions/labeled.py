@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The Dimension SubTypes class."""
+"""The Labeled Dimension SubTypes class."""
 from __future__ import division
 from __future__ import print_function
 
@@ -15,7 +15,7 @@ __email__ = "srivastava.89@osu.edu"
 
 
 class LabeledDimension:
-    """Declare a LabeledDimension class."""
+    """A labeled dimension."""
 
     __slots__ = ("_count", "_labels", "_label", "_description", "_application")
 
@@ -24,16 +24,26 @@ class LabeledDimension:
     def __init__(
         self, labels, label="", description="", application={}, **kwargs
     ):
-        r"""Instantiate a LabeledDimension class instance."""
+        r"""Instantiate a LabeledDimension class."""
         self._description = description
         self._application = application
         self._label = label
         self.labels = labels
 
     # ----------------------------------------------------------------------- #
-    #                          LabeledDimension Methods                       #
+    #                                 Attributes                              #
     # ----------------------------------------------------------------------- #
-    # label
+
+    @property
+    def labels(self):
+        r"""Return a list of labels along the dimension."""
+        return deepcopy(self._labels)
+
+    @labels.setter
+    def labels(self, labels):
+        self._labels = np.asarray(labels)
+        self._count = len(labels)
+
     @property
     def label(self):
         r"""Label associated with the dimension."""
@@ -45,10 +55,18 @@ class LabeledDimension:
             raise TypeError(_type_message(str, type(label)))
         self._label = label
 
-    # description
+    @property
+    def application(self):
+        r"""Return an application dimension associated with the dimensions."""
+        return deepcopy(self._application)
+
+    @application.setter
+    def application(self, value):
+        self._application = value
+
     @property
     def description(self):
-        r"""Return the description of the object."""
+        r"""Return a description of the dimension."""
         return deepcopy(self._description)
 
     @description.setter
@@ -57,7 +75,10 @@ class LabeledDimension:
             raise ValueError("A string value is required.")
         self._description = value
 
-    # is_quantitative
+    # ----------------------------------------------------------------------- #
+    #                                 Methods                                 #
+    # ----------------------------------------------------------------------- #
+
     def _is_quantitative(self):
         r"""Return `True`, if the dimension is quantitative, otherwise `False`.
         :returns: A Boolean.
@@ -71,28 +92,3 @@ class LabeledDimension:
             dictionary["description"] = self._description.strip()
         dictionary["labels"] = self._labels.tolist()
         return dictionary
-
-    # ----------------------------------------------------------------------- #
-    #                        LabeledDimension Attributes                      #
-    # ----------------------------------------------------------------------- #
-
-    # labels
-    @property
-    def labels(self):
-        r"""Return a list of labels along the dimension."""
-        return deepcopy(self._labels)
-
-    @labels.setter
-    def labels(self, labels):
-        self._labels = np.asarray(labels)
-        self._count = len(labels)
-
-    # application
-    @property
-    def application(self):
-        r"""Return a list of values along the dimension."""
-        return deepcopy(self._application)
-
-    @application.setter
-    def application(self, value):
-        self._application = value

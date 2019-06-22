@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Decode for components encoding types."""
 import base64
 
 import numpy as np
@@ -20,7 +21,6 @@ class Decoder:
         method = getattr(self, "decode_" + encoding)
         return method(components, dtype, component_len)
 
-    # base64
     @staticmethod
     def decode_base64(components, dtype, component_len=None):
         components = np.asarray(
@@ -31,7 +31,6 @@ class Decoder:
         )
         return components
 
-    # none
     @staticmethod
     def decode_none(components, dtype, component_len=None):
         if dtype in ["<c8", "<c16"]:
@@ -48,7 +47,6 @@ class Decoder:
             )
         return components
 
-    # raw
     @staticmethod
     def decode_raw(components, dtype, component_len=None):
         components = np.frombuffer(components, dtype=dtype)

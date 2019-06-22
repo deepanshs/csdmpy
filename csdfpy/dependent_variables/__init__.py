@@ -140,7 +140,6 @@ class DependentVariable:
         else:
             dictionary["sparse_sampling"] = {}
 
-        # print(dictionary)
         if dictionary["type"] == "internal":
             self._type = "internal"
             _uv_object = InternalDataset(**dictionary)
@@ -154,8 +153,6 @@ class DependentVariable:
     # ======================================================================= #
     #                      DependentVariable  Attributes                      #
     # ======================================================================= #
-
-    # application------------------------------------------------------------ #
     @property
     def application(self):
         """
@@ -179,7 +176,6 @@ class DependentVariable:
     def application(self, value):
         self.subtype.application = value
 
-    # axis_label------------------------------------------------------------- #
     @property
     def axis_label(self):
         r"""
@@ -208,7 +204,6 @@ class DependentVariable:
             labels.append(_axis_label(label, self.unit))
         return labels
 
-    # component_labels------------------------------------------------------- #
     @property
     def component_labels(self):
         r"""
@@ -247,7 +242,6 @@ class DependentVariable:
     def component_labels(self, value):
         self.subtype.component_labels = value
 
-    # components------------------------------------------------------------- #
     @property
     def components(self):
         r"""
@@ -321,7 +315,6 @@ class DependentVariable:
     def components(self, value):
         self.subtype.components = value
 
-    # components url--------------------------------------------------------- #
     @property
     def components_url(self):
         r"""
@@ -337,7 +330,6 @@ class DependentVariable:
         """
         return self.subtype.components_url
 
-    # data structure--------------------------------------------------------- #
     @property
     def data_structure(self):
         r"""
@@ -381,8 +373,6 @@ class DependentVariable:
             dictionary, ensure_ascii=False, sort_keys=False, indent=2
         )
 
-    # description------------------------------------------------------------ #
-
     @property
     def description(self):
         """
@@ -408,7 +398,6 @@ class DependentVariable:
     def description(self, value):
         self.subtype.description = value
 
-    # encoding--------------------------------------------------------------- #
     @property
     def encoding(self):
         r"""
@@ -448,7 +437,6 @@ class DependentVariable:
     def encoding(self, value):
         self.subtype.encoding = value
 
-    # name------------------------------------------------------------------- #
     @property
     def name(self):
         r"""
@@ -471,7 +459,6 @@ class DependentVariable:
     def name(self, value):
         self.subtype.name = value
 
-    # numeric type----------------------------------------------------------- #
     @property
     def numeric_type(self):
         r"""
@@ -519,7 +506,6 @@ class DependentVariable:
     def numeric_type(self, value):
         self.subtype._numeric_type.update(value)
 
-    # quantity_name---------------------------------------------------------- #
     @property
     def quantity_name(self):
         """
@@ -539,7 +525,6 @@ class DependentVariable:
     def quantity_name(self, value=""):
         self.subtype.quantity_name = value
 
-    # quantity type--------------------------------------------------------- #
     @property
     def quantity_type(self):
         r"""
@@ -573,7 +558,6 @@ class DependentVariable:
     def quantity_type(self, value):
         self.subtype._quantity_type.update(value)
 
-    # type------------------------------------------------------------------- #
     @property
     def type(self):
         """
@@ -617,7 +601,6 @@ class DependentVariable:
                 )
             )
 
-    # unit------------------------------------------------------------------- #
     @property
     def unit(self):
         r"""

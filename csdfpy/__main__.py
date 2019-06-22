@@ -11,8 +11,6 @@ __email__ = "srivastava.89@osu.edu"
 
 
 if __name__ == "__main__":
-    # print('Argument List:', str(sys.argv))
-
     for i in range(len(sys.argv) - 1):
         data = cp.load(sys.argv[i + 1])
         preview(data)
