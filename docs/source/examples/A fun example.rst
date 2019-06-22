@@ -43,7 +43,7 @@ There are three ways to add an independent variable to an instance of the
 
     >>> x = {
     ...     'type': 'labeled',
-    ...     'values': ['🍈','🍉','🍋','🍌','🥑','🍍']
+    ...     'labels': ['🍈','🍉','🍋','🍌','🥑','🍍']
     ... }
 
 The above python dictionary contains two keys. The `type` key identifies the

@@ -3,18 +3,18 @@
 import json
 import warnings
 
-from ._dimensions import LabeledDimension
-from ._dimensions import LinearDimension
-from ._dimensions import MonotonicDimension
-from ._utils import _axis_label
-from ._utils import _get_dictionary
-from ._utils import _type_message
+from csdfpy.dimensions.labeled import LabeledDimension
+from csdfpy.dimensions.linear import LinearDimension
+from csdfpy.dimensions.monotonic import MonotonicDimension
+from csdfpy.utils import _axis_label
+from csdfpy.utils import _get_dictionary
+from csdfpy.utils import _type_message
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 
 
-_dimension_generators = ["linear"]
+functional_dimension = ["linear"]
 
 
 class Dimension:
@@ -144,13 +144,9 @@ class Dimension:
         input_dict = _get_dictionary(*args, **kwargs)
         input_keys = input_dict.keys()
 
-        for item in self.__class__._immutable_objects_:
-            if item in input_keys:
-                dictionary[item] = input_dict[item]
-
         if "type" not in input_keys:
             raise ValueError(
-                "Missing a required 'type' key in the dimension object."
+                "Missing a required 'type' key from the dimension object."
             )
 
         if "reciprocal" in input_keys:
@@ -165,110 +161,53 @@ class Dimension:
 
         _valid_types = ["monotonic", "linear", "labeled"]
 
+        typ = dictionary["type"]
+        message = (
+            f"'{typ}' is an invalid value for the dimension type. "
+            "The allowed values are 'monotonic', 'linear' and 'labeled'."
+        )
+
         if dictionary["type"] not in _valid_types:
-            raise ValueError(
-                (
-                    "'{0}' is an invalid value for the dimension type. The "
-                    "allowed values are 'monotonic', 'linear' "
-                    "and 'labeled'.".format(dictionary["type"])
-                )
-            )
+            raise ValueError(message)
+
+        if dictionary["type"] == "labeled" and dictionary["labels"] is None:
+            raise KeyError("'labels' key is missing from labeled dimension.")
 
         if dictionary["type"] == "labeled":
-            if dictionary["labels"] is None:
-                raise KeyError(
-                    "'labels' key is missing for the labeled dimension."
-                )
-
-            _dimension_object = LabeledDimension(
-                _labels=dictionary["labels"],
-                _label=dictionary["label"],
-                _description=dictionary["description"],
-                _application=dictionary["application"],
-            )
+            self.subtype = LabeledDimension(**dictionary)
 
         if dictionary["type"] == "monotonic":
             if dictionary["coordinates"] is None:
                 raise KeyError(
-                    "'coordinates' key is missing for the monotonic dimension."
+                    "'coordinates' key is missing from monotonic dimension."
                 )
 
-            _dimension_object = MonotonicDimension(
-                _values=dictionary["coordinates"],
-                _index_zero_coordinate=dictionary["index_zero_coordinate"],
-                _origin_offset=dictionary["origin_offset"],
-                _quantity_name=dictionary["quantity_name"],
-                _period=dictionary["period"],
-                _label=dictionary["label"],
-                _description=dictionary["description"],
-                _application=dictionary["application"],
-                _reciprocal_index_zero_coordinate=dictionary["reciprocal"][
-                    "index_zero_coordinate"
-                ],
-                _reciprocal_origin_offset=dictionary["reciprocal"][
-                    "origin_offset"
-                ],
-                _reciprocal_quantity_name=dictionary["reciprocal"][
-                    "quantity_name"
-                ],
-                _reciprocal_period=dictionary["reciprocal"]["period"],
-                _reciprocal_label=dictionary["reciprocal"]["label"],
-                _reciprocal_description=dictionary["reciprocal"][
-                    "description"
-                ],
-                _reciprocal_application=dictionary["reciprocal"][
-                    "application"
-                ],
+            self.subtype = MonotonicDimension(
+                values=dictionary["coordinates"], **dictionary
             )
 
         if dictionary["type"] == "linear":
-            if dictionary["increment"] is None:
+            self.subtype = self.linear(dictionary)
+
+    def linear(self, dictionary):
+        """Create and assign a linear dimension."""
+        missing_key = ["increment", "count"]
+
+        for item in missing_key:
+            if dictionary[item] is None:
                 raise KeyError(
-                    ("'increment' key is missing for the linear dimension.")
-                )
-            if dictionary["count"] is None:
-                raise KeyError(
-                    ("'count' key is missing for the " "linear dimension.")
-                )
-            if not isinstance(dictionary["count"], int):
-                raise ValueError(
-                    (
-                        "An integer value is required for the "
-                        "'count' key, {0} is provided."
-                    ).format(type(dictionary["count"]))
+                    f"{item} key is missing from the linear dimension."
                 )
 
-            _dimension_object = LinearDimension(
-                _count=dictionary["count"],
-                _increment=dictionary["increment"],
-                _index_zero_coordinate=dictionary["index_zero_coordinate"],
-                _origin_offset=dictionary["origin_offset"],
-                _quantity_name=dictionary["quantity_name"],
-                _period=dictionary["period"],
-                _label=dictionary["label"],
-                _fft_output_order=dictionary["fft_output_order"],
-                _description=dictionary["description"],
-                _application=dictionary["application"],
-                _reciprocal_index_zero_coordinate=dictionary["reciprocal"][
-                    "index_zero_coordinate"
-                ],
-                _reciprocal_origin_offset=dictionary["reciprocal"][
-                    "origin_offset"
-                ],
-                _reciprocal_quantity_name=dictionary["reciprocal"][
-                    "quantity_name"
-                ],
-                _reciprocal_period=dictionary["reciprocal"]["period"],
-                _reciprocal_label=dictionary["reciprocal"]["label"],
-                _reciprocal_description=dictionary["reciprocal"][
-                    "description"
-                ],
-                _reciprocal_application=dictionary["reciprocal"][
-                    "application"
-                ],
+        if not isinstance(dictionary["count"], int):
+            raise ValueError(
+                (
+                    f"An integer value is required for the 'count' key, a"
+                    f"{type(dictionary['count'])} value encountered."
+                )
             )
 
-        self.subtype = _dimension_object
+        return LinearDimension(**dictionary)
 
     # ======================================================================= #
     #                          Dimension Attributes                           #
@@ -304,13 +243,8 @@ class Dimension:
                 self.subtype._unit
             )
         else:
-            raise AttributeError(
-                (
-                    "{0} has no attribute '{1}'.".format(
-                        self.subtype.__class__.__name__, "absolute_coordinates"
-                    )
-                )
-            )
+            n = self.subtype.__class__.__name__
+            raise AttributeError(f"{n} has no attribute absolute_coordinates.")
 
     # application------------------------------------------------------------ #
     @property
@@ -473,7 +407,7 @@ class Dimension:
     def description(self, value):
         self.subtype._description = value
 
-    # fft_ouput_order-------------------------------------------------------- #
+    # fft_output_order------------------------------------------------------- #
     @property
     def fft_output_order(self):
         r"""
@@ -661,36 +595,29 @@ class Dimension:
         if not isinstance(value, int):
             raise TypeError(_type_message(int, type(value)))
 
-        if value <= 0:
+        if self.type in functional_dimension:
+            self.subtype._count = value
+            self.subtype._get_coordinates()
+            return
+
+        if value > self.count:
             raise ValueError(
-                ("A positive integer value is required, given {0}.").format(
-                    value
+                (
+                    f"Cannot set count, {value}, more than the number of "
+                    f"coordinates, {self.count}, for monotonic and labeled"
+                    " dimensions."
                 )
             )
 
-        if self.type not in _dimension_generators:
-            if value > self.count:
-                raise ValueError(
-                    (
-                        "Cannot set the number of points, {0}, more than the"
-                        "number of coordinates, {1}, for monotonic and labeled"
-                        " dimensions."
-                    ).format(value, self.count)
-                )
-
-            if value < self.count:
-                warnings.warn(
-                    (
-                        "The number of coordinates, {0}, are truncated to {1}."
-                    ).format(self.count, value)
-                )
-                self.subtype._count = value
-
-        else:
+        if value < self.count:
+            warnings.warn(
+                f"The number of coordinates, {self.count}, are truncated "
+                f"to {value}."
+            )
             self.subtype._count = value
-            self.subtype._get_coordinates()
 
     # origin offset---------------------------------------------------------- #
+
     @property
     def origin_offset(self):
         r"""

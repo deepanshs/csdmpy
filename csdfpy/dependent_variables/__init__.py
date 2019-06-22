@@ -5,10 +5,10 @@ from __future__ import print_function
 
 import json
 
-from ._dependent_variables import ExternalDataset
-from ._dependent_variables import InternalDataset
-from ._utils import _axis_label
-from ._utils import _get_dictionary
+from csdfpy.dependent_variables.external import ExternalDataset
+from csdfpy.dependent_variables.internal import InternalDataset
+from csdfpy.utils import _axis_label
+from csdfpy.utils import _get_dictionary
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -97,13 +97,9 @@ class DependentVariable:
         input_dict = _get_dictionary(*args, **kwargs)
         input_keys = input_dict.keys()
 
-        # for item in self.__class__._immutable_objects_:
-        #     if item in input_keys:
-        #         dictionary[item] = input_dict[item]
-
         if "type" not in input_keys:
             raise ValueError(
-                "Missing a required 'type' key in the dependent variable "
+                "Missing a required 'type' key from the dependent variable "
                 "object."
             )
 
@@ -133,7 +129,7 @@ class DependentVariable:
             dictionary["filename"] = kwargs["filename"]
 
         for key in input_keys:
-            if key in default_keys and key not in "sparse_sampling":
+            if key in default_keys and key != "sparse_sampling":
                 dictionary[key] = input_dict[key]
 
         if "sparse_sampling" in input_keys:
@@ -141,65 +137,17 @@ class DependentVariable:
                 dictionary["sparse_sampling"][key] = input_dict[
                     "sparse_sampling"
                 ][key]
+        else:
+            dictionary["sparse_sampling"] = {}
 
+        # print(dictionary)
         if dictionary["type"] == "internal":
             self._type = "internal"
-            _uv_object = InternalDataset(
-                _name=dictionary["name"],
-                _unit=dictionary["unit"],
-                _quantity_name=dictionary["quantity_name"],
-                _encoding=dictionary["encoding"],
-                _numeric_type=dictionary["numeric_type"],
-                _quantity_type=dictionary["quantity_type"],
-                _component_labels=dictionary["component_labels"],
-                _components=dictionary["components"],
-                _description=dictionary["description"],
-                _application=dictionary["application"],
-                _sparse_dimensions=dictionary["sparse_sampling"]["dimensions"],
-                _sparse_grid_vertexes=dictionary["sparse_sampling"][
-                    "sparse_grid_vertexes"
-                ],
-                _sparse_encoding=dictionary["sparse_sampling"]["encoding"],
-                _sparse_numeric_type=dictionary["sparse_sampling"][
-                    "numeric_type"
-                ],
-                _sparse_description=dictionary["sparse_sampling"][
-                    "description"
-                ],
-                _sparse_application=dictionary["sparse_sampling"][
-                    "application"
-                ],
-            )
+            _uv_object = InternalDataset(**dictionary)
 
         if dictionary["type"] == "external":
             self._type = "external"
-            _uv_object = ExternalDataset(
-                _name=dictionary["name"],
-                _unit=dictionary["unit"],
-                _quantity_name=dictionary["quantity_name"],
-                _encoding="raw",
-                _numeric_type=dictionary["numeric_type"],
-                _quantity_type=dictionary["quantity_type"],
-                _component_labels=dictionary["component_labels"],
-                _components_url=dictionary["components_url"],
-                _filename=dictionary["filename"],
-                _description=dictionary["description"],
-                _application=dictionary["application"],
-                _sparse_dimensions=dictionary["sparse_sampling"]["dimensions"],
-                _sparse_grid_vertexes=dictionary["sparse_sampling"][
-                    "sparse_grid_vertexes"
-                ],
-                _sparse_encoding=dictionary["sparse_sampling"]["encoding"],
-                _sparse_numeric_type=dictionary["sparse_sampling"][
-                    "numeric_type"
-                ],
-                _sparse_description=dictionary["sparse_sampling"][
-                    "description"
-                ],
-                _sparse_application=dictionary["sparse_sampling"][
-                    "application"
-                ],
-            )
+            _uv_object = ExternalDataset(**dictionary)
 
         self.subtype = _uv_object
 
@@ -565,11 +513,11 @@ class DependentVariable:
         :raises ValueError: If an invalid value is assigned.
         :raises TypeError: When the assigned value is not a string.
         """
-        return self.subtype._numeric_type._value
+        return self.subtype._numeric_type.value
 
     @numeric_type.setter
     def numeric_type(self, value):
-        self.subtype._numeric_type._update(value)
+        self.subtype._numeric_type.update(value)
 
     # quantity_name---------------------------------------------------------- #
     @property
@@ -619,11 +567,11 @@ class DependentVariable:
         :raise ValueError: If an invalid value is assigned.
         :raises TypeError: When the assigned value is not a string.
         """
-        return self.subtype._quantity_type._value
+        return self.subtype._quantity_type.value
 
     @quantity_type.setter
     def quantity_type(self, value):
-        self.subtype._quantity_type._update(value)
+        self.subtype._quantity_type.update(value)
 
     # type------------------------------------------------------------------- #
     @property

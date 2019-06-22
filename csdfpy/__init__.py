@@ -5,6 +5,7 @@ from __future__ import print_function
 
 import datetime
 import json
+import warnings
 from copy import deepcopy
 from os import listdir
 from os.path import isdir
@@ -15,10 +16,10 @@ import numpy as np
 from numpy.fft import fft
 from numpy.fft import fftshift
 
-from ._utils_download_file import _download_file_from_url
-from ._version import __version__
-from .dependent_variable import DependentVariable
-from .dimensions import Dimension
+from csdfpy.dependent_variables import DependentVariable
+from csdfpy.dependent_variables.download import download_file_from_url
+from csdfpy.dimensions import Dimension
+from csdfpy.version import __version__
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -29,7 +30,7 @@ __version__ = __version__
 def _import_json(filename):
     res = urlparse(filename)
     if res[0] not in ["file", ""]:
-        filename = _download_file_from_url(filename)
+        filename = download_file_from_url(filename)
     with open(filename, "rb") as f:
         content = f.read()
         return json.loads(str(content, encoding="UTF-8"))
@@ -464,18 +465,29 @@ class CSDModel:
         sampled along the :math:`k^\mathrm{th}` independent variable.
         """
         for item in self.dependent_variables:
-            _item = item.subtype
-            _shape = (_item.quantity_type._p,) + tuple(shape)
-            _nptype = _item.numeric_type._nptype
+            item = item.subtype
+            sub_shape = (item.quantity_type.p,) + tuple(shape)
+            _nptype = item.numeric_type._nptype
 
-            # print(_item._sparse_sampling)
-            if _item._sparse_sampling == {}:
-                _item._components = np.asarray(
-                    _item._components.reshape(_shape), dtype=_nptype
+            grid_points = np.asarray(sub_shape).prod()
+            components_size = item._components.size
+
+            if grid_points != components_size and item._sparse_sampling == {}:
+                warnings.warn(
+                    (
+                        f"The number of elements in the components array, "
+                        f"{components_size}, is not consistent with the total "
+                        f"number of grid points, {grid_points}."
+                    )
+                )
+            if item._sparse_sampling == {}:
+                item._components = np.asarray(
+                    item._components[:, :grid_points].reshape(sub_shape),
+                    dtype=_nptype,
                 )
             else:
-                _item._components = self.fill_sparse_space(
-                    _item, _shape, _nptype
+                item._components = self.fill_sparse_space(
+                    item, sub_shape, _nptype
                 )
 
     def fill_sparse_space(self, _item, _shape, _nptype):
@@ -501,7 +513,7 @@ class CSDModel:
     #                              Public methods                             #
     # ----------------------------------------------------------------------- #
 
-    def add_dimension(self, *arg, **kwargs):
+    def add_dimension(self, *args, **kwargs):
         """
         Add a new :ref:`iv_api` instance to the :ref:`csdm_api` instance.
 
@@ -512,7 +524,6 @@ class CSDModel:
         .. doctest::
 
             >>> import csdfpy as cp
-
             >>> datamodel = cp.new()
             >>> py_dictionary = {
             ...     'type': 'linear',
@@ -569,13 +580,13 @@ class CSDModel:
         the later alternative for it is useful for copying an :ref:`iv_api`
         instance from one :ref:`csdm_api` instance to another.
         """
-        if arg != () and isinstance(arg[0], Dimension):
-            self._dimensions += (arg[0],)
+        if args != () and isinstance(args[0], Dimension):
+            self._dimensions += (args[0],)
 
         else:
-            self._dimensions += (Dimension(*arg, **kwargs),)
+            self._dimensions += (Dimension(*args, **kwargs),)
 
-    def add_dependent_variable(self, *arg, **kwargs):
+    def add_dependent_variable(self, *args, **kwargs):
         """
         Add a new :ref:`dv_api` instance to the :ref:`csdm_api` instance.
 
@@ -628,12 +639,12 @@ class CSDModel:
         the later alternative as it is useful for copying a DependentVariable
         instance from one :ref:`csdm_api` instance to another.
         """
-        if arg != () and isinstance(arg[0], DependentVariable):
-            self._dependent_variables += (arg[0],)
+        if args != () and isinstance(args[0], DependentVariable):
+            self._dependent_variables += (args[0],)
 
         else:
             self._dependent_variables += (
-                DependentVariable(filename=self.filename, *arg, **kwargs),
+                DependentVariable(filename=self.filename, *args, **kwargs),
             )
         self._dependent_variables[-1].encoding = "base64"
         self._dependent_variables[-1].type = "internal"

@@ -109,7 +109,7 @@ by using keywords as the arguments of the
     >>> new.add_dimension(
     ...     type='monotonic',
     ...     description='This is a monotonic dimension',
-    ...     values=['1 µG', '2.1 mG', '12.4 G', '0.5 T', '2 T'])
+    ...     coordinates=['1 µG', '2.1 mG', '12.4 G', '0.5 T', '2 T'])
 
 The above operation creates and adds another dimension instance,
 thereby generating a 2D{0} dataset. The data structure form the updated ``new``
@@ -152,7 +152,7 @@ instance is
 
 Notice, every time a new independent variable corresponding to a physical
 dimension is added, the value of the
-:attr:`~csdfp.Dimension.quantity_name` attribute is self-generated, if
+:attr:`~csdfpy.Dimension.quantity_name` attribute is self-generated, if
 possible.
 
 ^^^^^^^^^^^^^^^^
@@ -160,9 +160,9 @@ LabeledDimension
 ^^^^^^^^^^^^^^^^
 
 The third type of dimensions are the labeled dimension. As the name suggests,
-this dimension consists of labeled coordinates. The dimension is useful for
-datasets such as describing the human population as a function of the country's
-name or the ionization energy as a function of atomic symbols.
+this dimension consists of labels. The dimension is useful for
+datasets such as the ionization energy as a function of atomic symbols or the
+population as a function of the country name.
 
 Try adding a labeled dimension to the ``new`` instance.
 This time pass an instance of the :ref:`iv_api` class as the argument of the
@@ -175,7 +175,7 @@ But before, create an instance of the Dimension class as follows,
     >>> d1 = Dimension(
     ...     type = 'labeled',
     ...     description = 'This is a labeled dimensions.',
-    ...     values = ['Cu', 'Ag', 'Au']
+    ...     labels = ['Cu', 'Ag', 'Au']
     ... )
 
 In the above code, the variable ``d1`` is an instance of :ref:`iv_api`. Now

@@ -2,13 +2,9 @@
 """Helper methods for CSDModel class."""
 from __future__ import print_function
 
-import warnings
-
 import numpy as np
 
-from .units import string_to_quantity
-from .units import value_object_format
-
+from csdfpy.units import ScalarQuantity
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -61,7 +57,7 @@ def _axis_label(
     if unit != "":
         if label_type == "":
             return "{0} / ({1})".format(
-                label, value_object_format(1 * unit, numerical_value=False)
+                label, ScalarQuantity(1 * unit).format("unit")
             )
         if label_type == "latex":
             return "{0} / ({1})".format(label, unit.to_string("latex"))
@@ -90,8 +86,8 @@ def _is_numeric(element):
     return element.isnumeric()
 
 
-def _is_physical_quantity(element=None):
-    print(element)
+# def _is_physical_quantity(element=None):
+#     print(element)
 
 
 def _check_encoding(element):
@@ -124,17 +120,17 @@ class QuantityType:
     :raises KeyError: Otherwise.
     """
 
-    __slots__ = ("_value", "_p")
+    __slots__ = ("value", "p")
 
     def __init__(self, element):
         r"""Instantiate a QuantityType class instance."""
-        self._update(element)
+        self.update(element)
 
     def __str__(self):
         r"""Return a string with the quantity type."""
-        return self._value
+        return self.value
 
-    def _update(self, element):
+    def update(self, element):
         """Update the quantity type."""
         if not isinstance(element, str):
             raise TypeError(_type_message(str, type(element)))
@@ -163,12 +159,12 @@ class QuantityType:
             raise ValueError(message.format(keyword, *literals_quantity_type_))
 
         components = self._get_number_of_components(keyword, numbers)
-        self._value = element
-        self._p = components
+        self.value = element
+        self.p = components
 
 
 def numpy_dtype_to_numeric_type(element):
-    """Return a valid numeric_type value based on the dtype of nunpy array."""
+    """Return a valid numeric_type value based on the dtype of numpy array."""
     lst = {
         "<u1": "uint8",
         "<u2": "uint16",
@@ -235,7 +231,7 @@ class NumericType:
     :raises KeyError: Otherwise.
     """
 
-    __slots__ = ("_value", "_nptype")
+    __slots__ = ("value", "_nptype")
 
     _lst = {
         "uint8": "<u1",
@@ -284,9 +280,9 @@ class NumericType:
 
     def __init__(self, element="float32"):
         """Instantiate a NumericType class instance."""
-        self._update(element)
+        self.update(element)
 
-    def _update(self, element):
+    def update(self, element):
         """Update the numeric type."""
         if not isinstance(element, str):
             raise TypeError(_type_message(str, type(element)))
@@ -294,7 +290,7 @@ class NumericType:
 
     def __str__(self):
         """Return a string with the numeric type."""
-        return self._value
+        return self.value
 
     def _check_numeric_type(self, element):
         lst = self.__class__._lst
@@ -310,7 +306,7 @@ class NumericType:
                 )
             )
 
-        self._value = element
+        self.value = element
         self._nptype = np.dtype(lst[element])
 
 
@@ -327,93 +323,3 @@ def _check_and_assign_bool(element):
             str(element), element.__class__.__name__
         )
     )
-
-
-def _check_value_object(element, unit=None):
-    return _check_assignment_and_then_check_unit_consistency(element, unit)
-
-
-def _check_assignment_and_then_check_unit_consistency(element, unit):
-    if element is None:
-        element = 0.0 * unit
-    else:
-        element = _assign_and_check_unit_consistency(element, unit)
-    return element
-
-
-def _assign_and_check_unit_consistency(element, unit):
-    element = _default_units(string_to_quantity(str(element)))
-    _fitsUnitFormat = element.unit.to_string("fits").strip()
-    element = element.to(_fitsUnitFormat)
-    if unit is not None:
-        return _check_unit_consistency(element, unit)
-    return element
-
-
-def _check_unit_consistency(element, unit):
-    if element.unit.physical_type != unit.physical_type:
-        options = [
-            str(element.unit),
-            str(element.unit.physical_type),
-            str(unit),
-            unit.physical_type,
-        ]
-        message = (
-            "The unit '{0}' ({1}) is inconsistent with the unit '{2}' ({3})."
-        )
-        raise Exception(message.format(*options))
-    return element
-
-
-def _default_units(element):
-    if element.unit.physical_type == "frequency":
-        element = element.to("Hz")
-    return element
-
-
-def _check_quantity(element, unit):
-    if element is None:
-        element = unit.physical_type
-        return element
-
-    if unit.physical_type == "unknown":
-        warnings.warn(
-            (
-                "The physical quantity name associated with the unit, {0}, "
-                "is not defined in astropy.units package. Continuing with "
-                "'{1}' as the physical quantity name."
-            ).format(str(unit), element)
-        )
-        return element
-
-    if element.lower() != unit.physical_type:
-        warnings.warn(
-            (
-                "The physical quantity name, '{0}', is not defined in the "
-                "astropy.units package. Continuing with '{1}' as the physical "
-                "quantity name."
-            ).format(element, str(unit))
-        )
-
-    return element.lower()
-
-
-if __name__ == "__main__":
-    # print (_check_encoding('base64'))
-    # print (_check_encoding('raw'))
-    # print (_check_encoding('none'))
-    # print (_check_encoding('text'))
-
-    print(_check_quantity("time", string_to_quantity("1 s/m").unit))
-
-    # print (_check_quantity_type('RgB'))
-    # print (_check_quantity_type('RGBA'))
-    # print (_check_quantity_type('scalar'))
-    # print (_check_quantity_type('vector_15'))
-    # print (_check_quantity_type('matrix_13_3'))
-    # print (_check_quantity_type('symmetric_matrix_10'))
-    # v = valueObject('5 s')
-    # t = valueObject('15 s')
-    # print (t + v)
-    # print (v)
-    # print (v.value)

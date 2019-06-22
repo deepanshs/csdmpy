@@ -65,8 +65,10 @@ myfile
 *.pdf
 *schema
 
+
 # files #
 #########
 myfile.csdf
 new.py
 widgets.py
+.coverage

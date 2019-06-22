@@ -12,13 +12,13 @@ __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 
 
-def _get_proper_url_parse(url):
+def parse_url(url):
     res = urlparse(quote(url, safe=":/"))
     return res
 
 
-def _download_file_from_url(url):
-    res = _get_proper_url_parse(url)
+def download_file_from_url(url):
+    res = parse_url(url)
     filename = path.split(res[2])[1]
     name, extension = path.splitext(filename)
     original_name = name
@@ -55,3 +55,41 @@ def _download_file_from_url(url):
     sys.stdout.write("\n")
 
     return filename
+
+
+def _get_absolute_data_address(data_path, file):
+    """
+    Return the absolute path address of a local data file.
+
+    :params: data_path:
+    """
+    _file_abs_path = path.abspath(file)
+    _path, _file = path.split(_file_abs_path)
+    _join = path.join(_path, data_path)
+    _join = path.normpath(_join)
+    return "file:" + _join
+
+
+def _get_absolute_uri_path(url, file):
+    res = parse_url(url)
+    path = res.geturl()
+    if res.scheme in ["file", ""]:
+        if res.netloc == "":
+            path = _get_absolute_data_address(res.path, file)
+    return path
+
+
+def _get_relative_uri_path(dataset_index, filename):
+    index = str(dataset_index)
+    _absolute_path = _get_absolute_uri_path("", filename)
+
+    _name = path.splitext(path.split(filename)[1])[0] + "_" + index + ".dat"
+
+    _url_relative_path = path.join("file:.", _name)
+
+    absolute_path = path.abspath(
+        urlparse(
+            path.join(_absolute_path, urlparse(_url_relative_path).path)
+        ).path
+    )
+    return _url_relative_path, absolute_path
