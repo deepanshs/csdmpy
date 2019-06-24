@@ -26,12 +26,12 @@ class DependentVariable:
     a vector can have up to `n`-components (:math:`p=n`),
     while a second rank symmetric tensor has six-component (:math:`p=6`).
 
-    **Creating a new dependent variable.**
+    *Creating a new dependent variable.*
 
     There are two ways to create a new dependent variable from the
     DependentVariable class.
 
-    `From a python dictionary containing valid keywords.`
+    *From a python dictionary containing valid keywords.*
 
     .. doctest::
 
@@ -49,9 +49,9 @@ class DependentVariable:
         ... }
         >>> y = DependentVariable(dependent_variable_dictionary)
 
-    Here, ``dependent_variable_dictionary`` is the python dictionary.
+    Here, `dependent_variable_dictionary` is the python dictionary.
 
-    `From valid keyword arguments.`
+    **From valid keyword arguments.**
 
     .. doctest::
 
@@ -69,7 +69,7 @@ class DependentVariable:
     _immutable_objects_ = ()
 
     def __init__(self, *args, **kwargs):
-        """Initialize an instance of DependentVariable class."""
+        """Initialize an instance of a DependentVariable class."""
         dictionary = {
             "type": "internal",
             "description": "",
@@ -99,8 +99,7 @@ class DependentVariable:
 
         if "type" not in input_keys:
             raise ValueError(
-                "Missing a required 'type' key from the dependent variable "
-                "object."
+                "Missing a required `type` key from the dependent variable."
             )
 
         if input_dict["type"] not in ["internal", "external"]:
@@ -111,19 +110,18 @@ class DependentVariable:
                 ).format(input_dict["type"])
             )
 
-        if input_dict["type"] == "internal":
-            if "components" not in input_keys:
-                raise ValueError(
-                    "`components` key is required for DependentVariable "
-                    "object of `internal` subtype."
-                )
+        def message(item, subtype):
+            return (
+                f"Missing a required `{item}` key from the dependent "
+                "variable of type `{subtype}`."
+            )
+
+        if input_dict["type"] == "internal" and "components" not in input_keys:
+            raise ValueError(message("components", "internal"))
 
         if input_dict["type"] == "external":
             if "components_url" not in input_keys:
-                raise ValueError(
-                    "`components_url` key is required for DependentVariable "
-                    "object of `external` subtype."
-                )
+                raise ValueError(message("components_url", "external"))
 
         if "filename" in kwargs.keys():
             dictionary["filename"] = kwargs["filename"]
@@ -142,13 +140,11 @@ class DependentVariable:
 
         if dictionary["type"] == "internal":
             self._type = "internal"
-            _uv_object = InternalDataset(**dictionary)
+            self.subtype = InternalDataset(**dictionary)
 
         if dictionary["type"] == "external":
             self._type = "external"
-            _uv_object = ExternalDataset(**dictionary)
-
-        self.subtype = _uv_object
+            self.subtype = ExternalDataset(**dictionary)
 
     # ======================================================================= #
     #                      DependentVariable  Attributes                      #
@@ -156,7 +152,7 @@ class DependentVariable:
     @property
     def application(self):
         """
-        Add the application metadata to the DependentVariable object.
+        Return an application metadata of the DependentVariable object.
 
         .. doctest::
 
@@ -169,8 +165,10 @@ class DependentVariable:
             {'com.reverse.domain': {'my_key': 'my_metadata'}}
 
             }
+
+        :returns: A `dict`.
         """
-        return self.subtype._application
+        return self.subtype.application
 
     @application.setter
     def application(self, value):
@@ -181,12 +179,12 @@ class DependentVariable:
         r"""
         Return a formatted array of strings for displaying the label.
 
-        This supplementary attribute is convenient for labeling axes.
-        It returns an array of strings where every string at a given index
-        is formatted as 'label / unit'  if the corresponding index of the
-        `component_labels` array is not an empty string, otherwise,
-        'quantity_name / unit’. Here, the `quantity_name`, `component_labels`,
-        and `unit`are the attributes of the :ref:`dv_api` instance.
+        This supplementary attribute is convenient for labeling axes. It
+        returns an array of strings, where the string at index `i` is formatted
+        as 'component_labels[i] / unit'  if `component_labels[i]` is not an
+        empty string, otherwise, 'quantity_name / unit’. Here, `quantity_name`,
+        `component_labels`, and `unit`are the attributes of the :ref:`dv_api`
+        instance.
         For example,
 
         .. doctest::
@@ -194,7 +192,7 @@ class DependentVariable:
             >>> y.axis_label
             ['energy / (s * W)', 'energy / (s * W)', 'energy / (s * W)']
 
-        :returns: A ``String``.
+        :returns: A `list`.
         :raises AttributeError: When assigned a value.
         """
         labels = []
@@ -209,16 +207,16 @@ class DependentVariable:
         r"""
         Return an ordered array of labels.
 
-        The order of the labels are relative to the order of the array
-        from the :py:attr:`~csdfpy.DependentVariable.components` attribute.
+        The order of the labels is the same as the order of components in the
+        :py:attr:`~csdfpy.DependentVariable.components` attribute.
 
         .. doctest::
 
             >>> y.component_labels
             ['', '', '']
 
-        When assigning a value, simply assign an array with same number of
-        elements.
+        To update the component_labels, assign an array of strings with same
+        number of elements as the number of components.
 
         .. doctest::
 
@@ -234,6 +232,7 @@ class DependentVariable:
         .. todo::
             Check the component labels.
 
+        :returns: A `list`.
         :raises TypeError: When the assigned value is not an array of strings.
         """
         return self.subtype.component_labels
@@ -245,23 +244,21 @@ class DependentVariable:
     @property
     def components(self):
         r"""
-        Return the components of the data values.
+        Return the components of the dependent variable.
 
-        The value of the components attribute of the dependent variable,
-        :math:`y`, is a Numpy array of shape
-        :math:`(p \times N_{d-1} \times ... N_1 \times N_0)` where :math:`p` is
-        the number of components, and :math:`N_k` is the number of points
-        from the :math:`k^\mathrm{th}` :ref:`iv_api` instance. The number
-        of dimensions of this Numpy array is :math:`d+1` where :math:`d` is the
-        number of independent variables or equivalently the number of
-        :ref:`iv_api` instances. Note, the shape of the Numpy array follows a
-        reverse order based on the ordered list of IndependentVariable
-        instances,
-        that is, the :math:`k^\mathrm{th}` independent variable lies along the
-        :math:`(d-k)^\mathrm{th}` axis of the Numpy array. Thus, the first
-        independent variable :math:`x_0` with :math:`N_0` points is the last
-        axis, and the last independent variable :math:`x_{d-1}` with
-        :math:`N_{d-1}` points is the first axis of the Numpy array. The
+        The value of this attribute, :math:`\mathbb{U}`, is a Numpy array of
+        shape :math:`(p \times N_{d-1} \times ... N_1 \times N_0)` where
+        :math:`p` is the number of components, and :math:`N_k` is the number
+        of points from the :math:`k^\mathrm{th}` :ref:`dim_api` object.
+
+        The dimensionality of this Numpy array is :math:`d+1` where :math:`d`
+        is the number of dimension objects. Note, the shape of the Numpy array
+        follows a reverse order based on the ordered list of dimension objects,
+        that is, the :math:`k^\mathrm{th}` dimension lies along the
+        :math:`(d-k)^\mathrm{th}` axis of the Numpy array. Therefore, the first
+        dimension :math:`x_0` with :math:`N_0` points is the last
+        axis, and the last dimension :math:`x_{d-1}` with :math:`N_{d-1}`
+        points is the first axis of the Numpy array. The
         zeroth axis with :math:`p` points is the number of components.
 
         This attribute can only be updated when the shape of the new array is
@@ -299,13 +296,13 @@ class DependentVariable:
             ...     y.components = np.random.rand(1,10).astype('u1')
             ... except ValueError as e:
             ...     print(e)
-            The shape of `ndarray`, `(1, 10)`, is not consistent
+            The shape of `ndarray`, `(1, 10)`, is inconsistent
             with the shape of the components array, `(3, 10)`.
 
         a `ValueError` is raised because the shape of the input array (1, 10)
         is not consistent with the shape of the components array, (3, 10).
 
-        :returns: A ``Numpy array``.
+        :returns: A `Numpy array`.
         :raises ValueError: When assigning an array whose shape is
             not consistent with the shape of the components array.
         """
@@ -320,12 +317,12 @@ class DependentVariable:
         r"""
         Return the URL where the data components are stored.
 
-        The attribute is only informative and cannot be modified. Its value is
+        This attribute is only informative and cannot be modified. Its value is
         a string containing the local or remote address of a file where the
-        data values are stored. Only valid for External dependent variable
-        object.
+        data values are stored. Only valid for dependent variable with type,
+        `external`.
 
-        :returns: A ``String``.
+        :returns: A `string`.
         :raises AttributeError: When assigning a value.
         """
         return self.subtype.components_url
@@ -333,7 +330,7 @@ class DependentVariable:
     @property
     def data_structure(self):
         r"""
-        Return an instance of the DependentVariable as a JSON object instance.
+        Return the DependentVariable as a JSON serialized string.
 
         This attribute is useful for a quick view of the data structure. Note,
         the JSON object from this attribute is not the same as the one
@@ -366,6 +363,7 @@ class DependentVariable:
               ]
             }
 
+        :returns: A `string`.
         :raises AttributeError: When modified.
         """
         dictionary = self._get_python_dictionary()
@@ -378,7 +376,7 @@ class DependentVariable:
         """
         Brief description of the dependent variables.
 
-        The default value is an empty string, ''. The attribute can be
+        The default value is an empty string, ''. This attribute can be
         modified, for example
 
         .. doctest::
@@ -389,8 +387,8 @@ class DependentVariable:
             >>> print(y.description)
             A test RGB image
 
-        :returns: A ``string`` with UTF-8 allows characters.
-        :raises ValueError: When the non-string value is assigned.
+        :returns: A `string` with UTF-8 allowed characters.
+        :raises ValueError: When a non-string value is assigned.
         """
         return self.subtype.description
 
@@ -401,7 +399,7 @@ class DependentVariable:
     @property
     def encoding(self):
         r"""
-        Return a string describing the encoding method for the data value.
+        Return a string describing the encoding method of the data value.
 
         The value of this attribute determines the method used when
         serializing/deserializing the data values to/from a file.
@@ -417,19 +415,19 @@ class DependentVariable:
         serialization.
 
         By default, the encoding attribute of all dependent variable object are
-        set to `base64` upon import. The use may update this attribute, at any
-        time, with a string containing a *valid* encoding literal, for example,
+        set to `base64` after import. The user may update this attribute, at
+        any time, with a string containing a *valid* encoding literal,
+        for example,
 
         .. doctest::
 
             >>> y.encoding = 'base64'
 
         The value of this attribute will be used in serializing the data to the
-        file, when using the :meth:`~csdfpy.save` method.
+        file, when using the :meth:`~csdfpy.csdm.CSDModel.save` method.
 
-        :returns: A ``String``.
+        :returns: A `string`.
         :raises ValueError: If an invalid value is assigned.
-        :raises TypeError: When the assigned value is not a string.
         """
         return self.subtype.encoding
 
@@ -450,7 +448,7 @@ class DependentVariable:
             'star'
             >>> y.name = 'rock star'
 
-        :returns: A ``String``.
+        :returns: A `string`.
         :raises TypeError: When the assigned value is not a string.
         """
         return self.subtype.name
@@ -464,20 +462,20 @@ class DependentVariable:
         r"""
         Return a string describing the numeric type of the data values.
 
-        There are currently thirteen valid numeric types:
+        There are currently twelve *valid* numeric types:
 
         ==============   ============   ============   ============
-        ``uint8``        ``int8``       ``float16``    ``complex64``
-        ``uint16``       ``int16``      ``float32``    ``complex128``
-        ``uint32``       ``int32``      ``float64``
+        ``uint8``        ``int8``       ``float32``    ``complex64``
+        ``uint16``       ``int16``      ``float64``    ``complex128``
+        ``uint32``       ``int32``
         ``uint64``       ``int64``
         ==============   ============   ============   ============
 
-        When assigning a value, this attribute updates the `numeric type` as
-        well as the `dtype` of the Numpy array from the corresponding
-        :py:attr:`~csdfpy.DependentVariable.components` attribute. We
-        recommended the use of the numeric type attribute for updating
-        the `dtype` of the Numpy array. For example,
+        When assigning a valid value, this attribute updates the `dtype` of the
+        components Numpy array from the corresponding
+        :py:attr:`~csdfpy.dependent_variables.DependentVariable.components`
+        attribute. We recommended the use of the numeric type attribute for
+        updating the `dtype` of the Numpy array. For example,
 
         .. doctest::
 
@@ -496,27 +494,26 @@ class DependentVariable:
              [10.+0.j 11.+0.j 12.+0.j 13.+0.j 14.+0.j]
              [20.+0.j 21.+0.j 22.+0.j 23.+0.j 24.+0.j]]
 
-        :returns: A ``String``.
+        :returns: A `string`.
         :raises ValueError: If an invalid value is assigned.
-        :raises TypeError: When the assigned value is not a string.
         """
-        return self.subtype._numeric_type.value
+        return self.subtype.numeric_type.value
 
     @numeric_type.setter
     def numeric_type(self, value):
-        self.subtype._numeric_type.update(value)
+        self.subtype.numeric_type = value
 
     @property
     def quantity_name(self):
         """
-        Return a string with the `quantity name` of the dependent variable.
+        Return a string with the quantity name of the dependent variable.
 
         .. doctest::
 
             >>> y.quantity_name
             'energy'
 
-        :returns: A ``String``.
+        :returns: A `string`.
         :raises NotImplementedError: When assigning a value.
         """
         return self.subtype.quantity_name
@@ -548,23 +545,22 @@ class DependentVariable:
             'RGB'
             >>> y.quantity_type = 'vector_3'
 
-        :return: A ``String``.
+        :return: A `string`.
         :raise ValueError: If an invalid value is assigned.
-        :raises TypeError: When the assigned value is not a string.
         """
-        return self.subtype._quantity_type.value
+        return self.subtype.quantity_type.value
 
     @quantity_type.setter
     def quantity_type(self, value):
-        self.subtype._quantity_type.update(value)
+        self.subtype.quantity_type = value
 
     @property
     def type(self):
         """
         Return the subtype of the :ref:`dv_api` instance.
 
-        By default, all instances of the DependentVariable are assigned as
-        `internal` type upon import. The user can update the value of this
+        By default, all instances of the DependentVariable class are assigned
+        as `internal` type after import. The user can update the value of this
         attribute, at any time, with a string containing a valid `type`
         literal, for example,
 
@@ -575,7 +571,7 @@ class DependentVariable:
 
             >>> y.type = 'external'
 
-        The allowed `type` enumeration literals are
+        The *valid* `type` enumeration literals are
 
         | ``internal``
         | ``external``
@@ -584,7 +580,7 @@ class DependentVariable:
         DependentVariable instance are serialized to an external file within
         the same directory as the `.csdfe` file.
 
-        :returns: A ``String``.
+        :returns: A `string`.
         :raises ValueError: When an invalid value is assigned
         """
         return self._type
@@ -593,13 +589,13 @@ class DependentVariable:
     def type(self, value):
         if value in ["internal", "external"]:
             self._type = value
-        else:
-            raise ValueError(
-                (
-                    "{0} is not a valid value. The allowed values are "
-                    "'internal' and 'external'.".format(value)
-                )
+            return
+        raise ValueError(
+            (
+                "{0} is not a valid value. The allowed values are "
+                "'internal' and 'external'.".format(value)
             )
+        )
 
     @property
     def unit(self):
@@ -607,14 +603,15 @@ class DependentVariable:
         Return the unit associated with the dependent variable.
 
         The attribute cannot be modified. To convert the unit, use the
-        :py:meth:`~csdfpy.DependentVariable.to` method of the class instance.
+        :py:meth:`~csdfpy.dependent_variables.DependentVariable.to` method of
+        the class instance.
 
         .. doctest::
 
             >>> y.unit
             Unit("s W")
 
-        :returns: A ``Unit`` object.
+        :returns: A `Unit` object.
         :raises AttributeError: When assigned a value.
         """
         return self.subtype.unit
@@ -650,9 +647,13 @@ class DependentVariable:
 
             >>> y.unit
             Unit("s W")
-            >>> y.to('J')
+            >>> print(y.components[0,5])
+            5.0
+            >>> y.to('mJ')
             >>> y.unit
-            Unit("J")
+            Unit("mJ")
+            >>> print(y.components[0,5])
+            5000.0
 
         """
         factor = (1.0 * self.unit).to(unit)

@@ -45,6 +45,7 @@ Let's load the `.csdfe` file and take a quick look at its data structure.
             "type": "internal",
             "name": "hlsp_heritage_hst_wfc3-uvis_bubble_nebula_f656n_v1_drc",
             "numeric_type": "float32",
+            "quantity_type": "scalar",
             "components": [
               [
                 "0.0, 0.0, ..., 0.0, 0.0"
@@ -90,14 +91,14 @@ respective instances.
 
 Notice, the descending order of coordinates in `x0` which is a
 consequence of  the :py:attr:`~csdfpy.Dimension.reverse` attribute set
-to `True` for the corresponding :ref:`iv_api` instance. This is also
+to `True` for the corresponding :ref:`dim_api` instance. This is also
 observed from the data structure view shown above. As before, the component of the
 dependent variable is accessed through the
 :py:attr:`~csdfpy.DependentVariable.components` attribute.
 
 .. doctest::
 
-     >>> y00 = y[0].components[0]
+    >>> y00 = y[0].components[0]
 
 Now, to plot the data.
 

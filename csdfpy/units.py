@@ -18,7 +18,7 @@ __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 
 
-tr = u.def_unit(["tr", "turn", "revolution"], 1 * u.cycle)
+tr = u.def_unit(["tr", "turn", "revolution"], 1.0 * u.cycle)
 u.add_enabled_units([cds.ppm, tr])
 
 convert = {
@@ -178,7 +178,7 @@ class ScalarQuantity:
     @classmethod
     def quantity_object(cls, quantity_string, unit):
         if isinstance(quantity_string, ScalarQuantity):
-            return quantity_string
+            return quantity_string.quantity
 
         if isinstance(quantity_string, Quantity):
             return quantity_string

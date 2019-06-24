@@ -2,10 +2,7 @@
 include README.md
 include LICENSE
 include CHANGELOG
-include csdfpy/tests/*.py
-include csdfpy/tests/*.csdf
-include csdfpy/tests/*.csdfe
-include csdfpy/tests/*.csdm
+recursive-include csdfpy/tests/*
 include requirements.txt
 # include CITATION
 

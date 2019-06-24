@@ -1,71 +1,93 @@
 # -*- coding: utf-8 -*-
-from os.path import join
 from os.path import split
 
 import numpy as np
+import pytest
 
 import csdfpy as cp
 
 
+def test_load_test_files():
+    assert split(cp.tests.test01)[1] == "test01.csdf"
+    assert split(cp.tests.test02)[1] == "test02.csdf"
+
+
 def test00():
-    test_path = join(split(cp.__file__)[0], "tests")
-    test01_file = join(test_path, "test01.csdf")
-    dataset1 = cp.load(test01_file)
-
-    assert dataset1.dependent_variables[0].type == "internal"
-
-    # encoding is always set to 'base64' after import
-    assert dataset1.dependent_variables[0].encoding == "base64"
-
-    assert dataset1.dependent_variables[0].numeric_type == "float32"
-
-    assert dataset1.dependent_variables[0].components.dtype == np.float32
-
-    assert dataset1.description == "Just another test"
-
-    assert len(dataset1.dependent_variables) == 1
-
-    assert len(dataset1.dimensions) == 1
-
-    assert dataset1.dimensions[0].type == "linear"
-
-    assert str(dataset1.dimensions[0].increment) == "0.1 s"
-
-    assert str(dataset1.dimensions[0].origin_offset) == "0.0 s"
-
-    assert dataset1.dimensions[0].count == 10
-
-    assert dataset1.dimensions[0].quantity_name == "time"
-
-    assert np.all(
-        dataset1.dimensions[0].coordinates.value == np.arange(10) * 0.1
-    )
+    error = "Missing a required data file address."
+    with pytest.raises(Exception, match=".*{0}.*".format(error)):
+        cp.load()
 
 
 def test01():
-    test_path = join(split(cp.__file__)[0], "tests")
-    test02_file = join(test_path, "test02.csdf")
-    dataset1 = cp.load(test02_file)
+    dataset = cp.load(cp.tests.test01)
 
-    assert dataset1.dependent_variables[0].type == "internal"
+    assert dataset.dependent_variables[0].type == "internal"
 
     # encoding is always set to 'base64' after import
-    assert dataset1.dependent_variables[0].encoding == "base64"
+    assert dataset.dependent_variables[0].encoding == "base64"
 
-    assert dataset1.dependent_variables[0].numeric_type == "float64"
+    assert dataset.dependent_variables[0].numeric_type == "float32"
 
-    assert dataset1.dependent_variables[0].components.dtype == np.float64
+    assert dataset.dependent_variables[0].components.dtype == np.float32
 
-    assert dataset1.description == "Base64 encoding test"
+    assert dataset.description == "A simulated sine curve."
 
-    assert len(dataset1.dependent_variables) == 1
+    assert len(dataset.dependent_variables) == 1
 
-    assert len(dataset1.dimensions) == 1
+    assert len(dataset.dimensions) == 1
 
-    assert dataset1.dimensions[0].type == "monotonic"
+    assert dataset.dimensions[0].type == "linear"
 
-    assert str(dataset1.dimensions[0].origin_offset) == "0.0 cm"
+    assert str(dataset.dimensions[0].increment) == "0.1 s"
 
-    assert dataset1.dimensions[0].count == 10
+    assert str(dataset.dimensions[0].origin_offset) == "0.0 s"
 
-    assert dataset1.dimensions[0].quantity_name == "length"
+    assert dataset.dimensions[0].count == 10
+
+    assert dataset.dimensions[0].quantity_name == "time"
+
+    assert np.all(
+        dataset.dimensions[0].coordinates.value == np.arange(10) * 0.1
+    )
+
+
+def test02():
+    dataset = cp.load(cp.tests.test02)
+
+    assert dataset.dependent_variables[0].type == "internal"
+
+    # encoding is always set to 'base64' after import
+    assert dataset.dependent_variables[0].encoding == "base64"
+
+    assert dataset.dependent_variables[0].numeric_type == "float64"
+
+    assert dataset.dependent_variables[0].components.dtype == np.float64
+
+    assert dataset.description == "Base64 encoding test"
+
+    assert len(dataset.dependent_variables) == 1
+
+    assert len(dataset.dimensions) == 1
+
+    assert dataset.dimensions[0].type == "monotonic"
+
+    assert str(dataset.dimensions[0].origin_offset) == "0.0 cm"
+
+    assert dataset.dimensions[0].count == 10
+
+    assert dataset.dimensions[0].quantity_name == "length"
+
+
+def test03():
+    dataset1 = cp.load(cp.tests.test03)
+    dataset2 = cp.load(cp.tests.test03, sort_fft_order=True)
+
+    dat1 = dataset1.dependent_variables[0].components[0]
+    dat2 = dataset2.dependent_variables[0].components[0]
+    assert np.all(np.fft.fftshift(dat1) == dat2)
+
+
+def test04():
+    data1 = cp.load(cp.tests.test04)
+    data2 = data1.copy()
+    assert data1.data_structure == data2.data_structure

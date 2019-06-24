@@ -7,7 +7,7 @@ from urllib.request import urlopen
 
 from csdfpy.dependent_variables.base_class import BaseDependentVariable
 from csdfpy.dependent_variables.decoder import Decoder
-from csdfpy.dependent_variables.download import _get_absolute_uri_path
+from csdfpy.dependent_variables.download import get_absolute_uri_path
 from csdfpy.dependent_variables.sparse import SparseSampling
 
 
@@ -24,15 +24,15 @@ class ExternalDataset(BaseDependentVariable):
 
         components_url = kwargs["components_url"]
         filename = kwargs["filename"]
-        _absolute_URI = _get_absolute_uri_path(components_url, filename)
+        absolute_URI = get_absolute_uri_path(components_url, filename)
         self._components_url = components_url
 
-        components = urlopen(_absolute_URI).read()
+        components = urlopen(absolute_URI).read()
         self._components = Decoder(
             self._encoding,
             self._quantity_type,
             components,
-            self._numeric_type._nptype,
+            self._numeric_type.dtype,
         )
 
         if kwargs["sparse_sampling"] != {}:
@@ -40,13 +40,13 @@ class ExternalDataset(BaseDependentVariable):
 
     @property
     def components_url(self):
-        """Return components_url of the CSDM serialized file."""
+        """Return the components_url of the CSDM serialized file."""
         return self._components_url
 
     def _get_python_dictionary(
         self, filename=None, dataset_index=None, for_display=True, version=None
     ):
-        """Return the InternalData object as a python dictionary."""
+        """Serialize the ExternalDataset object as a python dictionary."""
         dictionary = {}
 
         dictionary["type"] = "internal"

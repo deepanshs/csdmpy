@@ -6,7 +6,7 @@
 CSDModel
 --------
 
-.. currentmodule:: csdfpy
+.. currentmodule:: csdfpy.csdm
 .. autoclass:: CSDModel
    :show-inheritance: ~
 

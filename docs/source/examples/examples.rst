@@ -17,7 +17,7 @@ is given as a list within the curly braces, `i.e.`,
 
 .. toctree::
 
-    1D{1} datasets
-    2D{1} datasets/2D{1} datasets
-    2D{2} datasets
-    2D{3} datasets
+    1D{1}-datasets
+    2D{1}-datasets/2D{1}-datasets
+    2D{2}-datasets
+    2D{3}-datasets

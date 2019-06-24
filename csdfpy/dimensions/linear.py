@@ -11,8 +11,8 @@ from astropy.units import Quantity
 from csdfpy.dimensions.quantitative import BaseQuantitativeDimension
 from csdfpy.dimensions.quantitative import ReciprocalVariable
 from csdfpy.units import ScalarQuantity
-from csdfpy.utils import _check_and_assign_bool
-from csdfpy.utils import _type_message
+from csdfpy.utils import check_and_assign_bool
+from csdfpy.utils import validate
 
 
 # =========================================================================== #
@@ -22,15 +22,15 @@ from csdfpy.utils import _type_message
 
 class LinearDimension(BaseQuantitativeDimension):
     r"""
-    Create a linear grid dimension.
+    LinearDimension class.
 
     .. warning ::
         This class should not be used directly. Instead,
         use the ``CSDModel`` object to access the attributes
         and methods of this class. See example, :ref:`lsgd`.
 
-    This class returns an object which represents a physical
-    dimension, sampled linearly along a grid dimension.
+    The class returns an object which represents a physical
+    dimension, sampled uniformly along a grid dimension.
     Let :math:`m_k` be the increment, :math:`N_k \ge 1` be the
     number of points, :math:`c_k` be the reference offset, and
     :math:`o_k` be the origin offset along the :math:`k^{th}`
@@ -65,7 +65,7 @@ class LinearDimension(BaseQuantitativeDimension):
         r"""Instantiate a DimensionWithLinearSpacing class instance."""
         self._count = count
         self._increment = ScalarQuantity(increment).quantity
-        self._fft_output_order = _check_and_assign_bool(fft_output_order)
+        self._fft_output_order = check_and_assign_bool(fft_output_order)
         self._unit = self._increment.unit
 
         super(LinearDimension, self).__init__(unit=self._unit, **kwargs)
@@ -153,9 +153,7 @@ class LinearDimension(BaseQuantitativeDimension):
         # reciprocal dictionary
         reciprocal_obj = {}
         if self.reciprocal._description.strip() != "":
-            reciprocal_obj[
-                "description"
-            ] = self.reciprocal._description.strip()
+            reciprocal_obj["description"] = self.reciprocal._description
         reciprocal_obj.update(self.reciprocal._get_quantitative_dictionary())
         if reciprocal_obj == {}:
             del reciprocal_obj
@@ -167,10 +165,10 @@ class LinearDimension(BaseQuantitativeDimension):
     # ----------------------------------------------------------------------- #
     #                                  Attributes                             #
     # ----------------------------------------------------------------------- #
-    @property
-    def count(self):
-        r"""Total number of points along the linear dimension."""
-        return deepcopy(self._count)
+    # @property
+    # def count(self):
+    #     r"""Total number of points along the linear dimension."""
+    #     return deepcopy(self._count)
 
     @property
     def increment(self):
@@ -179,12 +177,9 @@ class LinearDimension(BaseQuantitativeDimension):
 
     @increment.setter
     def increment(self, value):
-        if isinstance(value, Quantity):
-            value = str(value)
-        if not isinstance(value, str):
-            raise TypeError(_type_message(str, type(value)))
-        value = ScalarQuantity(value, self._unit).quantity
-        self._increment = value
+        allowed_types = (Quantity, str, ScalarQuantity)
+        value = validate(value, "increment", allowed_types)
+        self._increment = ScalarQuantity(value, self._unit).quantity
         self._get_coordinates()
 
     @property
@@ -194,9 +189,5 @@ class LinearDimension(BaseQuantitativeDimension):
 
     @fft_output_order.setter
     def fft_output_order(self, value):
-        if not isinstance(value, bool):
-            raise TypeError(_type_message(bool, type(value)))
-
-        self._fft_output_order = value
+        self._fft_output_order = validate(value, "fft_output_order", bool)
         self._get_coordinates()
-        return

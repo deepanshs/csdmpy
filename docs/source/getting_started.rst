@@ -3,18 +3,18 @@
 Getting Started With `csdfpy` package
 =====================================
 
-If you prefer Jupyter notebooks, start a new notebook and follow the
-instructions below. If you are new to Jupyter notebooks, refer to the
-`Installing Jupyter Notebook documentation <https://jupyter.readthedocs.io/en/latest/install.html>`_
-to set up a Jupyter notebook. Not a fan of Jupyter notebooks, simply start
-with a new python file.
+.. If you prefer Jupyter notebooks, start a new notebook and follow the
+.. instructions below. If you are new to Jupyter notebooks, refer to the
+.. `Installing Jupyter Notebook documentation <https://jupyter.readthedocs.io/en/latest/install.html>`_
+.. to set up a Jupyter notebook. Not a fan of Jupyter notebooks, simply start
+.. with a new python file.
 
-------------------------------
-Importing the `csdfpy` package
-------------------------------
+.. ------------------------------
+.. Importing the `csdfpy` package
+.. ------------------------------
 
 We have put together a set of guidelines for importing the `csdfpy`
-module and the related methods and attributes. We encourage the users
+module and using the related methods and attributes. We encourage the users
 to follow these guidelines to promote consistency amongst others.
 Import the module using
 
@@ -28,49 +28,43 @@ sample test file.
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.12/test/test01.csdf' # replace this with the filename.
+    >>> filename = cp.tests.test01 # replace this with the filename.
     >>> testdata1 = cp.load(filename)
 
 Here, ``testdata1`` is an instance of the :ref:`csdm_api` class.
 
-
----------------------------------
-Understanding the CSDModel object
----------------------------------
-
-The instance of the CSDModel class is what you will interact to access
-data. Every CSDModel object have attributes that describe the dataset
-
-description
-^^^^^^^^^^^
-
-A CSD model serialized data file may contain an optional description key within
-every object in the CSD model hierarchy. At the root level, this key holds the
-value that briefly describes the dataset. To access the value of this key use
-the :py:attr:`~csdfpy.CSDModel.description` attribute.
-In this example, the description of the ``testdata1`` instance is
+At the root level, the :ref:`csdm_api` object includes various optional
+attributes that provide additional information about the dataset. One such
+attribute is the :attr:`~csdfpy.CSDModel.description` key. This attribute is
+useful to brief the end users on the contents of the dataset. To access the
+value of this attribute use
 
 .. doctest::
 
     >>> print(testdata1.description)
     A simulated sine curve.
 
--------------------------------------------------
-Accessing the independent and dependent variables
--------------------------------------------------
+---------------------------------------------------------------
+Accessing the dimensions and dependent variables of the dataset
+---------------------------------------------------------------
 
-To access the dependent variables and dimensions of the dataset, use the
-:py:attr:`~csdfpy.CSDModel.dependent_variables` and the
-:py:attr:`~csdfpy.CSDModel.dimensions` attribute,
-respectively, of the ``testdata1`` instance. For example,
+A dataset may be associated with multiple dimensions and dependent variables.
+Collectively, the dimensions form a multi-dimensional grid system and the
+dependent variables reside on this grid. In `csdfpy` module, the list of
+dimension and dependent variable instances are structured as python's tuple
+object. To access these dimensions and dependent variables, use the
+:py:attr:`~csdfpy.CSDModel.dimensions` and the
+:py:attr:`~csdfpy.CSDModel.dependent_variables` attributes,
+respectively. For example,
 
 .. doctest::
 
     >>> x = testdata1.dimensions
     >>> y = testdata1.dependent_variables
 
-where `x` and `y` are the tuples of :ref:`iv_api` and :ref:`dv_api` instances.
-In the above example, both `x` and `y` are tuples with a single instance.
+where `x` and `y` are the tuples of :ref:`dim_api` and :ref:`dv_api` instances.
+In this example, the dataset contains one dimension and one dependent variable,
+and therefore, `x` and `y` are tuples with a single instance.
 
 .. doctest::
 
@@ -79,9 +73,24 @@ In the above example, both `x` and `y` are tuples with a single instance.
     >>> print('y is a {0} of length {1}.'.format(type(y).__name__, len(y)))
     y is a tuple of length 1.
 
-To access the list of coordinates along the independent variable dimension, use
+You may access the individual dimension and dependent variable instances by
+using the proper indexing. For example, the dimension and dependent variable
+at index 0 are,
+
+.. doctest::
+
+    >>> print(x[0].description)
+    A temporal dimension.
+    >>> print(y[0].description)
+    A response dependent variable.
+
+Coordinates along the dimension
+*******************************
+
+Every dimension object contains a list of coordinates corresponding to every
+gird point along the dimension. To access these coordinates, use
 the :py:attr:`~csdfpy.Dimension.coordinates` attribute of the
-respective :ref:`iv_api` instance. In this example, the coordinates are
+respective :ref:`dim_api` instance. In this example, the coordinates are
 
 .. doctest::
 
@@ -104,9 +113,16 @@ respective :ref:`iv_api` instance. In this example, the coordinates are
     `Numpy array <https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.ndarray.html>`_.
 
 
-Similarly, to access the list of components of the dependent variable, use the
-:py:attr:`~csdfpy.DependentVariable.components` attribute of the
-respective :ref:`dv_api` instance. For example,
+Components of the dependent variable
+************************************
+
+Every dependent variable object has at least one component. The number of
+components of the dependent variable is determined from the
+:attr:`~csdfpy.DependentVariable.quantity_type` attribute of the dependent
+variable object. For example, a scalar quantity has one component while a
+vector quantity may have multiple components. To access the components of
+the dependent variable, use the :py:attr:`~csdfpy.DependentVariable.components`
+attribute of the respective :ref:`dv_api` instance. For example,
 
 .. doctest::
 
@@ -171,7 +187,7 @@ instances and `name` is an attribute of the DependentVariable instance.
 
 .. seealso::
 
-    :ref:`iv_api`, :ref:`dv_api`,
+    :ref:`dim_api`, :ref:`dv_api`,
     `Quantity <http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity>`_,
     `numpy array <https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.ndarray.html>`_,
     `Matplotlib library <https://matplotlib.org>`_

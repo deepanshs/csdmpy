@@ -48,6 +48,7 @@ Let's import the CSD model data-file and look at its data structure.
           {
             "type": "internal",
             "numeric_type": "uint8",
+            "quantity_type": "scalar",
             "components": [
               [
                 "126, 126, ..., 164, 164"
@@ -81,7 +82,7 @@ with the respective coordinates (viewed only for the first ten coordinates),
     [ 0.  4.  8. 12. 16. 20. 24. 28. 32. 36.] nm
 
 For convenience, let's convert the coordinate unit from `nm` to `µm` using the
-:py:meth:`~csdfpy.ControlledVariable.to` method of the respective :ref:`iv_api`
+:py:meth:`~csdfpy.ControlledVariable.to` method of the respective :ref:`dim_api`
 instance,
 
 .. doctest::

@@ -7,7 +7,7 @@ from copy import deepcopy
 
 import numpy as np
 
-from csdfpy.utils import _type_message
+from csdfpy.utils import validate
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -51,9 +51,7 @@ class LabeledDimension:
 
     @label.setter
     def label(self, label=""):
-        if not isinstance(label, str):
-            raise TypeError(_type_message(str, type(label)))
-        self._label = label
+        self._label = validate(label, "label", str)
 
     @property
     def application(self):
@@ -71,9 +69,7 @@ class LabeledDimension:
 
     @description.setter
     def description(self, value):
-        if not isinstance(value, str):
-            raise ValueError("A string value is required.")
-        self._description = value
+        self._description = validate(value, "description", str)
 
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #

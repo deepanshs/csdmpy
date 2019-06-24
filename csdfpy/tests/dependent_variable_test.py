@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
+import json
+
 import numpy as np
 import pytest
 
 import csdfpy as cp
 
 
-def test_internal_new_data():
+def test_internal_new():
     data = cp.new()
     dim = {
         "type": "internal",
@@ -18,6 +20,9 @@ def test_internal_new_data():
     assert data.dependent_variables[0].type == "internal"
     data.dependent_variables[0].type = "external"
     assert data.dependent_variables[0].type == "external"
+    error = "is not a valid value. The allowed values are"
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        data.dependent_variables[0].type = "celestial"
 
     # check components
     assert np.all(
@@ -56,6 +61,13 @@ def test_internal_new_data():
     assert data.dependent_variables[0].component_labels == [""]
     data.dependent_variables[0].component_labels = [":)"]
     assert data.dependent_variables[0].component_labels == [":)"]
+
+    data.dependent_variables[0].component_labels = []
+    assert data.dependent_variables[0].component_labels == [""]
+
+    data.dependent_variables[0].component_labels = ["1", "2", "3"]
+    assert data.dependent_variables[0].component_labels == ["1"]
+
     data.dependent_variables[0].component_labels[0] = ":("
     assert data.dependent_variables[0].component_labels == [":("]
 
@@ -103,43 +115,41 @@ def test_internal_new_data():
     assert data.dependent_variables[0].description == ""
     data.dependent_variables[0].description = "This is a test"
     assert data.dependent_variables[0].description == "This is a test"
-    error = "Description requires a string"
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    error = "Expecting an instance of type,"
+    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.dependent_variables[0].description = {}
 
     # application
     assert data.dependent_variables[0].application == {}
-    error = "A dict value is required"
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.dependent_variables[0].application = ""
 
+    dict1 = {
+        "csdm": {
+            "version": "0.0.12",
+            "dimensions": [],
+            "dependent_variables": [
+                {
+                    "type": "internal",
+                    "description": "This is a test",
+                    "name": "happy days",
+                    "numeric_type": "complex64",
+                    "quantity_type": "vector",
+                    "component_labels": [":("],
+                    "components": [
+                        ["(100+0j), (100+0j), ..., " "(108+0j), (108+0j)"]
+                    ],
+                }
+            ],
+        }
+    }
 
-# dict1 = {
-#     "csdm": {
-#         "version": "0.0.12",
-#         "dimensions": [],
-#         "dependent_variables": [
-#             {
-#                 "type": "internal",
-#                 "description": "This is a test",
-#                 "name": "happy days",
-#                 "numeric_type": "complex64",
-#                 "quantity_type": "vector",
-#                 "component_labels": [
-#                     ":("
-#                 ],
-#                 "components": ("[(100+0j), (100+0j), ...... "
-#                                "(108+0j), (108+0j)])"
-#             }
-#         ]
-#     }
-# }
-
-# assert data.data_structure == str(json.dumps(
-#     dict1, ensure_ascii=False, sort_keys=False, indent=2))
+    assert data.data_structure == str(
+        json.dumps(dict1, ensure_ascii=False, sort_keys=False, indent=2)
+    )
 
 
-def test_external_new_data():
+def test_external_new():
     data = cp.new()
     dim = {
         "type": "external",
@@ -198,30 +208,60 @@ def test_external_new_data():
     # application
     assert data.dependent_variables[0].application == {}
 
-    # print(data.data_structure)
-    # dict1 = {
-    #     "csdm": {
-    #         "version": "0.0.12",
-    #         "dimensions": [],
-    #         "dependent_variables": [
-    #             {
-    #                 "type": "internal",
-    #                 "description": "This is also a test",
-    #                 "name": "Headspace from cinnamon stick",
-    #                 "numeric_type": "int32",
-    #                 "component_labels": [
-    #                     "monotonic"
-    #                 ],
-    #                 "components": "[48453, 48453, ...... 48040, 48040]"
-    #             }
-    #         ]
-    #     }
-    # }
+    dict1 = {
+        "csdm": {
+            "version": "0.0.12",
+            "dimensions": [],
+            "dependent_variables": [
+                {
+                    "type": "internal",
+                    "description": "This is also a test",
+                    "name": "Headspace from cinnamon stick",
+                    "numeric_type": "int32",
+                    "quantity_type": "scalar",
+                    "component_labels": ["monotonic"],
+                    "components": [["48453, 48453, ..., 48040, 48040"]],
+                }
+            ],
+        }
+    }
 
-    # assert data.data_structure == json.dumps(
-    #     dict1, ensure_ascii=False, sort_keys=False, indent=2)
+    assert data.data_structure == json.dumps(
+        dict1, ensure_ascii=False, sort_keys=False, indent=2
+    )
 
 
-if __name__ == "__main__":
-    test_internal_new_data()
-    test_external_new_data()
+def test_missing_type():
+    data = cp.new()
+    dim = {"numeric_type": "float32", "components": [np.arange(10)]}
+    error = "Missing a required `type` key from the dependent variable"
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        data.add_dependent_variable(dim)
+
+
+def test_wrong_type():
+    data = cp.new()
+    dim = {
+        "type": "",
+        "numeric_type": "float32",
+        "components": [np.arange(10)],
+    }
+    error = "is an invalid DependentVariable 'type'"
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        data.add_dependent_variable(dim)
+
+
+def test_missing_component():
+    data = cp.new()
+    dim = {"type": "internal", "numeric_type": "float32"}
+    error = "Missing a required `components` key"
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        data.add_dependent_variable(dim)
+
+
+def test_missing_component_url():
+    data = cp.new()
+    dim = {"type": "external", "numeric_type": "float32"}
+    error = "Missing a required `components_url` key"
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        data.add_dependent_variable(dim)

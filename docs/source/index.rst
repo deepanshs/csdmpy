@@ -18,9 +18,9 @@ is a viable data-exchange model.
 
 The main objective of this python module is to facilitate an easy import and
 export of the CSD model serialized files for Python users. Moreover, the
-module utilizes Python libraries such as Numpy and Scipy and
-therefore allowing the end users to process or visualize the imported datasets
-with any third party package(s) compatible with Numpy and Scipy.
+module utilizes Python libraries such as Numpy and therefore allowing the end
+users to process or visualize the imported datasets with any third party
+package(s) compatible with Numpy.
 
 .. toctree::
     :maxdepth: 2
@@ -32,9 +32,9 @@ with any third party package(s) compatible with Numpy and Scipy.
     installation
     getting_started
     examples/examples
-    examples/A fun example
+    startFromScratch/start
     referenceAPI
-    startingFromScratch
+
 
 ..    independent_variable
 

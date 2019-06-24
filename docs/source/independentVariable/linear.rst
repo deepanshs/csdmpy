@@ -8,10 +8,10 @@ Linearly Sampled Dimension
 For a linearly sampled dimension, the coordinates of the independent variable
 are spaced linearly along the dimension and are frequently encountered in many
 scientific datasets.
-In this case, the instance of the corresponding :ref:`iv_api`
+In this case, the instance of the corresponding :ref:`dim_api`
 class has a subtype called `linearly_sampled`.
 
-Consider that the :math:`k^{th}` :ref:`iv_api` instance from
+Consider that the :math:`k^{th}` :ref:`dim_api` instance from
 a :ref:`csdm_api` instance has a `linearly_sampled` subtype.
 Let :math:`m_k`, :math:`N_k \ge 1`, :math:`c_k`, and :math:`o_k` be the
 sampling interval, number of points, reference offset, and the origin offset,
@@ -98,7 +98,7 @@ instance `i.e` the member of the
 
     >>> x0 = testdata1.dimensions[0]
 
-The variable `x0` is an instance of the :ref:`iv_api` class.
+The variable `x0` is an instance of the :ref:`dim_api` class.
 The coordinates of the independent variable from this instance are
 
 .. doctest::
@@ -129,7 +129,7 @@ respectively.
 Attributes
 """"""""""
 
-The following are the attributes of the :ref:`iv_api` instance along with
+The following are the attributes of the :ref:`dim_api` instance along with
 examples demonstrating its effect on the coordinates along the dimension.
 
 * :py:attr:`~csdfpy.IndependentVariable.type`
@@ -319,4 +319,4 @@ coordinates.  An exception will be raised otherwise.
         raise Exception(message.format(*options))
     Exception: The unit 'km / s' (speed) is inconsistent with the unit 'min' (time).
 
-Also see :ref:`iv_api`
+Also see :ref:`dim_api`

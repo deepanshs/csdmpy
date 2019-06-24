@@ -6,7 +6,8 @@ from numpy import inf
 
 from csdfpy.units import check_quantity_name
 from csdfpy.units import ScalarQuantity
-from csdfpy.utils import _type_message
+from csdfpy.utils import type_error
+from csdfpy.utils import validate
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -74,11 +75,7 @@ class BaseQuantitativeDimension:
 
     @application.setter
     def application(self, value):
-        if not isinstance(value, dict):
-            raise ValueError(
-                "A dict value is required, found {0}".format(type(value))
-            )
-        self._application = value
+        self._application = validate(value, "application", dict)
 
     @property
     def index_zero_coordinate(self):
@@ -87,11 +84,8 @@ class BaseQuantitativeDimension:
 
     @index_zero_coordinate.setter
     def index_zero_coordinate(self, value):
-        if isinstance(value, Quantity):
-            value = str(value)
-        if not isinstance(value, str):
-            raise TypeError(_type_message(str, type(value)))
-
+        allowed_types = (Quantity, str, ScalarQuantity)
+        value = validate(value, "index_zero_coordinate", allowed_types)
         value = ScalarQuantity(value, self._unit).quantity
         self._index_zero_coordinate = value
 
@@ -102,13 +96,9 @@ class BaseQuantitativeDimension:
 
     @origin_offset.setter
     def origin_offset(self, value):
-        if isinstance(value, Quantity):
-            value = str(value)
-        if not isinstance(value, str):
-            raise TypeError(_type_message(str, type(value)))
-
-        value = ScalarQuantity(value, self._unit).quantity
-        self._origin_offset = value
+        allowed_types = (Quantity, str, ScalarQuantity)
+        value = validate(value, "origin_offset", allowed_types)
+        self._origin_offset = ScalarQuantity(value, self._unit).quantity
 
     @property
     def period(self):
@@ -120,7 +110,7 @@ class BaseQuantitativeDimension:
         if isinstance(value, Quantity):
             value = str(value)
         if not isinstance(value, str):
-            raise TypeError(_type_message(str, type(value)))
+            raise TypeError(type_error(str, "period", value))
 
         lst = ["inf", "Inf", "infinity", "Infinity", "∞"]
         if value.strip().split()[0] in lst:
@@ -145,9 +135,7 @@ class BaseQuantitativeDimension:
 
     @label.setter
     def label(self, label=""):
-        if not isinstance(label, str):
-            raise TypeError(_type_message(str, type(label)))
-        self._label = label
+        self._label = validate(label, "label", str)
 
     @property
     def description(self):
@@ -156,16 +144,7 @@ class BaseQuantitativeDimension:
 
     @description.setter
     def description(self, value):
-        if isinstance(value, str):
-            self._description = value
-        else:
-            raise ValueError(
-                (
-                    "Description requires a string, {0} given".format(
-                        type(value)
-                    )
-                )
-            )
+        self._description = validate(value, "description", str)
 
     # ----------------------------------------------------------------------- #
     #                                  Methods                                #
@@ -206,9 +185,7 @@ class BaseQuantitativeDimension:
 
     def _to(self, unit="", equivalencies=None):
         r"""Convert the unit to given value `unit`."""
-        if not isinstance(unit, str):
-            raise TypeError(_type_message(str, type(unit)))
-
+        unit = validate(unit, "unit", str)
         self._unit = ScalarQuantity(unit, self._unit).quantity.unit
         self._equivalencies = equivalencies
 

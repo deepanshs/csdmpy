@@ -2,10 +2,10 @@
 from copy import deepcopy
 
 from csdfpy.dependent_variables.decoder import Decoder
-from csdfpy.utils import _check_encoding
-from csdfpy.utils import _type_message
+from csdfpy.utils import check_encoding
 from csdfpy.utils import NumericType
 from csdfpy.utils import QuantityType
+from csdfpy.utils import validate
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -47,7 +47,7 @@ class SparseSampling:
             self._encoding,
             self._quantity_type,
             [sparse_grid_vertexes],
-            self._numeric_type._nptype,
+            self._numeric_type.dtype,
         )
 
     # ----------------------------------------------------------------------- #
@@ -61,10 +61,7 @@ class SparseSampling:
 
     @encoding.setter
     def encoding(self, value):
-        if not isinstance(value, str):
-            raise TypeError(_type_message(str, type(value)))
-        value = _check_encoding(value)
-        self._encoding = value
+        self._encoding = validate(value, "encoding", str, check_encoding)
 
     @property
     def numeric_type(self):
@@ -82,11 +79,7 @@ class SparseSampling:
 
     @application.setter
     def application(self, value):
-        if not isinstance(value, dict):
-            raise ValueError(
-                "A dict value is required, found {0}".format(type(value))
-            )
-        self._application = value
+        self._application = validate(value, "application", dict)
 
     @property
     def description(self):
@@ -95,16 +88,7 @@ class SparseSampling:
 
     @description.setter
     def description(self, value):
-        if isinstance(value, str):
-            self._description = value
-        else:
-            raise ValueError(
-                (
-                    "Description requires a string, {0} given".format(
-                        type(value)
-                    )
-                )
-            )
+        self._description = validate(value, "description", str)
 
     @property
     def sparse_dimensions(self):

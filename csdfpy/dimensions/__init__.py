@@ -8,7 +8,8 @@ from csdfpy.dimensions.linear import LinearDimension
 from csdfpy.dimensions.monotonic import MonotonicDimension
 from csdfpy.utils import _axis_label
 from csdfpy.utils import _get_dictionary
-from csdfpy.utils import _type_message
+from csdfpy.utils import attribute_error
+from csdfpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -114,7 +115,7 @@ class Dimension:
 
     def __init__(self, *args, **kwargs):
         """Initialize an instance of Dimension object."""
-        dictionary = {
+        default = {
             "type": None,
             "description": "",
             "count": None,
@@ -140,7 +141,7 @@ class Dimension:
             },
         }
 
-        default_keys = dictionary.keys()
+        default_keys = default.keys()
         input_dict = _get_dictionary(*args, **kwargs)
         input_keys = input_dict.keys()
 
@@ -155,59 +156,58 @@ class Dimension:
             if key in default_keys:
                 if key == "reciprocal":
                     for subkey in input_subkeys:
-                        dictionary[key][subkey] = input_dict[key][subkey]
+                        default[key][subkey] = input_dict[key][subkey]
                 else:
-                    dictionary[key] = input_dict[key]
+                    default[key] = input_dict[key]
 
         _valid_types = ["monotonic", "linear", "labeled"]
 
-        typ = dictionary["type"]
+        typ = default["type"]
         message = (
             f"'{typ}' is an invalid value for the dimension type. "
             "The allowed values are 'monotonic', 'linear' and 'labeled'."
         )
 
-        if dictionary["type"] not in _valid_types:
+        if default["type"] not in _valid_types:
             raise ValueError(message)
 
-        if dictionary["type"] == "labeled" and dictionary["labels"] is None:
-            raise KeyError("'labels' key is missing from labeled dimension.")
+        if default["type"] == "labeled" and default["labels"] is None:
+            raise KeyError("`labels` key is missing from LabeledDimension.")
+        if default["type"] == "labeled":
+            self.subtype = LabeledDimension(**default)
 
-        if dictionary["type"] == "labeled":
-            self.subtype = LabeledDimension(**dictionary)
-
-        if dictionary["type"] == "monotonic":
-            if dictionary["coordinates"] is None:
-                raise KeyError(
-                    "'coordinates' key is missing from monotonic dimension."
-                )
-
+        if default["type"] == "monotonic" and default["coordinates"] is None:
+            raise KeyError(
+                "`coordinates` key is missing from MonotonicDimension."
+            )
+        if default["type"] == "monotonic":
             self.subtype = MonotonicDimension(
-                values=dictionary["coordinates"], **dictionary
+                values=default["coordinates"], **default
             )
 
-        if dictionary["type"] == "linear":
-            self.subtype = self.linear(dictionary)
+        if default["type"] == "linear":
+            self.subtype = self.linear(default)
 
-    def linear(self, dictionary):
+    def linear(self, default):
         """Create and assign a linear dimension."""
         missing_key = ["increment", "count"]
 
         for item in missing_key:
-            if dictionary[item] is None:
+            if default[item] is None:
                 raise KeyError(
                     f"{item} key is missing from the linear dimension."
                 )
 
-        if not isinstance(dictionary["count"], int):
-            raise ValueError(
-                (
-                    f"An integer value is required for the 'count' key, a"
-                    f"{type(dictionary['count'])} value encountered."
-                )
-            )
+        validate(default["count"], "count", int)
+        # if not isinstance(default["count"], int):
+        #     raise ValueError(
+        #         (
+        #             f"An integer value is required for the 'count' key, a"
+        #             f"{type(default['count'])} value encountered."
+        #         )
+        #     )
 
-        return LinearDimension(**dictionary)
+        return LinearDimension(**default)
 
     # ======================================================================= #
     #                          Dimension Attributes                           #
@@ -240,9 +240,9 @@ class Dimension:
             return (self.coordinates + self.origin_offset).to(
                 self.subtype._unit
             )
-        else:
-            n = self.subtype.__class__.__name__
-            raise AttributeError(f"{n} has no attribute absolute_coordinates.")
+        raise AttributeError(
+            attribute_error(self.subtype, "absolute_coordinates")
+        )
 
     @property
     def application(self):
@@ -284,7 +284,7 @@ class Dimension:
         `label` is an empty string, `quantity_name / unit` is returned instead.
         Here :attr:`~csdfpy.Dimension.quantity_name` and
         :attr:`~csdfpy.Dimension.label` are the attributes of the
-        :ref:`iv_api` instances, and `unit` is the unit associated with the
+        :ref:`dim_api` instances, and `unit` is the unit associated with the
         coordinates along the dimension.
 
         .. doctest::
@@ -296,7 +296,7 @@ class Dimension:
 
         For labled dimensions, this attribute returns 'label'.
 
-        :returns: A ``String``.
+        :returns: A ``string``.
         :raises AttributeError: When assigned a value.
         """
         if hasattr(self.subtype, "quantity_name"):
@@ -336,10 +336,7 @@ class Dimension:
             return (coordinates + self.index_zero_coordinate).to(
                 self.subtype._unit
             )
-        if self.type == "labeled":
-            raise AttributeError(
-                "Labeled dimensions have no 'coordinates' attribute."
-            )
+        raise AttributeError(attribute_error(self.subtype, "coordinates"))
 
     @coordinates.setter
     def coordinates(self, value):
@@ -349,7 +346,7 @@ class Dimension:
     @property
     def data_structure(self):
         r"""
-        Return an :ref:`iv_api` instance as a JSON object.
+        Return an :ref:`dim_api` instance as a JSON object.
 
         This supplementary attribute is useful for a quick preview of the data
         structure. The attribute cannot be modified.
@@ -393,11 +390,11 @@ class Dimension:
         :returns: A ``string`` with UTF-8 allows characters.
         :raises ValueError: When the non-string value is assigned.
         """
-        return self.subtype._description
+        return self.subtype.description
 
     @description.setter
     def description(self, value):
-        self.subtype._description = value
+        self.subtype.description = value
 
     @property
     def fft_output_order(self):
@@ -522,12 +519,9 @@ class Dimension:
         """
         if self.type == "linear":
             return self.subtype.index_zero_coordinate
-        else:
-            raise AttributeError(
-                ("`{0}` has no attribute `index_zero_coordinate`.").format(
-                    self.subtype.__class__.__name__
-                )
-            )
+        raise AttributeError(
+            attribute_error(self.subtype, "index_zero_coordinate")
+        )
 
     @index_zero_coordinate.setter
     def index_zero_coordinate(self, value):
@@ -549,7 +543,7 @@ class Dimension:
             >>> print(x.axis_label)
             magnetic field strength / (G)
 
-        :returns: A ``String`` containing the label.
+        :returns: A ``string`` containing the label.
         :raises TypeError: When the assigned value is not a string.
         """
         return self.subtype.label
@@ -579,8 +573,7 @@ class Dimension:
 
     @count.setter
     def count(self, value):
-        if not isinstance(value, int):
-            raise TypeError(_type_message(int, type(value)))
+        value = validate(value, "count", int)
 
         if self.type in functional_dimension:
             self.subtype._count = value
@@ -705,7 +698,7 @@ class Dimension:
             >>> print(x.type)
             linear
 
-        :returns: A ``String``.
+        :returns: A ``string``.
         :raises AttributeError: When the attribute is modified.
         """
         return self.subtype.__class__._type
@@ -732,7 +725,7 @@ class Dimension:
             }
 
         In the above examples, ``x1`` and ``x2`` are the instances of the
-        :ref:`iv_api` class associated with the monotonically sampled
+        :ref:`dim_api` class associated with the monotonically sampled
         and the labeled dimensions respectively.
 
         :returns: A ``Quantity array`` for dimensions with subtype

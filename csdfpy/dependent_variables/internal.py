@@ -49,7 +49,7 @@ class InternalDataset(BaseDependentVariable):
                 self._encoding,
                 self._quantity_type,
                 components,
-                self._numeric_type._nptype,
+                self._numeric_type.dtype,
             )
             self._components = components
 
@@ -59,7 +59,7 @@ class InternalDataset(BaseDependentVariable):
     def _get_python_dictionary(
         self, filename=None, dataset_index=None, for_display=True, version=None
     ):
-        """Return the InternalData object as a python dictionary."""
+        """Serialize the InternalData object as a python dictionary."""
         dictionary = {}
 
         dictionary["type"] = "internal"

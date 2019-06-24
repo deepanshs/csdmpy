@@ -1,12 +1,12 @@
 
 
-.. _iv_api:
+.. _dim_api:
 
 ----------
 Dimension
 ----------
 
-.. currentmodule:: csdfpy
+.. currentmodule:: csdfpy.dimensions
 
 .. autoclass:: Dimension
     :show-inheritance:
@@ -18,7 +18,6 @@ Dimension
         ~Dimension.description
         ~Dimension.coordinates
         ~Dimension.absolute_coordinates
-        ~Dimension.values
         ~Dimension.count
         ~Dimension.increment
         ~Dimension.index_zero_coordinate
@@ -26,6 +25,7 @@ Dimension
         ~Dimension.fft_output_order
         ~Dimension.quantity_name
         ~Dimension.label
+        ~Dimension.labels
         ~Dimension.period
         ~Dimension.axis_label
         ~Dimension.data_structure
@@ -42,7 +42,6 @@ Dimension
     .. autoattribute:: description
     .. autoattribute:: coordinates
     .. autoattribute:: absolute_coordinates
-    .. autoattribute:: values
     .. autoattribute:: count
     .. autoattribute:: increment
     .. autoattribute:: index_zero_coordinate
@@ -50,6 +49,7 @@ Dimension
     .. autoattribute:: fft_output_order
     .. autoattribute:: quantity_name
     .. autoattribute:: label
+    .. autoattribute:: labels
     .. autoattribute:: period
     .. autoattribute:: axis_label
     .. autoattribute:: data_structure

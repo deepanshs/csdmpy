@@ -9,5 +9,11 @@ astropy>=3.0
 # Dependencies of requests package
 requests>=2.21.0
 
-# Additional packages ------------- #
+# Additional packages
 matplotlib>=3.0.2
+
+# development packages
+pytest-runner>=5.0
+pytest>=4.6.3
+sphinx_rtd_theme
+pre-commit

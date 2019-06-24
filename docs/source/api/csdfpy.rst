@@ -18,7 +18,7 @@ space.
 
 In the `csdfpy` module, every instance of the :ref:`csdm_api` class holds a
 list of independent and dependent variables. Every independent variable,
-:math:`x_k`, is an instance of the :ref:`iv_api` class while every dependent
+:math:`x_k`, is an instance of the :ref:`dim_api` class while every dependent
 variable, :math:`y`, is an instance of the :ref:`dv_api` class.
 A UML class diagram of the `csdfpy` module is shown below.
 
@@ -31,3 +31,4 @@ Methods
 
 .. autofunction:: load
 .. autofunction:: new
+.. autofunction:: plot

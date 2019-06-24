@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-from os.path import join
-from os.path import split
-
 import numpy as np
 import pytest
 
 import csdfpy as cp
-from csdfpy import DependentVariable
-from csdfpy import Dimension
+from csdfpy.dependent_variables import DependentVariable
+from csdfpy.dimensions import Dimension
 
 
 @pytest.fixture(autouse=True)
@@ -57,6 +54,4 @@ def add_cp_dimension(doctest_namespace):
         "components": numpy_array,
     }
 
-    test_path = join(split(cp.__file__)[0], "tests")
-    test01_file = join(test_path, "test01.csdf")
-    doctest_namespace["data"] = cp.load(test01_file)
+    doctest_namespace["data"] = cp.load(cp.tests.test01)

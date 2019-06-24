@@ -70,7 +70,7 @@ def _get_absolute_data_address(data_path, file):
     return "file:" + _join
 
 
-def _get_absolute_uri_path(url, file):
+def get_absolute_uri_path(url, file):
     res = parse_url(url)
     path = res.geturl()
     if res.scheme in ["file", ""]:
@@ -79,17 +79,17 @@ def _get_absolute_uri_path(url, file):
     return path
 
 
-def _get_relative_uri_path(dataset_index, filename):
+def get_relative_uri_path(dataset_index, filename):
     index = str(dataset_index)
-    _absolute_path = _get_absolute_uri_path("", filename)
+    absolute_path = get_absolute_uri_path("", filename)
 
-    _name = path.splitext(path.split(filename)[1])[0] + "_" + index + ".dat"
+    name = path.splitext(path.split(filename)[1])[0] + "_" + index + ".dat"
 
-    _url_relative_path = path.join("file:.", _name)
+    relative_url_path = path.join("file:.", name)
 
     absolute_path = path.abspath(
         urlparse(
-            path.join(_absolute_path, urlparse(_url_relative_path).path)
+            path.join(absolute_path, urlparse(relative_url_path).path)
         ).path
     )
-    return _url_relative_path, absolute_path
+    return relative_url_path, absolute_path

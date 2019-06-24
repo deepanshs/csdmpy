@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-# import json
+import json
+
 import numpy as np
 import pytest
 from numpy.fft import fftshift
 
 import csdfpy as cp
+from csdfpy.units import ScalarQuantity
 
 
 # linear dimension
@@ -19,7 +21,22 @@ def test_linear_new():
     data.add_dimension(dim)
 
     assert data.dimensions[0].type == "linear"
+
+    error = "can't set attribute"
+    with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
+        data.dimensions[0].type = "monotonic"
+
     assert str(data.dimensions[0].increment) == "10.0 m / s"
+    data.dimensions[0].increment = ScalarQuantity("20.0 m / s")
+    assert str(data.dimensions[0].increment) == "20.0 m / s"
+
+    error = "Expecting an instance of type,"
+    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+        data.dimensions[0].increment = 10
+
+    data.dimensions[0].increment = "20/2 m / s"
+    assert str(data.dimensions[0].increment) == "10.0 m / s"
+
     assert data.dimensions[0].count == 10
     assert str(data.dimensions[0].index_zero_coordinate) == "5.0 m / s"
     assert str(data.dimensions[0].origin_offset) == "0.0 m / s"
@@ -71,8 +88,29 @@ def test_linear_new():
         == fftshift((np.arange(12) - 6) * 20.0 + 5.0 + 1000.0)
     )
 
+    dict1 = {
+        "csdm": {
+            "version": "0.0.12",
+            "dimensions": [
+                {
+                    "type": "linear",
+                    "count": 12,
+                    "increment": "20.0 m * s^-1",
+                    "index_zero_coordinate": "5.0 m * s^-1",
+                    "origin_offset": "1.0 km * s^-1",
+                    "quantity_name": "speed",
+                    "fft_output_order": True,
+                }
+            ],
+            "dependent_variables": [],
+        }
+    }
+    assert data.data_structure == json.dumps(
+        dict1, ensure_ascii=False, sort_keys=False, indent=2
+    )
 
-# # monotonic dimension
+
+# monotonic dimension
 def test_monotonic_new():
     data = cp.new()
     dim = {
@@ -86,6 +124,10 @@ def test_monotonic_new():
     assert data.dimensions[0].description == "Far far away."
     data.dimensions[0].description = "A galaxy far far away."
     assert data.dimensions[0].description == "A galaxy far far away."
+
+    error = "Expecting an instance of type,"
+    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+        data.dimensions[0].description = 12
 
     # dimension type
     assert data.dimensions[0].type == "monotonic"
@@ -109,11 +151,19 @@ def test_monotonic_new():
     data.dimensions[0].label = "some string"
     assert data.dimensions[0].label == "some string"
 
+    error = "Expecting an instance of type,"
+    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+        data.dimensions[0].label = {}
+
     # count
     assert data.dimensions[0].count == 5
     error = "Cannot set count,"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.dimensions[0].count = 12
+
+    error = "Expecting an instance of type,"
+    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+        data.dimensions[0].count = "12"
 
     # index_zero_coordinate
     error = "`MonotonicDimension` has no attribute `index_zero_coordinate`."
@@ -122,13 +172,31 @@ def test_monotonic_new():
 
     # origin offset
     assert str(data.dimensions[0].origin_offset) == "0.0 m"
+
+    data.dimensions[0].origin_offset = ScalarQuantity("3.1415 m")
+    assert str(data.dimensions[0].origin_offset) == "3.1415 m"
+
     data.dimensions[0].origin_offset = "1 lyr"
     assert str(data.dimensions[0].origin_offset) == "1.0 lyr"
+
+    error = "Expecting an instance of type,"
+    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+        data.dimensions[0].origin_offset = {"12 m"}
 
     # quantity_name
     assert data.dimensions[0].quantity_name == "length"
 
+    error = "This attribute is not yet implemented"
+    with pytest.raises(NotImplementedError, match=".*{0}.*".format(error)):
+        data.dimensions[0].quantity_name = "area/length"
+
     # period
+    assert str(data.dimensions[0].period) == "inf m"
+    data.dimensions[0].period = "Infinity m"
+    assert str(data.dimensions[0].period) == "inf m"
+    data.dimensions[0].period = "20 m^2/m"
+    assert str(data.dimensions[0].period) == "20.0 m"
+    data.dimensions[0].period = "(1/0) m^5/m^4"
     assert str(data.dimensions[0].period) == "inf m"
 
     # fft output order
@@ -164,35 +232,39 @@ def test_monotonic_new():
         ),
     )
 
-    # dict1 = {
-    #     "csdm": {
-    #         "version": "0.0.12",
-    #         "dimensions": [
-    #             {
-    #                 "type": "monotonic",
-    #                 "description": "A galaxy far far away.",
-    #                 "coordinates": [
-    #                     "1 m",
-    #                     "100 m",
-    #                     "1 km",
-    #                     "1 Gm",
-    #                     "0.25 lyr"
-    #                 ],
-    #                 "origin_offset": "1.0 lyr",
-    #                 "quantity_name": "length",
-    #                 "label": "some string",
-    #                 "reciprocal": {
-    #                     "quantity_name": "wavenumber"
-    #                 }
-    #             }
-    #         ],
-    #         "dependent_variables": []
-    #     }
-    # }
-    # assert data.data_structure == json.dumps(
-    #     dict1, ensure_ascii=False, sort_keys=False, indent=2)
+    dict1 = {
+        "csdm": {
+            "version": "0.0.12",
+            "dimensions": [
+                {
+                    "type": "monotonic",
+                    "description": "A galaxy far far away.",
+                    "coordinates": [
+                        "1 m",
+                        "100 m",
+                        "1 km",
+                        "1 Gm",
+                        "0.25 lyr",
+                    ],
+                    "origin_offset": "1.0 lyr",
+                    "quantity_name": "length",
+                    "label": "some string",
+                    "reciprocal": {"quantity_name": "wavenumber"},
+                }
+            ],
+            "dependent_variables": [],
+        }
+    }
+    assert data.data_structure == json.dumps(
+        dict1, ensure_ascii=False, sort_keys=False, indent=2
+    )
 
 
-if __name__ == "__main__":
-    test_linear_new()
-    test_monotonic_new()
+# labeled dimension
+def test_labeled_new():
+    pass
+
+
+# if __name__ == "__main__":
+#     test_linear_new()
+#     test_monotonic_new()

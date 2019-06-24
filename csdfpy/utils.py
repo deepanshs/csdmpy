@@ -32,14 +32,27 @@ literals_quantity_type_ = [
 ]
 
 
-def _type_message(a, b):
-    return ("Expecting instance of type, `{0}`, but got `{1}`.").format(
-        a.__name__, b.__name__
-    )
+def validate(value, attr, types, method=None):
+    if isinstance(value, types):
+        if method is None:
+            return value
+        return method(value)
+    raise TypeError(type_error(types, attr, value))
 
 
-def _attribute_message(a, b):
-    return "{0} has no attribute `{1}`.".format(a, b)
+def type_error(a, b, c):
+    if isinstance(a, tuple):
+        a = [item.__name__ for item in a]
+        a = " or ".join(a)
+    else:
+        a = a.__name__
+    return (
+        "Expecting an instance of type, `{0}` for {1}, but got `{2}`."
+    ).format(a, b, type(c).__name__)
+
+
+def attribute_error(a, b):
+    return "`{0}` has no attribute `{1}`.".format(a.__class__.__name__, b)
 
 
 def _axis_label(
@@ -49,18 +62,18 @@ def _axis_label(
     dimensionless_unit=None,
     label_type="",
 ):
-    if made_dimensionless:
-        if dimensionless_unit != "":
-            return "{0} / {1}".format(label, dimensionless_unit)
-        return label
+    # if made_dimensionless:
+    #     if dimensionless_unit != "":
+    #         return "{0} / {1}".format(label, dimensionless_unit)
+    #     return label
 
     if unit != "":
         if label_type == "":
             return "{0} / ({1})".format(
                 label, ScalarQuantity(1 * unit).format("unit")
             )
-        if label_type == "latex":
-            return "{0} / ({1})".format(label, unit.to_string("latex"))
+        # if label_type == "latex":
+        #     return "{0} / ({1})".format(label, unit.to_string("latex"))
     return label
 
 
@@ -82,11 +95,7 @@ def _get_dictionary(*arg, **kwargs):
     return input_dict
 
 
-def _is_numeric(element):
-    return element.isnumeric()
-
-
-def _check_encoding(element):
+def check_encoding(element):
     """
     Validate the encoding string value.
 
@@ -128,9 +137,7 @@ class QuantityType:
 
     def update(self, element):
         """Update the quantity type."""
-        if not isinstance(element, str):
-            raise TypeError(_type_message(str, type(element)))
-        self._check_quantity_type(element)
+        validate(element, "quantity_type", str, self._check_quantity_type)
 
     @classmethod
     def _get_number_of_components(cls, keyword, numbers):
@@ -227,7 +234,7 @@ class NumericType:
     :raises KeyError: Otherwise.
     """
 
-    __slots__ = ("value", "_nptype")
+    __slots__ = ("value", "dtype")
 
     _lst = {
         "uint8": "<u1",
@@ -280,9 +287,7 @@ class NumericType:
 
     def update(self, element):
         """Update the numeric type."""
-        if not isinstance(element, str):
-            raise TypeError(_type_message(str, type(element)))
-        self._check_numeric_type(element)
+        validate(element, "numeric_type", str, self._check_numeric_type)
 
     def __str__(self):
         """Return a string with the numeric type."""
@@ -290,7 +295,6 @@ class NumericType:
 
     def _check_numeric_type(self, element):
         lst = self.__class__._lst
-        # print(lst.keys())
         if element not in lst.keys():
             raise ValueError(
                 (
@@ -303,19 +307,10 @@ class NumericType:
             )
 
         self.value = element
-        self._nptype = np.dtype(lst[element])
+        self.dtype = np.dtype(lst[element])
 
 
-def _check_and_assign_bool(element):
+def check_and_assign_bool(element):
     if element is None:
-        element = False
-        return element
-
-    if isinstance(element, bool):
-        return element
-
-    raise TypeError(
-        "'Boolean' type is required for '{0}', given '{1}' ".format(
-            str(element), element.__class__.__name__
-        )
-    )
+        return False
+    return validate(element, "boolean", bool)

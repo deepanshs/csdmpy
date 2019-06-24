@@ -7,9 +7,6 @@ from setuptools import setup
 
 # from csdfpy._version import __version__
 
-# import sys
-# from shutil import rmtree
-
 # Package meta-data.
 NAME = "csdfpy"
 DESCRIPTION = (
@@ -22,14 +19,7 @@ REQUIRES_PYTHON = ">=3.5"
 VERSION = "0.0.12"
 
 # What packages are required for this module to be executed?
-REQUIRED = [
-    "requests>=2.21.0",
-    "astropy>=3.0",
-    "numpy>=1.10.1",
-    "pytest-runner>=5.0",
-    "pytest",
-    "setuptools>=27.3",
-]
+REQUIRED = ["requests>=2.21.0", "astropy>=3.0", "numpy>=1.13.1"]
 
 # What packages are optional?
 EXTRAS = {"fancy feature": ["matplotlib>=3.0.2", "sounddevice"]}

@@ -117,6 +117,11 @@ And now, the plot.
 
 .. doctest::
 
+    >>> cp.plot(vector_data)
+
+
+.. doctest::
+
     >>> import matplotlib.pyplot as plt
 
     >>> fig, ax = plt.subplots(1,1, figsize=(5.4,5))

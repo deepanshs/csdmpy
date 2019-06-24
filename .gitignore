@@ -13,6 +13,7 @@ archive/**
 .eggs/**
 .vscode
 .pytest_cache/**
+htmlcov/**
 
 # Compiled source #
 ###################
@@ -65,5 +66,5 @@ info.txt
 
 # files #
 #########
-myfile.csdf
+my_file.csdf
 .coverage

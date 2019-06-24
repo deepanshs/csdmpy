@@ -8,6 +8,10 @@ def test_unit():
     assert str(a.to("cycle")) == "1.0 cycle"
     # assert ScalarQuantity(a).format() == '1.0 tr'
 
+    a = ScalarQuantity("10 cm^-1/s")
+    assert str(a) == "10.0 1 / (cm s)"
+    assert ScalarQuantity(a).quantity == a.quantity
+
     a = ScalarQuantity("1 deg").quantity
     assert str(a) == "1.0 deg"
     assert ScalarQuantity(a).format() == "1.0 °"
