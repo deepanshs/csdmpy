@@ -51,7 +51,7 @@ Let's import the CSD model data-file and look at its data structure.
             "quantity_type": "scalar",
             "components": [
               [
-                "126, 126, ..., 164, 164"
+                "126, 107, ..., 164, 171"
               ]
             ]
           }

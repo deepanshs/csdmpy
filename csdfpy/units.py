@@ -183,10 +183,11 @@ class ScalarQuantity:
         if isinstance(quantity_string, Quantity):
             return quantity_string
 
-        if quantity_string is None and unit is None:
+        lst = [None, ""]
+        if quantity_string in lst and unit in lst:
             return 0.0 * u.Unit("")
 
-        if quantity_string is None and unit is not None:
+        if quantity_string in lst and unit not in lst:
             return 0.0 * unit
 
         if isinstance(quantity_string, str):

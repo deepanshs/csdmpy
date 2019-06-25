@@ -132,9 +132,7 @@ class DependentVariable:
 
         if "sparse_sampling" in input_keys:
             for key in input_dict["sparse_sampling"].keys():
-                dictionary["sparse_sampling"][key] = input_dict[
-                    "sparse_sampling"
-                ][key]
+                dictionary["sparse_sampling"][key] = input_dict["sparse_sampling"][key]
         else:
             dictionary["sparse_sampling"] = {}
 
@@ -352,13 +350,13 @@ class DependentVariable:
               "quantity_type": "RGB",
               "components": [
                 [
-                  "0.0, 0.0, ..., 8.0, 8.0"
+                  "0.0, 1.0, ..., 8.0, 9.0"
                 ],
                 [
-                  "10.0, 10.0, ..., 18.0, 18.0"
+                  "10.0, 11.0, ..., 18.0, 19.0"
                 ],
                 [
-                  "20.0, 20.0, ..., 28.0, 28.0"
+                  "20.0, 21.0, ..., 28.0, 29.0"
                 ]
               ]
             }
@@ -367,9 +365,7 @@ class DependentVariable:
         :raises AttributeError: When modified.
         """
         dictionary = self._get_python_dictionary()
-        return json.dumps(
-            dictionary, ensure_ascii=False, sort_keys=False, indent=2
-        )
+        return json.dumps(dictionary, ensure_ascii=False, sort_keys=False, indent=2)
 
     @property
     def description(self):

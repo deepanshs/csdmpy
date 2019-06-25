@@ -9,10 +9,12 @@ import csdfpy as cp
 
 def test_internal_new():
     data = cp.new()
+    test_array = np.arange(20).reshape(2, 10)
     dim = {
         "type": "internal",
         "numeric_type": "float32",
-        "components": [np.arange(10)],
+        "quantity_type": "vector_2",
+        "components": test_array,
     }
     data.add_dependent_variable(dim)
 
@@ -25,20 +27,13 @@ def test_internal_new():
         data.dependent_variables[0].type = "celestial"
 
     # check components
-    assert np.all(
-        data.dependent_variables[0].components
-        == [np.arange(10).astype(np.float32)]
-    )
+    assert np.all(data.dependent_variables[0].components == test_array)
     assert data.dependent_variables[0].numeric_type == "float32"
 
     # assign and check components
-    data.dependent_variables[0].components = [
-        np.arange(10, dtype="int32") + 100
-    ]
-    assert np.all(
-        data.dependent_variables[0].components
-        == [np.arange(10).astype(np.int32) + 100.0]
-    )
+    data.dependent_variables[0].components = test_array.astype("int32") + 100
+
+    assert np.all(data.dependent_variables[0].components == test_array + 100.0)
     assert data.dependent_variables[0].numeric_type == "int32"
 
     # check name
@@ -58,33 +53,30 @@ def test_internal_new():
         data.dependent_variables[0].component_url
 
     # component labels
-    assert data.dependent_variables[0].component_labels == [""]
+    assert data.dependent_variables[0].component_labels == ["", ""]
     data.dependent_variables[0].component_labels = [":)"]
-    assert data.dependent_variables[0].component_labels == [":)"]
+    assert data.dependent_variables[0].component_labels == [":)", ""]
 
     data.dependent_variables[0].component_labels = []
-    assert data.dependent_variables[0].component_labels == [""]
+    assert data.dependent_variables[0].component_labels == ["", ""]
 
     data.dependent_variables[0].component_labels = ["1", "2", "3"]
-    assert data.dependent_variables[0].component_labels == ["1"]
+    assert data.dependent_variables[0].component_labels == ["1", "2"]
 
     data.dependent_variables[0].component_labels[0] = ":("
-    assert data.dependent_variables[0].component_labels == [":("]
+    assert data.dependent_variables[0].component_labels == [":(", "2"]
 
     # quantity type
-    assert data.dependent_variables[0].quantity_type == "scalar"
+    assert data.dependent_variables[0].quantity_type == "vector_2"
 
     # Need to fix this
-    data.dependent_variables[0].quantity_type = "vector"
+    data.dependent_variables[0].quantity_type = "vector_2"
 
     # encoding
     assert data.dependent_variables[0].encoding == "base64"
     data.dependent_variables[0].encoding = "none"
     assert data.dependent_variables[0].encoding == "none"
-    error = (
-        "is not a valid `encoding` enumeration literal. "
-        "The allowed values are"
-    )
+    error = "is not a valid `encoding` enumeration literal. " "The allowed values are"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.dependent_variables[0].encoding = "base16"
     data.dependent_variables[0].encoding = "raw"
@@ -94,13 +86,9 @@ def test_internal_new():
     assert data.dependent_variables[0].numeric_type == "int32"
     data.dependent_variables[0].numeric_type = "complex64"
     assert data.dependent_variables[0].numeric_type == "complex64"
-    assert np.all(
-        data.dependent_variables[0].components
-        == [np.arange(10).astype(np.complex64) + 100.0]
-    )
+    assert np.all(data.dependent_variables[0].components == test_array + 100.0)
     error = (
-        "is not a valid `numeric_type` enumeration literal. "
-        "The allowed values are"
+        "is not a valid `numeric_type` enumeration literal. " "The allowed values are"
     )
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.dependent_variables[0].numeric_type = "complex32"
@@ -134,10 +122,11 @@ def test_internal_new():
                     "description": "This is a test",
                     "name": "happy days",
                     "numeric_type": "complex64",
-                    "quantity_type": "vector",
-                    "component_labels": [":("],
+                    "quantity_type": "vector_2",
+                    "component_labels": [":(", "2"],
                     "components": [
-                        ["(100+0j), (100+0j), ..., " "(108+0j), (108+0j)"]
+                        ["(100+0j), (101+0j), ..., " "(108+0j), (109+0j)"],
+                        ["(110+0j), (111+0j), ..., (118+0j), (119+0j)"],
                     ],
                 }
             ],
@@ -185,8 +174,7 @@ def test_external_new():
 
     # check component_url
     assert data.dependent_variables[0].components_url == (
-        "https://www.grandinetti.org/resources/CSDM/cinnamon_raw_cinnamon "
-        "stick.dat"
+        "https://www.grandinetti.org/resources/CSDM/cinnamon_raw_cinnamon " "stick.dat"
     )
 
     # component labels
@@ -220,7 +208,7 @@ def test_external_new():
                     "numeric_type": "int32",
                     "quantity_type": "scalar",
                     "component_labels": ["monotonic"],
-                    "components": [["48453, 48453, ..., 48040, 48040"]],
+                    "components": [["48453, 48444, ..., 48040, 48040"]],
                 }
             ],
         }
@@ -241,11 +229,7 @@ def test_missing_type():
 
 def test_wrong_type():
     data = cp.new()
-    dim = {
-        "type": "",
-        "numeric_type": "float32",
-        "components": [np.arange(10)],
-    }
+    dim = {"type": "", "numeric_type": "float32", "components": [np.arange(10)]}
     error = "is an invalid DependentVariable 'type'"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.add_dependent_variable(dim)

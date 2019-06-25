@@ -38,30 +38,39 @@ def test_linear_new():
     assert str(data.dimensions[0].increment) == "10.0 m / s"
 
     assert data.dimensions[0].count == 10
+
+    assert data.dimensions[0].application == {}
+    data.dimensions[0].application = {"my_application": {}}
+    assert data.dimensions[0].application == {"my_application": {}}
+    error = "Expecting an instance of type,"
+    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+        data.dimensions[0].application = "my_application"
+
     assert str(data.dimensions[0].index_zero_coordinate) == "5.0 m / s"
+
+    error = "Expecting an instance of type,"
+    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+        data.dimensions[0].index_zero_coordinate = 50
+
+    data.dimensions[0].index_zero_coordinate = ScalarQuantity("5.0 m / s")
+    assert str(data.dimensions[0].index_zero_coordinate) == "5.0 m / s"
+
     assert str(data.dimensions[0].origin_offset) == "0.0 m / s"
     assert data.dimensions[0].quantity_name == "speed"
     assert str(data.dimensions[0].period) == "inf m / s"
     assert data.dimensions[0].fft_output_order is False
-    assert np.all(
-        data.dimensions[0].coordinates.value == np.arange(10) * 10.0 + 5.0
-    )
+    assert np.all(data.dimensions[0].coordinates.value == np.arange(10) * 10.0 + 5.0)
 
     data.dimensions[0].count = 12
     assert data.dimensions[0].count == 12
+    assert np.all(data.dimensions[0].coordinates.value == np.arange(12) * 10.0 + 5.0)
     assert np.all(
-        data.dimensions[0].coordinates.value == np.arange(12) * 10.0 + 5.0
-    )
-    assert np.all(
-        data.dimensions[0].absolute_coordinates.value
-        == np.arange(12) * 10.0 + 5.0
+        data.dimensions[0].absolute_coordinates.value == np.arange(12) * 10.0 + 5.0
     )
 
     data.dimensions[0].origin_offset = "1 km/s"
     assert str(data.dimensions[0].origin_offset) == "1.0 km / s"
-    assert np.all(
-        data.dimensions[0].coordinates.value == np.arange(12) * 10.0 + 5.0
-    )
+    assert np.all(data.dimensions[0].coordinates.value == np.arange(12) * 10.0 + 5.0)
     assert np.all(
         data.dimensions[0].absolute_coordinates.value
         == np.arange(12) * 10.0 + 5.0 + 1000.0
@@ -69,9 +78,7 @@ def test_linear_new():
 
     data.dimensions[0].increment = "20 m/s"
     assert str(data.dimensions[0].increment) == "20.0 m / s"
-    assert np.all(
-        data.dimensions[0].coordinates.value == np.arange(12) * 20.0 + 5.0
-    )
+    assert np.all(data.dimensions[0].coordinates.value == np.arange(12) * 20.0 + 5.0)
     assert np.all(
         data.dimensions[0].absolute_coordinates.value
         == np.arange(12) * 20.0 + 5.0 + 1000.0
@@ -99,6 +106,7 @@ def test_linear_new():
                     "index_zero_coordinate": "5.0 m * s^-1",
                     "origin_offset": "1.0 km * s^-1",
                     "quantity_name": "speed",
+                    "application": {"my_application": {}},
                     "fft_output_order": True,
                 }
             ],
@@ -208,13 +216,7 @@ def test_monotonic_new():
     assert np.allclose(
         data.dimensions[0].coordinates.value,
         np.asarray(
-            [
-                1.00000000e00,
-                1.00000000e02,
-                1.00000000e03,
-                1.00000000e09,
-                2.36518262e15,
-            ]
+            [1.00000000e00, 1.00000000e02, 1.00000000e03, 1.00000000e09, 2.36518262e15]
         ),
     )
 
@@ -222,13 +224,7 @@ def test_monotonic_new():
     assert np.allclose(
         data.dimensions[0].absolute_coordinates.value,
         np.asarray(
-            [
-                9.46073047e15,
-                9.46073047e15,
-                9.46073047e15,
-                9.46073147e15,
-                1.18259131e16,
-            ]
+            [9.46073047e15, 9.46073047e15, 9.46073047e15, 9.46073147e15, 1.18259131e16]
         ),
     )
 
@@ -239,13 +235,7 @@ def test_monotonic_new():
                 {
                     "type": "monotonic",
                     "description": "A galaxy far far away.",
-                    "coordinates": [
-                        "1 m",
-                        "100 m",
-                        "1 km",
-                        "1 Gm",
-                        "0.25 lyr",
-                    ],
+                    "coordinates": ["1 m", "100 m", "1 km", "1 Gm", "0.25 lyr"],
                     "origin_offset": "1.0 lyr",
                     "quantity_name": "length",
                     "label": "some string",

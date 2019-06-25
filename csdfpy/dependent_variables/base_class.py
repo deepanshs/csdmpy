@@ -129,9 +129,7 @@ class BaseDependentVariable:
 
     @quantity_name.setter
     def quantity_name(self, value=""):
-        raise NotImplementedError(
-            ("The `quantity_name` attribute cannot be modified.")
-        )
+        raise NotImplementedError("`quantity_name` attribute cannot be modified.")
 
     @property
     def encoding(self):
@@ -140,9 +138,7 @@ class BaseDependentVariable:
 
     @encoding.setter
     def encoding(self, value):
-        self._encoding = validate(
-            value, "encoding", str, method=check_encoding
-        )
+        self._encoding = validate(value, "encoding", str, method=check_encoding)
 
     @property
     def numeric_type(self):
@@ -210,9 +206,7 @@ class BaseDependentVariable:
             (
                 "The shape of `{0}`, `{1}`, is inconsistent\nwith the "
                 "shape of the components array, `{2}`."
-            ).format(
-                value.__class__.__name__, value.shape, self.components.shape
-            )
+            ).format(value.__class__.__name__, value.shape, self.components.shape)
         )
 
     # ----------------------------------------------------------------------- #
@@ -263,9 +257,7 @@ class BaseDependentVariable:
             obj["components"] = c.tolist()
 
         if self.encoding == "base64":
-            obj["components"] = [
-                base64.b64encode(item).decode("utf-8") for item in c
-            ]
+            obj["components"] = [base64.b64encode(item).decode("utf-8") for item in c]
 
         if self.encoding == "raw":
             url_relative_path, absolute_path = get_relative_uri_path(
@@ -320,7 +312,7 @@ def reduced_display(_components):
     _string = []
     for i in range(len(_components)):
         temp = _components[i].ravel()
-        lst = [str(temp[0]), str(temp[0]), str(temp[-2]), str(temp[-2])]
+        lst = [str(temp[0]), str(temp[1]), str(temp[-2]), str(temp[-1])]
         _string.append([("{0}, {1}, ..., {2}, {3}").format(*lst)])
     temp = None
     return _string

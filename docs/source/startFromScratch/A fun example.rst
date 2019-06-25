@@ -124,7 +124,7 @@ Now, we have a 😂 dataset...
             "quantity_type": "scalar",
             "components": [
               [
-                "0.5, 0.5, ..., 1.0, 1.0"
+                "0.5, 0.25, ..., 1.0, 0.25"
               ]
             ]
           }
