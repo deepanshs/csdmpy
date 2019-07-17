@@ -8,6 +8,7 @@ Dimension
 
 .. currentmodule:: csdfpy.dimensions
 
+
 .. autoclass:: Dimension
     :show-inheritance:
 
@@ -20,7 +21,7 @@ Dimension
         ~Dimension.absolute_coordinates
         ~Dimension.count
         ~Dimension.increment
-        ~Dimension.index_zero_coordinate
+        ~Dimension.coordinates_offset
         ~Dimension.origin_offset
         ~Dimension.fft_output_order
         ~Dimension.quantity_name
@@ -44,7 +45,7 @@ Dimension
     .. autoattribute:: absolute_coordinates
     .. autoattribute:: count
     .. autoattribute:: increment
-    .. autoattribute:: index_zero_coordinate
+    .. autoattribute:: coordinates_offset
     .. autoattribute:: origin_offset
     .. autoattribute:: fft_output_order
     .. autoattribute:: quantity_name

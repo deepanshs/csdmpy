@@ -15,7 +15,7 @@ Consider that the :math:`k^{th}` :ref:`dim_api` instance from
 a :ref:`csdm_api` instance has a `linearly_sampled` subtype.
 Let :math:`m_k`, :math:`N_k \ge 1`, :math:`c_k`, and :math:`o_k` be the
 sampling interval, number of points, reference offset, and the origin offset,
-respectively, from the corresponding IndependentVariable instance,
+respectively, from the corresponding Dimension instance,
 then the coordinates along this dimension are evaluated as,
 
 .. math::
@@ -41,8 +41,8 @@ the dimension using examples. Consider the following test file.
 .. doctest::
 
     >>> import csdfpy as cp
-    >>> url = 'https://github.com/DeepanshS/NMRLineshape/raw/master/test1.csdf'
-    >>> filename = '../test-datasets0.0.11/test/test01.csdf'
+    >>> url = 'https://github.com/DeepanshS/csdfpy-doc/raw/master/test_files/test1.csdf'
+    >>> filename = '../test-datasets0.0.12/test/test01.csdf'
     >>> testdata1 = cp.load(filename)
 
 
@@ -59,17 +59,23 @@ In the above example, ``testdata1`` is an instance of the
     >>> print(testdata1.data_structure)
     {
       "csdm": {
-        "version": "0.0.11",
+        "version": "0.0.12",
+        "timestamp": "1994-11-05T13:15:30Z",
+        "geographic_coordinate": {
+          "latitude": "10 deg",
+          "longitude": "93.2 deg",
+          "altitude": "10 m"
+        },
         "description": "A simulated sine curve.",
         "dimensions": [
           {
             "type": "linear",
-            "number_of_points": 10,
+            "count": 10,
             "increment": "0.1 s",
-            "quantity": "time",
+            "quantity_name": "time",
             "label": "time",
             "reciprocal": {
-              "quantity": "frequency"
+              "quantity_name": "frequency"
             }
           }
         ],
@@ -78,10 +84,15 @@ In the above example, ``testdata1`` is an instance of the
             "type": "internal",
             "name": "sine curve",
             "numeric_type": "float32",
+            "quantity_type": "scalar",
             "component_labels": [
               "response"
             ],
-            "components": "[0.0, 0.0, ...... -0.95105654, -0.95105654]"
+            "components": [
+              [
+                "0.0, 0.58778524, ..., -0.95105654, -0.58778524"
+              ]
+            ]
           }
         ]
       }
@@ -132,7 +143,7 @@ Attributes
 The following are the attributes of the :ref:`dim_api` instance along with
 examples demonstrating its effect on the coordinates along the dimension.
 
-* :py:attr:`~csdfpy.IndependentVariable.type`
+* :py:attr:`~csdfpy.dimensions.Dimension.type`
     This attribute returns the subtype of the instance.
 
     .. doctest::
@@ -143,26 +154,26 @@ examples demonstrating its effect on the coordinates along the dimension.
 **The attributes that modify the coordinates**
 
 
-* :py:attr:`~csdfpy.IndependentVariable.number_of_points`
-    The number of points along the independent variable dimension
+* :py:attr:`~csdfpy.dimensions.Dimension.count`
+    The number of points along the dimension
 
     .. doctest::
 
-        >>> print('number of points =', x0.number_of_points)
+        >>> print('number of points =', x0.count)
         number of points = 10
 
-    To update the number of points, simply update the value of this attribute,
+    To update the number of points, update the value of this attribute,
 
     .. doctest::
 
-        >>> x0.number_of_points = 12
-        >>> print('new number of points =', x0.number_of_points)
+        >>> x0.count = 12
+        >>> print('new number of points =', x0.count)
         new number of points = 12
 
         >>> print('new coordinates =', x0.coordinates)
         new coordinates = [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.  1.1] s
 
-* :py:attr:`~csdfpy.IndependentVariable.increment`
+* :py:attr:`~csdfpy.dimensions.Dimension.increment`
     Similarly, the increment
 
     .. doctest::
@@ -177,21 +188,21 @@ examples demonstrating its effect on the coordinates along the dimension.
         >>> print('new coordinates =', x0.coordinates)
         new coordinates = [  0.  10.  20.  30.  40.  50.  60.  70.  80.  90. 100. 110.] s
 
-* :py:attr:`~csdfpy.IndependentVariable.index_zero_value`
+* :py:attr:`~csdfpy.dimensions.Dimension.coordinates_offset`
 
     .. doctest::
 
-        >>> print('old reference offset =', x0.index_zero_value)
+        >>> print('old reference offset =', x0.coordinates_offset)
         old reference offset = 0.0 s
 
-        >>> x0.index_zero_value = "1 s"
-        >>> print('new reference offset =', x0.index_zero_value)
+        >>> x0.coordinates_offset = "1 s"
+        >>> print('new reference offset =', x0.coordinates_offset)
         new reference offset = 1.0 s
 
         >>> print('new coordinates =', x0.coordinates)
         new coordinates = [  1.  11.  21.  31.  41.  51.  61.  71.  81.  91. 101. 111.] s
 
-* :py:attr:`~csdfpy.IndependentVariable.origin_offset`
+* :py:attr:`~csdfpy.dimensions.Dimension.origin_offset`
 
     .. doctest::
 
@@ -207,9 +218,9 @@ examples demonstrating its effect on the coordinates along the dimension.
 
     The last operation updates the value of the origin offset however
     the coordinates remain unaffected. This is because the
-    :py:attr:`~csdfpy.IndependentVariable.coordinates` attribute refers to the
+    :py:attr:`~csdfpy.dimensions.Dimension.coordinates` attribute refers to the
     reference coordinates. Access the absolute coordinates through the
-    :py:attr:`~csdfpy.IndependentVariable.absolute_coordinates` attribute.
+    :py:attr:`~csdfpy.dimensions.Dimension.absolute_coordinates` attribute.
 
     .. doctest::
 
@@ -222,7 +233,7 @@ examples demonstrating its effect on the coordinates along the dimension.
 
 **The attributes that modify the order of coordinates**
 
-* :py:attr:`~csdfpy.IndependentVariable.FFT_output_order`
+* :py:attr:`~csdfpy.dimensions.Dimension.fft_output_order`
     Orders the coordinates along the dimension according to the output of a
     Fast Fourier Transform (FFT) routine.
 
@@ -238,7 +249,7 @@ examples demonstrating its effect on the coordinates along the dimension.
 
 **Other attributes**
 
-* :py:attr:`~csdfpy.IndependentVariable.period`
+* :py:attr:`~csdfpy.dimensions.Dimension.period`
 
     .. doctest::
 
@@ -249,15 +260,15 @@ examples demonstrating its effect on the coordinates along the dimension.
         >>> print('new period =', x0.period)
         new period = 10.0 s
 
-* :py:attr:`~csdfpy.IndependentVariable.quantity`
+* :py:attr:`~csdfpy.dimensions.Dimension.quantity_name`
     Returns the quantity name.
 
     .. doctest::
 
-        >>> print('quantity is', x0.quantity)
-        quantity is time
+        >>> print('quantity name is', x0.quantity_name)
+        quantity name is time
 
-* :py:attr:`~csdfpy.IndependentVariable.label`
+* :py:attr:`~csdfpy.dimensions.Dimension.label`
 
     .. doctest::
 
@@ -268,7 +279,7 @@ examples demonstrating its effect on the coordinates along the dimension.
         >>> x0.label
         't1'
 
-* :py:attr:`~csdfpy.IndependentVariable.axis_label`
+* :py:attr:`~csdfpy.dimensions.Dimension.axis_label`
     Returns a formatted string for axis labeling.
 
     .. doctest::
@@ -281,7 +292,7 @@ examples demonstrating its effect on the coordinates along the dimension.
 Methods
 """""""
 
-:py:meth:`~csdfpy.IndependentVariable.to`:
+:py:meth:`~csdfpy.dimensions.Dimension.to`:
 This method is used for unit conversions.
 
 .. doctest::
@@ -290,14 +301,14 @@ This method is used for unit conversions.
     old unit = s
 
     >>> print('old coordinates =', x0.coordinates)
-    old coordinates = [ -9. -19. -29. -39. -49. -59.  51.  41.  31.  21.  11.   1.] s
+    old coordinates = [  1.  11.  21.  31.  41.  51. -59. -49. -39. -29. -19.  -9.] s
 
     >>> ## unit conversion
     >>> x0.to('min')
 
     >>> print ('new coordinates =', x0.coordinates)
-    new coordinates = [-0.15       -0.31666667 -0.48333333 -0.65       -0.81666667 -0.98333333
-      0.85        0.68333333  0.51666667  0.35        0.18333333  0.01666667] min
+    new coordinates = [ 0.01666667  0.18333333  0.35        0.51666667  0.68333333  0.85
+     -0.98333333 -0.81666667 -0.65       -0.48333333 -0.31666667 -0.15      ] min
 
 .. note::
 

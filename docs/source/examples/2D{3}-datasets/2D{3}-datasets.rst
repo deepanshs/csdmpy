@@ -45,7 +45,7 @@ The following is an example of the RGB image dataset.
             "type": "internal",
             "name": "raccoon face",
             "numeric_type": "uint8",
-            "quantity_type": "RGB",
+            "quantity_type": "pixel_3",
             "component_labels": [
               "red",
               "green",
@@ -97,7 +97,7 @@ The dependent variable is an RGB image as also seen from the
 .. doctest::
 
     >>> print(y[0].quantity_type)
-    RGB
+    pixel_3
 
 As usual, the components of the dependent variable are accessed through
 the :attr:`~csdfpy.DependentVariable.components` attribute.
@@ -167,4 +167,5 @@ Now, to visualize the dataset.
     >>> plt.subplots_adjust(wspace=0.025, hspace=0.05, left=0., right=1, top=1, bottom=0)
     >>> plt.savefig(ImageData.filename+'.pdf')
 
-.. image:: /_static/raccoon_raw.csdfe.png
+.. figure:: raccoon_raw.png
+   :align: center

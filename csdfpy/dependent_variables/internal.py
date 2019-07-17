@@ -13,6 +13,7 @@ from csdfpy.utils import numpy_dtype_to_numeric_type
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
+__all__ = ["InternalDataset"]
 
 
 class InternalDataset(BaseDependentVariable):
@@ -36,9 +37,7 @@ class InternalDataset(BaseDependentVariable):
                 )
                 kwargs["components"] = components
             else:
-                kwargs["components"] = components.astype(
-                    kwargs["numeric_type"]
-                )
+                kwargs["components"] = components.astype(kwargs["numeric_type"])
 
         # super base class must be initialized before retrieving
         # the components array.

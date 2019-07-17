@@ -6,6 +6,8 @@ import csdfpy as cp
 from csdfpy.dependent_variables import DependentVariable
 from csdfpy.dimensions import Dimension
 
+__all__ = []
+
 
 @pytest.fixture(autouse=True)
 def add_cp_dimension(doctest_namespace):
@@ -18,7 +20,7 @@ def add_cp_dimension(doctest_namespace):
         description="This is a test",
         count=10,
         increment="5 G",
-        index_zero_coordinate="10 mT",
+        coordinates_offset="10 mT",
         origin_offset="10 T",
         label="field strength",
     )
@@ -28,7 +30,7 @@ def add_cp_dimension(doctest_namespace):
         "description": "This is a test",
         "count": 10,
         "increment": "5 G",
-        "index_zero_coordinate": "10 mT",
+        "coordinates_offset": "10 mT",
         "origin_offset": "10 T",
         "label": "field strength",
     }
@@ -40,7 +42,7 @@ def add_cp_dimension(doctest_namespace):
         name="star",
         unit="W s",
         quantity_name="energy",
-        quantity_type="RGB",
+        quantity_type="pixel_3",
         components=numpy_array,
     )
 
@@ -50,7 +52,7 @@ def add_cp_dimension(doctest_namespace):
         "name": "star",
         "unit": "W s",
         "quantity_name": "energy",
-        "quantity_type": "RGB",
+        "quantity_type": "pixel_3",
         "components": numpy_array,
     }
 

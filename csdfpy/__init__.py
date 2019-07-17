@@ -21,6 +21,7 @@ from csdfpy.version import __version__
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
+__all__ = ["load", "new", "plot"]
 
 
 def _import_json(filename):
@@ -38,22 +39,25 @@ def load(filename=None, application=False, sort_fft_order=False):
 
     The file must be a JSON serialization of the CSD Model.
 
-    .. doctest::
+    Example:
 
         >>> data1 = cp.load('local_address/file.csdf') # doctest: +SKIP
         >>> data2 = cp.load('url_address/file.csdf') # doctest: +SKIP
 
-    :params: filename: A local or remote address to the `.csdf or
-                        `.csdfe` file.
-    :returns: A ``CSDModel`` instance.
+    Args:
+        filename (str): A local or remote address to the `.csdf or `.csdfe` file.
+        application (bool): A boolean. If true, import the application metadata from
+                            the application that last serialized the file.
+        sort_fft_order (bool): If true, the coordinates and the corresponding
+                               components will be sorted upon import.
+    Returns:
+        A ``CSDModel`` instance.
     """
     if filename is None:
         raise Exception("Missing a required data file address.")
 
     if isdir(filename) and filename.endswith((".csdm", ".csdm/")):
-        csdm_files = [
-            f for f in listdir(filename) if f.endswith((".csdf", ".csdfe"))
-        ]
+        csdm_files = [f for f in listdir(filename) if f.endswith((".csdf", ".csdfe"))]
         if len(csdm_files) != 1:
             raise Exception(
                 ("More that one csdf(e) files encountered in the .csdm folder")
@@ -73,7 +77,7 @@ def load(filename=None, application=False, sort_fft_order=False):
                     temp = n_points * dim.increment / 2.0
                 else:
                     temp = (n_points - 1) * dim.increment / 2.0
-                dim.index_zero_coordinate = dim.index_zero_coordinate - temp
+                dim.coordinates_offset = dim.coordinates_offset - temp
 
                 axes.append(-i - 1)
                 dim.fft_output_order = False
@@ -145,38 +149,17 @@ def _load(filename):
         if key in key_list_csdm:
             setattr(csdm, "_" + key, dictionary["csdm"][key])
 
-    # if "description" in key_list_csdm:
-    #     csdm._description = dictionary["csdm"]["description"]
-
-    # if "read_only" in key_list_csdm:
-    #     csdm._read_only = dictionary["csdm"]["read_only"]
-
-    # if "timestamp" in key_list_csdm:
-    #     csdm._timestamp = dictionary["csdm"]["timestamp"]
-
-    # if "geographic_coordinate" in key_list_csdm:
-    #     csdm._geographic_coordinate = dictionary["csdm"][
-    #         "geographic_coordinate"
-    #     ]
-
-    # if "application" in key_list_csdm:
-    #     csdm._application = dictionary["csdm"]["application"]
-
-    # if "tags" in key_list_csdm:
-    #     csdm._tags = dictionary["csdm"]["tags"]
-
     return csdm
 
 
 def new(description=""):
     r"""
-    Return a new instance of :ref:`csdm_api` class containing a 0D{0} dataset.
+    Creates a new instance of the :ref:`csdm_api` class containing a 0D{0} dataset.
 
-    Optionally, a description may be provided as an argument to this method,
-    for example,
+    Args:
+        description (str): An optional description associated with the csdm object.
 
-    .. doctest::
-
+    Example:
         >>> import csdfpy as cp
         >>> emptydata = cp.new(description='Testing Testing 1 2 3')
         >>> print(emptydata.data_structure)
@@ -189,10 +172,11 @@ def new(description=""):
           }
         }
 
-    :returns: A ``CSDModel`` instance
+    Returns:
+        A ``CSDModel`` instance.
     """
     return CSDModel(description=description)
 
 
-def plot(data_object):
-    _preview(data_object)
+def plot(data_object, *args, **kwargs):
+    _preview(data_object, *args, **kwargs)

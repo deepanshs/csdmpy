@@ -8,7 +8,7 @@
         "type": "linear",
         "count": 51,
         "increment": "1",
-        "index_zero_coordinate": "10",
+        "coordinates_offset": "10",
         "label": "mass per charge"
       }
     ],

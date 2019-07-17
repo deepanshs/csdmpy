@@ -12,16 +12,14 @@ def test_encoding():
     assert check_encoding("raw") == "raw"
     assert check_encoding("none") == "none"
 
-    error = (
-        "is not a valid `encoding` enumeration literal. "
-        "The allowed values are"
-    )
+    error = "is not a valid `encoding` enumeration literal. " "The allowed values are"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         check_encoding("text")
 
 
 def test_quantity_type():
-    assert QuantityType("RGBA").value == "RGBA"
+    assert QuantityType("pixel_4").value == "pixel_4"
+    assert QuantityType("pixel_4").p == 4
     assert QuantityType("scalar").value == "scalar"
     assert QuantityType("vector_15").value == "vector_15"
     assert QuantityType("vector_15").p == 15
@@ -31,11 +29,10 @@ def test_quantity_type():
     assert QuantityType("symmetric_matrix_10").p == 55
 
     error = (
-        "is not a valid `quantity_type` enumeration literal. "
-        "The allowed values are"
+        "is not a valid `quantity_type` enumeration literal. " "The allowed values are"
     )
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
-        QuantityType("RgB")
+        QuantityType("RGB")
 
 
 def test_numeric_type():
@@ -70,8 +67,7 @@ def test_numeric_type():
     assert NumericType("complex128").dtype == "<c16"
 
     error = (
-        "is not a valid `numeric_type` enumeration literal. "
-        "The allowed values are"
+        "is not a valid `numeric_type` enumeration literal. " "The allowed values are"
     )
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         NumericType("complex256")

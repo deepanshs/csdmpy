@@ -9,9 +9,7 @@ from setuptools import setup
 
 # Package meta-data.
 NAME = "csdfpy"
-DESCRIPTION = (
-    "A python module for importing and exporting CSD model file-format."
-)
+DESCRIPTION = "A python module for importing and exporting CSD model file-format."
 URL = "https://github.com/DeepanshS/csdfpy"
 EMAIL = "srivastava.89@osu.edu"
 AUTHOR = "Deepansh Srivastava"
@@ -19,10 +17,9 @@ REQUIRES_PYTHON = ">=3.5"
 VERSION = "0.0.12"
 
 # What packages are required for this module to be executed?
-REQUIRED = ["requests>=2.21.0", "astropy>=3.0", "numpy>=1.13.1"]
+REQUIRED = ["numpy>=1.13.3", "astropy>=3.0", "requests>=2.21.0", "matplotlib>=3.0.2"]
 
-# What packages are optional?
-EXTRAS = {"fancy feature": ["matplotlib>=3.0.2", "sounddevice"]}
+SETUP_REQUIRES = ["setuptools>=27.3"]
 
 # The rest you shouldn't have to touch too much :)
 # ------------------------------------------------
@@ -60,9 +57,9 @@ setup(
     url=URL,
     packages=find_packages(),
     install_requires=REQUIRED,
-    extras_require=EXTRAS,
-    setup_requires=["pytest-runner", "numpy>=1.10.1"],
-    tests_require=["pytest"],
+    # extras_require=EXTRAS,
+    setup_requires=SETUP_REQUIRES,
+    tests_require=["pytest", "pytest-runner"],
     include_package_data=True,
     license="BSD-3-Clause",
     classifiers=[
@@ -71,8 +68,7 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Development Status :: 3 - Alpha"
-        "Programming Language :: Python :: 3.5",
+        "Development Status :: 3 - Alpha" "Programming Language :: Python :: 3.5",
         # 'Programming Language :: Python :: Implementation :: CPython',
         # 'Programming Language :: Python :: Implementation :: PyPy'
     ],

@@ -8,26 +8,25 @@ from csdfpy.units import ScalarQuantity
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
+__all__ = ["literals_encoding", "QuantityType", "NumericType"]
 
 
 literals_quantity_type = {
-    "RGB": lambda n: 3,
-    "RGBA": lambda n: 4,
     "scalar": lambda n: 1,
     "vector": lambda n: n,
     "matrix": lambda n: n,
     "audio": lambda n: n,
+    "pixel": lambda n: n,
     "symmetric_matrix": lambda n: int(n * (n + 1) / 2),
 }
 
 literals_encoding = ("base64", "none", "raw")
 literals_quantity_type_ = [
-    "RGB",
-    "RGBA",
     "scalar",
     "vector_n",
     "matrix_n_m",
     "audio_n",
+    "pixel_n",
     "symmetric_matrix_n",
 ]
 
@@ -46,9 +45,9 @@ def type_error(a, b, c):
         a = " or ".join(a)
     else:
         a = a.__name__
-    return (
-        "Expecting an instance of type, `{0}` for {1}, but got `{2}`."
-    ).format(a, b, type(c).__name__)
+    return ("Expecting an instance of type, `{0}` for {1}, but got `{2}`.").format(
+        a, b, type(c).__name__
+    )
 
 
 def attribute_error(a, b):
@@ -56,11 +55,7 @@ def attribute_error(a, b):
 
 
 def _axis_label(
-    label,
-    unit,
-    made_dimensionless=False,
-    dimensionless_unit=None,
-    label_type="",
+    label, unit, made_dimensionless=False, dimensionless_unit=None, label_type=""
 ):
     # if made_dimensionless:
     #     if dimensionless_unit != "":
@@ -69,9 +64,7 @@ def _axis_label(
 
     if unit != "":
         if label_type == "":
-            return "{0} / ({1})".format(
-                label, ScalarQuantity(1 * unit).format("unit")
-            )
+            return "{0} / ({1})".format(label, ScalarQuantity(1 * unit).format("unit"))
         # if label_type == "latex":
         #     return "{0} / ({1})".format(label, unit.to_string("latex"))
     return label
@@ -118,7 +111,7 @@ class QuantityType:
     """
     Validate the quantity_type string value.
 
-    The valid options are `RGB`, `RGBA`, `scalar`, `vector_n`,
+    The valid options are `scalar`, `vector_n`, `pixel_n`,
     `matrix_n_m`, and `symmetric_matrix_n`.
 
     :returns: The quantity_type key-value, if the value is valid.
@@ -145,12 +138,8 @@ class QuantityType:
 
     def _check_quantity_type(self, element):
         list_values = element.strip().split("_")
-        numbers = np.asarray(
-            [int(item) for item in list_values if item.isnumeric()]
-        )
-        keyword = "_".join(
-            [item for item in list_values if not item.isnumeric()]
-        )
+        numbers = np.asarray([int(item) for item in list_values if item.isnumeric()])
+        keyword = "_".join([item for item in list_values if not item.isnumeric()])
 
         lst = literals_quantity_type
         if keyword not in lst:
@@ -300,8 +289,7 @@ class NumericType:
                 (
                     "`{0}`, is not a valid `numeric_type` enumeration literal."
                     " The allowed values are {1}".format(
-                        element,
-                        "'" + "', '".join(self.__class__.literals) + "'",
+                        element, "'" + "', '".join(self.__class__.literals) + "'"
                     )
                 )
             )

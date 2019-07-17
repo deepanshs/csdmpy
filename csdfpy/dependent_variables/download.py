@@ -10,6 +10,7 @@ import requests
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
+__all__ = ["parse_url", "download_file_from_url"]
 
 
 def parse_url(url):
@@ -47,9 +48,7 @@ def download_file_from_url(url):
                 downloaded += len(data)
                 f.write(data)
                 done = int(20 * downloaded / total)
-                sys.stdout.write(
-                    "\r[{}{}]".format("█" * done, "." * (20 - done))
-                )
+                sys.stdout.write("\r[{}{}]".format("█" * done, "." * (20 - done)))
                 sys.stdout.flush()
 
     sys.stdout.write("\n")
@@ -88,8 +87,6 @@ def get_relative_uri_path(dataset_index, filename):
     relative_url_path = path.join("file:.", name)
 
     absolute_path = path.abspath(
-        urlparse(
-            path.join(absolute_path, urlparse(relative_url_path).path)
-        ).path
+        urlparse(path.join(absolute_path, urlparse(relative_url_path).path)).path
     )
     return relative_url_path, absolute_path

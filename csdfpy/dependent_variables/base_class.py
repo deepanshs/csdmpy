@@ -21,6 +21,7 @@ from csdfpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
+__all__ = ["BaseDependentVariable"]
 
 
 class BaseDependentVariable:
@@ -61,12 +62,12 @@ class BaseDependentVariable:
         self.encoding = encoding
         self._numeric_type = NumericType(numeric_type)
         self._quantity_type = QuantityType(quantity_type)
-        self.set_components_label(component_labels)
+        self.set_component_labels(component_labels)
         self.description = description
         self.application = application
         self._components = components
 
-    def set_components_label(self, component_labels):
+    def set_component_labels(self, component_labels):
         """
         Assign an array of strings, based on the number of components.
 
@@ -161,14 +162,14 @@ class BaseDependentVariable:
     @property
     def component_labels(self):
         r"""
-        Return an ordered array of labels associated each component of the
+        Return an ordered array of labels associated with each component of the
         dependent variable.
         """
         return self._component_labels
 
     @component_labels.setter
     def component_labels(self, value):
-        self.set_components_label(value)
+        self.set_component_labels(value)
 
     @property
     def application(self):

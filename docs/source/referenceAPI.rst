@@ -1,9 +1,10 @@
 
-===========================
-Reference/API documentation
-===========================
+=============
+API-Reference
+=============
 
 .. toctree::
+
     api/csdfpy
     api/CSDModel
     api/Dimensions

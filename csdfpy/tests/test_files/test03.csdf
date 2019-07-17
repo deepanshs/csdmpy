@@ -7,14 +7,14 @@
         "type" : "linear",
         "count" : 700,
         "increment" : "7.142857142857143 Hz",
-        "index_zero_coordinate" : "3.005363 kHz",
+        "coordinates_offset" : "3.005363 kHz",
         "origin_offset" : "75426328.864 Hz",
         "label" : "13C frequency shift",
         "quantity" : "frequency",
         "fft_output_order" : true,
         "reciprocal" : {
           "quantity" : "time",
-          "index_zero_coordinate" : "-0.3 ms"
+          "coordinates_offset" : "-0.3 ms"
         }
       }
     ],

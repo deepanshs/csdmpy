@@ -5,6 +5,11 @@ import base64
 import numpy as np
 
 
+__author__ = "Deepansh J. Srivastava"
+__email__ = "srivastava.89@osu.edu"
+__all__ = ["Decoder"]
+
+
 class Decoder:
     def __new__(self, encoding, quantity_type, components, dtype):
         """
@@ -14,9 +19,7 @@ class Decoder:
         """
 
         if encoding != "raw":
-            check_number_of_components_and_encoding_type(
-                len(components), quantity_type
-            )
+            check_number_of_components_and_encoding_type(len(components), quantity_type)
         component_len = quantity_type.p
         method = getattr(self, "decode_" + encoding)
         return method(components, dtype, component_len)
@@ -24,10 +27,7 @@ class Decoder:
     @staticmethod
     def decode_base64(components, dtype, component_len=None):
         components = np.asarray(
-            [
-                np.frombuffer(base64.b64decode(item), dtype=dtype)
-                for item in components
-            ]
+            [np.frombuffer(base64.b64decode(item), dtype=dtype) for item in components]
         )
         return components
 
@@ -59,7 +59,6 @@ def check_number_of_components_and_encoding_type(length, quantity_type):
     if length != quantity_type.p:
         raise Exception(
             (
-                "quantity_type '{0}' requires exactly {1} component(s), "
-                "found {2}."
+                "quantity_type '{0}' requires exactly {1} component(s), " "found {2}."
             ).format(quantity_type.value, quantity_type.p, length)
         )

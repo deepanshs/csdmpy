@@ -16,6 +16,7 @@ from numpy import inf
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
+__all__ = ["string_to_quantity", "ScalarQuantity"]
 
 
 tr = u.def_unit(["tr", "turn", "revolution"], 1.0 * u.cycle)

@@ -26,6 +26,7 @@ package(s) compatible with Numpy.
     :maxdepth: 2
     :caption: Table of Contents
     :name: mastertoc
+    :hidden:
 
     CSD_model
     requirement
@@ -35,9 +36,7 @@ package(s) compatible with Numpy.
     startFromScratch/start
     referenceAPI
 
-
 ..    independent_variable
-
 
 ------------------
 Indices and tables

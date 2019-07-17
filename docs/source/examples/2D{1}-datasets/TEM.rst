@@ -118,4 +118,5 @@ and plot the data.
     >>> plt.tight_layout(pad=0, w_pad=0, h_pad=0)
     >>> plt.savefig(TEM.filename+'.pdf')
 
-.. image:: /_static/TEM.csdf.pdf
+.. figure:: TEM.pdf
+   :align: center

@@ -3,15 +3,15 @@
 Adding instances of Dimension class
 -----------------------------------
 
-In the previous example, we create a new dataset using,
+In the previous section, we create a new dataset using,
 
 .. doctest::
 
     >>> import csdfpy as cp
-    >>> new_data = cp.new(description='A new test dataset')
+    >>> new_data = cp.new(description='A new test dimension dataset')
 
 In this section, we will add dimension objects to this dataset.
-An instance of the :ref:`dim_api` class is added using the
+An instance of the Dimension class is added using the
 :meth:`~csdfpy.csdm.CSDModel.add_dimension` method of the :ref:`csdm_api`
 instance. See :ref:`dim_api` API for further detail.
 
@@ -20,9 +20,8 @@ LinearDimension
 ^^^^^^^^^^^^^^^
 
 A linear dimension is where the coordinates along the dimension are
-uniformly spaced. Let's make use of the Python dictionary object to create
-and add a new dimension to the `new_data` variable.
-The Python dictionary for a LinearDimension follows,
+uniformly spaced. Let's add a LinearDimension instance to the dataset.
+For this, we make use of the Python dictionary object which follows as
 
 .. doctest::
 
@@ -34,15 +33,15 @@ The Python dictionary for a LinearDimension follows,
     ... }
 
 Here, we define the dimension type as `linear` and provide an `increment` value
-along with the total number of points, `count`, along the dimension. To add
-this dimension to the dataset use
+along with the total number of points, `count`, along the dimension. Now, add
+this dictionary to the ``new_data`` instance using
 
 .. doctest::
 
     >>> new_data.add_dimension(d0)
 
 This will generate and add a LinearDimension object to the list of dimensions.
-The dataset is now a 1D{0} dataset with the data structure,
+The dataset is now a 1D{0} dataset with the following data structure,
 
 .. doctest::
 
@@ -50,7 +49,7 @@ The dataset is now a 1D{0} dataset with the data structure,
     {
       "csdm": {
         "version": "0.0.12",
-        "description": "A new test dataset",
+        "description": "A new test dimension dataset",
         "dimensions": [
           {
             "type": "linear",
@@ -71,12 +70,11 @@ The dataset is now a 1D{0} dataset with the data structure,
 MonotonicDimension
 ^^^^^^^^^^^^^^^^^^
 
-Try adding another :ref:`dim_api` object to the dataset.
+Try adding another :ref:`dim_api` object to this dataset.
 This time add a monotonic dimension. A monotonic dimension is where the
-coordinates along the dimension are spaced strictly increasing or strictly
-decreasing. In the following example, we use a different approach for
-adding dimension objects, `i.e.`, by using keywords as the arguments of the
-:meth:`~csdfpy.csdm.CSDModel.add_dimension` method.
+coordinates along the dimension are spaced either strictly increasing or
+strictly decreasing. In the following example, we use a different approach for
+adding the dimension object, that is, using the keyword arguments as follows,
 
 .. doctest::
 
@@ -86,8 +84,8 @@ adding dimension objects, `i.e.`, by using keywords as the arguments of the
     ...     coordinates=['1 µG', '2.1 mG', '12.4 G', '0.5 T', '2 T'])
 
 The above operation generates an instance of the MonotonicDimension and adds
-it to the `new_dataset` instance, thereby, creating a 2D{0} dataset. The data
-structure form the updated `new_dataset` instance follows
+it to the ``new_dataset`` instance, thereby, creating a 2D{0} dataset. The data
+structure form the updated ``new_dataset`` instance follows
 
 .. doctest::
 
@@ -95,7 +93,7 @@ structure form the updated `new_dataset` instance follows
     {
       "csdm": {
         "version": "0.0.12",
-        "description": "A new test dataset",
+        "description": "A new test dimension dataset",
         "dimensions": [
           {
             "type": "linear",
@@ -132,12 +130,12 @@ appropriately added, if possible.
 LabeledDimension
 ^^^^^^^^^^^^^^^^
 
-The third type of dimensions are the labeled dimension. As the name suggests,
+The third type of dimensions are the labeled dimensions. As the name suggests,
 this dimension consists of labels. This type of dimension is useful for
 datasets describing, for example, the ionization energy as a function of atomic
-symbols or the population against the country name.
+symbols or the population of different countries.
 
-Try adding a labeled dimension to the `new_data` instance.
+Let's add a labeled dimension to the ``new_data`` instance.
 This time pass an instance of the :ref:`dim_api` class as the argument of the
 :meth:`~csdfpy.csdm.CSDModel.add_dimension` method. To create an instance of
 the Dimension class follow,
@@ -151,14 +149,15 @@ the Dimension class follow,
     ...     labels = ['Cu', 'Ag', 'Au']
     ... )
 
-In the above code, the variable `d1` is an instance of :ref:`dim_api`. Now
-add this instance to the :meth:`~csdfpy.csdm.CSDModel.add_dimension` method.
+In the above code, the variable ``d1`` is an instance of :ref:`dim_api` class.
+Now add this instance to the :meth:`~csdfpy.csdm.CSDModel.add_dimension`
+method.
 
 .. doctest::
 
     >>> new_data.add_dimension(d1)
 
-This generates a 3D{0} dataset with the data structure -
+This generates a 3D{0} dataset with the data structure ---
 
 .. doctest::
 
@@ -166,7 +165,7 @@ This generates a 3D{0} dataset with the data structure -
     {
       "csdm": {
         "version": "0.0.12",
-        "description": "A new test dataset",
+        "description": "A new test dimension dataset",
         "dimensions": [
           {
             "type": "linear",
@@ -217,3 +216,8 @@ This generates a 3D{0} dataset with the data structure -
     :ref:`dim_api` objects as arguments because it provides an easy alternative
     for copying an instance of the :ref:`dim_api` class from one
     :ref:`csdm_api` instance to another.
+
+
+.. --------------------
+.. Removing a dimension
+.. --------------------

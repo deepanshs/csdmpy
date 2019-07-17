@@ -52,7 +52,7 @@ def test_internal_new():
     with pytest.raises(AttributeError, match=error):
         data.dependent_variables[0].component_url
 
-    # component labels
+    # component names
     assert data.dependent_variables[0].component_labels == ["", ""]
     data.dependent_variables[0].component_labels = [":)"]
     assert data.dependent_variables[0].component_labels == [":)", ""]
@@ -76,7 +76,7 @@ def test_internal_new():
     assert data.dependent_variables[0].encoding == "base64"
     data.dependent_variables[0].encoding = "none"
     assert data.dependent_variables[0].encoding == "none"
-    error = "is not a valid `encoding` enumeration literal. " "The allowed values are"
+    error = "not a valid `encoding` enumeration literal. The allowed values are"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.dependent_variables[0].encoding = "base16"
     data.dependent_variables[0].encoding = "raw"
@@ -87,15 +87,13 @@ def test_internal_new():
     data.dependent_variables[0].numeric_type = "complex64"
     assert data.dependent_variables[0].numeric_type == "complex64"
     assert np.all(data.dependent_variables[0].components == test_array + 100.0)
-    error = (
-        "is not a valid `numeric_type` enumeration literal. " "The allowed values are"
-    )
+    error = "not a valid `numeric_type` enumeration literal. The allowed values are"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.dependent_variables[0].numeric_type = "complex32"
 
     # quantity_name
     assert data.dependent_variables[0].quantity_name == "dimensionless"
-    error = "The `quantity_name` attribute cannot be modified."
+    error = "`quantity_name` attribute cannot be modified."
     with pytest.raises(NotImplementedError, match=".*{0}.*".format(error)):
         data.dependent_variables[0].quantity_name = "time"
 
@@ -143,8 +141,7 @@ def test_external_new():
     dim = {
         "type": "external",
         "components_url": (
-            "https://www.grandinetti.org/resources/CSDM/"
-            "cinnamon_raw_cinnamon stick.dat"
+            "https://www.grandinetti.org/resources/CSDM/cinnamon_raw_cinnamon stick.dat"
         ),
         "component_labels": ["monotonic"],
         "name": "Headspace from cinnamon stick",
@@ -174,10 +171,10 @@ def test_external_new():
 
     # check component_url
     assert data.dependent_variables[0].components_url == (
-        "https://www.grandinetti.org/resources/CSDM/cinnamon_raw_cinnamon " "stick.dat"
+        "https://www.grandinetti.org/resources/CSDM/cinnamon_raw_cinnamon stick.dat"
     )
 
-    # component labels
+    # component names
     assert data.dependent_variables[0].component_labels == ["monotonic"]
 
     # quantity type

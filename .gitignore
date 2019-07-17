@@ -4,6 +4,7 @@ docs/source/_build/**
 docs/source/_static/**
 docs/source/_templates/**
 docs/build/**
+docs/source/auto/**
 csdfpy.egg-info/**
 .eggs/**
 build/**
@@ -68,3 +69,4 @@ info.txt
 #########
 my_file.csdf
 .coverage
+csdm.code-workspace

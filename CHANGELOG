@@ -4,7 +4,7 @@ version0.0.12
  - Added a tags attribute to the CSDmodel object.
  - Changed 'sampling_interval' key to 'count'.
  - Changed 'quantity' key to 'quantity_name'.
- - Changed 'index_zero_value' key to 'index_zero_coordinate'.
+ - Changed 'index_zero_value' key to 'coordinates_offset'.
 
 
 version0.0.11

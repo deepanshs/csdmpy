@@ -13,6 +13,7 @@ from csdfpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
+__all__ = ["Dimension"]
 
 
 functional_dimension = ["linear"]
@@ -20,64 +21,78 @@ functional_dimension = ["linear"]
 
 class Dimension:
     r"""
-    Instantiate a Dimension class.
+    Create an instance of the Dimension class.
 
-    The instance of this class represents an independent variable, :math:`x_k`.
-    There are three subtypes of the independent variables based on the
-    three types of dimensions: LinearlySampledDimension,
-    ArbitrarilySampledDimension, and the
-    LabeledDimension, respectively.
+    An instance of this class describes a dimension of a multi-dimensional system.
+    In version 1.0, there are three subtypes of the Dimension class:
 
-    **A linearly sampled independent variable**
+        - LinearDimension,
+        - MonotonicDimension, and
+        - LabeledDimension.
 
-    Let :math:`m_k` be the sampling interval, :math:`N_k \ge 1` be the
-    number of points, :math:`c_k` be the reference offset, and
-    :math:`o_k` be the origin offset along the :math:`k^{th}`
-    independent variable dimension, then the corresponding coordinates along
-    the dimension are given as,
+    **LinearDimension subtype**
+
+    As given from the name, the coordinates along this dimension follow a linear
+    relationship with respect to the indices along the dimension.
+    Let :math:`\Delta x_k` be the `increment`, :math:`N_k \ge 1`, the number of points
+    (`counts`), :math:`b_k`, the `coordinates offset`, and :math:`o_k`, the `origin offset`
+    along the :math:`k^{th}` dimension, then the corresponding coordinates along the
+    dimension, :math:`\mathbf{X}_k`, are given as
+
+    .. math ::
+        \mathbf{X}_k = \Delta x_k \mathbf{J}_k - b_k \mathbf{1},
+
+    and the absolute coordinates as,
+
+    .. math::
+        \mathbf{X}_k^\mathrm{abs} = \mathbf{X}_k + o_k \mathbf{1}.
+
+    Here, :math:`\mathbf{1}` is an array of ones. The parameter, :math:`\mathbf{J}_k`,
+    is an array of indexes along the :math:`k^\mathrm{th}` dimension and is given by
+
+    .. math::
+        \mathbf{J}_k = [0, 1, 2, 3, ..., N_k-1]
+
+    when the value of the `fft_output_order` attribute is false, otherwise,
+
+    .. math::
+        \mathbf{J}_k = \left[0, 1, ... \frac{N_k}{2}-1, \pm\frac{N_k}{2},
+                                -\frac{N_k}{2}+1, ..., -1 \right]
+
+    when :math:`N_k` is even, and
+
+    .. math::
+        \mathbf{J}_k = \left[0, 1, ... \frac{T_k}{2}, -\frac{T_k}{2}, ..., -1 \right]
+
+    when :math:`N_k` is odd where :math:`T_k=N_k-1`.
+
+    **MonotonicDimension subtype**
+
+    A monotonic dimension is where the coordinates along the dimension are explicitly
+    defined and, unlike the linear dimension, may not be derivable from the dimension
+    indices. Let :math:`\mathbf{A}_k` be an ordered set of strictly ascending or descending
+    quantities and :math:`o_k` be the origin offset along the :math:`k^{th}`
+    dimension, then the coordinates and the absolute coordinates along a monotonic
+    dimension are given as,
 
     .. math ::
         \begin{align}
-        \mathbf{X}_k &= [m_k j ]_{j=0}^{N_k-1} - c_k \mathbf{1}, \\
-        \mathbf{X}_k^\mathrm{abs} &= \mathbf{X}_k + o_k \mathbf{1}.
-        \end{align}
-        :label: eq_linear_gcv
-
-    Here :math:`\mathbf{X}_k` and :math:`\mathbf{X}_k^\mathrm{abs}` are the
-    ordered arrays of the reference and absolute independent variable
-    coordinates, respectively, and :math:`\mathbf{1}` is an array of ones.
-
-    **An monotonically sampled independent variable**
-
-    Let :math:`\mathbf{A}_k` be an ordered array of ascending
-    quantities, :math:`c_k` be the reference offset, and
-    :math:`o_k` be the origin offset along the :math:`k^{th}`
-    independent variable dimension, then the coordinates along this dimension
-    are given as,
-
-    .. math ::
-        \begin{align}
-        \mathbf{X}_k = \mathbf{A}_k - c_k \mathbf{1},\\
-        \mathbf{X}_k^\mathrm{abs} = \mathbf{X}_k + o_k \mathbf{1},
+        \mathbf{X}_k &= \mathbf{A}_k\\
+        \mathbf{X}_k^\mathrm{abs} &= \mathbf{X}_k + o_k \mathbf{1},
         \end{align}
 
-    where :math:`\mathbf{X}_k`, :math:`\mathbf{X}_k^\mathrm{abs}`,
-    and :math:`\mathbf{1}` are the same as described in :eq:`eq_linear_gcv`.
+    **LabeledDimension subtype**
 
-
-    **A labeled independent variable**
-
-    For labeled dimensions, the coordinates along the dimension are given as
+    A labeled dimension is a non-quantitative dimension composed of character string
+    labels. Consider, :math:`\mathbf{A}_k` as an ordered array of lables, then the
+    coordinates along a labeled dimension are given as
 
     .. math ::
         \mathbf{X}_k = \mathbf{A}_k.
 
-    where :math:`\mathbf{A}_k` is an array of labeled entries.
+    **Creating an instance of a dimension object.**
 
-    **Creating a new independent variable.**
-
-    There are two ways to create a new instance of an independent variable
-    using this class.
+    There are two ways of creating a new instance of a Dimension class.
 
     `From a python dictionary containing valid keywords.`
 
@@ -89,7 +104,7 @@ class Dimension:
         ...     'description': 'test',
         ...     'increment': '5 G',
         ...     'count': 10,
-        ...     'index_zero_coordinate': '10 mT',
+        ...     'coordinates_offset': '10 mT',
         ...     'origin_offset': '10 T'
         ... }
         >>> x = Dimension(dimension_dictionary)
@@ -104,7 +119,7 @@ class Dimension:
         ...               description = 'test',
         ...               increment = '5 G',
         ...               count = 10,
-        ...               index_zero_coordinate = '10 mT',
+        ...               coordinates_offset = '10 mT',
         ...               origin_offset = '10 T')
 
     """
@@ -116,28 +131,28 @@ class Dimension:
     def __init__(self, *args, **kwargs):
         """Initialize an instance of Dimension object."""
         default = {
-            "type": None,
-            "description": "",
-            "count": None,
-            "increment": None,
-            "labels": None,
-            "coordinates": None,
-            "index_zero_coordinate": None,
-            "origin_offset": None,
-            "fft_output_order": False,
-            "period": None,
-            "quantity_name": None,
-            "label": "",
-            "application": {},
-            "reciprocal": {
-                "increment": None,
-                "index_zero_coordinate": None,
-                "origin_offset": None,
-                "period": None,
-                "quantity_name": None,
-                "label": "",
-                "description": "",
-                "application": {},
+            "type": None,  # valid for all dimension subtypes
+            "description": "",  # valid for all dimension subtypes
+            "count": None,  # valid for linear dimension subtype
+            "increment": None,  # valid for linear dimension subtype
+            "labels": None,  # valid for labled dimension subtype
+            "coordinates": None,  # valid for monotonic dimension subtype
+            "coordinates_offset": None,  # valid for linear dimension subtype
+            "origin_offset": None,  # valid for linear dimension subtype
+            "fft_output_order": False,  # valid for linear dimension subtype
+            "period": None,  # valid for monotonic and linear dimension subtypes
+            "quantity_name": None,  # valid for monotonic and linear dimension subtypes
+            "label": "",  # valid for all dimension subtypes
+            "application": {},  # valid for all dimension subtypes
+            "reciprocal": {  # valid for all monotonic and linear subtypes
+                "increment": None,  # valid for all monotonic and linear subtypes
+                "coordinates_offset": None,  # valid for all monotonic and linear subtypes
+                "origin_offset": None,  # valid for all monotonic and linear subtypes
+                "period": None,  # valid for all monotonic and linear subtypes
+                "quantity_name": None,  # valid for all monotonic and linear subtypes
+                "label": "",  # valid for all monotonic and linear subtypes
+                "description": "",  # valid for all monotonic and linear subtypes
+                "application": {},  # valid for all monotonic and linear subtypes
             },
         }
 
@@ -146,9 +161,7 @@ class Dimension:
         input_keys = input_dict.keys()
 
         if "type" not in input_keys:
-            raise ValueError(
-                "Missing a required 'type' key from the dimension object."
-            )
+            raise ValueError("Missing a required 'type' key from the dimension object.")
 
         if "reciprocal" in input_keys:
             input_subkeys = input_dict["reciprocal"].keys()
@@ -177,13 +190,9 @@ class Dimension:
             self.subtype = LabeledDimension(**default)
 
         if default["type"] == "monotonic" and default["coordinates"] is None:
-            raise KeyError(
-                "`coordinates` key is missing from MonotonicDimension."
-            )
+            raise KeyError("`coordinates` key is missing from MonotonicDimension.")
         if default["type"] == "monotonic":
-            self.subtype = MonotonicDimension(
-                values=default["coordinates"], **default
-            )
+            self.subtype = MonotonicDimension(values=default["coordinates"], **default)
 
         if default["type"] == "linear":
             self.subtype = self.linear(default)
@@ -194,18 +203,9 @@ class Dimension:
 
         for item in missing_key:
             if default[item] is None:
-                raise KeyError(
-                    f"{item} key is missing from the linear dimension."
-                )
+                raise KeyError(f"{item} key is missing from the linear dimension.")
 
         validate(default["count"], "count", int)
-        # if not isinstance(default["count"], int):
-        #     raise ValueError(
-        #         (
-        #             f"An integer value is required for the 'count' key, a"
-        #             f"{type(default['count'])} value encountered."
-        #         )
-        #     )
 
         return LinearDimension(**default)
 
@@ -215,57 +215,93 @@ class Dimension:
     @property
     def absolute_coordinates(self):
         r"""
-        Return an array of absolute coordinates along the dimension.
+        Absolute coordinates, :math:`{\bf X}_k^\rm{abs}`, along the dimension.
 
-        The order of the absolute coordinates depends on the value of the
-        :attr:`~csdfpy.Dimension.reverse` and the
-        :attr:`~csdfpy.Dimension.fft_output_order`
-        (only applicable for `linear` subtype)
-        attributes of the Dimension instance. This attribute cannot
-        be modified. This attribute is `invalid` for the labeled dimensions.
+        This attribute is only *valid* for quantitative dimensions, that is,
+        `linear` and `monotonic` dimensions. The absolute coordinates are given as
+
+        .. math::
+
+            \mathbf{X}_k^\mathrm{abs} = \mathbf{X}_k + o_k \mathbf{1}
+
+        where :math:`\mathbf{X}_k` are the coordinates along the dimension and
+        :math:`o_k` is the :attr:`~csdfpy.dimensions.Dimension.origin_offset`.
+        For example, consider
 
         .. doctest::
 
             >>> print(x.origin_offset)
             10.0 T
+            >>> print(x.coordinates)
+            [100. 105. 110. 115. 120. 125. 130. 135. 140. 145.] G
+
+        then the absolute coordinates are
+
+        .. doctest::
+
             >>> print(x.absolute_coordinates)
             [100100. 100105. 100110. 100115. 100120. 100125. 100130. 100135.
             100140. 100145.] G
 
-        :returns: A ``Quantity array`` for quantitative independent variables.
-        :raises AttributeError: For labeled dimension.
-        :raises AttributeError: When the attribute is modified.
+        For `linear` dimensions, the order of the `absolute_coordinates`
+        further depend on the value of the
+        :attr:`~csdfpy.dimensions.Dimension.fft_output_order` attributes. For
+        examples, when the value of the `fft_output_order` attribute is True,
+        the absolute coordinates are
+
+        .. doctest::
+
+            >>> x.fft_output_order = True
+            >>> print(x.absolute_coordinates)
+            [100100. 100105. 100110. 100115. 100120. 100075. 100080. 100085. 100090.
+             100095.] G
+
+        .. note::
+
+            This attribute is *invalid* for `labeled` dimensions.
+
+        .. testsetup::
+
+            >>> x.fft_output_order = False
+
+        Return:
+            A Quantity array of absolute coordinates for quantitative dimensions, `i.e`
+            `linear` and `monotonic`.
+
+        Raise:
+            AttributeError: For labeled dimensions.
         """
         if self.subtype != "labeled":
-            return (self.coordinates + self.origin_offset).to(
-                self.subtype._unit
-            )
-        raise AttributeError(
-            attribute_error(self.subtype, "absolute_coordinates")
-        )
+            return (self.coordinates + self.origin_offset).to(self.subtype._unit)
+        raise AttributeError(attribute_error(self.subtype, "absolute_coordinates"))
 
     @property
     def application(self):
         """
-        Return the application metadata to the CSDM object.
+        Application metadata dictionary of the dimension object.
 
         .. doctest::
 
             >>> print(x.application)
             {}
 
-        Use python dict object to assign an application metadata to the CSDM
-        object,
+        The application attribute is where an application can place its own
+        metadata as a python dictionary object with application specific
+        metadata, using a reverse domain name notation string as the attribute
+        key, for example,
 
         .. doctest::
 
             >>> x.application = {
-            ...     "com.reverse.domain" : {
-            ...         "my_key": "my_metadata"
+            ...     "com.example.myApp" : {
+            ...         "myApp_key": "myApp_metadata"
             ...      }
             ... }
             >>> print(x.application)
-            {'com.reverse.domain': {'my_key': 'my_metadata'}}
+            {'com.example.myApp': {'myApp_key': 'myApp_metadata'}}
+
+        Return:
+            A python dictionary containing dimension application metadata.
         """
         return self.subtype._application
 
@@ -276,16 +312,18 @@ class Dimension:
     @property
     def axis_label(self):
         r"""
-        Return a formatted string for displaying the label along the dimension.
+        Formatted string for displaying the label along the dimension.
 
-        This supplementary attribute is convenient for labeling axes.
-        For quantitative independent variables, this attributes returns a
-        string, `label / unit`,  if the `label` is not an empty string. If the
-        `label` is an empty string, `quantity_name / unit` is returned instead.
-        Here :attr:`~csdfpy.Dimension.quantity_name` and
-        :attr:`~csdfpy.Dimension.label` are the attributes of the
+        This attribute is not a part of the original core scientific dataset
+        model, however, it is a convenient supplementary attribute that provides
+        a formated string ready for labeling dimension axes.
+        For quantitative dimensions, this attributes returns a string,
+        `label / unit`,  if the `label` is a non-empty string, otherwise,
+        `quantity_name / unit`. Here
+        :attr:`~csdfpy.dimensions.Dimension.quantity_name` and
+        :attr:`~csdfpy.dimensions.Dimension.label` are the attributes of the
         :ref:`dim_api` instances, and `unit` is the unit associated with the
-        coordinates along the dimension.
+        coordinates along the dimension. For examples,
 
         .. doctest::
 
@@ -296,8 +334,11 @@ class Dimension:
 
         For labled dimensions, this attribute returns 'label'.
 
-        :returns: A ``string``.
-        :raises AttributeError: When assigned a value.
+        Returns:
+            A formated string of label.
+
+        Raises:
+            AttributeError: When assigned a value.
         """
         if hasattr(self.subtype, "quantity_name"):
             if self.label.strip() == "":
@@ -311,45 +352,68 @@ class Dimension:
     @property
     def coordinates(self):
         r"""
-        Return an array of reference coordinates along the dimension.
+        Coordinates, :math:`{\bf X}_k`, along the dimension.
 
-        The order of the reference coordinates
-        depends on the value of the :attr:`~csdfpy.Dimension.reverse`
-        and the :attr:`~csdfpy.Dimension.fft_output_order`
-        (only applicable for `linear` subtype)
-        attributes of the class instance. This attribute cannot be modified.
-
-        .. doctest::
-
+        Example:
             >>> print(x.coordinates)
             [100. 105. 110. 115. 120. 125. 130. 135. 140. 145.] G
 
-        :returns: A ``Quantity array`` for quantitative independent variables.
-        :returns: A ``Numpy array`` for labeled dimensions.
-        :raises AttributeError: When the attribute is modified.
+        For `linear` dimensions, the order of the `coordinates` also depend on the
+        value of the :attr:`~csdfpy.dimensions.Dimension.fft_output_order` attributes.
+        For examples, when the value of the `fft_output_order` attribute is True,
+        the coordinates are
+
+        .. doctest::
+
+            >>> x.fft_output_order = True
+            >>> print(x.coordinates)
+            [100. 105. 110. 115. 120. 75. 80. 85. 90. 95.] G
+
+        .. testsetup::
+
+            >>> x.fft_output_order = False
+
+        Returns:
+            A Quantity array of coordinates for quantitative dimensions, `i.e.` `linear`
+            and `monotonic`.
+
+        Returns:
+            A Numpy array for labeled dimensions.
+
+        Raises:
+            AttributeError: For dimensions with subtype `linear`.
         """
         _n = self.subtype._count
         coordinates = self.subtype._coordinates[:_n]
         if self.type == "monotonic":
             return coordinates
         if self.type == "linear":
-            return (coordinates + self.index_zero_coordinate).to(
-                self.subtype._unit
-            )
-        raise AttributeError(attribute_error(self.subtype, "coordinates"))
+            return (coordinates + self.coordinates_offset).to(self.subtype._unit)
+        if self.type == "labeled":
+            return self.subtype.labels
 
     @coordinates.setter
     def coordinates(self, value):
-        if self.type not in ["linear", "labeled"]:
+        if self.type == "monotonic":
             self.subtype.values = value
+        if self.type == "labeled":
+            self.subtype.labels = value
+        if self.type == "linear":
+            raise AttributeError(
+                (
+                    "The attribute cannot be modifed for dimensions with subtype `linear`. "
+                    "Use `count`, `increment` or `coordinates_offset` attributes to update "
+                    "the coordinate along a linear dimension."
+                )
+            )
 
     @property
     def data_structure(self):
         r"""
-        Return an :ref:`dim_api` instance as a JSON object.
+        Json serialized string describing the Dimension class instance.
 
-        This supplementary attribute is useful for a quick preview of the data
-        structure. The attribute cannot be modified.
+        This supplementary attribute is useful for a quick preview of the dimension
+        object. The attribute cannot be modified.
 
         .. doctest::
 
@@ -359,26 +423,27 @@ class Dimension:
               "description": "This is a test",
               "count": 10,
               "increment": "5.0 G",
-              "index_zero_coordinate": "10.0 mT",
+              "coordinates_offset": "10.0 mT",
               "origin_offset": "10.0 T",
               "quantity_name": "magnetic flux density",
               "label": "field strength"
             }
 
-        :raises AttributeError: When modified.
+        Returns:
+            A json serialized string of the dimension object.
+        Raise:
+            AttributeError: When modified.
         """
         dictionary = self._get_python_dictionary()
-        return json.dumps(
-            dictionary, ensure_ascii=False, sort_keys=False, indent=2
-        )
+        return json.dumps(dictionary, ensure_ascii=False, sort_keys=False, indent=2)
 
     @property
     def description(self):
         """
         Brief description of the dimension object.
 
-        The default value is an empty string, ''. The attribute can be
-        modified, for example
+        The default value is an empty string, ''. The attribute may be
+        modified, for example,
 
         .. doctest::
 
@@ -387,8 +452,11 @@ class Dimension:
 
             >>> x.description = 'This is a test dimension.'
 
-        :returns: A ``string`` with UTF-8 allows characters.
-        :raises ValueError: When the non-string value is assigned.
+        Returns:
+            A string of UTF-8 allows characters describing the dimension.
+
+        Raises:
+            ValueError: When the assigned value is not a string.
         """
         return self.subtype.description
 
@@ -399,35 +467,20 @@ class Dimension:
     @property
     def fft_output_order(self):
         r"""
-        Return the coordinates along the dimension according to the fft order.
+        Boolean specifying if the coordinates are ordered as fft output order.
 
-        This attribute is only `valid` for the Dimension instances
-        with subtype `linear`.
-        The value of the attribute is a boolean specifying if the coordinates
-        along the dimension are ordered according to the output of a
-        fast Fourier transform (FFT) routine. The
-        universal behavior of all FFT routine is to order the :math:`N_k`
-        output amplitudes by placing the zero `frequency` at the start
-        of the output array, with positive `frequencies` increasing in
-        magnitude placed at increasing array offset until reaching
-        :math:`\frac{N_k}{2} -1` if :math:`N_k` is even, otherwise
-        :math:`\frac{N_k-1}{2}`, followed by negative frequencies
-        decreasing in magnitude until reaching :math:`N_k-1`.
+        This attribute is only `valid` for the Dimension instances with `linear`
+        subtype.
+        The value of this attribute is a boolean specifying if the coordinates along
+        the dimension are ordered according to the output of a fast Fourier transform
+        (FFT) routine. The universal behavior of all FFT routine is to order the
+        :math:`N_k` output amplitudes by placing the zero `frequency` at the start of
+        the output array, with positive `frequencies` increasing in magnitude placed
+        at increasing array offset until reaching :math:`\frac{N_k}{2} -1` if
+        :math:`N_k` is even, otherwise :math:`\frac{N_k-1}{2}`, followed by negative
+        frequencies decreasing in magnitude until reaching :math:`N_k-1`.
         This is also the ordering needed for the input of the inverse FFT.
-        For example, consider the coordinates along the dimension as
-
-        .. math ::
-
-            \mathbf{X}_k^\mathrm{ref} = [0, 1, 2, 3, 4, 5] \mathrm{~m/s}
-
-        when the value of the fft_output_order attribute is `false`, then when
-        the value is `true`, the order follows
-
-        .. math ::
-
-            \mathbf{X}_k^\mathrm{ref} = [0 ,1, 2, -3, -2, -1] \mathrm{~m/s}
-
-        The following is a test example.
+        For example, consider the following Dimension object,
 
         .. doctest::
 
@@ -437,17 +490,20 @@ class Dimension:
             ...            count = 10
             ...        )
 
-            >>> print(test.coordinates)
-            [0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]
             >>> test.fft_output_order
             False
+            >>> print(test.coordinates)
+            [0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]
 
             >>> test.fft_output_order = True
             >>> print(test.coordinates)
             [ 0.  1.  2.  3.  4. -5. -4. -3. -2. -1.]
 
-        :returns: A ``Boolean``.
-        :raises TypeError: When the assigned value is not a boolean.
+        Returns:
+            A Boolean.
+
+        Raises:
+            TypeError: When the assigned value is not a boolean.
         """
         return self.subtype.fft_output_order
 
@@ -458,28 +514,26 @@ class Dimension:
     @property
     def increment(self):
         r"""
-        Return the increment along the dimension.
+        Increment along a `linear` dimension.
 
-        The attribute is only `valid` for Dimension instances with
-        the subtype `linear`. When assigning,
-        the dimensionality of the value must be consistent with the
-        dimensionality of other members specifying the dimension.
-        Additionally, the sampling interval must be a positive real number.
-        The value is assigned as a string containing the sampling interval,
-        for example,
+        The attribute is only `valid` for Dimension instances with the subtype
+        `linear`. When assigning a value, the dimensionality of the value must
+        be consistent with the dimensionality of other members specifying the
+        dimension.
 
-        .. doctest::
-
+        Example:
             >>> print(x.increment)
             5.0 G
             >>> x.increment = "0.1 G"
             >>> print(x.coordinates)
             [100.  100.1 100.2 100.3 100.4 100.5 100.6 100.7 100.8 100.9] G
 
-        :returns: A ``Quantity`` instance with the sampling interval.
-        :raises AttributeError: For dimension with subtypes other than
-                                `linear`.
-        :raises TypeError: When the assigned value is not a string.
+        Returns:
+            A Quantity instance with the increment along the dimension.
+
+        Raises:
+            AttributeError: For dimension with subtypes other than `linear`.
+            TypeError: When the assigned value is not a string or Quantity object.
         """
         # .. note:: The sampling interval along a grid dimension and the
         #     respective reciprocal grid dimension follow the Nyquist–Shannon
@@ -493,58 +547,53 @@ class Dimension:
         self.subtype.increment = value
 
     @property
-    def index_zero_coordinate(self):
+    def coordinates_offset(self):
         r"""
-        Return the value at the zeroth index of the dimension.
+        Value at the zeroth index of the dimension.
 
-        When assigning a value, the dimensionality of the value
-        must be consistent with the dimensionality of the other members
-        specifying the dimension. The value is assigned as a string
-        containing the reference offset,
-        for example,
+        When assigning a value, the dimensionality of the value must be consistent with
+        the dimensionality of the other members specifying the dimension.
 
-        .. doctest::
-
-            >>> print(x.index_zero_coordinate)
+        Example:
+            >>> print(x.coordinates_offset)
             10.0 mT
-            >>> x.index_zero_coordinate = "0 T"
+            >>> x.coordinates_offset = "0 T"
             >>> print(x.coordinates)
             [ 0.  5. 10. 15. 20. 25. 30. 35. 40. 45.] G
 
         The attribute is `invalid` for the labeled dimensions.
 
-        :returns: A ``Quantity`` instance with the reference offset.
-        :raises AttributeError: For the labeled dimensions.
-        :raises TypeError: When the assigned value is not a string.
+        Returns:
+            A Quantity instance with the reference offset.
+
+        Raises:
+            AttributeError: For the labeled dimensions.
+            TypeError: When the assigned value is not a string or Quantity object.
         """
         if self.type == "linear":
-            return self.subtype.index_zero_coordinate
-        raise AttributeError(
-            attribute_error(self.subtype, "index_zero_coordinate")
-        )
+            return self.subtype.coordinates_offset
+        raise AttributeError(attribute_error(self.subtype, "coordinates_offset"))
 
-    @index_zero_coordinate.setter
-    def index_zero_coordinate(self, value):
-        self.subtype.index_zero_coordinate = value
+    @coordinates_offset.setter
+    def coordinates_offset(self, value):
+        self.subtype.coordinates_offset = value
 
     @property
     def label(self):
         r"""
-        Return the label associated with the dimension.
+        Label associated with the dimension.
 
-        The attribute is modified with a string containing the label, for
-        example,
-
-        .. doctest::
-
+        Example:
             >>> print(x.label)
             field strength
             >>> x.label = 'magnetic field strength'
             >>> print(x.axis_label)
             magnetic field strength / (G)
 
-        :returns: A ``string`` containing the label.
-        :raises TypeError: When the assigned value is not a string.
+        Returns:
+            A string containing the label.
+        Raises:
+            TypeError: When the assigned value is not a string.
         """
         return self.subtype.label
 
@@ -555,19 +604,18 @@ class Dimension:
     @property
     def count(self):
         r"""
-        Return the number of points, :math:`N_k \ge 1`, along the dimension.
+        Number of coordinates, :math:`N_k \ge 1`, along the dimension.
 
-        The attribute is modified with an integer specifying the number of
-        points along the dimension, for example,
-
-        .. doctest::
-
+        Example:
             >>> print(x.count)
             10
             >>> x.count = 5
 
-        :returns: An ``Integer`` with the number of points.
-        :raises TypeError: When the assigned value is not an integer.
+        Returns:
+            An Integer specifying the number of coordinates along the dimension.
+
+        Raises:
+            TypeError: When the assigned value is not an integer.
         """
         return self.subtype._count
 
@@ -599,25 +647,25 @@ class Dimension:
     @property
     def origin_offset(self):
         r"""
-        Return the origin offset, :math:`o_k`, along the dimension.
+        Origin offset, :math:`o_k`, along the dimension.
 
-        When assigning a value, the dimensionality of the value
-        must be consistent with the dimensionality of other members specifying
-        the dimension. The value is assigned as a string containing the
-        origin offset, for example,
+        When assigning a value, the dimensionality of the value must be consistent
+        with the dimensionality of other members specifying the dimension.
 
-        .. doctest::
-
+        Example:
             >>> print(x.origin_offset)
             10.0 T
             >>> x.origin_offset = "1e5 G"
 
-        The origin offset only affect the absolute_coordinates along the
-        dimension. This attribute is `invalid` for the labeled dimensions.
+        The origin offset only affect the absolute_coordinates along the dimension.
+        This attribute is `invalid` for the labeled dimensions.
 
-        :returns: A ``Quantity`` instance with the origin offset.
-        :raises AttributeError: For the labeled dimensions.
-        :raises TypeError: When the assigned value is not a string.
+        Returns:
+            A Quantity instance with the origin offset.
+
+        Raises:
+            AttributeError: For the labeled dimensions.
+            TypeError: When the assigned value is not a string or Quantity object.
         """
         return self.subtype.origin_offset
 
@@ -628,15 +676,12 @@ class Dimension:
     @property
     def period(self):
         r"""
-        Return the period of a quantitative independent variable dimension.
+        Period of the dimension.
 
         The default value of the period is infinity, i.e., the dimension is
-        non-periodic. The attribute is modified with a
-        string containing a quantity which represents the period of the
-        dimension. For example,
+        non-periodic.
 
-        .. doctest::
-
+        Example:
             >>> print(x.period)
             inf G
             >>> x.period = '1 T'
@@ -650,10 +695,12 @@ class Dimension:
             >>> x.period = 'infinity µT'
             >>> x.period = '∞ G'
 
-        :return: A ``Quantity`` instance with the period of the independent
-                 variables.
-        :raises AttributeError: For the labeled dimensions.
-        :raises TypeError: When the assigned value is not a string.
+        Return:
+            A Quantity instance with the period of the dimension.
+
+        Raise:
+            AttributeError: For the `labeled` dimensions.
+            TypeError: When the assigned value is not a string or Quantity object.
         """
         return self.subtype.period
 
@@ -664,7 +711,7 @@ class Dimension:
     @property
     def quantity_name(self):
         r"""
-        Return the `quantity name` associated with the dimension.
+        Quantity name associated with the physical quantities specifying the dimension.
 
         The attribute is `invalid` for the labeled dimension.
 
@@ -673,9 +720,12 @@ class Dimension:
             >>> print(x.quantity_name)
             magnetic flux density
 
-        :returns: A string with the `quantity name`.
-        :raises AttributeError: For labeled dimensions.
-        :raises NotImplementedError: When assigning a value.
+        Returns:
+            A string with the `quantity name`.
+
+        Raises:
+            AttributeError: For `labeled` dimensions.
+            NotImplementedError: When assigning a value.
         """
         return self.subtype.quantity_name
 
@@ -686,27 +736,35 @@ class Dimension:
     @property
     def type(self):
         r"""
-        Return the dimension type of the independent variable.
+        The dimension subtype.
 
-        There are three types of dimensions: LinearDimension,
-        MonotonicDimension, and LabeledDimension with `type` names as
-        `linear`, `monotonic` and `labeled`, respectively.
-        This attribute cannot be modified.
+        There are three *valid* subtypes of Dimension class with the following
+        enumeration literals,
+
+        | ``linear``
+        | ``monotonic``
+        | ``labeled``
+
+        corresponding to the LinearDimension, MonotonicDimension, and
+        LabeledDimension, respectively.
 
         .. doctest::
 
             >>> print(x.type)
             linear
 
-        :returns: A ``string``.
-        :raises AttributeError: When the attribute is modified.
+        Returns:
+            A string with a valid dimension subtype.
+
+        Raises:
+            AttributeError: When the attribute is modified.
         """
         return self.subtype.__class__._type
 
     @property
     def labels(self):
         r"""
-        Ordered array of labels along the Labeled dimension.
+        Ordered list of labels along the Labeled dimension.
 
         .. doctest::
 
@@ -724,15 +782,14 @@ class Dimension:
               ]
             }
 
-        In the above examples, ``x1`` and ``x2`` are the instances of the
-        :ref:`dim_api` class associated with the monotonically sampled
-        and the labeled dimensions respectively.
+        In the above example, ``x2`` is an instance of the :ref:`dim_api` class with
+        `labeled` subtype.
 
-        :returns: A ``Quantity array`` for dimensions with subtype
-                  `arbitrarily_sampled`.
-        :returns: A ``Numpy array`` for dimensions with subtype `labeled`.
-        :raises AttributeError: For dimensions with subtype `linear`.
+        Returns:
+             A Numpy array with labels along the dimension.
 
+        Raises:
+            AttributeError: For dimensions with subtype other than `labeled`.
         """
         return self.subtype.labels
 
@@ -744,10 +801,10 @@ class Dimension:
     @property
     def reciprocal(self):
         r"""
-        Return an instance of the ReciprocalVariable class.
+        An instance of the ReciprocalVariable class.
 
         The attributes of ReciprocalVariable class are:
-            - index_zero_coordinate
+            - coordinates_offset
             - origin_offset
             - period
             - quantity_name
@@ -771,25 +828,25 @@ class Dimension:
 
     def to(self, unit="", equivalencies=None):
         r"""
-        Convert the unit of the independent variable coordinates to `unit`.
+        Convert the coordinates along the dimension to unit, `unit`.
 
         This method is a wrapper of the `to` method from the
         `Quantity <http://docs.astropy.org/en/stable/api/\
         astropy.units.Quantity.html#astropy.units.Quantity.to>`_ class
         and is only `valid` for physical dimensions.
 
-        For example,
-
-        .. doctest::
-
+        Example:
             >>> print(x.coordinates)
             [100. 105. 110. 115. 120. 125. 130. 135. 140. 145.] G
             >>> x.to('mT')
             >>> print(x.coordinates)
             [10.  10.5 11.  11.5 12.  12.5 13.  13.5 14.  14.5] mT
 
-        :params: `unit` : A string containing a unit with the same
-            dimensionality as the coordinates along the dimension.
-        :raise AttributeError: For the labeled dimensions.
+        Args:
+            `unit` : A string containing a unit with the same dimensionality as the
+                     coordinates along the dimension.
+
+        Raises:
+            AttributeError: For the labeled dimensions.
         """
         self.subtype._to(unit, equivalencies)

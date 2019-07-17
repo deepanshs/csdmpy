@@ -9,5 +9,5 @@ astropy>=3.0
 # Dependencies of requests package
 requests>=2.21.0
 
-# Additional packages ------------- #
+# Additional packages
 matplotlib>=3.0.2

@@ -52,7 +52,7 @@ def preview(data_object):
                     temp = npts * dim.increment / 2.0
                 else:
                     temp = (npts - 1) * dim.increment / 2.0
-                dim.index_zero_coordinate = dim.index_zero_coordinate - temp
+                dim.coordinates_offset = dim.coordinates_offset - temp
 
                 axes.append(-i - 1)
                 dim.fft_output_order = False
@@ -71,8 +71,7 @@ def preview(data_object):
 
         if number_of_independents > 2:
             print(
-                "Preview of three or higher dimensional datasets "
-                "is not implemented."
+                "Preview of three or higher dimensional datasets " "is not implemented."
             )
             return
 
@@ -88,7 +87,7 @@ def preview(data_object):
         _preview(data)
 
 
-def _preview(data):
+def _preview(data, *args, **kwargs):
     """Quick display of the data."""
     x = data.dimensions
     y = data.dependent_variables
@@ -100,10 +99,7 @@ def _preview(data):
         return
 
     if len(x) > 2:
-        print(
-            "Preview of three or higher dimensional datasets "
-            "is not implemented."
-        )
+        print("Preview of three or higher dimensional datasets " "is not implemented.")
         return
 
     if np.any([x[i].type == "labeled" for i in range(len(x))]):
@@ -125,11 +121,11 @@ def _preview(data):
     if len(x) == 1:
         for i in range(y_len):
             if y[i].quantity_type == "scalar":
-                plot1D(x, y, i, ax)
+                plot1D(x, y, i, ax, *args, **kwargs)
             if "vector" in y[i].quantity_type:
-                vector_plot(x, y, i, fig, ax)
+                vector_plot(x, y, i, fig, ax, *args, **kwargs)
             if "audio" in y[i].quantity_type:
-                audio(x, y, i, fig, ax)
+                audio(x, y, i, fig, ax, *args, **kwargs)
 
         plt.tight_layout(w_pad=0.0, h_pad=0.0)
         plt.show()
@@ -137,11 +133,11 @@ def _preview(data):
     if len(x) == 2:
         for i in range(y_len):
             if y[i].quantity_type in ["RGB", "RGBA"]:
-                RGB(x, y, i, fig, ax)
+                RGB(x, y, i, fig, ax, *args, **kwargs)
             if y[i].quantity_type in ["scalar"]:
-                twoD_scalar(x, y, i, fig, ax)
+                twoD_scalar(x, y, i, fig, ax, *args, **kwargs)
             if "vector" in y[i].quantity_type:
-                vector_plot(x, y, i, fig, ax)
+                vector_plot(x, y, i, fig, ax, *args, **kwargs)
 
         plt.tight_layout(w_pad=0.0, h_pad=0.0)
         plt.show()
@@ -150,33 +146,31 @@ def _preview(data):
 # =========================================================================== #
 
 
-def plot1D(x, y, i0, ax):
+def plot1D(x, y, i0, ax, *args, **kwargs):
     i = int(i0 / 2)
     j = int(i0 % 2)
     components = y[i0].components.shape[0]
     for k in range(components):
-        ax[i][j].plot(x[0].coordinates, y[i0].components[k].real)
+        ax[i][j].plot(x[0].coordinates, y[i0].components[k].real, *args, **kwargs)
         if "complex" in y[i0].numeric_type:
-            ax[i][j].plot(x[0].coordinates, y[i0].components[k].imag)
+            ax[i][j].plot(x[0].coordinates, y[i0].components[k].imag, *args, **kwargs)
 
-        ax[i][j].set_xlim(
-            x[0].coordinates.value.min(), x[0].coordinates.value.max()
-        )
+        ax[i][j].set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
         ax[i][j].set_xlabel(x[0].axis_label)
         ax[i][j].set_ylabel(y[i0].axis_label[0])
         ax[i][j].set_title("{0}".format(y[i0].name))
         ax[i][j].grid(color="gray", linestyle="--", linewidth=0.5)
 
 
-def RGB(x, y, i0, fig, ax):
+def RGB(x, y, i0, fig, ax, *args, **kwargs):
     i = int(i0 / 2)
     j = i0 % 2
     y0 = y[i0].components
-    ax[i][j].imshow(np.moveaxis(y0 / y0.max(), 0, -1))
+    ax[i][j].imshow(np.moveaxis(y0 / y0.max(), 0, -1), *args, **kwargs)
     ax[i][j].set_title("{0}".format(y[i0].name))
 
 
-def twoD_scalar(x, y, i0, fig, ax):
+def twoD_scalar(x, y, i0, fig, ax, *args, **kwargs):
     i = int(i0 / 2)
     j = i0 % 2
 
@@ -187,16 +181,12 @@ def twoD_scalar(x, y, i0, fig, ax):
     if x[0].type == "linear" and x[1].type == "linear":
         # print('uniform')
         cs = ax[i][j].imshow(
-            y00.real,
-            extent=extent,
-            origin="lower",
-            aspect="auto",
-            cmap="Blues",
+            y00.real, extent=extent, origin="lower", aspect="auto", *args, **kwargs
         )
     else:
         # print('non-uniform')
         cs = NonUniformImage(
-            ax[i][j], interpolation="nearest", extent=extent, cmap="bone_r"
+            ax[i][j], interpolation="none", extent=extent, *args, **kwargs
         )
         cs.set_data(x0, x1, y00.real / y00.real.max())
         ax[i][j].images.append(cs)
@@ -212,7 +202,7 @@ def twoD_scalar(x, y, i0, fig, ax):
     ax[i][j].grid(color="gray", linestyle="--", linewidth=0.5)
 
 
-def vector_plot(x, y, i0, fig, ax):
+def vector_plot(x, y, i0, fig, ax, *args, **kwargs):
     i = int(i0 / 2)
     j = i0 % 2
     x0 = x[0].coordinates.value
@@ -224,15 +214,11 @@ def vector_plot(x, y, i0, fig, ax):
     x0, x1 = np.meshgrid(x0, x1)
     u1 = y[i0].components[0]
     v1 = y[i0].components[1]
-    ax[i][j].quiver(x0, x1, u1, v1, pivot="middle")
+    ax[i][j].quiver(x0, x1, u1, v1, pivot="middle", *args, **kwargs)
     ax[i][j].set_xlabel(x[0].axis_label)
-    ax[i][j].set_xlim(
-        x[0].coordinates.value.min(), x[0].coordinates.value.max()
-    )
+    ax[i][j].set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
     if len(x) == 2:
-        ax[i][j].set_ylim(
-            x[1].coordinates.value.min(), x[1].coordinates.value.max()
-        )
+        ax[i][j].set_ylim(x[1].coordinates.value.min(), x[1].coordinates.value.max())
         ax[i][j].set_ylabel(x[1].axis_label)
     else:
         ax[i][j].set_ylim([-y[i0].components.max(), y[i0].components.max()])
@@ -256,10 +242,7 @@ def audio(x, y, i0, fig, ax):
     plot1D(x, y, i0, ax)
     if SOUND == 1:
         data_max = y[i0].components.max()
-        sd.play(
-            0.9 * y[i0].components.T / data_max,
-            1 / x[0].increment.to("s").value,
-        )
+        sd.play(0.9 * y[i0].components.T / data_max, 1 / x[0].increment.to("s").value)
 
 
 # =========================================================================== #
@@ -273,9 +256,7 @@ def plot_line(x, y, ax):
             ax.plot(x[0].coordinates, y.components[k].T.imag)
 
         if x[0].type != "labeled":
-            ax.set_xlim(
-                x[0].coordinates.value.min(), x[0].coordinates.value.max()
-            )
+            ax.set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
 
         ax.set_xlabel(x[0].axis_label)
         ax.set_ylabel(y.axis_label[0])
@@ -294,14 +275,10 @@ def plot_image(x, y, fig, ax):
     extent = [x0.min(), x0.max(), x1.min(), x1.max()]
     if x[0].type == "linear" and x[1].type == "linear":
         # print('uniform')
-        cs = ax.imshow(
-            y00, extent=extent, origin="lower", aspect="auto", cmap="Blues"
-        )
+        cs = ax.imshow(y00, extent=extent, origin="lower", aspect="auto", cmap="Blues")
     else:
         # print('non-uniform')
-        cs = NonUniformImage(
-            ax, interpolation="nearest", extent=extent, cmap="bone_r"
-        )
+        cs = NonUniformImage(ax, interpolation="nearest", extent=extent, cmap="bone_r")
         cs.set_data(x0, x1, y00 / y00.max())
         ax.images.append(cs)
 
@@ -373,9 +350,7 @@ def plot_audio(x, y, ax):
     # print (SOUND)
     if SOUND == 1:
         data_max = y.components.max()
-        sd.play(
-            0.9 * y.components.T / data_max, 1 / x[0].increment.to("s").value
-        )
+        sd.play(0.9 * y.components.T / data_max, 1 / x[0].increment.to("s").value)
 
 
 try:
@@ -408,9 +383,7 @@ try:
                 layout_ = QtWidgets.QVBoxLayout(tab_)
                 layout_.setSpacing(0)
                 layout_.setContentsMargins(0, 0, 0, 0)
-                canvas = FigureCanvas(
-                    Figure(tight_layout=True)
-                )  # figsize=(5, 3),
+                canvas = FigureCanvas(Figure(tight_layout=True))  # figsize=(5, 3),
                 layout_.addWidget(canvas)
                 layout_.addWidget(NavigationToolbar(canvas, self))
                 tabs.addTab(tab_, "Dependent variable {0}".format(str(i)))

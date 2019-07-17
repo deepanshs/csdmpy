@@ -3,6 +3,7 @@ import json
 
 import numpy as np
 import pytest
+from astropy import units as u
 from numpy.fft import fftshift
 
 import csdfpy as cp
@@ -16,7 +17,7 @@ def test_linear_new():
         "type": "linear",
         "increment": "10 m/s",
         "count": 10,
-        "index_zero_coordinate": "5 m/s",
+        "coordinates_offset": "5 m/s",
     }
     data.add_dimension(dim)
 
@@ -28,6 +29,8 @@ def test_linear_new():
 
     assert str(data.dimensions[0].increment) == "10.0 m / s"
     data.dimensions[0].increment = ScalarQuantity("20.0 m / s")
+    assert str(data.dimensions[0].increment) == "20.0 m / s"
+    data.dimensions[0].increment = 20.0 * u.Unit("m / s")
     assert str(data.dimensions[0].increment) == "20.0 m / s"
 
     error = "Expecting an instance of type,"
@@ -46,14 +49,14 @@ def test_linear_new():
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.dimensions[0].application = "my_application"
 
-    assert str(data.dimensions[0].index_zero_coordinate) == "5.0 m / s"
+    assert str(data.dimensions[0].coordinates_offset) == "5.0 m / s"
 
     error = "Expecting an instance of type,"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
-        data.dimensions[0].index_zero_coordinate = 50
+        data.dimensions[0].coordinates_offset = 50
 
-    data.dimensions[0].index_zero_coordinate = ScalarQuantity("5.0 m / s")
-    assert str(data.dimensions[0].index_zero_coordinate) == "5.0 m / s"
+    data.dimensions[0].coordinates_offset = ScalarQuantity("5.0 m / s")
+    assert str(data.dimensions[0].coordinates_offset) == "5.0 m / s"
 
     assert str(data.dimensions[0].origin_offset) == "0.0 m / s"
     assert data.dimensions[0].quantity_name == "speed"
@@ -103,7 +106,7 @@ def test_linear_new():
                     "type": "linear",
                     "count": 12,
                     "increment": "20.0 m * s^-1",
-                    "index_zero_coordinate": "5.0 m * s^-1",
+                    "coordinates_offset": "5.0 m * s^-1",
                     "origin_offset": "1.0 km * s^-1",
                     "quantity_name": "speed",
                     "application": {"my_application": {}},
@@ -173,10 +176,10 @@ def test_monotonic_new():
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.dimensions[0].count = "12"
 
-    # index_zero_coordinate
-    error = "`MonotonicDimension` has no attribute `index_zero_coordinate`."
+    # coordinates_offset
+    error = "`MonotonicDimension` has no attribute `coordinates_offset`."
     with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
-        data.dimensions[0].index_zero_coordinate
+        data.dimensions[0].coordinates_offset
 
     # origin offset
     assert str(data.dimensions[0].origin_offset) == "0.0 m"

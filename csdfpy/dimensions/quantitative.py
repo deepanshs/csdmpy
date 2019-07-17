@@ -12,7 +12,7 @@ from csdfpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-
+__all__ = ["BaseQuantitativeDimension", "ReciprocalVariable"]
 
 # =========================================================================== #
 #                          Base Quantitative Class                            #
@@ -23,7 +23,7 @@ class BaseQuantitativeDimension:
     r"""A BaseQuantitativeDimension class."""
 
     __slots__ = (
-        "_index_zero_coordinate",
+        "_coordinates_offset",
         "_origin_offset",
         "_quantity_name",
         "_period",
@@ -38,7 +38,7 @@ class BaseQuantitativeDimension:
         self,
         description="",
         application={},
-        index_zero_coordinate=None,
+        coordinates_offset=None,
         origin_offset=None,
         quantity_name=None,
         period=None,
@@ -50,9 +50,7 @@ class BaseQuantitativeDimension:
 
         self._description = description
         self._application = application
-        self._index_zero_coordinate = ScalarQuantity(
-            index_zero_coordinate, unit
-        ).quantity
+        self._coordinates_offset = ScalarQuantity(coordinates_offset, unit).quantity
         self._origin_offset = ScalarQuantity(origin_offset, unit).quantity
         self._quantity_name = check_quantity_name(quantity_name, unit)
 
@@ -78,16 +76,16 @@ class BaseQuantitativeDimension:
         self._application = validate(value, "application", dict)
 
     @property
-    def index_zero_coordinate(self):
+    def coordinates_offset(self):
         r"""Value at index zero, :math:`c_k`, along the dimension."""
-        return deepcopy(self._index_zero_coordinate)
+        return deepcopy(self._coordinates_offset)
 
-    @index_zero_coordinate.setter
-    def index_zero_coordinate(self, value):
+    @coordinates_offset.setter
+    def coordinates_offset(self, value):
         allowed_types = (Quantity, str, ScalarQuantity)
-        value = validate(value, "index_zero_coordinate", allowed_types)
+        value = validate(value, "coordinates_offset", allowed_types)
         value = ScalarQuantity(value, self._unit).quantity
-        self._index_zero_coordinate = value
+        self._coordinates_offset = value
 
     @property
     def origin_offset(self):
@@ -155,9 +153,9 @@ class BaseQuantitativeDimension:
         obj = {}
 
         # The description key is added at the child class level.
-        if self._index_zero_coordinate.value != 0.0:
-            obj["index_zero_coordinate"] = ScalarQuantity(
-                self._index_zero_coordinate
+        if self._coordinates_offset.value != 0.0:
+            obj["coordinates_offset"] = ScalarQuantity(
+                self._coordinates_offset
             ).format()
 
         if self._origin_offset.value != 0.0:

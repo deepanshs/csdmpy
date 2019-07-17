@@ -12,6 +12,7 @@ from csdfpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
+__all__ = ["LabeledDimension"]
 
 
 class LabeledDimension:
@@ -21,9 +22,7 @@ class LabeledDimension:
 
     _type = "labeled"
 
-    def __init__(
-        self, labels, label="", description="", application={}, **kwargs
-    ):
+    def __init__(self, labels, label="", description="", application={}, **kwargs):
         r"""Instantiate a LabeledDimension class."""
         self._description = description
         self._application = application

@@ -46,9 +46,7 @@ def test01():
 
     assert dataset.dimensions[0].quantity_name == "time"
 
-    assert np.all(
-        dataset.dimensions[0].coordinates.value == np.arange(10) * 0.1
-    )
+    assert np.all(dataset.dimensions[0].coordinates.value == np.arange(10) * 0.1)
 
 
 def test02():

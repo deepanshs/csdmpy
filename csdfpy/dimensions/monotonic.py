@@ -14,7 +14,7 @@ from csdfpy.units import ScalarQuantity
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-
+__all__ = ["MonotonicDimension"]
 
 # =========================================================================== #
 #                     ArbitrarilySampledDimension Class                       #
@@ -73,8 +73,7 @@ class MonotonicDimension(BaseQuantitativeDimension):
     def _get_coordinates(self, values):
         _unit = self._unit
         _value = [
-            ScalarQuantity(item, _unit).quantity.to(_unit).value
-            for item in values
+            ScalarQuantity(item, _unit).quantity.to(_unit).value for item in values
         ]
         _value = np.asarray(_value, dtype=np.float64) * _unit
         self._count = _value.size
@@ -94,12 +93,8 @@ class MonotonicDimension(BaseQuantitativeDimension):
 
         reciprocal_dictionary = {}
         if self.reciprocal._description.strip() != "":
-            reciprocal_dictionary[
-                "description"
-            ] = self.reciprocal._description.strip()
-        reciprocal_dictionary.update(
-            self.reciprocal._get_quantitative_dictionary()
-        )
+            reciprocal_dictionary["description"] = self.reciprocal._description.strip()
+        reciprocal_dictionary.update(self.reciprocal._get_quantitative_dictionary())
         if reciprocal_dictionary == {}:
             del reciprocal_dictionary
         else:

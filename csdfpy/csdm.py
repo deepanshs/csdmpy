@@ -18,19 +18,19 @@ from csdfpy.utils import validate
 from csdfpy.version import __version__
 
 
+__all__ = ["CSDModel"]
+
+
 class CSDModel:
     r"""
     Instantiate a CSDModel class.
 
-    The CSDModel class is based on the core scientific dataset (CSD) model.
-    This class is a composition of the :ref:`dv_api` and :ref:`dim_api`
-    instances,
-    where every instance of the :ref:`dv_api` class is a :math:`p`-component
-    independent variable, :math:`y` and every instance of :ref:`dim_api` class
-    is a dimension of a :math:`d`-dimensional independent variable space
-    :math:`(x_0, x_1, ... x_k, ... x_{d-1})`.
-
-    :returns: A ``CSDModel`` instance.
+    This class is based on the root CSDM object of the core scientific dataset
+    (CSD) model. The class is a composition of the :ref:`dv_api` and
+    :ref:`dim_api` instances, where an instance of the :ref:`dv_api` class
+    describes a :math:`p`-component dependent variable, and an instance of the
+    :ref:`dim_api` class describes a dimension of a :math:`d`-dimensional
+    space. Additional attributes of this class is listed below.
     """
 
     __file_version__ = __version__
@@ -78,19 +78,17 @@ class CSDModel:
     # ----------------------------------------------------------------------- #
     @property
     def dependent_variables(self):
-        """Return a tuple of the :ref:`dv_api` instances."""
+        """Tuple of :ref:`dv_api` instances."""
         return self._dependent_variables
 
     @property
     def dimensions(self):
-        """Return a tuple of the :ref:`dim_api` instances."""
+        """Tuple of :ref:`dim_api` instances."""
         return self._dimensions
 
     @property
     def tags(self):
-        """
-        Return a list of tags attached to the dataset.
-        """
+        """List of tags related to the dataset."""
         return deepcopy(self._tags)
 
     @tags.setter
@@ -100,15 +98,14 @@ class CSDModel:
     @property
     def read_only(self):
         """
-        Return True, if the file is set to read only, otherwise, False.
+        If True, the data-file is serialized as read only, otherwise, False.
 
-        By default, the :ref:`csdm_api` object loads a copy of the csdf/csdfe
+        By default, the :ref:`csdm_api` object loads a copy of the .csdf(e)
         file, irrespective of the value of the `read_only` attribute.
-        The value of this attribute may be set any time after the import.
-        When serializing the csdf file, if the value of the `read_only`
+        The value of this attribute may be toggled at any time after the file
+        import.
+        When serializing the `.csdf(e)` file, if the value of the `read_only`
         attribute is found True, the file will be serialized as read only.
-        Alternatively, the `read_only` flag may also be provided as an argument
-        of the :meth:`~csdfpy.csdm.save` method.
         """
         return deepcopy(self._read_only)
 
@@ -118,55 +115,49 @@ class CSDModel:
 
     @property
     def version(self):
-        """
-        Return the version number of the :ref:`csdm_api` on file.
-
-        The attribute cannot be modified.
-        """
+        """Version number of the :ref:`csdm_api` on file."""
         return deepcopy(self._version)
 
     @property
     def timestamp(self):
         """
-        Return the timestamp when the CSDM file was last serialized.
+        Timestamp from when the csdm file was last serialized.
 
         The timestamp stamp is a string representation of the Coordinated
         Universal Time (UTC) formatted according to the iso-8601 standard.
 
-        The attribute cannot be modified.
+        Raises:
+            AttributeError: When the attribute is modified.
         """
         return deepcopy(self._timestamp)
 
     @property
     def geographic_coordinate(self):
         """
-        Return the geographic coordinate, if present.
+        Geographic coordinate, if present, from where the csdm file was last serialized.
 
         The geographic coordinates correspond to the location where the CSDM
         file was last serialized.
         The geographic coordinates are described with three attributes,
         the required latitude and longitude, and an optional altitude.
 
-
-        The attribute cannot be modified.
+        Raises:
+            AttributeError: When the attribute is modified.
         """
         return deepcopy(self._geographic_coordinate)
 
     @property
     def description(self):
-        """
-        Return a string with the description of the datasets.
+        """Description of the CSD model.
 
         The default value is an empty string, ''.
 
-        .. doctest::
-
+        Example:
             >>> print(data.description)
             A simulated sine curve.
 
-
-        :returns: A ``string`` with UTF-8 allows characters.
-        :raises ValueError: When the non-string value is assigned.
+        Returns:
+            A `string` of UTF-8 allows characters.
         """
         return self._description
 
@@ -177,21 +168,18 @@ class CSDModel:
     @property
     def application(self):
         """
-        Return an application dictionary, if present.
+        Application dictionary metadata, if present.
 
         By default, the application attribute is an empty dictionary, that is,
         the application metadata stored by the previous application is ignored
         upon file import.
 
         The application metadata may, however, be retained with a request via
-        the :meth:`~csdfpy.load` method. This feature may be useful
-        to related applications where application metadata might
-        contain additional information.
+        the :meth:`~csdfpy.load` method. This feature may be useful to related
+        applications where application metadata might contain additional information.
+        The attribute may be updated with a python dictionary.
 
-        This attribute may be updated with a python dictionary, for example,
-
-        .. doctest::
-
+        Example:
             >>> data.application = {
             ...     "com.reverse.domain": {
             ...         "my_key": "my_metadata"
@@ -206,17 +194,13 @@ class CSDModel:
 
     @property
     def filename(self):
-        """
-        Return the local file address of the current JSON file.
-
-        The file extensions includes the `.csdf` and the `.csdfe` files.
-        """
+        """Local file address of the current csdm file. """
         return self._filename
 
     @property
     def data_structure(self):
         r"""
-        Return the :ref:`csdm_api` instance as a JSON serialization.
+        Return the :ref:`csdm_api` instance as a JSON serialized string.
 
         The data_structure attribute is only intended for a quick preview of
         the dataset. This JSON serialized output from this attribute avoids
@@ -224,17 +208,12 @@ class CSDModel:
         save the data to a file, instead use the :meth:`~csdfpy.CSDModel.save`
         methods of the instance.
 
-        The attribute cannot be modified.
-
-        :raises AttributeError: When modified.
+        Raise:
+            AttributeError: When modified.
         """
-        dictionary = self._get_python_dictionary(
-            self.filename, print_function=True
-        )
+        dictionary = self._get_python_dictionary(self.filename, print_function=True)
 
-        return json.dumps(
-            dictionary, ensure_ascii=False, sort_keys=False, indent=2
-        )
+        return json.dumps(dictionary, ensure_ascii=False, sort_keys=False, indent=2)
 
     # ----------------------------------------------------------------------- #
     #                                  Methods                                #
@@ -244,10 +223,9 @@ class CSDModel:
         r"""
         Reshapes the components array.
 
-        The array is reshaped to
-        :math:`(p \times N_{d-1} \times ... N_1 \times N_0)` where :math:`p`
-        is the number of components and :math:`N_k` is the number of points
-        sampled along the :math:`k^\mathrm{th}` independent variable.
+        The array is reshaped to :math:`(p \times N_{d-1} \times ... N_1 \times N_0)`
+        where :math:`p` is the number of components and :math:`N_k` is the number of
+        points along the :math:`k^\mathrm{th}` dimension.
         """
         for item in self.dependent_variables:
             item = item.subtype
@@ -267,13 +245,10 @@ class CSDModel:
                 )
             if item._sparse_sampling == {}:
                 item._components = np.asarray(
-                    item._components[:, :grid_points].reshape(sub_shape),
-                    dtype=dtype,
+                    item._components[:, :grid_points].reshape(sub_shape), dtype=dtype
                 )
             else:
-                item._components = self.fill_sparse_space(
-                    item, sub_shape, dtype
-                )
+                item._components = self.fill_sparse_space(item, sub_shape, dtype)
 
     def fill_sparse_space(self, item, shape, dtype):
         """Fill sparse grid using numpy broadcasting."""
@@ -310,7 +285,7 @@ class CSDModel:
             ...     'type': 'linear',
             ...     'increment': '5 G',
             ...     'count': 50,
-            ...     'index_zero_coordinate': '-10 mT'
+            ...     'coordinates_offset': '-10 mT'
             ... }
             >>> datamodel.add_dimension(py_dictionary)
 
@@ -322,7 +297,7 @@ class CSDModel:
             ...     type = 'linear',
             ...     increment = '5 G',
             ...     count = 50,
-            ...     index_zero_coordinate = '-10 mT'
+            ...     coordinates_offset = '-10 mT'
             ... )
 
         *From an* :ref:`dim_api` *instance.*
@@ -334,7 +309,7 @@ class CSDModel:
             >>> var1 = Dimension(type = 'linear',
             ...                  increment = '5 G',
             ...                  count = 50,
-            ...                  index_zero_coordinate = '-10 mT')
+            ...                  coordinates_offset = '-10 mT')
             >>> datamodel.add_dimension(var1)
             >>> print(datamodel.data_structure)
             {
@@ -345,7 +320,7 @@ class CSDModel:
                     "type": "linear",
                     "count": 50,
                     "increment": "5.0 G",
-                    "index_zero_coordinate": "-10.0 mT",
+                    "coordinates_offset": "-10.0 mT",
                     "quantity_name": "magnetic flux density"
                   }
                 ],
@@ -387,7 +362,7 @@ class CSDModel:
             ...     'name': 'star',
             ...     'unit': 'W s',
             ...     'quantity_name': 'energy',
-            ...     'quantity_type': 'RGB'
+            ...     'quantity_type': 'pixel_3'
             ... }
             >>> datamodel.add_dependent_variable(py_dictionary)
 
@@ -398,7 +373,7 @@ class CSDModel:
             >>> datamodel.add_dependent_variable(type='internal',
             ...                                  name='star',
             ...                                  unit='W s',
-            ...                                  quantity_type='RGB',
+            ...                                  quantity_type='pixel_3',
             ...                                  components=numpy_array)
 
         *From a* :ref:`dv_api` *instance.*
@@ -409,7 +384,7 @@ class CSDModel:
             >>> var1 = DependentVariable(type='internal',
             ...                          name='star',
             ...                          unit='W s',
-            ...                          quantity_type='RGB',
+            ...                          quantity_type='pixel_3',
             ...                          components=numpy_array)
             >>> datamodel.add_dependent_variable(var1)
 
@@ -454,9 +429,7 @@ class CSDModel:
         dictionary["dependent_variables"] = []
 
         for i in range(len(self.dimensions)):
-            dictionary["dimensions"].append(
-                self.dimensions[i]._get_python_dictionary()
-            )
+            dictionary["dimensions"].append(self.dimensions[i]._get_python_dictionary())
 
         _length_of_dependent_variables = len(self.dependent_variables)
         for i in range(_length_of_dependent_variables):
@@ -479,8 +452,7 @@ class CSDModel:
 
         The serialized file is saved with two file extensions.
         When every instance of the DependentVariable class from the CSDModel
-        instance has
-        an `internal` subtype, the corresponding CSDModel instance is
+        instance has an `internal` subtype, the corresponding CSDModel instance is
         serialized with a `.csdf` file extension.
         If any single DependentVariable instance has an `external` subtype, the
         CSDModel instance is serialized with a `.csdfe` file extension.
@@ -606,44 +578,39 @@ class CSDModel:
                     new.add_dimension(variable)
         return new
 
-    # def split_dependent_variables(self):
-    #     for y in self.dependent_variables
-    #     new = CSDModel()
-
     def sum(self, index=0):
         """
-        Sum of data values along the independent variable indices.
+        Sum of the component values along the given dimension `index`.
 
-        Sum the dependent variable data values along the independent variable
-        at indices given by `index`. The default value is index 0. The index
-        can be an interger or a tuple of intergers.
-
-        :params: index: An integer or tuple of integers cooresponding to the
-                index/indices of the independent variable along which the sum
-                of data values is performed .
-        :returns: A ``CSDModel`` object.
+        Args:
+            index: An integer or tuple of `m` integers cooresponding to the
+                   index/indices of dimensions along which the sum of the
+                   dependent variables component values are performed .
+        Return:
+            A ``CSDModel`` object with `d-m` dimensions where `d` is the
+            number of dimensions in the original csdm data.
         """
         func = np.sum
         return self._get_new_csdmodel_object(func, index)
 
     def prod(self, index=0):
         """
-        Product of data values along the independent variable indices.
+        Product of the component values along the given dimension `index`.
 
-        The default value is index 0. The `index` is either an integer or a
-        tuple of intergers.
-
-        :params: index: An integer or tuple of integers cooresponding to the
-                index/indices of the independent variable along which the
-                product of data values is performed.
-        :returns: A ``CSDModel`` object.
+        Args:
+            index: An integer or tuple of `m` integers cooresponding to the
+                   index/indices of dimensions along which the product of the
+                   dependent variables component values are performed.
+        Return:
+            A ``CSDModel`` object with `d-m` dimensions where `d` is the
+            number of dimensions in the original csdm data.
         """
         func = np.prod
         return self._get_new_csdmodel_object(func, index)
 
     def fft(self, index=0):
         """
-        Perform a FFT along the specified control variable (cv).
+        Perform a FFT along the along the given dimension `index`.
 
         Needs debugging.
         """
@@ -657,9 +624,7 @@ class CSDModel:
         object_id._swap()
 
         # compute the reciprocal increment using Nyquist-shannan theorem.
-        _reciprocal_increment = 1.0 / (
-            object_id._count * object_id._increment.value
-        )
+        _reciprocal_increment = 1.0 / (object_id._count * object_id._increment.value)
         object_id._increment = _reciprocal_increment * object_id._unit
 
         # toggle the value of the FFT_output_order attribute
@@ -673,20 +638,14 @@ class CSDModel:
 
         # calculate the phase that will be applied to the fft amplitudes.
         phase = np.exp(
-            2j
-            * np.pi
-            * object_id.reciprocal._reference_offset
-            * object_id._coordinates
+            2j * np.pi * object_id.reciprocal._reference_offset * object_id._coordinates
         )
 
         ndim = len(self.dimensions)
 
         for i in range(len(self.dependent_variables)):
             signal_ft = fftshift(
-                fft(
-                    self.dependent_variables[i].subtype._components,
-                    axis=-index - 1,
-                )
+                fft(self.dependent_variables[i].subtype._components, axis=-index - 1)
                 * get_broadcase_shape(phase, ndim, axis=-index - 1),
                 axes=-index - 1,
             )

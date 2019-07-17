@@ -29,7 +29,7 @@ as a function of two spatial dimensions.
             "type": "linear",
             "count": 64,
             "increment": "0.0625 cm",
-            "index_zero_coordinate": "-2.0 cm",
+            "coordinates_offset": "-2.0 cm",
             "quantity_name": "length",
             "label": "x",
             "reciprocal": {
@@ -40,7 +40,7 @@ as a function of two spatial dimensions.
             "type": "linear",
             "count": 64,
             "increment": "0.0625 cm",
-            "index_zero_coordinate": "-2.0 cm",
+            "coordinates_offset": "-2.0 cm",
             "quantity_name": "length",
             "label": "y",
             "reciprocal": {
@@ -145,4 +145,5 @@ And now, the plot.
     >>> plt.subplots_adjust(wspace=0.025, hspace=0.05)
     >>> plt.savefig(vector_data.filename+'.pdf')
 
-.. image:: /_static/electric_field_raw.csdfe.pdf
+.. image:: electric_field_raw.png
+   :align: center

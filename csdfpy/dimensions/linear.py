@@ -14,6 +14,9 @@ from csdfpy.units import ScalarQuantity
 from csdfpy.utils import check_and_assign_bool
 from csdfpy.utils import validate
 
+__author__ = "Deepansh J. Srivastava"
+__email__ = "srivastava.89@osu.edu"
+__all__ = ["LinearDimension"]
 
 # =========================================================================== #
 #                          LinearDimension Class                              #
@@ -91,9 +94,9 @@ class LinearDimension(BaseQuantitativeDimension):
             self._application,
         )
 
-        self._index_zero_coordinate, self.reciprocal._index_zero_coordinate = (
-            self.reciprocal._index_zero_coordinate,
-            self._index_zero_coordinate,
+        self._coordinates_offset, self.reciprocal._coordinates_offset = (
+            self.reciprocal._coordinates_offset,
+            self._coordinates_offset,
         )
 
         self._origin_offset, self.reciprocal._origin_offset = (
@@ -101,20 +104,14 @@ class LinearDimension(BaseQuantitativeDimension):
             self._origin_offset,
         )
 
-        self._period, self.reciprocal._period = (
-            self.reciprocal._period,
-            self._period,
-        )
+        self._period, self.reciprocal._period = (self.reciprocal._period, self._period)
 
         self._quantity_name, self.reciprocal._quantity_name = (
             self.reciprocal._quantity_name,
             self._quantity_name,
         )
 
-        self._label, self.reciprocal._label = (
-            self.reciprocal._label,
-            self._label,
-        )
+        self._label, self.reciprocal._label = (self.reciprocal._label, self._label)
 
         self._unit, self.reciprocal._unit = self.reciprocal._unit, self._unit
 

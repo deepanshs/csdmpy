@@ -28,7 +28,7 @@ Let's load the file and look at its data structure.
             "description": "A full echo echo acquisition along the $t_2$ dimension using a Hahn echo.",
             "count": 1024,
             "increment": "8e-05 s",
-            "index_zero_coordinate": "-0.04104 s",
+            "coordinates_offset": "-0.04104 s",
             "quantity_name": "time",
             "label": "$t_2$",
             "reciprocal": {
@@ -224,4 +224,5 @@ To plot the dataset, we use the :meth:`~csdfpy.plot` method.
 ..     >>> plt.subplots_adjust(wspace=0.025, hspace=0.05)
 ..     >>> plt.savefig(NMR_2D_data.filename+'.pdf')
 
-.. image:: /_static/satRec_raw.csdfe.pdf
+.. figure:: satRec_raw.pdf
+   :align: center

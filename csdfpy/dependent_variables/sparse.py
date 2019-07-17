@@ -10,6 +10,7 @@ from csdfpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
+__all__ = ["SparseSampling"]
 
 
 class SparseSampling:

@@ -49,7 +49,7 @@ instance,
             "type": "linear",
             "count": 1608,
             "increment": "0.08333333333 yr",
-            "index_zero_coordinate": "1880.0416666667 yr",
+            "coordinates_offset": "1880.0416666667 yr",
             "quantity_name": "time",
             "label": "Time",
             "reciprocal": {
@@ -165,12 +165,12 @@ the :meth:`~csdfpy.plot` method of the `csdfpy` module to visualize the
 
     >>> cp.plot(sea_level)
 
-.. image:: /_static/sea_level_none.csdf.pdf
+.. figure:: sea_level_none.*
+   :align: center
 
+.. :target: ../_static/sea_level_none.csdf.pdf
 
-..    :target: ../_static/sea_level_none.csdf.pdf
-.. .. image:: /_static/sea_level_none.csdf.pdf
-
+.. .. image:: ../../images_/sea_level_none.csdf.pdf
 
 Nuclear Magnetic Resonance (MNR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -193,10 +193,10 @@ structure.
             "type": "linear",
             "count": 4096,
             "increment": "0.1 ms",
-            "index_zero_coordinate": "-0.3 ms",
+            "coordinates_offset": "-0.3 ms",
             "quantity_name": "time",
             "reciprocal": {
-              "index_zero_coordinate": "-3005.363 Hz",
+              "coordinates_offset": "-3005.363 Hz",
               "origin_offset": "75426328.864 Hz",
               "quantity_name": "frequency",
               "label": "$^{13}$C frequency shift"
@@ -246,8 +246,8 @@ Now to the plot the dataset,
 
     >>> cp.plot(NMR_data)
 
-.. image:: /_static/blochDecay_raw.csdfe.pdf
-
+.. figure:: blochDecay_raw.*
+   :align: center
 
 Electron Paramagnetic Resonance (EPR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -272,7 +272,7 @@ plot follows,
             "type": "linear",
             "count": 298,
             "increment": "4.0 G",
-            "index_zero_coordinate": "2750.0 G",
+            "coordinates_offset": "2750.0 G",
             "quantity_name": "magnetic flux density"
           }
         ],
@@ -296,7 +296,8 @@ plot follows,
     }
     >>> cp.plot(EPR_data)
 
-.. image:: /_static/xyinc2_base64.csdf.pdf
+.. figure:: xyinc2_base64.*
+   :align: center
 
 Gas Chromatography dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -347,8 +348,8 @@ follows,
     }
     >>> cp.plot(GCData)
 
-.. image:: /_static/cinnamon_none.csdf.pdf
-
+.. figure:: cinnamon_none.*
+   :align: center
 
 Fourier Transform Infrared Spectroscopy (FTIR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -372,7 +373,7 @@ structure and the plot of the FTIR dataset follows
             "type": "linear",
             "count": 1842,
             "increment": "1.930548614883216 cm^-1",
-            "index_zero_coordinate": "449.41 cm^-1",
+            "coordinates_offset": "449.41 cm^-1",
             "quantity_name": "wavenumber",
             "reciprocal": {
               "quantity_name": "length"
@@ -399,8 +400,8 @@ structure and the plot of the FTIR dataset follows
     }
     >>> cp.plot(FTIR_data)
 
-.. image:: /_static/caffeine_none.csdf.pdf
-
+.. figure:: caffeine_none.*
+   :align: center
 
 Ultraviolet–visible (UV-vis) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -424,7 +425,7 @@ model format. The data structure and the plot of the UV-vis dataset follows,
             "type": "linear",
             "count": 4001,
             "increment": "0.01 nm",
-            "index_zero_coordinate": "230.0 nm",
+            "coordinates_offset": "230.0 nm",
             "quantity_name": "length",
             "label": "wavelength",
             "reciprocal": {
@@ -452,4 +453,5 @@ model format. The data structure and the plot of the UV-vis dataset follows,
     }
     >>> cp.plot(UV_data)
 
-.. image:: /_static/benzeneVapour_base64.csdf.pdf
+.. figure:: benzeneVapour_base64.*
+   :align: center

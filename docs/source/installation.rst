@@ -1,7 +1,7 @@
 
-==========================
-Installing `csdfpy` module
-==========================
+===========================
+Installing `csdfpy` package
+===========================
 
 We recommend installing `anaconda <https://www.anaconda.com/distribution/>`_
 distribution for python version 3.5 or higher. The anaconda distribution
@@ -22,18 +22,7 @@ chances are that you already have the requirements installed.
 
 To install the required packages type the following in the command line. ::
 
-    pip install numpy scipy requests astropy
-
-The users may optionally install the matplotlib package if they prefer to use
-this package for generating plots and figures.
-
-.. note::
-
-    Some of the `csdfpy` module tests may fail without the matplotlib libraries.
-
-To install the matplotlib package type the following in the command line ::
-
-    pip install matplotlib
+    $ pip install -r requirements.txt
 
 Now install the test `csdfpy` module using ::
 

@@ -88,8 +88,8 @@ attribute, ::
 **The reference offset** ::
 
     >>> print ('old reference offset =', x[0].sampling_interval)
-    >>> x[0].index_zero_value = "-1 s"
-    >>> print ('new reference offset =', x[0].index_zero_value)
+    >>> x[0].coordinates_offset = "-1 s"
+    >>> print ('new reference offset =', x[0].coordinates_offset)
     >>> print ('new coordinates =', x[0].coordinates)
     old reference offset = 0.0 s
     new reference offset = -1.0 s

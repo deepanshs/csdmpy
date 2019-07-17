@@ -11,6 +11,11 @@ from csdfpy.dependent_variables.download import get_absolute_uri_path
 from csdfpy.dependent_variables.sparse import SparseSampling
 
 
+__author__ = "Deepansh J. Srivastava"
+__email__ = "srivastava.89@osu.edu"
+__all__ = ["ExternalDataset"]
+
+
 class ExternalDataset(BaseDependentVariable):
     """ExternalDataset class."""
 
@@ -29,10 +34,7 @@ class ExternalDataset(BaseDependentVariable):
 
         components = urlopen(absolute_URI).read()
         self._components = Decoder(
-            self._encoding,
-            self._quantity_type,
-            components,
-            self._numeric_type.dtype,
+            self._encoding, self._quantity_type, components, self._numeric_type.dtype
         )
 
         if kwargs["sparse_sampling"] != {}:
