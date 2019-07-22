@@ -5,10 +5,10 @@ from __future__ import print_function
 
 import json
 
-from csdfpy.dependent_variables.external import ExternalDataset
-from csdfpy.dependent_variables.internal import InternalDataset
-from csdfpy.utils import _axis_label
-from csdfpy.utils import _get_dictionary
+from csdmpy.dependent_variables.external import ExternalDataset
+from csdmpy.dependent_variables.internal import InternalDataset
+from csdmpy.utils import _axis_label
+from csdmpy.utils import _get_dictionary
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -36,7 +36,7 @@ class DependentVariable:
 
     .. doctest::
 
-        >>> from csdfpy import DependentVariable
+        >>> from csdmpy import DependentVariable
         >>> import numpy as np
         >>> numpy_array = np.arange(30).reshape(3,10).astype(np.float32)
 
@@ -442,7 +442,7 @@ class DependentVariable:
             >>> y.encoding = 'base64'
 
         The value of this attribute will be used in serializing the data to the file,
-        when using the :meth:`~csdfpy.csdm.CSDModel.save` method.
+        when using the :meth:`~csdmpy.csdm.CSDM.save` method.
 
         Returns:
             A string with a `valid` encoding type.
@@ -495,7 +495,7 @@ class DependentVariable:
 
         When assigning a valid value, this attribute updates the `dtype` of the
         components Numpy array from the corresponding
-        :py:attr:`~csdfpy.dependent_variables.DependentVariable.components`
+        :attr:`~csdmpy.dependent_variables.DependentVariable.components`
         attribute. We recommended the use of the numeric type attribute for
         updating the `dtype` of the Numpy array. For example,
 
@@ -639,7 +639,7 @@ class DependentVariable:
 
         .. note::
             The attribute cannot be modified. To convert the unit, use the
-            :py:meth:`~csdfpy.dependent_variables.DependentVariable.to` method of
+            :meth:`~csdmpy.dependent_variables.DependentVariable.to` method of
             the class instance.
 
         .. doctest::
@@ -679,7 +679,8 @@ class DependentVariable:
         Convert the unit of the dependent variable to the `unit`.
 
         Args:
-            unit: A string with the unit.
+            unit: A string containing a unit with the same dimensionality as the
+                  components of the dependent variable.
 
         .. doctest::
 

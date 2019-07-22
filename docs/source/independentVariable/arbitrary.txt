@@ -15,13 +15,13 @@ The following snippet loads a test file with a linearly sampled grid dimension,
 
 .. doctest::
 
-    >>> import csdfpy as cp
+    >>> import csdmpy as cp
     >>> filename = '../test-datasets0.0.11/test/test02.csdf'
     >>> testdata1 = cp.load(filename)
 
 The variable ``testdata1`` is an instance of the
-:ref:`CSDModel <csdm_api>` class. For the remainder of this example,
-we will focus on its :py:attr:~csdfpy.CSDModel.controlled_variables attribute,
+:ref:`CSDM <csdm_api>` class. For the remainder of this example,
+we will focus on its :attr:~csdmpy.CSDM.controlled_variables attribute,
 
 .. doctest::
 
@@ -201,13 +201,13 @@ coordinates.  An exception will be raised otherwise, ::
     ----> 5 x[0].to('km/s')
         6 # print ('new unit = ', x[0].unit)
         7 # print ('new coordinates = ', x[0].coordinates)
-    ~/csdfpy/controlled_variables.py in to(self, unit)
+    ~/csdmpy/controlled_variables.py in to(self, unit)
         981             self.set_attribute('_dimensionless_unit', _ppm)
         982         else:
     --> 983             self.set_attribute('_unit', _check_unit_consistency(string_to_quantity('1 '+unit), self.unit).unit)
         984         # return self.coordinates
         985
-    ~/csdfpy/_csdmChecks.py in _check_unit_consistency(element, unit)
+    ~/csdmpy/_csdmChecks.py in _check_unit_consistency(element, unit)
         198         #     raise Exception(e)
         199         raise Exception("The unit '{0}' ({1}) is inconsistent with the unit '{2}' ({3}).".format(
     --> 200                 str(element.unit), str(element.unit.physical_type), str(unit), unit.physical_type))

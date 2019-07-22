@@ -4,7 +4,7 @@ from os.path import split
 import numpy as np
 import pytest
 
-import csdfpy as cp
+import csdmpy as cp
 
 
 def test_load_test_files():

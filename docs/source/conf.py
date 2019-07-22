@@ -44,17 +44,17 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
     "sphinx.ext.todo",
-    "sphinx.ext.coverage",
+    # "sphinx.ext.coverage",
     "sphinx.ext.mathjax",
-    "sphinx.ext.githubpages",
+    # "sphinx.ext.githubpages",
     "sphinx.ext.autosummary",
     "sphinx.ext.viewcode",
-    "sphinx.ext.inheritance_diagram",
+    # "sphinx.ext.inheritance_diagram",
     "sphinx.ext.napoleon",
     # "autoapi.sphinx",
 ]
 
-# autoapi_modules = {"csdfpy": {"output": "auto"}}
+# autoapi_modules = {"csdmpy": {"output": "auto"}}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -96,12 +96,12 @@ html_theme = "sphinx_rtd_theme"
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 
-html_sidebars = {
-    "**": [
-        "relations.html",  # needs 'show_related': True theme option to display
-        "searchbox.html",
-    ]
-}
+# html_sidebars = {
+#     "**": [
+#         "relations.html",  # needs 'show_related': True theme option to display
+#         "searchbox.html",
+#     ]
+# }
 
 # html_sidebars = {"**": ["sidebar.html", "searchbox.html"]}
 
@@ -173,7 +173,7 @@ html_sidebars = {
 # }
 
 # Theme options
-html_logo = "_static/csdfpy.png"
+html_logo = "_static/csdmpy.png"
 
 html_theme_options = {
     "canonical_url": "",
@@ -182,7 +182,7 @@ html_theme_options = {
     "prev_next_buttons_location": "bottom",
     "style_external_links": True,
     "style_nav_header_background": "black",
-    # 'github_url': 'https://github.com/DeepanshS/csdfpy/doc/source/index',
+    # 'github_url': 'https://github.com/DeepanshS/csdmpy/doc/source/index',
     # Toc options
     "collapse_navigation": True,
     "sticky_navigation": True,
@@ -194,7 +194,7 @@ html_theme_options = {
 html_context = {
     "display_github": True,
     "github_user": "DeepanshS",
-    "github_repo": "csdfpy",
+    "github_repo": "csdmpy",
     "github_version": "master/docs/source/",
     "css_files": [
         "_static/theme_overrides.css",  # override wide tables in RTD theme
@@ -237,16 +237,16 @@ htmlhelp_basename = "CSDMdoc"
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
-    # 'papersize': 'letterpaper',
+    "papersize": "letterpaper",
     # The font size ('10pt', '11pt' or '12pt').
     #
-    # 'pointsize': '10pt',
+    "pointsize": "10pt",
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
     # Latex figure (float) alignment
     #
-    # 'figure_align': 'htbp',
+    "figure_align": "htbp",
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
@@ -315,8 +315,8 @@ todo_include_todos = True
 
 def setup(app):
     app.add_javascript("copybutton.js")
-    app.add_javascript("jsquery.js")
-    app.add_javascript("init.js")
+    # app.add_javascript("jsquery.js")
+    # app.add_javascript("init.js")
     # app.add_javascript("custom.js")
     # app.add_javascript(
     #     "https://cdn.jsdelivr.net/npm/clipboard@1/dist/clipboard.min.js"

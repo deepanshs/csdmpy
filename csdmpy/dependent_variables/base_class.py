@@ -9,14 +9,14 @@ from copy import deepcopy
 
 import numpy as np
 
-from csdfpy.dependent_variables.download import get_relative_uri_path
-from csdfpy.units import check_quantity_name
-from csdfpy.units import ScalarQuantity
-from csdfpy.utils import check_encoding
-from csdfpy.utils import NumericType
-from csdfpy.utils import numpy_dtype_to_numeric_type
-from csdfpy.utils import QuantityType
-from csdfpy.utils import validate
+from csdmpy.dependent_variables.download import get_relative_uri_path
+from csdmpy.units import check_quantity_name
+from csdmpy.units import ScalarQuantity
+from csdmpy.utils import check_encoding
+from csdmpy.utils import NumericType
+from csdmpy.utils import numpy_dtype_to_numeric_type
+from csdmpy.utils import QuantityType
+from csdmpy.utils import validate
 
 
 __author__ = "Deepansh J. Srivastava"

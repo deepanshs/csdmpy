@@ -4,10 +4,10 @@ from copy import deepcopy
 from astropy.units import Quantity
 from numpy import inf
 
-from csdfpy.units import check_quantity_name
-from csdfpy.units import ScalarQuantity
-from csdfpy.utils import type_error
-from csdfpy.utils import validate
+from csdmpy.units import check_quantity_name
+from csdmpy.units import ScalarQuantity
+from csdmpy.utils import type_error
+from csdmpy.utils import validate
 
 
 __author__ = "Deepansh J. Srivastava"

@@ -15,7 +15,7 @@ Let's load the `.csdfe` file and look at its data structure.
 
 .. doctest::
 
-    >>> import csdfpy as cp
+    >>> import csdmpy as cp
     >>> bubble_nebula = cp.load('../test-datasets0.0.12/astronomy/source/Bubble Nebula/bubble.csdm')
     >>> print(bubble_nebula.data_structure)
     {
@@ -76,7 +76,7 @@ the `bubble_nebula` instance following,
 
 Because there are two dimension instances in `x`, let's look
 at the coordinates along each dimension, `x0`, and `x1` respectively,
-using the :py:attr:`~csdfpy.dimensions.Dimension.coordinates` attribute of the
+using the :attr:`~csdmpy.dimensions.Dimension.coordinates` attribute of the
 respective instances.
 
 .. doctest::
@@ -94,7 +94,7 @@ respective instances.
 Here, we only print the first 10 coordinates along the respective dimensions.
 
 The component of the dependent variable is accessed through the
-:py:attr:`~csdfpy.dependent_variables.DependentVariable.components` attribute.
+:attr:`~csdmpy.dependent_variables.DependentVariable.components` attribute.
 
 .. doctest::
 

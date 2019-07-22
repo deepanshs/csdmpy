@@ -5,10 +5,10 @@ from __future__ import print_function
 
 from urllib.request import urlopen
 
-from csdfpy.dependent_variables.base_class import BaseDependentVariable
-from csdfpy.dependent_variables.decoder import Decoder
-from csdfpy.dependent_variables.download import get_absolute_uri_path
-from csdfpy.dependent_variables.sparse import SparseSampling
+from csdmpy.dependent_variables.base_class import BaseDependentVariable
+from csdmpy.dependent_variables.decoder import Decoder
+from csdmpy.dependent_variables.download import get_absolute_uri_path
+from csdmpy.dependent_variables.sparse import SparseSampling
 
 
 __author__ = "Deepansh J. Srivastava"

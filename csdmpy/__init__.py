@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""CSDModel."""
+"""CSDM."""
 from __future__ import division
 from __future__ import print_function
 
@@ -11,12 +11,12 @@ from urllib.parse import urlparse
 
 from numpy.fft import fftshift
 
-from csdfpy.csdm import CSDModel
-from csdfpy.dependent_variables import DependentVariable
-from csdfpy.dependent_variables.download import download_file_from_url
-from csdfpy.dimensions import Dimension
-from csdfpy.helper_functions import _preview
-from csdfpy.version import __version__
+from csdmpy.csdm import CSDM
+from csdmpy.dependent_variables import DependentVariable
+from csdmpy.dependent_variables.download import download_file_from_url
+from csdmpy.dimensions import Dimension
+from csdmpy.helper_functions import _preview
+from csdmpy.version import __version__
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -40,18 +40,20 @@ def load(filename=None, application=False, sort_fft_order=False):
     The file must be a JSON serialization of the CSD Model.
 
     Example:
-
         >>> data1 = cp.load('local_address/file.csdf') # doctest: +SKIP
         >>> data2 = cp.load('url_address/file.csdf') # doctest: +SKIP
 
     Args:
         filename (str): A local or remote address to the `.csdf or `.csdfe` file.
-        application (bool): A boolean. If true, import the application metadata from
-                            the application that last serialized the file.
-        sort_fft_order (bool): If true, the coordinates and the corresponding
-                               components will be sorted upon import.
+        application (bool): If true, the application metadata from the application that
+                last serialized the file will be imported. Default is False.
+        sort_fft_order (bool): If true, the coordinates and the components
+                corresponding to the dimension with `fft_output_order` as True will be
+                sorted upon import and the corresponding `fft_output_order` key-value
+                will be set to False. Default is False.
+
     Returns:
-        A ``CSDModel`` instance.
+        A CSDM instance.
     """
     if filename is None:
         raise Exception("Missing a required data file address.")
@@ -131,7 +133,7 @@ def _load(filename):
 
     key_list_csdm = dictionary["csdm"].keys()
 
-    csdm = CSDModel(filename, _version)
+    csdm = CSDM(filename, _version)
 
     if "dimensions" in key_list_csdm:
         for dim in dictionary["csdm"]["dimensions"]:
@@ -154,13 +156,13 @@ def _load(filename):
 
 def new(description=""):
     r"""
-    Creates a new instance of the :ref:`csdm_api` class containing a 0D{0} dataset.
+    A new instance of the :ref:`csdm_api` class with a 0D{0} dataset.
 
     Args:
-        description (str): An optional description associated with the csdm object.
+        description (str): A string describing the the csdm object. This is optional.
 
     Example:
-        >>> import csdfpy as cp
+        >>> import csdmpy as cp
         >>> emptydata = cp.new(description='Testing Testing 1 2 3')
         >>> print(emptydata.data_structure)
         {
@@ -173,9 +175,9 @@ def new(description=""):
         }
 
     Returns:
-        A ``CSDModel`` instance.
+        A CSDM instance.
     """
-    return CSDModel(description=description)
+    return CSDM(description=description)
 
 
 def plot(data_object, *args, **kwargs):

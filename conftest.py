@@ -2,9 +2,9 @@
 import numpy as np
 import pytest
 
-import csdfpy as cp
-from csdfpy.dependent_variables import DependentVariable
-from csdfpy.dimensions import Dimension
+import csdmpy as cp
+from csdmpy.dependent_variables import DependentVariable
+from csdmpy.dimensions import Dimension
 
 __all__ = []
 

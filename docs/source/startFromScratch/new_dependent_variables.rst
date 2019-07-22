@@ -3,27 +3,30 @@
 Adding instances of DependentVariable class
 -------------------------------------------
 
-In the previous two sections, we create a new dataset and populated it with
-dimension objects. In this example, we will create a new dataset and
-populate it with the dependent variables.
+In the previous two sections, we created a new dataset and learnt how to add
+dimension objects to the dataset. In this example, we will see how to add
+dependent variables to the dataset. Let's start by creating a new dataset,
 
 .. doctest::
 
-    >>> import csdfpy as cp
+    >>> import csdmpy as cp
     >>> new_data = cp.new(description='A new test dependent variables dataset')
 
-In this section, we will add dimension objects to this dataset.
-An instance of the Dimension class is added using the
-:meth:`~csdfpy.csdm.CSDModel.add_dimension` method of the :ref:`csdm_api`
-instance. See :ref:`dim_api` API for further detail.
+An instance of the DependentVariable class is added using the
+:meth:`~csdmpy.csdm.CSDM.add_dependent_variable` method of the :ref:`csdm_api`
+instance. There are two subtypes of DependentVariable class:
 
-^^^^^^^^
-Internal
-^^^^^^^^
-**Scalar type**
-We refer dependent variable type as *internal* when the components of the data
-are provided along with the dependent variable metadata. For example, consider
-the following python dictionary
+  - InternalDependentVariable
+  - ExternalDependentVariable
+
+^^^^^^^^^^^^^^^^^^^^^^^^^
+InternalDependentVariable
+^^^^^^^^^^^^^^^^^^^^^^^^^
+**Adding a scalar dependent variables**
+
+We refer an instance of the DependentVariable as *internal* when the components
+of the dependent variable are listed along with the other metadata specifying
+the dependent variable. For example, consider the following python dictionary
 
 .. doctest::
 
@@ -34,18 +37,19 @@ the following python dictionary
     ...     'components': [np.arange(100)]
     ... }
 
-where the components are listed as the value of the components keyword.
+where the components are listed as the value of the
+:attr:`csdmpy.dependent_variables.DependentVariables.components` keyword.
 
 .. note::
     The value of the components attribute is listed as a list of numpy array.
-    In csdfpy, the first dimension is reserved for the components. Since this
+    In csdmpy, the first dimension is reserved for the components. Since this
     example has only one component, we specify it as a list of numpy array.
     Alternatively, one could also assign
     ``np.arange(100).reshape(np.newaxis, 100)`` as the value of the components
     attribute.
 
 To add a dependent variable to the ``new_data`` instance, use the
-:meth:`~csdfpy.csdm.CSDModel.add_dependent_variable` method as
+:meth:`~csdmpy.csdm.CSDM.add_dependent_variable` method as
 
 .. doctest::
 
@@ -81,9 +85,12 @@ after adding the dependent variable is
       }
     }
 
-**Vector type**
-In this next example, we add a dependent variable of vector quantity type.
-This time we use the keyword arguments to add a new dependent variable.
+**Adding a vector dependent variables**
+
+In this next example, we add a dependent variable of vector quantity.
+This time we use keywords as the argument of the
+:meth:`~csdmpy.csdm.CSDM.add_dependent_variable` method to add a new
+dependent variable.
 
 .. doctest::
 
@@ -96,3 +103,48 @@ This time we use the keyword arguments to add a new dependent variable.
     ... )
 
 The data structure after adding the above dependent variable is
+
+  .. doctest::
+
+    >>> print(new_data.data_structure)
+    {
+      "csdm": {
+        "version": "0.0.12",
+        "description": "A new test dependent variables dataset",
+        "dimensions": [],
+        "dependent_variables": [
+          {
+            "type": "internal",
+            "description": "This is an internal scalar dependent variable",
+            "unit": "cm",
+            "quantity_name": "length",
+            "numeric_type": "int64",
+            "quantity_type": "scalar",
+            "components": [
+              [
+                "0, 1, ..., 98, 99"
+              ]
+            ]
+          },
+          {
+            "type": "internal",
+            "description": "This is an internal vector dependent variable",
+            "unit": "kg * m * s^-2",
+            "quantity_name": "force",
+            "numeric_type": "complex64",
+            "quantity_type": "vector_3",
+            "components": [
+              [
+                "0j, (1+0j), ..., (98+0j), (99+0j)"
+              ],
+              [
+                "(100+0j), (101+0j), ..., (198+0j), (199+0j)"
+              ],
+              [
+                "(200+0j), (201+0j), ..., (298+0j), (299+0j)"
+              ]
+            ]
+          }
+        ]
+      }
+    }

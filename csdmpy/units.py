@@ -202,7 +202,7 @@ class ScalarQuantity:
         return str(self.quantity)
 
     def format(self, format="quantity"):
-        """Format the units according to csdfpy recommendation.
+        """Format the units according to csdmpy recommendation.
 
         :ivar: format: The value can either be 'quantity' or 'unit'
 

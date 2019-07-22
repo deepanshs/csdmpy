@@ -7,9 +7,9 @@ from copy import deepcopy
 
 import numpy as np
 
-from csdfpy.dimensions.quantitative import BaseQuantitativeDimension
-from csdfpy.dimensions.quantitative import ReciprocalVariable
-from csdfpy.units import ScalarQuantity
+from csdmpy.dimensions.quantitative import BaseQuantitativeDimension
+from csdmpy.dimensions.quantitative import ReciprocalVariable
+from csdmpy.units import ScalarQuantity
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -27,7 +27,7 @@ class MonotonicDimension(BaseQuantitativeDimension):
 
     .. warning ::
         This class should not be used directly. Instead,
-        use the ``CSDModel`` object to access the attributes
+        use the ``CSDM`` object to access the attributes
         and methods of this class. See example, :ref:`asgd`.
 
     This class returns an object which represents a physical

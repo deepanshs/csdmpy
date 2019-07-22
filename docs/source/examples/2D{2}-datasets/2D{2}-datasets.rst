@@ -15,7 +15,7 @@ as a function of two spatial dimensions.
 
 .. doctest::
 
-    >>> import csdfpy as cp
+    >>> import csdmpy as cp
 
     >>> filename = '../test-datasets0.0.12/vector/electricField/electric_field_raw.csdfe'
     >>> vector_data = cp.load(filename)
@@ -90,7 +90,7 @@ with the respective coordinates (viewed only up to five values).
 
 respectively.
 The components of the dependent variable are of a vector dataset. This is
-also seen from the :attr:`~csdfpy.DependentVariable.quantity_type`
+also seen from the :attr:`~csdmpy.DependentVariable.quantity_type`
 attribute of the corresponding dependent variable instance.
 
 .. doctest::

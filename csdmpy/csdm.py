@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""CSDModel."""
+"""CSDM."""
 from __future__ import division
 from __future__ import print_function
 
@@ -12,18 +12,18 @@ import numpy as np
 from numpy.fft import fft
 from numpy.fft import fftshift
 
-from csdfpy.dependent_variables import DependentVariable
-from csdfpy.dimensions import Dimension
-from csdfpy.utils import validate
-from csdfpy.version import __version__
+from csdmpy.dependent_variables import DependentVariable
+from csdmpy.dimensions import Dimension
+from csdmpy.utils import validate
+from csdmpy.version import __version__
 
 
-__all__ = ["CSDModel"]
+__all__ = ["CSDM"]
 
 
-class CSDModel:
+class CSDM:
     r"""
-    Instantiate a CSDModel class.
+    Instantiate a CSDM class.
 
     This class is based on the root CSDM object of the core scientific dataset
     (CSD) model. The class is a composition of the :ref:`dv_api` and
@@ -57,7 +57,7 @@ class CSDModel:
         elif version in self._old_incompatible_versions:
             raise Exception(
                 (
-                    "Files created with version {0} of the CSDModel "
+                    "Files created with version {0} of the CSDM "
                     "are no longer supported."
                 ).format(version)
             )
@@ -88,7 +88,7 @@ class CSDModel:
 
     @property
     def tags(self):
-        """List of tags related to the dataset."""
+        """List of tags attached to the dataset."""
         return deepcopy(self._tags)
 
     @tags.setter
@@ -115,13 +115,13 @@ class CSDModel:
 
     @property
     def version(self):
-        """Version number of the :ref:`csdm_api` on file."""
+        """Version number of the CSD model on file."""
         return deepcopy(self._version)
 
     @property
     def timestamp(self):
         """
-        Timestamp from when the csdm file was last serialized.
+        Timestamp from when the file was last serialized.
 
         The timestamp stamp is a string representation of the Coordinated
         Universal Time (UTC) formatted according to the iso-8601 standard.
@@ -134,12 +134,11 @@ class CSDModel:
     @property
     def geographic_coordinate(self):
         """
-        Geographic coordinate, if present, from where the csdm file was last serialized.
+        Geographic coordinate, if present, from where the file was last serialized.
 
-        The geographic coordinates correspond to the location where the CSDM
-        file was last serialized.
-        The geographic coordinates are described with three attributes,
-        the required latitude and longitude, and an optional altitude.
+        The geographic coordinates correspond to the location where the file was last
+        serialized. If present, the geographic coordinates are described with three
+        attributes, the required latitude and longitude, and an optional altitude.
 
         Raises:
             AttributeError: When the attribute is modified.
@@ -148,7 +147,7 @@ class CSDModel:
 
     @property
     def description(self):
-        """Description of the CSD model.
+        """Description of the dataset.
 
         The default value is an empty string, ''.
 
@@ -157,7 +156,7 @@ class CSDModel:
             A simulated sine curve.
 
         Returns:
-            A `string` of UTF-8 allows characters.
+            A string of UTF-8 allows characters describing the dataset.
         """
         return self._description
 
@@ -168,23 +167,38 @@ class CSDModel:
     @property
     def application(self):
         """
-        Application dictionary metadata, if present.
+        Application metadata dictionary of the CSDM object.
+
+        .. doctest::
+
+            >>> print(data.application)
+            {}
 
         By default, the application attribute is an empty dictionary, that is,
         the application metadata stored by the previous application is ignored
         upon file import.
 
         The application metadata may, however, be retained with a request via
-        the :meth:`~csdfpy.load` method. This feature may be useful to related
+        the :meth:`~csdmpy.load` method. This feature may be useful to related
         applications where application metadata might contain additional information.
         The attribute may be updated with a python dictionary.
 
+        The application attribute is where an application can place its own
+        metadata as a python dictionary object with application specific
+        metadata, using a reverse domain name notation string as the attribute
+        key, for example,
+
         Example:
             >>> data.application = {
-            ...     "com.reverse.domain": {
-            ...         "my_key": "my_metadata"
-            ...     }
+            ...     "com.example.myApp" : {
+            ...         "myApp_key": "myApp_metadata"
+            ...      }
             ... }
+            >>> print(data.application)
+            {'com.example.myApp': {'myApp_key': 'myApp_metadata'}}
+
+        Returns:
+            Python dictionary object with the application metadata.
         """
         return deepcopy(self._application)
 
@@ -194,21 +208,21 @@ class CSDModel:
 
     @property
     def filename(self):
-        """Local file address of the current csdm file. """
+        """Local file address of the current file. """
         return self._filename
 
     @property
     def data_structure(self):
         r"""
-        Return the :ref:`csdm_api` instance as a JSON serialized string.
+        Json serialized string describing the CSDM class instance.
 
         The data_structure attribute is only intended for a quick preview of
         the dataset. This JSON serialized output from this attribute avoids
         displaying large datasets. Do not use the value of this attribute to
-        save the data to a file, instead use the :meth:`~csdfpy.CSDModel.save`
+        save the data to a file, instead use the :meth:`~csdmpy.CSDM.save`
         methods of the instance.
 
-        Raise:
+        Raises:
             AttributeError: When modified.
         """
         dictionary = self._get_python_dictionary(self.filename, print_function=True)
@@ -279,7 +293,7 @@ class CSDModel:
 
         .. doctest::
 
-            >>> import csdfpy as cp
+            >>> import csdmpy as cp
             >>> datamodel = cp.new()
             >>> py_dictionary = {
             ...     'type': 'linear',
@@ -304,7 +318,7 @@ class CSDModel:
 
         .. doctest::
 
-            >>> from csdfpy import Dimension
+            >>> from csdmpy import Dimension
             >>> datamodel = cp.new()
             >>> var1 = Dimension(type = 'linear',
             ...                  increment = '5 G',
@@ -332,7 +346,7 @@ class CSDModel:
         ``datamodel`` as a reference, `i.e.`, if the instance ``var1`` is
         destroyed, the ``datamodel`` instance will become corrupt. As a
         recommendation always pass a copy of the :ref:`dim_api` instance to the
-        :meth:`~csdfpy.CSDModel.add_dimension` method. We provide
+        :meth:`~csdmpy.CSDM.add_dimension` method. We provide
         the later alternative for it is useful for copying an :ref:`dim_api`
         instance from one :ref:`csdm_api` instance to another.
         """
@@ -380,7 +394,7 @@ class CSDModel:
 
         .. doctest::
 
-            >>> from csdfpy import DependentVariable
+            >>> from csdmpy import DependentVariable
             >>> var1 = DependentVariable(type='internal',
             ...                          name='star',
             ...                          unit='W s',
@@ -390,7 +404,7 @@ class CSDModel:
 
         If passing a :ref:`dv_api` instance, as a general recommendation,
         always pass a copy of the DependentVariable instance to the
-        :meth:`~csdfpy.CSDModel.add_dependent_variable` method. We provide
+        :meth:`~csdmpy.CSDM.add_dependent_variable` method. We provide
         the later alternative as it is useful for copying a DependentVariable
         instance from one :ref:`csdm_api` instance to another.
         """
@@ -406,7 +420,7 @@ class CSDModel:
     def _get_python_dictionary(
         self, filename, print_function=False, version=__file_version__
     ):
-        """Return the CSDModel instance as a python dictionary."""
+        """Return the CSDM instance as a python dictionary."""
         dictionary = {}
 
         dictionary["version"] = version
@@ -451,32 +465,32 @@ class CSDModel:
         Serialize the :ref:`CSDM_api` instance as a JSON data-exchange file.
 
         The serialized file is saved with two file extensions.
-        When every instance of the DependentVariable class from the CSDModel
-        instance has an `internal` subtype, the corresponding CSDModel instance is
+        When every instance of the DependentVariable class from the CSDM
+        instance has an `internal` subtype, the corresponding CSDM instance is
         serialized with a `.csdf` file extension.
         If any single DependentVariable instance has an `external` subtype, the
-        CSDModel instance is serialized with a `.csdfe` file extension.
+        CSDM instance is serialized with a `.csdfe` file extension.
         We use the two different file extensions to alert the end use of the
         possible deserialization error associated with the `.csdfe` file
         extensions when the external data file is inaccessible.
 
-        Irrespective of the subtypes from the serialized JSON file, by default,
-        all instances of DependentVariable class are assigned an `internal`
-        subtype with `base64` as the value of the `encoding` attribute upon
-        the import.
-        The user may, however, change these attribute at any time after the
-        file import and before serializing to a file. The syntax follows,
+        .. note::
+            Irrespective of the subtypes from the serialized JSON file, by default,
+            all instances of DependentVariable class are assigned an `internal`
+            subtype upon import with `base64` as the value of the `encoding` attribute.
+            The user may, however, change these attribute at any time after the
+            file import and before serializing to a file.
 
-        .. doctest::
+        Args:
+            filename (str): The filename of the serialized file.
+            read_only (bool): If true, the file is serialized as read_only.
 
+        Example:
             >>> data.save('my_file.csdf')
 
         .. testcleanup::
-
             import os
             os.remove('my_file.csdf')
-
-        where ``datamodel`` is an instance of the CSDModel class.
         """
         dictionary = self._get_python_dictionary(filename, version=version)
 
@@ -497,7 +511,12 @@ class CSDModel:
             )
 
     def copy(self):
-        """Return a copy of the current CSDModel instance."""
+        """
+        Create a copy of the current CSDM instance.
+
+        Returns:
+            A CSDM instance.
+        """
         return deepcopy(self)
 
     # def replace(self,
@@ -556,7 +575,7 @@ class CSDModel:
 
     def _get_new_csdmodel_object(self, func, index):
         index = self._check_dimension_indices(index)
-        new = CSDModel()
+        new = CSDM()
         for variable in self.dependent_variables:
             y = func(variable.components, axis=index)
             new.add_dependent_variable(
@@ -585,9 +604,10 @@ class CSDModel:
         Args:
             index: An integer or tuple of `m` integers cooresponding to the
                    index/indices of dimensions along which the sum of the
-                   dependent variables component values are performed .
+                   dependent variables component values are performed.
+
         Return:
-            A ``CSDModel`` object with `d-m` dimensions where `d` is the
+            A CSDM object with `d-m` dimensions where `d` is the
             number of dimensions in the original csdm data.
         """
         func = np.sum
@@ -601,9 +621,10 @@ class CSDModel:
             index: An integer or tuple of `m` integers cooresponding to the
                    index/indices of dimensions along which the product of the
                    dependent variables component values are performed.
+
         Return:
-            A ``CSDModel`` object with `d-m` dimensions where `d` is the
-            number of dimensions in the original csdm data.
+            A CSDM object with `d-m` dimensions where `d` is the number of
+            dimensions in the original csdm dataset.
         """
         func = np.prod
         return self._get_new_csdmodel_object(func, index)
@@ -614,18 +635,21 @@ class CSDModel:
 
         Needs debugging.
         """
-        if self.dimensions[index].dimension_type != "linear":
+        if self.dimensions[index].type != "linear":
             raise NotImplementedError(
                 "FFT is available for dimensions with type 'linear'."
             )
 
         object_id = self.dimensions[index].subtype
+        unit_in = object_id._unit
         # swap the values of object with the respective reciprocal object.
         object_id._swap()
 
         # compute the reciprocal increment using Nyquist-shannan theorem.
-        _reciprocal_increment = 1.0 / (object_id._count * object_id._increment.value)
-        object_id._increment = _reciprocal_increment * object_id._unit
+        _reciprocal_increment = 1.0 / (object_id._count * object_id._increment)
+
+        unit = object_id._unit
+        object_id._increment = _reciprocal_increment.to(unit)
 
         # toggle the value of the FFT_output_order attribute
         # if object_id._fft_output_order:
@@ -638,7 +662,10 @@ class CSDModel:
 
         # calculate the phase that will be applied to the fft amplitudes.
         phase = np.exp(
-            2j * np.pi * object_id.reciprocal._reference_offset * object_id._coordinates
+            2j
+            * np.pi
+            * object_id.reciprocal._coordinates_offset.to(unit_in).value
+            * object_id._coordinates.to(unit).value
         )
 
         ndim = len(self.dimensions)
@@ -658,9 +685,9 @@ class CSDModel:
 
 #     def __add__(self, other):
 #         """
-#         Add two CSDModel instances.
+#         Add two CSDM instances.
 
-#         We follow a safe rule---the addition of two CSDModel instances
+#         We follow a safe rule---the addition of two CSDM instances
 #         will only be successfull when the attributes of the corresponding
 #         ControlledVariable instances are identical.
 #         """
@@ -691,9 +718,9 @@ class CSDModel:
 
 #     def __sub__(self, other):
 #         """
-#         Subtract two CSDModel instances.
+#         Subtract two CSDM instances.
 
-#         We follow a safe rule---the subtraction of two CSDModel instances
+#         We follow a safe rule---the subtraction of two CSDM instances
 #         will only be successfull when the attributes of the corresponding
 #         ControlledVariable instances are identical.
 #         """
@@ -701,9 +728,9 @@ class CSDModel:
 
 #     def __mul__(self, other):
 #         """
-#         Multiply two CSDModel instances.
+#         Multiply two CSDM instances.
 
-#         We follow a safe rule---the multiplication of two CSDModel instances
+#         We follow a safe rule---the multiplication of two CSDM instances
 #         will only be successfull when the attributes of the corresponding
 #         ControlledVariable instances are identical.
 #         """
@@ -711,9 +738,9 @@ class CSDModel:
 
 #     def __div__(self, other):
 #         """
-#         Divide two CSDModel instances.
+#         Divide two CSDM instances.
 
-#         We follow a safe rule---the division of two CSDModel instances
+#         We follow a safe rule---the division of two CSDM instances
 #         will only be successfull when the attributes of the corresponding
 #         ControlledVariable instances are identical.
 #         """

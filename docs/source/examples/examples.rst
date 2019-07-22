@@ -21,3 +21,4 @@ is given as a list within the curly braces, `i.e.`,
     2D{1}-datasets/2D{1}-datasets
     2D{2}-datasets/2D{2}-datasets
     2D{3}-datasets/2D{3}-datasets
+    multiple_datasets/geology

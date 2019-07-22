@@ -3,36 +3,36 @@
 .. _csdm_api:
 
 --------
-CSDModel
+CSDM
 --------
 
-.. currentmodule:: csdfpy.csdm
-.. autoclass:: CSDModel
+.. currentmodule:: csdmpy.csdm
+.. autoclass:: CSDM
    :show-inheritance: ~
 
    .. rubric:: Attributes Summary
 
    .. autosummary::
 
-      ~CSDModel.version
-      ~CSDModel.description
-      ~CSDModel.read_only
-      ~CSDModel.timestamp
-      ~CSDModel.geographic_coordinate
-      ~CSDModel.dimensions
-      ~CSDModel.dependent_variables
-      ~CSDModel.application
-      ~CSDModel.data_structure
-      ~CSDModel.filename
+      ~CSDM.version
+      ~CSDM.description
+      ~CSDM.read_only
+      ~CSDM.timestamp
+      ~CSDM.geographic_coordinate
+      ~CSDM.dimensions
+      ~CSDM.dependent_variables
+      ~CSDM.application
+      ~CSDM.data_structure
+      ~CSDM.filename
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
-      ~CSDModel.add_dimension
-      ~CSDModel.add_dependent_variable
-      ~CSDModel.save
-      ~CSDModel.copy
+      ~CSDM.add_dimension
+      ~CSDM.add_dependent_variable
+      ~CSDM.save
+      ~CSDM.copy
 
    .. rubric:: Attributes Documentation
 

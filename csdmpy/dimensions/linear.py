@@ -8,11 +8,11 @@ from copy import deepcopy
 import numpy as np
 from astropy.units import Quantity
 
-from csdfpy.dimensions.quantitative import BaseQuantitativeDimension
-from csdfpy.dimensions.quantitative import ReciprocalVariable
-from csdfpy.units import ScalarQuantity
-from csdfpy.utils import check_and_assign_bool
-from csdfpy.utils import validate
+from csdmpy.dimensions.quantitative import BaseQuantitativeDimension
+from csdmpy.dimensions.quantitative import ReciprocalVariable
+from csdmpy.units import ScalarQuantity
+from csdmpy.utils import check_and_assign_bool
+from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -29,7 +29,7 @@ class LinearDimension(BaseQuantitativeDimension):
 
     .. warning ::
         This class should not be used directly. Instead,
-        use the ``CSDModel`` object to access the attributes
+        use the ``CSDM`` object to access the attributes
         and methods of this class. See example, :ref:`lsgd`.
 
     The class returns an object which represents a physical

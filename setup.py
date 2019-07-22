@@ -5,12 +5,12 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-# from csdfpy._version import __version__
+# from csdmpy._version import __version__
 
 # Package meta-data.
-NAME = "csdfpy"
+NAME = "csdmpy"
 DESCRIPTION = "A python module for importing and exporting CSD model file-format."
-URL = "https://github.com/DeepanshS/csdfpy"
+URL = "https://github.com/DeepanshS/csdmpy"
 EMAIL = "srivastava.89@osu.edu"
 AUTHOR = "Deepansh Srivastava"
 REQUIRES_PYTHON = ">=3.5"
@@ -68,7 +68,9 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Development Status :: 3 - Alpha" "Programming Language :: Python :: 3.5",
+        "Development Status :: 3 - Alpha",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         # 'Programming Language :: Python :: Implementation :: CPython',
         # 'Programming Language :: Python :: Implementation :: PyPy'
     ],

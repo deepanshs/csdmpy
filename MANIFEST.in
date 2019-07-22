@@ -2,7 +2,7 @@
 include README.md
 include LICENSE
 include CHANGELOG
-recursive-include csdfpy/tests/*
+recursive-include csdmpy/tests/*
 include requirements.txt
 # include CITATION
 

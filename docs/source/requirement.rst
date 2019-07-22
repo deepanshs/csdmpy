@@ -1,11 +1,11 @@
 
 =============================
-The requirements for csdfpy
+The requirements for csdmpy
 =============================
 
 .. * `python>=3.5 <https://www.python.org>`_
 
-The `csdfpy` module requires the following packages/modules
+The `csdmpy` module requires the following packages/modules
 
 * `numpy>=1.10.1 <https://www.numpy.org>`_ (for handling n-dimensional arrays)
 * `scipy>=0.16.0 <https://scipy.org>`_ (for numerical libraries)

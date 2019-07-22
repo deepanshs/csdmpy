@@ -7,7 +7,7 @@ from copy import deepcopy
 
 import numpy as np
 
-from csdfpy.utils import validate
+from csdmpy.utils import validate
 
 
 __author__ = "Deepansh J. Srivastava"

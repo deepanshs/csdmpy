@@ -1,68 +1,60 @@
 
 =====================================
-Getting Started With `csdfpy` package
+Getting Started With `csdmpy` package
 =====================================
 
-.. If you prefer Jupyter notebooks, start a new notebook and follow the
-.. instructions below. If you are new to Jupyter notebooks, refer to the
-.. `Installing Jupyter Notebook documentation <https://jupyter.readthedocs.io/en/latest/install.html>`_
-.. to set up a Jupyter notebook. Not a fan of Jupyter notebooks, simply start
-.. with a new python file.
-
-.. ------------------------------
-.. Importing the `csdfpy` package
-.. ------------------------------
-
-We have put together a set of guidelines for importing the `csdfpy`
-module and using the related methods and attributes. We encourage the users
+We have put together a set of guidelines for importing the `csdmpy`
+package and related methods and attributes. We encourage the users
 to follow these guidelines to promote consistency amongst others.
-Import the module using
+Import the package using
 
 .. doctest::
 
-    >>> import csdfpy as cp
+    >>> import csdmpy as cp
 
-To load a `.csdf` or a `.csdfe` file, use the :py:meth:`~csdfpy.load`
-method of the `csdfpy` module. In the following example, we load a
+To load a `.csdf` or a `.csdfe` file, use the :meth:`~csdmpy.load`
+method of the `csdmpy` module. In the following example, we load a
 sample test file.
 
 .. doctest::
 
-    >>> filename = cp.tests.test01 # replace this with the filename.
+    >>> filename = cp.tests.test01 # replace this with your file's name.
     >>> testdata1 = cp.load(filename)
 
-Here, ``testdata1`` is an instance of the :ref:`csdm_api` class.
+Here, ``testdata1`` is an instance of the CSDM class.
 
-At the root level, the :ref:`csdm_api` object includes various optional
-attributes that provide additional information about the dataset. One such
-attribute is the :attr:`~csdfpy.CSDModel.description` key. This attribute is
-useful to brief the end users on the contents of the dataset. To access the
-value of this attribute use
+At the root level, the CSDM object includes various useful optional
+attributes that may contain additional information about the dataset. One such
+useful attribute is the :attr:`~csdmpy.csdm.CSDM.description` key which briefs
+the end-users on the contents of the dataset. To access the value of this
+attribute use,
 
 .. doctest::
 
-    >>> print(testdata1.description)
-    A simulated sine curve.
+    >>> testdata1.description
+    'A simulated sine curve.'
+
+.. seeAlso::
+    List of various attributes from the :ref:`csdm_api` object.
 
 ---------------------------------------------------------------
 Accessing the dimensions and dependent variables of the dataset
 ---------------------------------------------------------------
 
-A dataset may be associated with multiple dimensions and dependent variables.
-Collectively, the dimensions form a multi-dimensional grid system and the
-dependent variables reside on this grid. In `csdfpy` module, the list of
-dimension and dependent variable instances are structured as python's tuple
-object. To access these dimensions and dependent variables, use the
-:py:attr:`~csdfpy.CSDModel.dimensions` and the
-:py:attr:`~csdfpy.CSDModel.dependent_variables` attributes,
-respectively. For example,
+An instance of the CSDM object may include multiple dimensions and
+dependent variables. Collectively, the dimensions form a multi-dimensional grid
+system, and the dependent variables populate this grid.
+In `csdmpy`,
+dimensions and dependent variables are structured as python's tuple object.
+To access these tuples, use the :attr:`~csdmpy.csdm.CSDM.dimensions` and
+:attr:`~csdmpy.csdm.CSDM.dependent_variables` attributes, respectively.
+For example,
 
 .. doctest::
 
     >>> x = testdata1.dimensions
     >>> y = testdata1.dependent_variables
 
-where `x` and `y` are the tuples of :ref:`dim_api` and :ref:`dv_api` instances.
 In this example, the dataset contains one dimension and one dependent variable,
 and therefore, `x` and `y` are tuples with a single instance.
 
@@ -73,102 +65,118 @@ and therefore, `x` and `y` are tuples with a single instance.
     >>> print('y is a {0} of length {1}.'.format(type(y).__name__, len(y)))
     y is a tuple of length 1.
 
-You may access the individual dimension and dependent variable instances by
+You may access the instances of individual dimension and dependent variable by
 using the proper indexing. For example, the dimension and dependent variable
-at index 0 are,
+at index 0 may be accessed using ``x[0]`` and ``y[0]``, respectively.
+
+Every instance of the Dimension object has its own set of attributes
+that further describe the dimension. For example, a Dimension object may have
+an optional :attr:`~csdmpy.dimensions.Dimension.description` attribute,
 
 .. doctest::
 
-    >>> print(x[0].description)
-    A temporal dimension.
-    >>> print(y[0].description)
-    A response dependent variable.
+    >>> x[0].description
+    'A temporal dimension.'
+
+Similarly, every instance of the DependentVariable object has its own set of
+attributes. In this example, the
+:attr:`~csdmpy.dependent_variables.DependentVariable.description`
+attribute from the dependent variable is
+
+    >>> y[0].description
+    'A response dependent variable.'
+
+.. seeAlso::
+    A list of various attributes from the :ref:`dim_api` and :ref:`dv_api` objects.
 
 Coordinates along the dimension
 *******************************
 
-Every dimension object contains a list of coordinates corresponding to every
-gird point along the dimension. To access these coordinates, use
-the :py:attr:`~csdfpy.Dimension.coordinates` attribute of the
+Every dimension object contains a list of coordinates associated with every
+grid index along the dimension. To access these coordinates, use
+the :attr:`~csdmpy.dimensions.Dimension.coordinates` attribute of the
 respective :ref:`dim_api` instance. In this example, the coordinates are
 
 .. doctest::
 
-    >>> print(x[0].coordinates)
-    [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s
+    >>> x[0].coordinates
+    <Quantity [0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] s>
 
 .. note::
     ``x[0].coordinates`` returns a
     `Quantity <http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity>`_
     instance from the
     `Astropy <http://docs.astropy.org/en/stable/units/>`_ package.
-    The `csdfpy` module utilizes the units library from
+    The `csdmpy` module utilizes the units library from
     `astropy.units <http://docs.astropy.org/en/stable/units/>`_ module
     to handle physical quantities. The numerical `value` and the
     `unit` of the physical quantities are accessed through the Quantity
     instance, using the ``value`` and the ``unit`` attributes, respectively.
     Please refer to the `astropy.units <http://docs.astropy.org/en/stable/units/>`_
     documentation for details.
-    In the `csdfpy` module, the ``Quantity.value`` is a
+    In the `csdmpy` module, the ``Quantity.value`` is a
     `Numpy array <https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.ndarray.html>`_.
 
+    In the above example,
+
+    .. doctest::
+
+        >>> x[0].coordinates.value
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
 Components of the dependent variable
 ************************************
 
 Every dependent variable object has at least one component. The number of
 components of the dependent variable is determined from the
-:attr:`~csdfpy.DependentVariable.quantity_type` attribute of the dependent
-variable object. For example, a scalar quantity has one component while a
+:attr:`~csdmpy.dependent_variables.DependentVariable.quantity_type` attribute
+of the dependent variable object. For example, a scalar quantity has one
+component while a
 vector quantity may have multiple components. To access the components of
-the dependent variable, use the :py:attr:`~csdfpy.DependentVariable.components`
+the dependent variable, use the
+:attr:`~csdmpy.dependent_variables.DependentVariable.components`
 attribute of the respective :ref:`dv_api` instance. For example,
 
 .. doctest::
 
-    >>> print(y[0].components)
-    [[ 0.0000000e+00  5.8778524e-01  9.5105654e-01  9.5105654e-01
-       5.8778524e-01  1.2246469e-16 -5.8778524e-01 -9.5105654e-01
-      -9.5105654e-01 -5.8778524e-01]]
+    >>> y[0].components
+    array([[ 0.0000000e+00,  5.8778524e-01,  9.5105654e-01,  9.5105654e-01,
+             5.8778524e-01,  1.2246469e-16, -5.8778524e-01, -9.5105654e-01,
+            -9.5105654e-01, -5.8778524e-01]], dtype=float32)
 
-    >>> type(y[0].components)
-    <class 'numpy.ndarray'>
-
-The value of the :py:attr:`~csdfpy.DependentVariable.components` attribute
+The :attr:`~csdmpy.dependent_variables.DependentVariable.components` attribute
 is a Numpy array. Note, the number of dimensions of this array is :math:`d+1`
-where :math:`d` is the number of dimensions.
-The additional dimension corresponds to
-the number of components of the dependent variable. For instance, in this
-example, there is a single independent variable, `i.e.`, :math:`d=1` and
-therefore the value of the :py:attr:`~csdfpy.DependentVariable.components`
-attribute holds a two-dimensional array.
-The shape of this array is
+where :math:`d` is the number of dimensions. The additional dimension
+corresponds to the number of components of the dependent variable. For
+instance, in this example, there is a single dimension, `i.e.`, :math:`d=1`
+and, therefore, the value of the
+:attr:`~csdmpy.dependent_variables.DependentVariable.components`
+attribute holds a two-dimensional Numpy array. The shape of this array is
 
 .. doctest::
 
-    >>> print(y[0].components.shape)
+    >>> y[0].components.shape
     (1, 10)
 
 where the first element of the shape tuple, `1`, is the number of
 components of the dependent variable and the second element, `10`, is the
-number of points along the independent variable, `i.e.`, ``x[0].coordinates``.
+number of points along the dimension, `i.e.`, ``x[0].coordinates``.
 
 
 --------------------
 Plotting the dataset
 --------------------
 
-It is always helpful to present the scientific datasets with visual aids
-such as plots and figures rather than columns of numbers. As such, throughout
+It is always helpful to represent a scientific dataset with visual aids
+such as a plot or a figure instead of columns of numbers. As such, throughout
 this documentation, we provide a figure or two for every example dataset.
 We make use of Python's `Matplotlib library <https://matplotlib.org>`_
-for generating the figures. The users may, however, use their favorite plotting
-library.
+for generating these figures. The users may, however, use their favorite
+plotting library.
 
-.. cssclass:: alert alert-dismissible alert-info
+.. warning::
 
-    This documentation is not a guide for data visualization, and the `csdfpy`
-    module does not include any plotting library.
+    This documentation is not a guide for data visualization.
 
 The following snippet plots the dataset from this example. Here, the
 `axis_label` is an attribute of both Dimension and DependentVariable
@@ -187,7 +195,7 @@ instances and `name` is an attribute of the DependentVariable instance.
 
 .. seealso::
 
-    :ref:`dim_api`, :ref:`dv_api`,
+    :ref:`csdm_api`, :ref:`dim_api`, :ref:`dv_api`,
     `Quantity <http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity>`_,
     `numpy array <https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.ndarray.html>`_,
     `Matplotlib library <https://matplotlib.org>`_

@@ -4,10 +4,10 @@
    contain the root `toctree` directive.
 
 ==================================
-Welcome to csdfpy's documentation!
+Welcome to csdmpy's documentation!
 ==================================
 
-The `csdfpy` module is the Python support for the core scientific
+The `csdmpy` module is the Python support for the core scientific
 dataset (CSD) model file-format exchange.
 This module is based on the core scientific dataset (CSD) model which is
 designed as a building block in the development of a more sophisticated
@@ -26,7 +26,6 @@ package(s) compatible with Numpy.
     :maxdepth: 2
     :caption: Table of Contents
     :name: mastertoc
-    :hidden:
 
     CSD_model
     requirement
@@ -35,8 +34,6 @@ package(s) compatible with Numpy.
     examples/examples
     startFromScratch/start
     referenceAPI
-
-..    independent_variable
 
 ------------------
 Indices and tables

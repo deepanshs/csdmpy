@@ -8,11 +8,11 @@ The 1D{1} datasets are one dimensional, :math:`d=1`, with
 one single-component, :math:`p=1`, dependent variable. In this section, we walk
 through some examples of 1D{1} datasets.
 
-Let's start by first importing the `csdfpy` module.
+Let's start by first importing the `csdmpy` module.
 
 .. doctest::
 
-    >>> import csdfpy as cp
+    >>> import csdmpy as cp
 
 Global Mean Sea Level rise dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -29,10 +29,10 @@ Let's import this file.
     >>> sea_level = cp.load(filename)
 
 The variable `filename` is a string with the address to the `sea_level.csdf`.
-The :py:meth:`~csdfpy.load` method of the `csdfpy` module reads the
+The :meth:`~csdmpy.load` method of the `csdmpy` module reads the
 file and returns an instance of the :ref:`csdm_api` class, in
 this case, as a variable `sea_level`. For a quick preview of the data
-structure, use the :py:attr:`~csdfpy.CSDModel.data_structure` attribute of this
+structure, use the :attr:`~csdmpy.CSDM.data_structure` attribute of this
 instance,
 
 .. doctest::
@@ -81,12 +81,12 @@ instance,
 which returns a JSON object.
 
 .. warning::
-    The JSON output from the :py:attr:`~csdfpy.CSDModel.data_structure`
+    The JSON output from the :attr:`~csdmpy.CSDM.data_structure`
     attribute is not the same as the JSON serialization on the file.
     This attribute is only intended for a quick preview of the data
     structure and avoids displaying large datasets. Do not use
     the value of this attribute to save the data to the file. Instead, use the
-    :py:meth:`~csdfpy.CSDModel.save` method of the :ref:`CSDModel <csdm_api>`
+    :meth:`~csdmpy.CSDM.save` method of the :ref:`CSDM <csdm_api>`
     class.
 
 The tuples of the dimensions and dependent variables from this example are
@@ -149,16 +149,16 @@ respectively.
 .. functions. The first line creates a new blank figure. In the following four
 .. lines, we define the `x`, `y`, `x0`, and `y00` as previously described. The
 .. next line adds a plot of `y00` vs. `x0` to the figure. For labeling the
-.. axes, we use the  :py:attr:`~csdfpy.Dimension.axis_label` attribute
+.. axes, we use the  :attr:`~csdmpy.Dimension.axis_label` attribute
 .. of both independent and dependent variable instances. For the figure title,
-.. we use the :py:attr:`~csdfpy.DependentVariable.name` attribute of the
+.. we use the :attr:`~csdmpy.DependentVariable.name` attribute of the
 .. dependent variable instance. The following two lines
 .. add the grid lines and set the range of the x-axis, respectively.
 .. For additional information refer to the :ref:`dim_api`, :ref:`dv_api`, and the
 .. `Matplotlib <https://matplotlib.org>`_ documentation.
 
 The user may use any plotting library to visualize the dataset. Here, we use
-the :meth:`~csdfpy.plot` method of the `csdfpy` module to visualize the
+the :meth:`~csdmpy.plot` method of the `csdmpy` module to visualize the
 ``sea_level`` dataset,
 
 .. doctest::

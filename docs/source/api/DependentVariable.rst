@@ -6,7 +6,7 @@
 DependentVariable
 -----------------
 
-.. currentmodule:: csdfpy.dependent_variables
+.. currentmodule:: csdmpy.dependent_variables
 
 .. autoclass:: DependentVariable
     :show-inheritance:

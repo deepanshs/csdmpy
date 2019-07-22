@@ -7,13 +7,18 @@ In the previous section, we create a new dataset using,
 
 .. doctest::
 
-    >>> import csdfpy as cp
+    >>> import csdmpy as cp
     >>> new_data = cp.new(description='A new test dimension dataset')
 
 In this section, we will add dimension objects to this dataset.
 An instance of the Dimension class is added using the
-:meth:`~csdfpy.csdm.CSDModel.add_dimension` method of the :ref:`csdm_api`
-instance. See :ref:`dim_api` API for further detail.
+:meth:`~csdmpy.csdm.CSDM.add_dimension` method of the :ref:`csdm_api`
+instance. See :ref:`dim_api` API for further detail. There are three subtypes
+of Dimension objects,
+
+  - LinearDimension
+  - MonotonicDimension
+  - LabeledDimension
 
 ^^^^^^^^^^^^^^^
 LinearDimension
@@ -123,7 +128,7 @@ structure form the updated ``new_dataset`` instance follows
     }
 
 Notice, every time a new physical dimension is added, the value of the
-:attr:`~csdfpy.dimensions.Dimension.quantity_name` attribute is
+:attr:`~csdmpy.dimensions.Dimension.quantity_name` attribute is
 appropriately added, if possible.
 
 ^^^^^^^^^^^^^^^^
@@ -137,12 +142,12 @@ symbols or the population of different countries.
 
 Let's add a labeled dimension to the ``new_data`` instance.
 This time pass an instance of the :ref:`dim_api` class as the argument of the
-:meth:`~csdfpy.csdm.CSDModel.add_dimension` method. To create an instance of
+:meth:`~csdmpy.csdm.CSDM.add_dimension` method. To create an instance of
 the Dimension class follow,
 
 .. doctest::
 
-    >>> from csdfpy import Dimension
+    >>> from csdmpy import Dimension
     >>> d1 = Dimension(
     ...     type = 'labeled',
     ...     description = 'This is a labeled dimensions.',
@@ -150,7 +155,7 @@ the Dimension class follow,
     ... )
 
 In the above code, the variable ``d1`` is an instance of :ref:`dim_api` class.
-Now add this instance to the :meth:`~csdfpy.csdm.CSDModel.add_dimension`
+Now add this instance to the :meth:`~csdmpy.csdm.CSDM.add_dimension`
 method.
 
 .. doctest::
@@ -206,13 +211,13 @@ This generates a 3D{0} dataset with the data structure ---
 .. note::
 
     When using a :ref:`dim_api` instance as an argument of the
-    :meth:`~csdfpy.csdm.CSDModel.add_dimension` method, one
+    :meth:`~csdmpy.csdm.CSDM.add_dimension` method, one
     must be aware that instances in Python are passed by reference. Therefore,
     any changes to the instance `d1`, in the above example, will affect the
     corresponding dimension instance in the `new_data` instance.
     To be safe, as a general
     recommendation, one should always pass a copy of the instance to the
-    :meth:`~csdfpy.csdm.CSDModel.add_dimension` method. We allow the use of
+    :meth:`~csdmpy.csdm.CSDM.add_dimension` method. We allow the use of
     :ref:`dim_api` objects as arguments because it provides an easy alternative
     for copying an instance of the :ref:`dim_api` class from one
     :ref:`csdm_api` instance to another.

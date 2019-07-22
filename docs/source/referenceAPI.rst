@@ -5,8 +5,8 @@ API-Reference
 
 .. toctree::
 
-    api/csdfpy
-    api/CSDModel
+    api/csdmpy
+    api/CSDM
     api/Dimensions
     api/DependentVariable
 

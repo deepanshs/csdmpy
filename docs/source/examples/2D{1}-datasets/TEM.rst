@@ -14,7 +14,7 @@ Let's import the CSD model data-file and look at its data structure.
 
 .. doctest::
 
-    >>> import csdfpy as cp
+    >>> import csdmpy as cp
     >>> import matplotlib.pyplot as plt
 
     >>> filename = '../test-datasets0.0.12/ssTEM/TEM.csdf'
@@ -82,7 +82,7 @@ with the respective coordinates (viewed only for the first ten coordinates),
     [ 0.  4.  8. 12. 16. 20. 24. 28. 32. 36.] nm
 
 For convenience, let's convert the coordinate unit from `nm` to `µm` using the
-:py:meth:`~csdfpy.ControlledVariable.to` method of the respective :ref:`dim_api`
+:meth:`~csdmpy.ControlledVariable.to` method of the respective :ref:`dim_api`
 instance,
 
 .. doctest::

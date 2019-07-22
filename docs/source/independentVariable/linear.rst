@@ -40,19 +40,19 @@ the dimension using examples. Consider the following test file.
 
 .. doctest::
 
-    >>> import csdfpy as cp
-    >>> url = 'https://github.com/DeepanshS/csdfpy-doc/raw/master/test_files/test1.csdf'
+    >>> import csdmpy as cp
+    >>> url = 'https://github.com/DeepanshS/csdmpy-doc/raw/master/test_files/test1.csdf'
     >>> filename = '../test-datasets0.0.12/test/test01.csdf'
     >>> testdata1 = cp.load(filename)
 
 
 The above snippet downloads and loads a test file containing a linearly
 sampled independent variable.
-When the argument of the :py:meth:`~csdfpy.load` method is an URL, the
+When the argument of the :meth:`~csdmpy.load` method is an URL, the
 corresponding file is first downloaded to the working directory and then
 read in as a local file.
 In the above example, ``testdata1`` is an instance of the
-:ref:`CSDModel <csdm_api>` class with the following data structure.
+:ref:`CSDM <csdm_api>` class with the following data structure.
 
 .. doctest::
 
@@ -102,7 +102,7 @@ This a 1D{1} dataset with one independent variable of subtype
 `linearly_sampled` and one single-component dependent variable.
 For the remainder of this example, we only focus on the independent variable
 instance `i.e` the member of the
-:py:attr:`~csdfpy.CSDModel.dimensions` attribute's tuple from the
+:attr:`~csdmpy.CSDM.dimensions` attribute's tuple from the
 ``testdata1`` instance.
 
 .. doctest::
@@ -143,7 +143,7 @@ Attributes
 The following are the attributes of the :ref:`dim_api` instance along with
 examples demonstrating its effect on the coordinates along the dimension.
 
-* :py:attr:`~csdfpy.dimensions.Dimension.type`
+* :attr:`~csdmpy.dimensions.Dimension.type`
     This attribute returns the subtype of the instance.
 
     .. doctest::
@@ -154,7 +154,7 @@ examples demonstrating its effect on the coordinates along the dimension.
 **The attributes that modify the coordinates**
 
 
-* :py:attr:`~csdfpy.dimensions.Dimension.count`
+* :attr:`~csdmpy.dimensions.Dimension.count`
     The number of points along the dimension
 
     .. doctest::
@@ -173,7 +173,7 @@ examples demonstrating its effect on the coordinates along the dimension.
         >>> print('new coordinates =', x0.coordinates)
         new coordinates = [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.  1.1] s
 
-* :py:attr:`~csdfpy.dimensions.Dimension.increment`
+* :attr:`~csdmpy.dimensions.Dimension.increment`
     Similarly, the increment
 
     .. doctest::
@@ -188,7 +188,7 @@ examples demonstrating its effect on the coordinates along the dimension.
         >>> print('new coordinates =', x0.coordinates)
         new coordinates = [  0.  10.  20.  30.  40.  50.  60.  70.  80.  90. 100. 110.] s
 
-* :py:attr:`~csdfpy.dimensions.Dimension.coordinates_offset`
+* :attr:`~csdmpy.dimensions.Dimension.coordinates_offset`
 
     .. doctest::
 
@@ -202,7 +202,7 @@ examples demonstrating its effect on the coordinates along the dimension.
         >>> print('new coordinates =', x0.coordinates)
         new coordinates = [  1.  11.  21.  31.  41.  51.  61.  71.  81.  91. 101. 111.] s
 
-* :py:attr:`~csdfpy.dimensions.Dimension.origin_offset`
+* :attr:`~csdmpy.dimensions.Dimension.origin_offset`
 
     .. doctest::
 
@@ -218,9 +218,9 @@ examples demonstrating its effect on the coordinates along the dimension.
 
     The last operation updates the value of the origin offset however
     the coordinates remain unaffected. This is because the
-    :py:attr:`~csdfpy.dimensions.Dimension.coordinates` attribute refers to the
+    :attr:`~csdmpy.dimensions.Dimension.coordinates` attribute refers to the
     reference coordinates. Access the absolute coordinates through the
-    :py:attr:`~csdfpy.dimensions.Dimension.absolute_coordinates` attribute.
+    :attr:`~csdmpy.dimensions.Dimension.absolute_coordinates` attribute.
 
     .. doctest::
 
@@ -233,7 +233,7 @@ examples demonstrating its effect on the coordinates along the dimension.
 
 **The attributes that modify the order of coordinates**
 
-* :py:attr:`~csdfpy.dimensions.Dimension.fft_output_order`
+* :attr:`~csdmpy.dimensions.Dimension.fft_output_order`
     Orders the coordinates along the dimension according to the output of a
     Fast Fourier Transform (FFT) routine.
 
@@ -249,7 +249,7 @@ examples demonstrating its effect on the coordinates along the dimension.
 
 **Other attributes**
 
-* :py:attr:`~csdfpy.dimensions.Dimension.period`
+* :attr:`~csdmpy.dimensions.Dimension.period`
 
     .. doctest::
 
@@ -260,7 +260,7 @@ examples demonstrating its effect on the coordinates along the dimension.
         >>> print('new period =', x0.period)
         new period = 10.0 s
 
-* :py:attr:`~csdfpy.dimensions.Dimension.quantity_name`
+* :attr:`~csdmpy.dimensions.Dimension.quantity_name`
     Returns the quantity name.
 
     .. doctest::
@@ -268,7 +268,7 @@ examples demonstrating its effect on the coordinates along the dimension.
         >>> print('quantity name is', x0.quantity_name)
         quantity name is time
 
-* :py:attr:`~csdfpy.dimensions.Dimension.label`
+* :attr:`~csdmpy.dimensions.Dimension.label`
 
     .. doctest::
 
@@ -279,7 +279,7 @@ examples demonstrating its effect on the coordinates along the dimension.
         >>> x0.label
         't1'
 
-* :py:attr:`~csdfpy.dimensions.Dimension.axis_label`
+* :attr:`~csdmpy.dimensions.Dimension.axis_label`
     Returns a formatted string for axis labeling.
 
     .. doctest::
@@ -292,7 +292,7 @@ examples demonstrating its effect on the coordinates along the dimension.
 Methods
 """""""
 
-:py:meth:`~csdfpy.dimensions.Dimension.to`:
+:meth:`~csdmpy.dimensions.Dimension.to`:
 This method is used for unit conversions.
 
 .. doctest::
@@ -324,9 +324,9 @@ coordinates.  An exception will be raised otherwise.
     >>> x0.to('km/s')  # doctest: +SKIP
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
-      File "/Users/deepansh/anaconda3/lib/python3.6/site-packages/csdfpy-0.0.9-py3.6.egg/csdfpy/cv.py", line 1238, in to
+      File "/Users/deepansh/anaconda3/lib/python3.6/site-packages/csdmpy-0.0.9-py3.6.egg/csdmpy/cv.py", line 1238, in to
         1.0*string_to_unit(unit), self.gcv.unit
-      File "/Users/deepansh/anaconda3/lib/python3.6/site-packages/csdfpy-0.0.9-py3.6.egg/csdfpy/_utils.py", line 290, in _check_unit_consistency
+      File "/Users/deepansh/anaconda3/lib/python3.6/site-packages/csdmpy-0.0.9-py3.6.egg/csdmpy/_utils.py", line 290, in _check_unit_consistency
         raise Exception(message.format(*options))
     Exception: The unit 'km / s' (speed) is inconsistent with the unit 'min' (time).
 

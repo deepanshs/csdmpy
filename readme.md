@@ -1,8 +1,8 @@
 
-The `csdfpy` module
+The `csdmpy` module
 ===================
 
-The `csdfpy` module is a Python support for the core scientific
+The `csdmpy` module is a Python support for the core scientific
 dataset (CSD) model file-format exchange.
 This module is based on the core scientific dataset (CSD) model which is
 designed as a building block in the development of a more sophisticated

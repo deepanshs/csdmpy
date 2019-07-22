@@ -1,33 +1,36 @@
 
 
 ------
-csdfpy
+csdmpy
 ------
 
-The `csdfpy` is a python module for importing and exporting the CSD model
-file exchange formats.
-The module is based on the core scientific dataset (CSD) model which is
-designed as a building block in the development of a more sophisticated
-portable scientific dataset file standard.
-The CSD model supports :math:`p`-component independent variable, :math:`y`,
-which is discretely sampled at :math:`N` points in a :math:`d`-dimensional
-independent variable space :math:`(x_0, x_1, ... x_k, ... x_{d-1})`.
-The model also supports multiple dependent variables that are
-simultaneously sampled over the :math:`d`-dimensional independent variable
-space.
+The `csdmpy` is a python package for importing and exporting core scientific
+dataset model file formats.
+The package is based on the core scientific dataset (CSD) model which is
+designed as a re-usable building block in the development of a more
+sophisticated portable scientific dataset file standards.
+The `csdmpy` package supports :math:`p`-component dependent variable,
+:math:`\mathbf{U} \equiv \{\mathbf{U}_{0}, \ldots,\mathbf{U}_{q},
+\ldots,\mathbf{U}_{p-1} \}`,
+which is discretely sampled at :math:`N` unique points in a :math:`d`-
+dimensional space
+:math:`(\mathbf{X}_0, \ldots \mathbf{X}_k, \ldots \mathbf{X}_{d-1})`. In
+addition, the package also supports multiple dependent variables,
+:math:`\mathbf{U}_i`, sharing the same :math:`n`-dimensional space.
 
-In the `csdfpy` module, every instance of the :ref:`csdm_api` class holds a
-list of independent and dependent variables. Every independent variable,
-:math:`x_k`, is an instance of the :ref:`dim_api` class while every dependent
-variable, :math:`y`, is an instance of the :ref:`dv_api` class.
-A UML class diagram of the `csdfpy` module is shown below.
+Here, every instance of the :ref:`csdm_api` class holds a
+list of dimensions and dependent variables. Every dimension,
+:math:`\mathbf{X}_k`, is an instance of the :ref:`dim_api` class while every
+dependent variable, :math:`\mathbf{U}_i`, is an instance of the
+:ref:`dv_api` class.
+A UML class diagram of the `csdmpy` module is shown below.
 
-.. image:: /_static/classes_csdfpy.png
+.. image:: /_static/classes_csdmpy.png
 
 Methods
 ^^^^^^^
 
-.. currentmodule:: csdfpy
+.. currentmodule:: csdmpy
 
 .. autofunction:: load
 .. autofunction:: new

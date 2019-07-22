@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Helper methods for CSDModel class."""
+"""Helper methods for CSDM class."""
 from __future__ import print_function
 
 import numpy as np
 
-from csdfpy.units import ScalarQuantity
+from csdmpy.units import ScalarQuantity
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"

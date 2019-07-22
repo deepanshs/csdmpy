@@ -6,7 +6,7 @@
 LinearDimension
 ---------------
 
-.. currentmodule:: csdfpy.dimensions.linear
+.. currentmodule:: csdmpy.dimensions.linear
 
 .. autoclass:: LinearDimension
     :show-inheritance:

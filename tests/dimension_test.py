@@ -6,8 +6,8 @@ import pytest
 from astropy import units as u
 from numpy.fft import fftshift
 
-import csdfpy as cp
-from csdfpy.units import ScalarQuantity
+import csdmpy as cp
+from csdmpy.units import ScalarQuantity
 
 
 # linear dimension

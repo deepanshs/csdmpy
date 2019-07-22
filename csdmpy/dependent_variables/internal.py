@@ -5,10 +5,10 @@ from __future__ import print_function
 
 import numpy as np
 
-from csdfpy.dependent_variables.base_class import BaseDependentVariable
-from csdfpy.dependent_variables.decoder import Decoder
-from csdfpy.dependent_variables.sparse import SparseSampling
-from csdfpy.utils import numpy_dtype_to_numeric_type
+from csdmpy.dependent_variables.base_class import BaseDependentVariable
+from csdmpy.dependent_variables.decoder import Decoder
+from csdmpy.dependent_variables.sparse import SparseSampling
+from csdmpy.utils import numpy_dtype_to_numeric_type
 
 
 __author__ = "Deepansh J. Srivastava"

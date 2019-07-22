@@ -3,13 +3,13 @@
 import json
 import warnings
 
-from csdfpy.dimensions.labeled import LabeledDimension
-from csdfpy.dimensions.linear import LinearDimension
-from csdfpy.dimensions.monotonic import MonotonicDimension
-from csdfpy.utils import _axis_label
-from csdfpy.utils import _get_dictionary
-from csdfpy.utils import attribute_error
-from csdfpy.utils import validate
+from csdmpy.dimensions.labeled import LabeledDimension
+from csdmpy.dimensions.linear import LinearDimension
+from csdmpy.dimensions.monotonic import MonotonicDimension
+from csdmpy.utils import _axis_label
+from csdmpy.utils import _get_dictionary
+from csdmpy.utils import attribute_error
+from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -98,7 +98,7 @@ class Dimension:
 
     .. doctest::
 
-        >>> from csdfpy import Dimension
+        >>> from csdmpy import Dimension
         >>> dimension_dictionary = {
         ...     'type': 'linear',
         ...     'description': 'test',
@@ -175,9 +175,9 @@ class Dimension:
 
         _valid_types = ["monotonic", "linear", "labeled"]
 
-        typ = default["type"]
+        type_ = default["type"]
         message = (
-            f"'{typ}' is an invalid value for the dimension type. "
+            f"'{type_}' is an invalid value for the dimension type. "
             "The allowed values are 'monotonic', 'linear' and 'labeled'."
         )
 
@@ -185,12 +185,14 @@ class Dimension:
             raise ValueError(message)
 
         if default["type"] == "labeled" and default["labels"] is None:
-            raise KeyError("`labels` key is missing from LabeledDimension.")
+            raise KeyError("LabeledDimension is missing a required `labels` key.")
         if default["type"] == "labeled":
             self.subtype = LabeledDimension(**default)
 
         if default["type"] == "monotonic" and default["coordinates"] is None:
-            raise KeyError("`coordinates` key is missing from MonotonicDimension.")
+            raise KeyError(
+                "MonotonicDimension is missing a required `coordinates` key."
+            )
         if default["type"] == "monotonic":
             self.subtype = MonotonicDimension(values=default["coordinates"], **default)
 
@@ -203,7 +205,7 @@ class Dimension:
 
         for item in missing_key:
             if default[item] is None:
-                raise KeyError(f"{item} key is missing from the linear dimension.")
+                raise KeyError(f"LinearDimension is missing a required `{item}`` key.")
 
         validate(default["count"], "count", int)
 
@@ -225,7 +227,7 @@ class Dimension:
             \mathbf{X}_k^\mathrm{abs} = \mathbf{X}_k + o_k \mathbf{1}
 
         where :math:`\mathbf{X}_k` are the coordinates along the dimension and
-        :math:`o_k` is the :attr:`~csdfpy.dimensions.Dimension.origin_offset`.
+        :math:`o_k` is the :attr:`~csdmpy.dimensions.Dimension.origin_offset`.
         For example, consider
 
         .. doctest::
@@ -245,7 +247,7 @@ class Dimension:
 
         For `linear` dimensions, the order of the `absolute_coordinates`
         further depend on the value of the
-        :attr:`~csdfpy.dimensions.Dimension.fft_output_order` attributes. For
+        :attr:`~csdmpy.dimensions.Dimension.fft_output_order` attributes. For
         examples, when the value of the `fft_output_order` attribute is True,
         the absolute coordinates are
 
@@ -320,8 +322,8 @@ class Dimension:
         For quantitative dimensions, this attributes returns a string,
         `label / unit`,  if the `label` is a non-empty string, otherwise,
         `quantity_name / unit`. Here
-        :attr:`~csdfpy.dimensions.Dimension.quantity_name` and
-        :attr:`~csdfpy.dimensions.Dimension.label` are the attributes of the
+        :attr:`~csdmpy.dimensions.Dimension.quantity_name` and
+        :attr:`~csdmpy.dimensions.Dimension.label` are the attributes of the
         :ref:`dim_api` instances, and `unit` is the unit associated with the
         coordinates along the dimension. For examples,
 
@@ -359,7 +361,7 @@ class Dimension:
             [100. 105. 110. 115. 120. 125. 130. 135. 140. 145.] G
 
         For `linear` dimensions, the order of the `coordinates` also depend on the
-        value of the :attr:`~csdfpy.dimensions.Dimension.fft_output_order` attributes.
+        value of the :attr:`~csdmpy.dimensions.Dimension.fft_output_order` attributes.
         For examples, when the value of the `fft_output_order` attribute is True,
         the coordinates are
 
@@ -383,14 +385,14 @@ class Dimension:
         Raises:
             AttributeError: For dimensions with subtype `linear`.
         """
-        _n = self.subtype._count
-        coordinates = self.subtype._coordinates[:_n]
+        n = self.subtype._count
         if self.type == "monotonic":
-            return coordinates
+            return self.subtype._coordinates[:n]
         if self.type == "linear":
+            coordinates = self.subtype._coordinates[:n]
             return (coordinates + self.coordinates_offset).to(self.subtype._unit)
         if self.type == "labeled":
-            return self.subtype.labels
+            return self.subtype.labels[:n]
 
     @coordinates.setter
     def coordinates(self, value):

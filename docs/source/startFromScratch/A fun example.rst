@@ -6,13 +6,13 @@ A fun 🤪 example
 Let's make use of what we learnt so far and create a simple 1D{1} dataset.
 To make it interesting, let's create an emoji dataset.
 
-Start by importing the `csdfpy` package.
+Start by importing the `csdmpy` package.
 
 .. doctest::
 
-    >>> import csdfpy as cp
+    >>> import csdmpy as cp
 
-Create a new dataset with the :meth:`~csdfpy.new` method.
+Create a new dataset with the :meth:`~csdmpy.new` method.
 
 .. doctest::
 
@@ -46,7 +46,7 @@ python dictionary.
 The above python dictionary contains two keys. The `type` key identifies the
 dimension as a labeled dimension while the `labels` key holds an
 array of labels. In this example, the labels are emoji. Add this dictionary
-as an argument of the :meth:`~csdfpy.csdm.CSDModel.add_dimension` method
+as an argument of the :meth:`~csdmpy.csdm.CSDM.add_dimension` method
 of the `fundata` instance.
 
 .. doctest::
@@ -79,7 +79,7 @@ instance.
 
 Next, add a dependent variable. Set up a python dictionary corresponding to the
 dependent variable object and add the dictionary as an argument of the
-:meth:`~csdfpy.CSDModel.add_dependent_variable` method of the `fundata`
+:meth:`~csdmpy.CSDM.add_dependent_variable` method of the `fundata`
 instance.
 
 .. doctest::
@@ -132,7 +132,7 @@ Now, we have a 😂 dataset...
       }
     }
 
-To serialize this file, use the :meth:`~csdfpy.csdm.CSDModel.save` method of the
+To serialize this file, use the :meth:`~csdmpy.csdm.CSDM.save` method of the
 `fundata` instance as
 
 .. doctest::
@@ -143,8 +143,8 @@ To serialize this file, use the :meth:`~csdfpy.csdm.CSDModel.save` method of the
 .. testcleanup::
 
     import os
-    os.remove('csdfpy/my_file.csdf')
+    os.remove('csdmpy/my_file.csdf')
 
 In the above code, the data values from the
-:attr:`~csdfpy.csdm.CSDModel.dependent_variables` attribute are encoded as
+:attr:`~csdmpy.csdm.CSDM.dependent_variables` attribute are encoded as
 a `base64` string before serializing to `my_file.csdf` file.

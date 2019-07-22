@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from csdfpy.utils import check_and_assign_bool
-from csdfpy.utils import check_encoding
-from csdfpy.utils import NumericType
-from csdfpy.utils import QuantityType
+from csdmpy.utils import check_and_assign_bool
+from csdmpy.utils import check_encoding
+from csdmpy.utils import NumericType
+from csdmpy.utils import QuantityType
 
 
 def test_encoding():

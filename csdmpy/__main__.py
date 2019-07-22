@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""CSDModel main."""
+"""CSDM main."""
 import sys
 
-import csdfpy as cp
-from csdfpy.helper_functions import preview
+import csdmpy as cp
+from csdmpy.helper_functions import preview
 
 
 __author__ = "Deepansh J. Srivastava"

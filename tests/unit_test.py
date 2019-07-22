@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from csdfpy.units import ScalarQuantity
+from csdmpy.units import ScalarQuantity
 
 
 def test_unit():

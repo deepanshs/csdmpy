@@ -5,7 +5,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SOURCEDIR     = source
-BUILDDIR      = ../../csdfpy-doc
+BUILDDIR      = ../../csdmpy-doc
 PDFBUILDDIR   = /tmp
 PDF           = ../manual.pdf
 

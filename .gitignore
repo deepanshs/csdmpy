@@ -5,7 +5,7 @@ docs/source/_static/**
 docs/source/_templates/**
 docs/build/**
 docs/source/auto/**
-csdfpy.egg-info/**
+csdmpy.egg-info/**
 .eggs/**
 build/**
 dist/**

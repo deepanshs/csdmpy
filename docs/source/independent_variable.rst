@@ -5,7 +5,7 @@
 Independent variable dimension
 ==============================
 
-.. In the `csdfpy` package, the  :ref:`CSDM_api` class is not just designed
+.. In the `csdmpy` package, the  :ref:`CSDM_api` class is not just designed
 .. to read and save a scientific data file.
 
 Based on the type of coordinates and the spacing between the coordinates of

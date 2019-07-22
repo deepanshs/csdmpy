@@ -3,7 +3,7 @@ import json
 
 import pytest
 
-import csdfpy as cp
+import csdmpy as cp
 
 
 def test_csdm():
@@ -44,8 +44,8 @@ def test_csdm():
 
     # application
     assert data.application == {}
-    data.application = {"csdfpy": "Some day"}
-    assert data.application == {"csdfpy": "Some day"}
+    data.application = {"csdmpy": "Some day"}
+    assert data.application == {"csdmpy": "Some day"}
     error = "Expecting an instance of type,"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.application = "Some other day"

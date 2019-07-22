@@ -19,7 +19,7 @@ The following is an example of the RGB image dataset.
 
 .. doctest::
 
-    >>> import csdfpy as cp
+    >>> import csdmpy as cp
 
     >>> filename = '../test-datasets0.0.12/image/raccoon_raw.csdfe'
     >>> ImageData = cp.load(filename)
@@ -91,7 +91,7 @@ In the above expression, only the first ten coordinates along each
 independent variable are displayed.
 
 The dependent variable is an RGB image as also seen from the
-:attr:`~csdfpy.DependentVariable.quantity_type` attribute of the corresponding
+:attr:`~csdmpy.DependentVariable.quantity_type` attribute of the corresponding
 :ref:`dv_api` instance.
 
 .. doctest::
@@ -100,7 +100,7 @@ The dependent variable is an RGB image as also seen from the
     pixel_3
 
 As usual, the components of the dependent variable are accessed through
-the :attr:`~csdfpy.DependentVariable.components` attribute.
+the :attr:`~csdmpy.DependentVariable.components` attribute.
 To access the individual components use the appropriate array indexing.
 For example,
 
@@ -118,7 +118,7 @@ For example,
 will return an array with the first component of all data values. Here, these
 components correspond to the red color intensity. The label corresponding to
 this component array is accessed through the
-:attr:`~csdfpy.DependentVariable.component_labels` attribute with appropriate
+:attr:`~csdmpy.DependentVariable.component_labels` attribute with appropriate
 indexing, that is
 
 .. doctest::
@@ -149,8 +149,8 @@ independent variable instances.
         indices of y span through the dependent variables. Since
         there is only one dependent variable, the index of `y`, that
         is ``y[0]``, is set to zero. The indices for the
-        :py:attr:`~csdfpy.DependentVariable.components` and the
-        :py:attr:`~csdfpy.DependentVariable.component_labels`,
+        :attr:`~csdmpy.DependentVariable.components` and the
+        :attr:`~csdmpy.DependentVariable.component_labels`,
         on the other hand, span through the number of components.
 
 Now, to visualize the dataset.
@@ -166,6 +166,7 @@ Now, to visualize the dataset.
     >>> plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
     >>> plt.subplots_adjust(wspace=0.025, hspace=0.05, left=0., right=1, top=1, bottom=0)
     >>> plt.savefig(ImageData.filename+'.pdf')
+    >>> plt.show()
 
 .. figure:: raccoon_raw.png
    :align: center

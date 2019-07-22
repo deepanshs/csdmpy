@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
 
-from csdfpy.dependent_variables.decoder import Decoder
-from csdfpy.utils import check_encoding
-from csdfpy.utils import NumericType
-from csdfpy.utils import QuantityType
-from csdfpy.utils import validate
+from csdmpy.dependent_variables.decoder import Decoder
+from csdmpy.utils import check_encoding
+from csdmpy.utils import NumericType
+from csdmpy.utils import QuantityType
+from csdmpy.utils import validate
 
 
 __author__ = "Deepansh J. Srivastava"
