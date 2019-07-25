@@ -23,7 +23,7 @@ __all__ = ["CSDM"]
 
 class CSDM:
     r"""
-    Instantiate a CSDM class.
+    Create an instance of a CSDM class.
 
     This class is based on the root CSDM object of the core scientific dataset
     (CSD) model. The class is a composition of the :ref:`dv_api` and
@@ -157,6 +157,9 @@ class CSDM:
 
         Returns:
             A string of UTF-8 allows characters describing the dataset.
+
+        Raises:
+            TypeError: When the assigned value is not a string.
         """
         return self._description
 
@@ -184,7 +187,7 @@ class CSDM:
         The attribute may be updated with a python dictionary.
 
         The application attribute is where an application can place its own
-        metadata as a python dictionary object with application specific
+        metadata as a python dictionary object containing application specific
         metadata, using a reverse domain name notation string as the attribute
         key, for example,
 
@@ -217,7 +220,7 @@ class CSDM:
         Json serialized string describing the CSDM class instance.
 
         The data_structure attribute is only intended for a quick preview of
-        the dataset. This JSON serialized output from this attribute avoids
+        the dataset. This JSON serialized string from this attribute avoids
         displaying large datasets. Do not use the value of this attribute to
         save the data to a file, instead use the :meth:`~csdmpy.CSDM.save`
         methods of the instance.
@@ -267,14 +270,14 @@ class CSDM:
     def fill_sparse_space(self, item, shape, dtype):
         """Fill sparse grid using numpy broadcasting."""
         components = np.zeros(shape, dtype=dtype)
-        sparse_dimensions = item._sparse_sampling._sparse_dimensions
+        sparse_dimensions_indexes = item._sparse_sampling._sparse_dimensions_indexes
         sgs = item._sparse_sampling._sparse_grid_vertexes.size
         grid_vertexes = item._sparse_sampling._sparse_grid_vertexes.reshape(
-            int(sgs / len(sparse_dimensions)), len(sparse_dimensions)
+            int(sgs / len(sparse_dimensions_indexes)), len(sparse_dimensions_indexes)
         ).T
 
         vertexes = [slice(None) for i in range(len(shape))]
-        for i, sparse_index in enumerate(sparse_dimensions):
+        for i, sparse_index in enumerate(sparse_dimensions_indexes):
             vertexes[sparse_index] = grid_vertexes[i]
 
         vertexes = tuple(vertexes[::-1])
@@ -346,7 +349,7 @@ class CSDM:
         ``datamodel`` as a reference, `i.e.`, if the instance ``var1`` is
         destroyed, the ``datamodel`` instance will become corrupt. As a
         recommendation always pass a copy of the :ref:`dim_api` instance to the
-        :meth:`~csdmpy.CSDM.add_dimension` method. We provide
+        :meth:`~csdmpy.csdm.CSDM.add_dimension` method. We provide
         the later alternative for it is useful for copying an :ref:`dim_api`
         instance from one :ref:`csdm_api` instance to another.
         """
@@ -404,7 +407,7 @@ class CSDM:
 
         If passing a :ref:`dv_api` instance, as a general recommendation,
         always pass a copy of the DependentVariable instance to the
-        :meth:`~csdmpy.CSDM.add_dependent_variable` method. We provide
+        :meth:`~csdmpy.csdm.CSDM.add_dependent_variable` method. We provide
         the later alternative as it is useful for copying a DependentVariable
         instance from one :ref:`csdm_api` instance to another.
         """
@@ -474,7 +477,7 @@ class CSDM:
         possible deserialization error associated with the `.csdfe` file
         extensions when the external data file is inaccessible.
 
-        .. note::
+        .. Important::
             Irrespective of the subtypes from the serialized JSON file, by default,
             all instances of DependentVariable class are assigned an `internal`
             subtype upon import with `base64` as the value of the `encoding` attribute.
@@ -484,6 +487,7 @@ class CSDM:
         Args:
             filename (str): The filename of the serialized file.
             read_only (bool): If true, the file is serialized as read_only.
+            version (str): The file is serialized with the given CSD model version.
 
         Example:
             >>> data.save('my_file.csdf')

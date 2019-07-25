@@ -28,7 +28,7 @@ Let's load the `.csdfe` file and look at its data structure.
           {
             "type": "linear",
             "count": 1024,
-            "increment": "-2.279306196154649e-05 °",
+            "increment": "-0.0002581136196 °",
             "coordinates_offset": "350.311874957 °",
             "quantity_name": "angle",
             "label": "Right Ascension"
@@ -37,7 +37,7 @@ Let's load the `.csdfe` file and look at its data structure.
             "type": "linear",
             "count": 1024,
             "increment": "0.0001219957797701109 °",
-            "coordinates_offset": "-61.12851494969163 °",
+            "coordinates_offset": "61.12851494969163 °",
             "quantity_name": "angle",
             "label": "Declination"
           }
@@ -74,22 +74,20 @@ the `bubble_nebula` instance following,
     >>> x = bubble_nebula.dimensions
     >>> y = bubble_nebula.dependent_variables
 
-Because there are two dimension instances in `x`, let's look
-at the coordinates along each dimension, `x0`, and `x1` respectively,
-using the :attr:`~csdmpy.dimensions.Dimension.coordinates` attribute of the
+Because there are two dimension instances in ``x``, let's look
+at the coordinates along each dimensions, using the
+:attr:`~csdmpy.dimensions.Dimension.coordinates` attribute of the
 respective instances.
 
 .. doctest::
 
-    >>> x0 = x[0].coordinates[:10]
-    >>> print(x0)
-    [350.31187496 350.31185216 350.31182937 350.31180658 350.31178378
-     350.31176099 350.3117382  350.31171541 350.31169261 350.31166982] deg
+    >>> print(x[0].coordinates[:10])
+    [350.31187496 350.31161684 350.31135873 350.31110062 350.3108425
+     350.31058439 350.31032628 350.31006816 350.30981005 350.30955193] deg
 
-    >>> x1 = x[1].coordinates[:10]
-    >>> print(x1)
-    [-61.12851495 -61.12839295 -61.12827096 -61.12814896 -61.12802697
-     -61.12790497 -61.12778298 -61.12766098 -61.12753898 -61.12741699] deg
+    >>> print(x[1].coordinates[:10])
+    [61.12851495 61.12863695 61.12875894 61.12888094 61.12900293 61.12912493
+     61.12924692 61.12936892 61.12949092 61.12961291] deg
 
 Here, we only print the first 10 coordinates along the respective dimensions.
 
@@ -100,47 +98,55 @@ The component of the dependent variable is accessed through the
 
     >>> y00 = y[0].components[0]
 
-We plot this dataset using the plot method.
+.. We plot this dataset using the plot method.
 
-    >>> from matplotlib.colors import LogNorm
-    >>> cp.plot(bubble_nebula, cmap='cubehelix', vmin=0, vmax=0.55)
-
-.. .. doctest::
-
-..     >>> import matplotlib.pyplot as plt
 ..     >>> from matplotlib.colors import LogNorm
-..     >>> import numpy as np
+..     >>> cp.plot(bubble_nebula, cmap='cubehelix', vmin=0, vmax=0.55)
 
-..     >>> # Figure setup.
-..     >>> fig, ax = plt.subplots(1,1,figsize=(6, 5))
-..     >>> ax.set_facecolor('w')
+Now, to plot the dataset.
 
-..     >>> # Set the extents of the image.
-..     >>> extent=[x0[0].value, x0[-1].value,
-..     ...         x1[0].value, x1[-1].value]
 
-..     >>> # Log intensity image plot.
-..     >>> im = ax.imshow(np.abs(y00), origin='lower', cmap='bone_r',
-..     ...                norm=LogNorm(vmax=y00.max()/10, vmin=7.5e-3, clip=True),
-..     ...                extent=extent, aspect='auto')
+.. doctest::
 
-..     >>> # Set the axes labels and the figure tile.
-..     >>> ax.set_xlabel(x[0].axis_label)  # doctest: +SKIP
-..     >>> ax.set_ylabel(x[1].axis_label)  # doctest: +SKIP
-..     >>> ax.set_title(y[0].name)  # doctest: +SKIP
+    >>> import matplotlib.pyplot as plt
+    >>> from matplotlib.colors import LogNorm
+    >>> import numpy as np
 
-..     >>> # Add a colorbar.
-..     >>> cbar = fig.colorbar(im)
-..     >>> cbar.ax.set_ylabel(y[0].axis_label[0])  # doctest: +SKIP
+    >>> def plot(dataobject):
+    ...     # Figure setup.
+    ...     fig, ax = plt.subplots(1,1,figsize=(6, 5))
+    ...     ax.set_facecolor('w')
+    ...
+    ...     x0 = x[0].coordinates
+    ...     x1 = x[1].coordinates
+    ...
+    ...     # Set the extents of the image.
+    ...     extent=[x0[0].value, x0[-1].value, x1[0].value, x1[-1].value]
+    ...
+    ...     # Log intensity image plot.
+    ...     im = ax.imshow(np.abs(y00), origin='lower', cmap='bone_r',
+    ...                    norm=LogNorm(vmax=y00.max()/10, vmin=7.5e-3, clip=True),
+    ...                    extent=extent, aspect='auto')
+    ...
+    ...     # Set the axes labels and the figure tile.
+    ...     ax.set_xlabel(x[0].axis_label)
+    ...     ax.set_ylabel(x[1].axis_label)
+    ...     ax.set_title(y[0].name)
+    ...
+    ...     # Add a colorbar.
+    ...     cbar = fig.colorbar(im)
+    ...     cbar.ax.set_ylabel(y[0].axis_label[0])
+    ...
+    ...     # Set the x and y limits.
+    ...     ax.set_xlim([350.25, 350.1])
+    ...     ax.set_ylim([61.15, 61.22])
+    ...
+    ...     # Add grid lines.
+    ...     ax.grid(color='gray', linestyle='--', linewidth=0.5)
+    ...
+    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+    ...     plt.show()
 
-..     >>> # Set the x and y limits.
-..     >>> ax.set_xlim([350.25, 350.1])  # doctest: +SKIP
-..     >>> ax.set_ylim([61.15, 61.22])  # doctest: +SKIP
-
-..     >>> # Add grid lines.
-..     >>> ax.grid(color='gray', linestyle='--', linewidth=0.5)
-
-..     >>> plt.tight_layout(pad=0, w_pad=0, h_pad=0)
-..     >>> plt.savefig(bubble_nebula.filename+'.pdf', dpi=450)
+    >>> plot(bubble_nebula)
 
 .. figure:: bubble.png

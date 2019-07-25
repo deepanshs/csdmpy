@@ -59,9 +59,9 @@ Let's import the CSD model data-file and look at its data structure.
       }
     }
 
-This dataset contains two uniformly spaced ,linear dimensions and one
+This dataset contains two uniformly spaced linear dimensions and one
 single-component dependent variable.
-The tuples of the independent and the dependent variable instances from this
+The tuples of the dimension and the dependent variable instances from this
 example are
 
 .. doctest::
@@ -81,8 +81,8 @@ with the respective coordinates (viewed only for the first ten coordinates),
     >>> print(x1[:10])
     [ 0.  4.  8. 12. 16. 20. 24. 28. 32. 36.] nm
 
-For convenience, let's convert the coordinate unit from `nm` to `µm` using the
-:meth:`~csdmpy.ControlledVariable.to` method of the respective :ref:`dim_api`
+For convenience, let's convert the coordinate from `nm` to `µm` using the
+:meth:`~csdmpy.dimensions.Dimension.to` method of the respective :ref:`dim_api`
 instance,
 
 .. doctest::
@@ -94,29 +94,34 @@ and plot the data.
 
 .. doctest::
 
-    >>> fig, ax = plt.subplots(1,1,figsize=(5, 5))
+    >>> def plot_image(data_object):
+    ...     fig, ax = plt.subplots(1,1)
+    ...
+    ...     # Set the extents of the image plot.
+    ...     extent = [x0[0].value, x0[-1].value,
+    ...               x1[0].value, x1[-1].value]
+    ...
+    ...     # Add the image plot.
+    ...     im = ax.imshow(y[0].components[0], extent=extent, cmap='bone')
+    ...
+    ...     # Add a colorbar.
+    ...     cbar = fig.colorbar(im)
+    ...     cbar.ax.set_ylabel(y[0].axis_label[0])
+    ...
+    ...     # Set up the axes label and figure title.
+    ...     ax.set_xlabel(x[0].axis_label)
+    ...     ax.set_ylabel(x[1].axis_label)
+    ...     ax.set_title(y[0].name)
+    ...
+    ...     # Set up the grid lines.
+    ...     ax.grid(color='k', linestyle='--', linewidth=0.5)
+    ...
+    ...     plt.tight_layout()
+    ...     plt.show()
 
-    >>> # Set the extents of the image plot.
-    >>> extent = [x0[0].value, x0[-1].value,
-    ...           x1[0].value, x1[-1].value]
+.. doctest::
 
-    >>> # Add the image plot.
-    >>> im = ax.imshow(y[0].components[0], extent=extent, cmap='bone')
-
-    >>> # Add a colorbar.
-    >>> cbar = fig.colorbar(im)
-    >>> cbar.ax.set_ylabel(y[0].axis_label[0])  # doctest: +SKIP
-
-    >>> # Set up the axes label and figure title.
-    >>> ax.set_xlabel(x[0].axis_label)  # doctest: +SKIP
-    >>> ax.set_ylabel(x[1].axis_label)  # doctest: +SKIP
-    >>> ax.set_title(y[0].name)  # doctest: +SKIP
-
-    >>> # Set up the grid lines.
-    >>> ax.grid(color='k', linestyle='--', linewidth=0.5)
-
-    >>> plt.tight_layout(pad=0, w_pad=0, h_pad=0)
-    >>> plt.savefig(TEM.filename+'.pdf')
+    >>> plot_image(TEM)
 
 .. figure:: TEM.pdf
    :align: center

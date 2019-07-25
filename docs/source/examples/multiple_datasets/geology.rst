@@ -5,7 +5,7 @@ Correlated Dataset
 ------------------
 
 The core scientific dataset model also support multiple dependent variables
-that share the same coordinate grid. We call the dataset with multiple
+that share the same coordinate grid. We call the datasets with multiple
 dependent variables as correlated datasets.
 
 In this section, we go over a few examples.
@@ -14,8 +14,7 @@ In this section, we go over a few examples.
 Geological dataset
 ^^^^^^^^^^^^^^^^^^
 
-Import the `csdmpy` model and load the dataset. Here, we additionally import
-numpy and matplotlib modules.
+Import the `csdmpy` model and load the dataset.
 
 .. doctest::
 
@@ -143,7 +142,7 @@ numpy and matplotlib modules.
       }
     }
 
-From the data structure one finds two dimensions labeled as `longitude`
+From the data structure one finds two dimensions labeled as `longitude` and
 `latitude` respectively, and five dependent variables named as
 Surface temperature, Air temperature at 2m, Wind velocity, Relative humidity,
 and Air pressure at sea level. Lets take a look at individual dependent

@@ -11,23 +11,21 @@ Enumeration
 DimObjectSubtype
 ----------------
 
-Description
-***********
+The `DimObjectSubtype` contains the enumeration literals of the
+:ref:`dimension_uml` objects.
 
-The `DimObjectSubtype` contains the enumeration literals of the dimension
-objects.
+.. cssclass:: table-bordered table-hover table-striped
 
-.. cssclass:: table-bordered table-hover
-
-========= ===========
-Enum      Description
-========= ===========
-linear    The coordinates along the dimension is expressed as a linear
-          function of the indexes along the dimension.
-monotonic The coordinates along the dimension are explicitly defined and may
-          not be expressed as a function of indexes along the dimension.
-labeled   The coordinates are string labels.
-========= ===========
+=========   ===================================================================
+Enum        Description
+=========   ===================================================================
+linear      Literal specifying an instance of a :ref:`linearDimension_uml`
+            object.
+monotonic   Literal specifying an instance of a :ref:`monotonicDimension_uml`
+            object.
+labeled     Literal specifying an instance of a :ref:`labeledDimension_uml`
+            object.
+=========   ===================================================================
 
 
 .. _DVObjectSubtype_uml:
@@ -36,21 +34,19 @@ labeled   The coordinates are string labels.
 DVObjectSubtype
 ---------------
 
-Description
-***********
+The `DVObjectSubtype` contains the enumeration literals of the
+:ref:`dependent_var_uml` object.
 
-The `DVObjectSubtype` contains the enumeration literals of the dependent
-variable object.
+.. cssclass:: table-bordered table-hover table-striped
 
-.. cssclass:: table-bordered table-hover
-
-========= ===========
-Enum      Description
-========= ===========
-internal  The dependent variable components are stored within the file.
-external  The dependent variable components are stores as binary data at an
-          external location.
-========= ===========
+=========   ===================================================================
+Enum        Description
+=========   ===================================================================
+internal    Literal specifying an instance of a :ref:`linearDimension_uml`
+            object.
+external    Literal specifying an instance of a :ref:`linearDimension_uml`
+            object.
+=========   ===================================================================
 
 
 .. _quantityType_uml:
@@ -59,13 +55,10 @@ external  The dependent variable components are stores as binary data at an
 QuantityType
 ------------
 
-Description
-***********
-
 An enumeration literal used in interpreting the `p`-components of the
 dependent variable.
 
-.. cssclass:: table-bordered table-hover
+.. cssclass:: table-bordered table-hover table-striped
 
 ================== ===========
 Enum               Description
@@ -87,3 +80,30 @@ matrix_n_m         A dependent variable with :math:`p=mn` components
 symmetric_matrix_n A dependent variable with :math:`p=n^2` components interpret
                    as a symmetric matrix shown below,
 ================== ===========
+
+.. _numericType_uml:
+
+-----------
+NumericType
+-----------
+
+An enumeration literal used in interpreting the dependent variable binary data.
+
+.. cssclass:: table-bordered table-hover table-striped
+
+==================  ===========
+Enum                Description
+==================  ===========
+uint8 			    8-bit unsigned integer
+uint16			    16-bit unsigned integer
+uint32			    32-bit unsigned integer
+uint64			    64-bit unsigned integer
+int8			    8-bit signed integer
+int16			    16-bit signed integer
+int32			    32-bit signed integer
+int64			    64-bit signed integer
+float32			    32-bit floating point number
+float64			    64-bit floating point number
+complex64	        two 32-bit floating points numbers
+complex128	        two 64-bit floating points numbers
+==================  ===========

@@ -17,7 +17,7 @@ class SparseSampling:
     r"""Declare a SparseSampling class."""
 
     __slots__ = (
-        "_sparse_dimensions",
+        "_sparse_dimensions_indexes",
         "_sparse_grid_vertexes",
         "_encoding",
         "_quantity_type",
@@ -28,7 +28,7 @@ class SparseSampling:
 
     def __init__(
         self,
-        dimensions,
+        dimension_indexes,
         sparse_grid_vertexes,
         encoding="none",
         quantity_type="scalar",
@@ -43,7 +43,7 @@ class SparseSampling:
         self._quantity_type = QuantityType(quantity_type)
         self.description = description
         self.application = application
-        self._sparse_dimensions = dimensions
+        self._sparse_dimensions_indexes = dimension_indexes
         self._sparse_grid_vertexes = Decoder(
             self._encoding,
             self._quantity_type,
@@ -92,11 +92,11 @@ class SparseSampling:
         self._description = validate(value, "description", str)
 
     @property
-    def sparse_dimensions(self):
+    def sparse_dimensions_indexes(self):
         """List of dimension indexes corresponding to sparse dimensions."""
-        return deepcopy(self._sparse_dimensions)
+        return deepcopy(self._sparse_dimensions_indexes)
 
     @property
     def sparse_grid_vertexes(self):
         """List of grid vertexes corresponding to sparse dimensions."""
-        return deepcopy(self._sparse_dimensions)
+        return deepcopy(self._sparse_dimensions_indexes)

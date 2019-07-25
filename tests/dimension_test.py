@@ -90,12 +90,11 @@ def test_linear_new():
     data.dimensions[0].fft_output_order = True
     assert data.dimensions[0].fft_output_order is True
     assert np.all(
-        data.dimensions[0].coordinates.value
-        == fftshift((np.arange(12) - 6) * 20.0 + 5.0)
+        data.dimensions[0].coordinates.value == (np.arange(12) - 6) * 20.0 + 5.0
     )
     assert np.all(
         data.dimensions[0].absolute_coordinates.value
-        == fftshift((np.arange(12) - 6) * 20.0 + 5.0 + 1000.0)
+        == (np.arange(12) - 6) * 20.0 + 5.0 + 1000.0
     )
 
     dict1 = {

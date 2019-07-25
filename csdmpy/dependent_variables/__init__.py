@@ -18,19 +18,17 @@ __all__ = ["DependentVariable"]
 
 class DependentVariable:
     r"""
-    Instantiate a DependentVariable class.
+    Create an instance of the DependentVariable class.
 
-    The instance of this class represents a dependent variable,
-    :math:`y`. A dependent variable holds :math:`p`-component data values,
-    where :math:`p>0` is an integer.
-    For example, a scalar is single-component (:math:`p=1`),
-    a vector can have up to `n`-components (:math:`p=n`),
-    while a second rank symmetric tensor has six-component (:math:`p=6`).
+    The instance of this class represents a dependent variable, :math:`\mathbf{U}`.
+    A dependent variable holds :math:`p`-component data values, where :math:`p>0`
+    is an integer. For example, a scalar is single-component (:math:`p=1`),
+    a vector may have up to `n`-components (:math:`p=n`),
+    while a second rank symmetric tensor have six unique component (:math:`p=6`).
 
-    *Creating a new dependent variable.*
+    **Creating a new dependent variable.**
 
-    There are two ways to create a new dependent variable from the
-    DependentVariable class.
+    There are two ways of creating a new instance of a DependentVariable class.
 
     *From a python dictionary containing valid keywords.*
 
@@ -52,7 +50,7 @@ class DependentVariable:
 
     Here, `dependent_variable_dictionary` is the python dictionary.
 
-    **From valid keyword arguments.**
+    *From valid keyword arguments.*
 
     .. doctest::
 
@@ -159,7 +157,7 @@ class DependentVariable:
             {}
 
         The application attribute is where an application can place its own
-        metadata as a python dictionary object with application specific
+        metadata as a python dictionary object containing the application specific
         metadata, using a reverse domain name notation string as the attribute
         key, for example,
 
@@ -175,7 +173,7 @@ class DependentVariable:
 
         Please refer to the Core Scientific Dataset Model article for details.
 
-        Return:
+        Returns:
             A python dictionary containing dependent variable application metadata.
         """
         return self.subtype.application
@@ -187,13 +185,13 @@ class DependentVariable:
     @property
     def axis_label(self):
         r"""
-        List of formatted string labels for each component.
+        List of formatted string labels for each component of the dependent variable.
 
         This attribute is not a part of the original core scientific dataset
         model, however, it is a convenient supplementary attribute that provides
         formated string ready for labeling the components of the dependent variable.
-        The string at index `i` is formatted as 'component_labels[i] / unit'  if
-        `component_labels[i]` is a non-empty string, otherwise, 'quantity_name / unit’.
+        The string at index `i` is formatted as `component_labels[i] / unit` if
+        `component_labels[i]` is a non-empty string, otherwise, `quantity_name / unit`.
         Here, `quantity_name`, `component_labels`, and `unit`are the attributes of the
         :ref:`dv_api` instance. For example,
 
@@ -218,7 +216,7 @@ class DependentVariable:
     @property
     def component_labels(self):
         r"""
-        List of labels corresponding to the order of the components.
+        List of labels corresponding to the components of the dependent variable.
 
         .. doctest::
 
@@ -240,7 +238,7 @@ class DependentVariable:
             'channel 2'
 
         .. todo::
-            Check the component names.
+            Check the component labels.
 
         Returns:
             A list of component label strings.
@@ -264,15 +262,18 @@ class DependentVariable:
         :math:`p` is the number of components, and :math:`N_k` is the number
         of points from the :math:`k^\mathrm{th}` :ref:`dim_api` object.
 
+        .. note::
+            The shape of the components Numpy array,
+            :math:`(p \times N_{d-1} \times ... N_1 \times N_0)`, is reverse the
+            shape of the components array,
+            :math:`(N_0 \times N_1 \times ... N_{d-1} \times p)`, from the CSD model.
+            This is because CSD model utilizes a column-major order to shape the
+            components array relative to the order of the dimension while Numpy
+            utilizes a row-major order.
+
         The dimensionality of this Numpy array is :math:`d+1` where :math:`d`
-        is the number of dimension objects. Note, the shape of the Numpy array
-        follows a reverse order based on the ordered list of dimension objects,
-        that is, the :math:`k^\mathrm{th}` dimension lies along the
-        :math:`(d-k)^\mathrm{th}` axis of the Numpy array. Therefore, the first
-        dimension :math:`x_0` with :math:`N_0` points is the last
-        axis, and the last dimension :math:`x_{d-1}` with :math:`N_{d-1}`
-        points is the first axis of the Numpy array. The
-        zeroth axis with :math:`p` points is the number of components.
+        is the number of dimension objects. The zeroth axis with :math:`p` points
+        is the number of components.
 
         This attribute can only be updated when the shape of the new array is
         the same as the shape of the components array.
@@ -287,7 +288,7 @@ class DependentVariable:
             'float32'
 
         is a three-component dependent variable with ten data values per
-        component. The numeric type of data values, in this example, is
+        component. The numeric type of the data values, in this example, is
         `float32`. To update the components array, assign an array of
         shape (3, 10) to the `components` attribute. In the following example,
         we assign a Numpy array,
@@ -331,7 +332,7 @@ class DependentVariable:
     @property
     def components_url(self):
         r"""
-        URL where the data components are stored.
+        URL where the data components of the dependent variable are stored.
 
         This attribute is only informative and cannot be modified. Its value is a
         string containing the local or remote address of the file where the data values
@@ -383,7 +384,7 @@ class DependentVariable:
         Returns:
             A json serialized string of the dependent variable object.
 
-        Raise:
+        Raises:
             AttributeError: When modified.
         """
         dictionary = self._get_python_dictionary()
@@ -408,7 +409,7 @@ class DependentVariable:
             A string of UTF-8 allowed characters describing the dependent variable.
 
         Raises:
-            ValueError: When a non-string value is assigned.
+            TypeError: When the assigned value is not a string.
         """
         return self.subtype.description
 
@@ -419,7 +420,7 @@ class DependentVariable:
     @property
     def encoding(self):
         r"""
-        The encoding method used in representing the data value.
+        The encoding method used in representing the dependent variable.
 
         The value of this attribute determines the method used when serializing or
         deserializing the data values to and from the file. Currently, there are three
@@ -459,7 +460,7 @@ class DependentVariable:
     @property
     def name(self):
         r"""
-        The name of the dependent variable.
+        Name of the dependent variable.
 
         .. doctest::
 
@@ -482,7 +483,7 @@ class DependentVariable:
     @property
     def numeric_type(self):
         r"""
-        The numeric type of the data values.
+        The numeric type of the data values from the dependent variable.
 
         There are currently twelve *valid* numeric types:
 
@@ -494,7 +495,7 @@ class DependentVariable:
         ==============   ============   ============   ============
 
         When assigning a valid value, this attribute updates the `dtype` of the
-        components Numpy array from the corresponding
+        Numpy array from the corresponding
         :attr:`~csdmpy.dependent_variables.DependentVariable.components`
         attribute. We recommended the use of the numeric type attribute for
         updating the `dtype` of the Numpy array. For example,
@@ -531,7 +532,7 @@ class DependentVariable:
     @property
     def quantity_name(self):
         """
-        Quantity name of physical quantities associated with the dependent variable.
+        Quantity name of the physical quantities associated with the dependent variable.
 
         .. doctest::
 
@@ -554,7 +555,7 @@ class DependentVariable:
     @property
     def quantity_type(self):
         r"""
-        Quantity type of the data values.
+        Quantity type of the dependent variable.
 
         There are currently six *valid* quantity types,
 

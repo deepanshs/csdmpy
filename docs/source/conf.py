@@ -51,6 +51,7 @@ extensions = [
     "sphinx.ext.viewcode",
     # "sphinx.ext.inheritance_diagram",
     "sphinx.ext.napoleon",
+    "sphinxjp.themes.basicstrap",
     # "autoapi.sphinx",
 ]
 
@@ -92,9 +93,70 @@ pygments_style = "default"
 #
 
 # html_theme = 'alabaster'  or 'bootstrap' or 'sphinx_rtd_theme', 'classic'
-html_theme = "sphinx_rtd_theme"
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-# html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+html_theme = "basicstrap"
+
+# Theme options are theme-specific and customize the look and feel of a theme
+# further.  For a list of options available for each theme, see the
+# documentation.
+#
+html_theme_options = {
+    # Set the lang attribute of the html tag. Defaults to 'en'
+    "lang": "en",
+    # Disable showing the sidebar. Defaults to 'false'
+    "nosidebar": False,
+    # Show header searchbox. Defaults to false. works only "nosidebar=True",
+    "header_searchbox": False,
+    # Put the sidebar on the right side. Defaults to false.
+    "rightsidebar": False,
+    # Set the width of the sidebar. Defaults to 3
+    "sidebar_span": 3,
+    # Fix navbar to top of screen. Defaults to true
+    "nav_fixed_top": True,
+    # Fix the width of the sidebar. Defaults to false
+    "nav_fixed": False,
+    # Set the width of the sidebar. Defaults to '900px'
+    "nav_width": "900px",
+    # Fix the width of the content area. Defaults to false
+    "content_fixed": False,
+    # Set the width of the content area. Defaults to '900px'
+    "content_width": "900px",
+    # Fix the width of the row. Defaults to false
+    "row_fixed": True,
+    # Disable the responsive design. Defaults to false
+    "noresponsive": False,
+    # Disable the responsive footer relbar. Defaults to false
+    "noresponsiverelbar": False,
+    # Disable flat design. Defaults to false.
+    # Works only "bootstrap_version = 3"
+    "noflatdesign": False,
+    # Enable Google Web Font. Defaults to false
+    "googlewebfont": False,
+    # Set the URL of Google Web Font's CSS.
+    # Defaults to 'http://fonts.googleapis.com/css?family=Text+Me+One'
+    # "googlewebfont_url": "http://fonts.googleapis.com/css?family=Lily+Script+One",  # NOQA
+    # Set the Style of Google Web Font's CSS.
+    # Defaults to "font-family: 'Text Me One', sans-serif;"
+    "googlewebfont_style": u"font-family: 'Lily Script One' cursive;",
+    # Set 'navbar-inverse' attribute to header navbar. Defaults to false.
+    "header_inverse": False,
+    # Set 'navbar-inverse' attribute to relbar navbar. Defaults to false.
+    "relbar_inverse": False,
+    # Enable inner theme by Bootswatch. Defaults to false
+    "inner_theme": False,
+    # Set the name of inner theme. Defaults to 'bootswatch-simplex'
+    "inner_theme_name": "bootswatch-simplex",
+    # Select Twitter bootstrap version 2 or 3. Defaults to '3'
+    "bootstrap_version": "3",
+    # Show "theme preview" button in header navbar. Defaults to false.
+    "theme_preview": False,
+    # Set the Size of Heading text. Defaults to None
+    # "h1_size": "3.0em",
+    # "h2_size": "2.6em",
+    # "h3_size": "2.2em",
+    # "h4_size": "1.8em",
+    # "h5_size": "1.4em",
+    # "h6_size": "1.1em",
+}
 
 # html_sidebars = {
 #     "**": [
@@ -105,110 +167,39 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # html_sidebars = {"**": ["sidebar.html", "searchbox.html"]}
 
-# html_theme_options = {
-#     # Navigation bar title. (Default: ``project`` value)
-#     # "navbar_title": "Demo",
-#     # Tab name for entire site. (Default: "Site")
-#     # "navbar_site_name": "Site",
-#     # A list of tuples containing pages or urls to link to.
-#     # Valid tuples should be in the following forms:
-#     #    (name, page)                 # a link to a page
-#     #    (name, "/aa/bb", 1)          # a link to an arbitrary relative url
-#     #    (name, "http://example.com", True) # arbitrary absolute url
-#     # Note the "1" or "True" value above as the third argument to indicate
-#     # an arbitrary url.
-#     # 'navbar_links': [
-#     #     ("Examples", "examples"),
-#     #     ("Link", "http://example.com", True),
-#     # ],
-#     # Render the next and previous page links in navbar. (Default: true)
-#     # "navbar_sidebarrel": True,
-#     # Render the current pages TOC in the navbar. (Default: true)
-#     # "navbar_pagenav": True,
-#     # Tab name for the current pages TOC. (Default: "Page")
-#     "navbar_pagenav_name": "Page",
-#     # Global TOC depth for "site" navbar tab. (Default: 1)
-#     # Switching to -1 shows all levels.
-#     "globaltoc_depth": 3,
-#     # Include hidden TOCs in Site navbar?
-#     #
-#     # Note: If this is "false", you cannot have mixed ``:hidden:`` and
-#     # non-hidden ``toctree`` directives in the same page, or else the build
-#     # will break.
-#     #
-#     # Values: "true" (default) or "false"
-#     "globaltoc_includehidden": "true",
-#     # HTML navbar class (Default: "navbar") to attach to <div> element.
-#     # For black navbar, do "navbar navbar-inverse"
-#     "navbar_class": "navbar",
-#     # Fix navigation bar to top of page?
-#     # Values: "true" (default) or "false"
-#     "navbar_fixed_top": "true",
-#     # Location of link to source.
-#     # Options are "nav" (default), "footer" or anything else to exclude.
-#     "source_link_position": "nav",
-#     # Bootswatch (http://bootswatch.com/) theme.
-#     #
-#     # Options are nothing (default) or the name of a valid theme
-#     # such as "cosmo" or "sandstone".
-#     #
-#     # The set of valid themes depend on the version of Bootstrap
-#     # that's used (the next config option).
-#     #
-#     # Currently, the supported themes are:
-#     # - Bootstrap 2: https://bootswatch.com/2
-#     # - Bootstrap 3: https://bootswatch.com/3
-#     # "bootswatch_theme": "sandstone",
-#     # Choose Bootstrap version.
-#     # Values: "3" (default) or "2" (in quotes)
-#     "bootstrap_version": "3",
-# }
-
-# html_theme_options = {
-#     "bootstrap_version": "3",
-#     "header_inverse": False,
-#     "relbar_inverse": False,
-#     "inner_theme": True,
-#     "inner_theme_name": "bootswatch-cosmo",
-# }
-
 # Theme options
 html_logo = "_static/csdmpy.png"
 
-html_theme_options = {
-    "canonical_url": "",
-    "logo_only": False,
-    # 'display_version': True,
-    "prev_next_buttons_location": "bottom",
-    "style_external_links": True,
-    "style_nav_header_background": "black",
-    # 'github_url': 'https://github.com/DeepanshS/csdmpy/doc/source/index',
-    # Toc options
-    "collapse_navigation": True,
-    "sticky_navigation": True,
-    "navigation_depth": 4,
-    "includehidden": True,
-    "titles_only": False,
-}
+# html_theme_options = {
+#     "canonical_url": "",
+#     "logo_only": False,
+#     # 'display_version': True,
+#     "prev_next_buttons_location": "bottom",
+#     "style_external_links": True,
+#     "style_nav_header_background": "black",
+#     # 'github_url': 'https://github.com/DeepanshS/csdmpy/doc/source/index',
+#     # Toc options
+#     "collapse_navigation": True,
+#     "sticky_navigation": True,
+#     "navigation_depth": 4,
+#     "includehidden": True,
+#     "titles_only": False,
+# }
 
 html_context = {
     "display_github": True,
     "github_user": "DeepanshS",
     "github_repo": "csdmpy",
     "github_version": "master/docs/source/",
-    "css_files": [
-        "_static/theme_overrides.css",  # override wide tables in RTD theme
-        "_static/style.css",
-        # "_static/custom.css",
-    ],
+    # "css_files": [
+    #     "_static/button.css",
+    #     "_static/theme_overrides.css",  # override wide tables in RTD theme
+    #     "_static/style.css",
+    #     "_static/custom.css",
+    #     "_static/bootstrap-toc.css",
+    # ],
 }
 
-
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-#
-# html_theme_options = {}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -313,11 +304,11 @@ epub_exclude_files = ["search.html"]
 todo_include_todos = True
 
 
-def setup(app):
-    app.add_javascript("copybutton.js")
-    # app.add_javascript("jsquery.js")
-    # app.add_javascript("init.js")
-    # app.add_javascript("custom.js")
-    # app.add_javascript(
-    #     "https://cdn.jsdelivr.net/npm/clipboard@1/dist/clipboard.min.js"
-    # )
+# def setup(app):
+#     app.add_javascript("copybutton.js")
+# app.add_javascript("jsquery.js")
+# app.add_javascript("init.js")
+# app.add_javascript("custom.js")
+# app.add_javascript(
+#     "https://cdn.jsdelivr.net/npm/clipboard@1/dist/clipboard.min.js"
+# )

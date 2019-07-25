@@ -4,7 +4,7 @@
 2D{2} datasets
 --------------
 
-The 2D{2} datasets is two-dimensional, :math:`d=2`, dataset
+The 2D{2} datasets are two-dimensional, :math:`d=2`,
 with one two-component dependent variable, :math:`p=2`.
 
 Vector dataset
@@ -69,9 +69,9 @@ as a function of two spatial dimensions.
       }
     }
 
-The spatial dimensions are sampled linearly along the two independent
-variables. The tuples of independent and dependent variable instances
-from this example are
+The spatial dimensions are sampled linearly along the two dimensions.
+The tuples of the dimension and dependent variable instances from this example
+are
 
 .. doctest::
 
@@ -88,9 +88,9 @@ with the respective coordinates (viewed only up to five values).
     >>> print(x[1].coordinates[:5])
     [-2.     -1.9375 -1.875  -1.8125 -1.75  ] cm
 
-respectively.
-The components of the dependent variable are of a vector dataset. This is
-also seen from the :attr:`~csdmpy.DependentVariable.quantity_type`
+respectively. In this example, the components of the dependent variable are
+vectors as seen from the
+:attr:`~csdmpy.dependent_variables.DependentVariable.quantity_type`
 attribute of the corresponding dependent variable instance.
 
 .. doctest::
@@ -100,8 +100,7 @@ attribute of the corresponding dependent variable instance.
 
 Let's plot the vector data. To do this, we use the *streamplot* method
 from the matplotlib package. Before we could visualize, however, there
-is an initial processing step. We use the methods from the Numpy library for
-processing.
+is an initial processing step. We use the Numpy library for processing.
 
 .. doctest::
 
@@ -117,33 +116,31 @@ And now, the plot.
 
 .. doctest::
 
-    >>> cp.plot(vector_data)
-
+    >>> import matplotlib.pyplot as plt
+    >>> def plot_vector():
+    ...     fig, ax = plt.subplots(1,1, figsize=(5.4,5))
+    ...     ax.streamplot(X.value, Y.value, U, V, density =1,
+    ...                   linewidth=Rlog, color=Rlog, cmap='viridis')
+    ...
+    ...     ax.set_xlim([x[0].coordinates[0].value,
+    ...                 x[0].coordinates[-1].value])
+    ...     ax.set_ylim([x[1].coordinates[0].value,
+    ...                 x[1].coordinates[-1].value])
+    ...
+    ...     # Set axes labels and figure title.
+    ...     ax.set_xlabel(x[0].axis_label)
+    ...     ax.set_ylabel(x[1].axis_label)
+    ...     ax.set_title(y[0].name)
+    ...
+    ...     # Set grid lines.
+    ...     ax.grid(color='gray', linestyle='--', linewidth=0.5)
+    ...
+    ...     plt.tight_layout()
+    ...     plt.show()
 
 .. doctest::
 
-    >>> import matplotlib.pyplot as plt
-
-    >>> fig, ax = plt.subplots(1,1, figsize=(5.4,5))
-    >>> ax.streamplot(X.value, Y.value, U, V, density =1,
-    ...               linewidth=Rlog, color=Rlog, cmap='viridis')  # doctest: +SKIP
-
-    >>> ax.set_xlim([x[0].coordinates[0].value,
-    ...             x[0].coordinates[-1].value])  # doctest: +SKIP
-    >>> ax.set_ylim([x[1].coordinates[0].value,
-    ...             x[1].coordinates[-1].value])  # doctest: +SKIP
-
-    >>> # Set axes labels and figure title.
-    >>> ax.set_xlabel(x[0].axis_label)  # doctest: +SKIP
-    >>> ax.set_ylabel(x[1].axis_label)  # doctest: +SKIP
-    >>> ax.set_title(y[0].name) # doctest: +SKIP
-
-    >>> # Set grid lines.
-    >>> ax.grid(color='gray', linestyle='--', linewidth=0.5)
-
-    >>> plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
-    >>> plt.subplots_adjust(wspace=0.025, hspace=0.05)
-    >>> plt.savefig(vector_data.filename+'.pdf')
+    >>> plot_vector()
 
 .. image:: electric_field_raw.png
    :align: center

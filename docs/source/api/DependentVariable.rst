@@ -16,6 +16,7 @@ DependentVariable
     .. autosummary::
         ~DependentVariable.type
         ~DependentVariable.description
+        ~DependentVariable.application
         ~DependentVariable.name
         ~DependentVariable.unit
         ~DependentVariable.quantity_name
@@ -37,6 +38,7 @@ DependentVariable
     .. rubric:: Attributes Documentation
     .. autoattribute:: type
     .. autoattribute:: description
+    .. autoattribute:: application
     .. autoattribute:: name
     .. autoattribute:: unit
     .. autoattribute:: quantity_name

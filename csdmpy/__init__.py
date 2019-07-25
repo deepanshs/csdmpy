@@ -33,7 +33,7 @@ def _import_json(filename):
         return json.loads(str(content, encoding="UTF-8"))
 
 
-def load(filename=None, application=False, sort_fft_order=False):
+def load(filename=None, application=False, sort_fft_order=True):
     r"""
     Load a .csdf/.csdfe file and return an instance of :ref:`csdm_api` class.
 
@@ -45,12 +45,12 @@ def load(filename=None, application=False, sort_fft_order=False):
 
     Args:
         filename (str): A local or remote address to the `.csdf or `.csdfe` file.
-        application (bool): If true, the application metadata from the application that
+        application (bool): If true, the application metadata from application that
                 last serialized the file will be imported. Default is False.
         sort_fft_order (bool): If true, the coordinates and the components
                 corresponding to the dimension with `fft_output_order` as True will be
                 sorted upon import and the corresponding `fft_output_order` key-value
-                will be set to False. Default is False.
+                will be set to False. Default is True.
 
     Returns:
         A CSDM instance.
@@ -73,16 +73,17 @@ def load(filename=None, application=False, sort_fft_order=False):
     if sort_fft_order:
         axes = []
         for i, dim in enumerate(csdm_object.dimensions):
-            if dim.fft_output_order:
-                n_points = dim.count
-                if n_points % 2 == 0:
-                    temp = n_points * dim.increment / 2.0
-                else:
-                    temp = (n_points - 1) * dim.increment / 2.0
-                dim.coordinates_offset = dim.coordinates_offset - temp
+            if dim.type == "linear":
+                if dim.fft_output_order:
+                    n_points = dim.count
+                    if n_points % 2 == 0:
+                        temp = n_points * dim.increment / 2.0
+                    else:
+                        temp = (n_points - 1) * dim.increment / 2.0
+                    dim.coordinates_offset = dim.coordinates_offset - temp
 
-                axes.append(-i - 1)
-                dim.fft_output_order = False
+                    axes.append(-i - 1)
+                    # dim.fft_output_order = False
 
         for var in csdm_object.dependent_variables:
             var.components = fftshift(var.components, axes=axes)
@@ -95,7 +96,7 @@ def load(filename=None, application=False, sort_fft_order=False):
                 dim.reciprocal.application = {}
         for dim in csdm_object.dependent_variables:
             dim.application = {}
-            # if hasattr(dim., 'sparse_dimensions'):
+            # if hasattr(dim., 'dimension indexes'):
             #     dim.reciprocal.application = {}
     # csdm_objects = []
     # for file_ in csdm_files:
@@ -156,7 +157,7 @@ def _load(filename):
 
 def new(description=""):
     r"""
-    A new instance of the :ref:`csdm_api` class with a 0D{0} dataset.
+    Create a new instance of the :ref:`csdm_api` class containing a 0D{0} dataset.
 
     Args:
         description (str): A string describing the the csdm object. This is optional.

@@ -23,7 +23,7 @@ sample test file.
 
 Here, ``testdata1`` is an instance of the CSDM class.
 
-At the root level, the CSDM object includes various useful optional
+At the root level, the :ref:`csdm_api` object includes various useful optional
 attributes that may contain additional information about the dataset. One such
 useful attribute is the :attr:`~csdmpy.csdm.CSDM.description` key which briefs
 the end-users on the contents of the dataset. To access the value of this
@@ -33,9 +33,6 @@ attribute use,
 
     >>> testdata1.description
     'A simulated sine curve.'
-
-.. seeAlso::
-    List of various attributes from the :ref:`csdm_api` object.
 
 ---------------------------------------------------------------
 Accessing the dimensions and dependent variables of the dataset
@@ -69,25 +66,23 @@ You may access the instances of individual dimension and dependent variable by
 using the proper indexing. For example, the dimension and dependent variable
 at index 0 may be accessed using ``x[0]`` and ``y[0]``, respectively.
 
-Every instance of the Dimension object has its own set of attributes
-that further describe the dimension. For example, a Dimension object may have
-an optional :attr:`~csdmpy.dimensions.Dimension.description` attribute,
+Every instance of the :ref:`dim_api` object has its own set of attributes
+that further describe the respective dimension. For example, a Dimension object
+may have an optional :attr:`~csdmpy.dimensions.Dimension.description`
+attribute,
 
 .. doctest::
 
     >>> x[0].description
     'A temporal dimension.'
 
-Similarly, every instance of the DependentVariable object has its own set of
+Similarly, every instance of the :ref:`dv_api` object has its own set of
 attributes. In this example, the
 :attr:`~csdmpy.dependent_variables.DependentVariable.description`
 attribute from the dependent variable is
 
     >>> y[0].description
     'A response dependent variable.'
-
-.. seeAlso::
-    A list of various attributes from the :ref:`dim_api` and :ref:`dv_api` objects.
 
 Coordinates along the dimension
 *******************************
@@ -116,8 +111,8 @@ respective :ref:`dim_api` instance. In this example, the coordinates are
     documentation for details.
     In the `csdmpy` module, the ``Quantity.value`` is a
     `Numpy array <https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.ndarray.html>`_.
-
-    In the above example,
+    For instance, in the above example, the underlying Numpy array from the
+    coordinates attribute is accessed as
 
     .. doctest::
 
@@ -130,8 +125,8 @@ Components of the dependent variable
 Every dependent variable object has at least one component. The number of
 components of the dependent variable is determined from the
 :attr:`~csdmpy.dependent_variables.DependentVariable.quantity_type` attribute
-of the dependent variable object. For example, a scalar quantity has one
-component while a
+of the dependent variable object. For example, a scalar quantity has
+one-component while a
 vector quantity may have multiple components. To access the components of
 the dependent variable, use the
 :attr:`~csdmpy.dependent_variables.DependentVariable.components`
@@ -146,12 +141,13 @@ attribute of the respective :ref:`dv_api` instance. For example,
 
 The :attr:`~csdmpy.dependent_variables.DependentVariable.components` attribute
 is a Numpy array. Note, the number of dimensions of this array is :math:`d+1`
-where :math:`d` is the number of dimensions. The additional dimension
-corresponds to the number of components of the dependent variable. For
-instance, in this example, there is a single dimension, `i.e.`, :math:`d=1`
+where :math:`d` is the number of :ref:`dim_api` objects from the
+:attr:`~csdmpy.csdm.CSDM.dimensions` attribute. The additional dimension in the
+Numpy array corresponds to the number of components of the dependent variable.
+For instance, in this example, there is a single dimension, `i.e.`, :math:`d=1`
 and, therefore, the value of the
 :attr:`~csdmpy.dependent_variables.DependentVariable.components`
-attribute holds a two-dimensional Numpy array. The shape of this array is
+attribute holds a two-dimensional Numpy array of shape
 
 .. doctest::
 
@@ -174,7 +170,7 @@ We make use of Python's `Matplotlib library <https://matplotlib.org>`_
 for generating these figures. The users may, however, use their favorite
 plotting library.
 
-.. warning::
+.. Attention::
 
     This documentation is not a guide for data visualization.
 
@@ -191,7 +187,8 @@ instances and `name` is an attribute of the DependentVariable instance.
     >>> plt.title(y[0].name)  # doctest: +SKIP
     >>> plt.show()
 
-.. image:: /_static/test.pdf
+.. figure:: /_static/test.pdf
+    :align: center
 
 .. seealso::
 

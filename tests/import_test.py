@@ -77,7 +77,7 @@ def test02():
 
 
 def test03():
-    dataset1 = cp.load(cp.tests.test03)
+    dataset1 = cp.load(cp.tests.test03, sort_fft_order=False)
     dataset2 = cp.load(cp.tests.test03, sort_fft_order=True)
 
     dat1 = dataset1.dependent_variables[0].components[0]

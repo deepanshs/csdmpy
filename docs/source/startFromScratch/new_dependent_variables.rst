@@ -3,8 +3,8 @@
 Adding instances of DependentVariable class
 -------------------------------------------
 
-In the previous two sections, we created a new dataset and learnt how to add
-dimension objects to the dataset. In this example, we will see how to add
+In the previous two sections, we learnt how to create a new dataset and add
+dimensions to a dataset. In this example, we will see how to add
 dependent variables to the dataset. Let's start by creating a new dataset,
 
 .. doctest::
@@ -16,17 +16,33 @@ An instance of the DependentVariable class is added using the
 :meth:`~csdmpy.csdm.CSDM.add_dependent_variable` method of the :ref:`csdm_api`
 instance. There are two subtypes of DependentVariable class:
 
-  - InternalDependentVariable
-  - ExternalDependentVariable
+  - **InternalDependentVariable**:
+    We refer an instance of the DependentVariable as *internal* when the
+    components of the dependent variable are listed along with the other
+    metadata specifying the dependent variable.
+  - **ExternalDependentVariable**:
+    We refer an instance of the DependentVariable as *external* when the
+    components of the dependent variable are stored in an external file as
+    binary data either locally or at a remote server.
 
-^^^^^^^^^^^^^^^^^^^^^^^^^
-InternalDependentVariable
-^^^^^^^^^^^^^^^^^^^^^^^^^
-**Adding a scalar dependent variables**
+In version 1.0, the CSD model allows dependent variables with quantity types
+as
 
-We refer an instance of the DependentVariable as *internal* when the components
-of the dependent variable are listed along with the other metadata specifying
-the dependent variable. For example, consider the following python dictionary
+  - scalar
+  - vector_n
+  - pixel_n
+  - matrix_n_m
+  - symmetric_matrix_n
+
+.. seeAlso::
+    Read more about :ref:`DependentVariable API <dv_api>`.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Adding a scalar dependent variables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A dependent variable with quantity type `scalar` is a one-component dependent
+variable. Consider the following python dictionary
 
 .. doctest::
 
@@ -37,8 +53,9 @@ the dependent variable. For example, consider the following python dictionary
     ...     'components': [np.arange(100)]
     ... }
 
-where the components are listed as the value of the
-:attr:`csdmpy.dependent_variables.DependentVariables.components` keyword.
+Here, the components are listed as the value of the
+:attr:`~csdmpy.dependent_variables.DependentVariable.components` keyword, and
+therefore, the value of the `type` keyword is specified as `internal`.
 
 .. note::
     The value of the components attribute is listed as a list of numpy array.
@@ -85,10 +102,12 @@ after adding the dependent variable is
       }
     }
 
-**Adding a vector dependent variables**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Adding a multi-component dependent variables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In this next example, we add a dependent variable of vector quantity.
-This time we use keywords as the argument of the
+In this next example, we demostrate how to add a dependent variable with
+multiple components. This time we use keywords as the argument of the
 :meth:`~csdmpy.csdm.CSDM.add_dependent_variable` method to add a new
 dependent variable.
 
@@ -101,6 +120,15 @@ dependent variable.
     ...     unit='kg * m / s^2',
     ...     components=np.arange(300, dtype='complex64').reshape(3,100)
     ... )
+
+Notice, the value of the `components` keyword is a numpy array of shape
+3 x 100, where 3 is the number of components and 100 is the number of points
+per component. Here, we specify, `vector_3` as the value of the
+`quantity_type`, indicating that the three components of the dependent variable
+should be interpretted as vector dataset. Users may, however, substitute this
+value with any valid `quantity_type` consistent with the number of components.
+For example, the above dataset may also be interpretted as an image data
+if quantity type is given as `pixel_3`.
 
 The data structure after adding the above dependent variable is
 

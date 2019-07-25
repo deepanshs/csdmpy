@@ -21,7 +21,7 @@
           "relative abundance"
         ],
         "sparse_sampling": {
-          "dimensions": [
+          "dimension_indexes": [
             0
           ],
           "sparse_grid_vertexes": [

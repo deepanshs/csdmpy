@@ -4,7 +4,7 @@
 2D{3} datasets
 --------------
 
-The 2D{3} datasets is two dimensional, :math:`d=2` dataset with
+The 2D{3} datasets is two dimensional, :math:`d=2`, with
 a single three-component dependent variable, :math:`p=3`.
 
 Image datasets
@@ -67,7 +67,7 @@ The following is an example of the RGB image dataset.
       }
     }
 
-The tuples of the independent and dependent variable instances from
+The tuples of the dimension and dependent variable instances from
 ``ImageData`` instance are
 
 .. doctest::
@@ -86,13 +86,13 @@ Since there are two dimensions, the coordinates along each dimension are
     >>> print('x1 =', x[1].coordinates[:10])
     x1 = [0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]
 
-respectively, where both independent variable coordinates are spaced linearly.
-In the above expression, only the first ten coordinates along each
-independent variable are displayed.
+respectively, where coordinates along both dimensions are spaced uniformly.
+In the above example, only the first ten coordinates along each dimension
+are displayed.
 
 The dependent variable is an RGB image as also seen from the
-:attr:`~csdmpy.DependentVariable.quantity_type` attribute of the corresponding
-:ref:`dv_api` instance.
+:attr:`~csdmpy.dependent_variables.DependentVariable.quantity_type` attribute
+of the corresponding :ref:`dv_api` instance.
 
 .. doctest::
 
@@ -100,7 +100,7 @@ The dependent variable is an RGB image as also seen from the
     pixel_3
 
 As usual, the components of the dependent variable are accessed through
-the :attr:`~csdmpy.DependentVariable.components` attribute.
+the :attr:`~csdmpy.dependent_variables.DependentVariable.components` attribute.
 To access the individual components use the appropriate array indexing.
 For example,
 
@@ -118,8 +118,8 @@ For example,
 will return an array with the first component of all data values. Here, these
 components correspond to the red color intensity. The label corresponding to
 this component array is accessed through the
-:attr:`~csdmpy.DependentVariable.component_labels` attribute with appropriate
-indexing, that is
+:attr:`~csdmpy.dependent_variables.DependentVariable.component_labels`
+attribute with appropriate indexing, that is
 
 .. doctest::
 
@@ -141,17 +141,17 @@ components along with their respective labels.
     >>> print (y[0].component_labels[2], y[0].components[2].shape)
     blue (768, 1024)
 
-The shape (768, 1024) corresponds to the number of points from the list of the
-independent variable instances.
+The shape (768, 1024) corresponds to the number of points from the each
+dimension instances.
 
 .. note::
-        In this example, we do not increase the index of `y` because the
-        indices of y span through the dependent variables. Since
-        there is only one dependent variable, the index of `y`, that
-        is ``y[0]``, is set to zero. The indices for the
-        :attr:`~csdmpy.DependentVariable.components` and the
-        :attr:`~csdmpy.DependentVariable.component_labels`,
-        on the other hand, span through the number of components.
+        In this example, since there is only one dependent variable, the index
+        of `y` is set to zero, that is ``y[0]``. We do not increase the index
+        of `y`.  The indices for the
+        :attr:`~csdmpy.dependent_variables.DependentVariable.components` and the
+        :attr:`~csdmpy.dependent_variables.DependentVariable.component_labels`,
+        on the other hand, span through the number of components and are
+        incremented.
 
 Now, to visualize the dataset.
 
@@ -160,13 +160,14 @@ Now, to visualize the dataset.
     >>> import matplotlib.pyplot as plt
     >>> import numpy as np
 
-    >>> fig, ax = plt.subplots(1,1)
-    >>> ax.imshow(np.moveaxis(y[0].components, 0, -1 ))  # doctest: +SKIP
-    >>> ax.set_axis_off()  # doctest: +SKIP
-    >>> plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
-    >>> plt.subplots_adjust(wspace=0.025, hspace=0.05, left=0., right=1, top=1, bottom=0)
-    >>> plt.savefig(ImageData.filename+'.pdf')
-    >>> plt.show()
+    >>> def image_data():
+    ...     fig, ax = plt.subplots(1,1)
+    ...     ax.imshow(np.moveaxis(y[0].components, 0, -1 ))
+    ...     ax.set_axis_off()
+    ...     plt.tight_layout()
+    ...     plt.show()
+
+    >>> image_data()
 
 .. figure:: raccoon_raw.png
    :align: center

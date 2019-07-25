@@ -17,6 +17,7 @@ Dimension
     .. autosummary::
         ~Dimension.type
         ~Dimension.description
+        ~Dimension.application
         ~Dimension.coordinates
         ~Dimension.absolute_coordinates
         ~Dimension.count
@@ -41,6 +42,7 @@ Dimension
 
     .. autoattribute:: type
     .. autoattribute:: description
+    .. autoattribute:: application
     .. autoattribute:: coordinates
     .. autoattribute:: absolute_coordinates
     .. autoattribute:: count

@@ -9,10 +9,10 @@ scientific datasets. The model only encapsulates
 data values and the minimum metadata, to accurately represent a `p`-component
 dependent variable,
 :math:`\mathbf{U}\equiv(\mathbf{U}_0, ... \mathbf{U}_q, ... \mathbf{U}_{p-1})`,
-discretely sampled at `M` unique points in a `d`-dimensional coordinate space
+discretely sampled at `M` unique points in a `d`-dimensional coordinate space,
 :math:`(\mathbf{X}_0, \mathbf{X}_1, ... \mathbf{X}_k, ... \mathbf{X}_{d-1})`.
 The model is not intended to encapsulate
-any information on how the data might be acquired, processed or visualized.
+any information on how the data might be acquired, processed, or visualized.
 
 The data model is *versatile* in allowing many use cases for most spectroscopy,
 diffraction, and imaging techniques. As
@@ -21,25 +21,25 @@ physical quantities that are discretely sampled in a multi-dimensional space
 associated with other carefully controlled quantities, for e.g., a mass as a
 function of temperature, a current as a function of voltage and time, a signal
 voltage as a function of magnetic field gradient strength, a color image with
-a red, green, and blue (RBG) light intensity components as a
-function of two independent spatial dimensions, or the six components of the
-symmetric second-rank diffusion tensor MRI as a function of three independent
-spatial dimensions. Additionally, the model supports multiple datasets sharing
-the same dimensions. For instance,
-the simultaneous measurement of the current and voltage as a function of time.
+a red, green, and blue (RGB) light intensity components as a function of two
+independent spatial dimensions, or the six components of the symmetric
+second-rank diffusion tensor MRI as a function of three independent spatial
+dimensions. Additionally, the model supports multiple dependent variables
+sharing the same :math:`d`-dimensional coordinate space. For instance,
+the simultaneous measurement of current and voltage as a function of time.
 Another example would be the simultaneous acquisition of air temperature,
 pressure, wind velocity, and
 solar-flux as a function of Earth’s latitude and longitude coordinates. We
-refer to these simultaneous datasets as `correlated-datasets`.
+refer to these dependent variables as `correlated-datasets`.
 
 The CSD model is *standalone* because it is independent of the hardware,
 operating system, application software, programming language, and the
-object-oriented file-serialization format utilized in writing the CSD model to
-the file. Out of numerous file serialization formats, XML, JSON, property list,
-we adopt the data-exchange oriented JSON (JavaScript Object Notation) file-
-serialization format because it is `human readable`, if properly organized, and
-`easily integrable` with any number of programming languages and field related
-application-software.
+object-oriented file-serialization format utilized in serializing the CSD model
+to the file. Out of numerous file serialization formats, XML, JSON, property
+list, we adopt the data-exchange oriented JSON (JavaScript Object Notation)
+file-serialization format because it is `human-readable` if properly
+organized, and `easily integrable` with any number of programming languages
+and field related application-software.
 
 .. The serialization file names are designated with two possible extensions: .csdf
 .. and .csdfe, the acronyms for Core Scientific Dataset Format and Core Scientific
@@ -60,4 +60,6 @@ application-software.
     :maxdepth: 2
     :caption: Table of Contents
 
-    CSDmodel_uml/dimension
+    CSDmodel_uml/csdm
+    CSDmodel_uml/dimensions/dimension
+    CSDmodel_uml/dependent_variables/dependent_variable

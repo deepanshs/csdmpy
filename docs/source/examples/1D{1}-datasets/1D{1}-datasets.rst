@@ -28,12 +28,13 @@ Let's import this file.
     >>> filename = '../test-datasets0.0.12/gmsl/sea_level_none.csdf'
     >>> sea_level = cp.load(filename)
 
-The variable `filename` is a string with the address to the `sea_level.csdf`.
+The variable `filename` is a string with the address to the `sea_level.csdf`
+file.
 The :meth:`~csdmpy.load` method of the `csdmpy` module reads the
 file and returns an instance of the :ref:`csdm_api` class, in
 this case, as a variable `sea_level`. For a quick preview of the data
-structure, use the :attr:`~csdmpy.CSDM.data_structure` attribute of this
-instance,
+structure, use the :attr:`~csdmpy.csdm.CSDM.data_structure` attribute of this
+instance.
 
 .. doctest::
 
@@ -78,15 +79,13 @@ instance,
       }
     }
 
-which returns a JSON object.
-
 .. warning::
-    The JSON output from the :attr:`~csdmpy.CSDM.data_structure`
+    The serialized string from the :attr:`~csdmpy.csdm.CSDM.data_structure`
     attribute is not the same as the JSON serialization on the file.
     This attribute is only intended for a quick preview of the data
     structure and avoids displaying large datasets. Do not use
     the value of this attribute to save the data to the file. Instead, use the
-    :meth:`~csdmpy.CSDM.save` method of the :ref:`CSDM <csdm_api>`
+    :meth:`~csdmpy.csdm.CSDM.save` method of the :ref:`CSDM <csdm_api>`
     class.
 
 The tuples of the dimensions and dependent variables from this example are
@@ -96,74 +95,69 @@ The tuples of the dimensions and dependent variables from this example are
     >>> x = sea_level.dimensions
     >>> y = sea_level.dependent_variables
 
-respectively. The coordinates of the dimension, `x0`, and the
-component of the dependent variable, `y00`, are
+respectively. The coordinates along the dimension and the
+component of the dependent variable are
 
 .. doctest::
 
-    >>> x0 = x[0].coordinates
-    >>> print(x0)
+    >>> print(x[0].coordinates)
     [1880.04166667 1880.125      1880.20833333 ... 2013.79166666 2013.87499999
      2013.95833333] yr
 
-    >>> y00 = y[0].components[0]
-    >>> print(y00)
+    >>> print(y[0].components[0])
     [-183.     -171.125  -164.25   ...   66.375    59.6875   58.5   ]
 
 respectively.
 
-.. Before we plot the dataset, we find it convenient to write a small plotting
-.. method. This method makes it easier, later, when we describe 1D{1}
-.. examples form a variety of scientific datasets. The method follows-
-
-.. .. doctest::
-
-..     >>> def plot1D(dataObject):
-..     ...     fig, ax = plt.subplots(1,1,  figsize=(3.4,2.1))
-
-..     ...     # tuples of dependent and dimension instances.
-..     ...     x = dataObject.dimensions
-..     ...     y = dataObject.dependent_variables
-
-..     ...     # The coordinates of the independent variable.
-..     ...     x0 = x[0].coordinates
-
-..     ...     # The component of the dependent variable.
-..     ...     y00 = y[0].components[0]
-
-..     ...     ax.plot(x0, y00.real, color='k', linewidth=0.75)
-
-..     ...     # The axes labels and figure title.
-..     ...     ax.set_xlabel(x[0].axis_label)
-..     ...     ax.set_ylabel(y[0].axis_label[0])
-..     ...     ax.set_title(y[0].name)
-
-..     ...     ax.grid(color='gray', linestyle='--', linewidth=0.5)
-..     ...     ax.set_xlim([x0[0].value, x0[-1].value])
-..     ...     plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
-..     ...     plt.savefig(dataObject.filename+'.pdf')
-
-.. A quick walk-through of the ``plot1D`` method. The method accepts an
-.. instance of the :ref:`csdm_api` class as an argument. Within the method, we
-.. make use of the instance's attributes in addition to the matplotlib
-.. functions. The first line creates a new blank figure. In the following four
-.. lines, we define the `x`, `y`, `x0`, and `y00` as previously described. The
-.. next line adds a plot of `y00` vs. `x0` to the figure. For labeling the
-.. axes, we use the  :attr:`~csdmpy.Dimension.axis_label` attribute
-.. of both independent and dependent variable instances. For the figure title,
-.. we use the :attr:`~csdmpy.DependentVariable.name` attribute of the
-.. dependent variable instance. The following two lines
-.. add the grid lines and set the range of the x-axis, respectively.
-.. For additional information refer to the :ref:`dim_api`, :ref:`dv_api`, and the
-.. `Matplotlib <https://matplotlib.org>`_ documentation.
-
-The user may use any plotting library to visualize the dataset. Here, we use
-the :meth:`~csdmpy.plot` method of the `csdmpy` module to visualize the
-``sea_level`` dataset,
+Before we plot the dataset, we find it convenient to write a small plotting
+method. This method makes it easier, later, when we describe 1D{1}
+examples form a variety of scientific datasets. The method follows-
 
 .. doctest::
 
-    >>> cp.plot(sea_level)
+    >>> import matplotlib.pyplot as plt
+    >>> def plot1D(dataObject):
+    ...     # tuples of dependent and dimension instances.
+    ...     x = dataObject.dimensions
+    ...     y = dataObject.dependent_variables
+    ...     plt.plot(x[0].coordinates, y[0].components[0].real, color='k', linewidth=0.75)
+    ...
+    ...     plt.xlim(x[0].coordinates[0].value, x[0].coordinates[-1].value)
+    ...
+    ...     # The axes labels and figure title.
+    ...     plt.xlabel(x[0].axis_label)
+    ...     plt.ylabel(y[0].axis_label[0])
+    ...     plt.title(y[0].name)
+    ...
+    ...     plt.grid(color='gray', linestyle='--', linewidth=0.5)
+    ...     plt.tight_layout()
+    ...     plt.show()
+
+
+.. plt.savefig(dataObject.filename+'.pdf')
+
+A quick walk-through of the ``plot1D`` method. The method accepts an
+instance of the :ref:`csdm_api` class as an argument. Within the method, we
+make use of the instance's attributes in addition to the matplotlib
+functions. The first line assigns the tuple of the dimensions and dependent
+variables to `x` and `y`, respectively. The following line adds a plot of the
+component of the dependent variable versus the coordinates of the dimension.
+The next line sets the x-range. For labeling the axes,
+we use the :attr:`~csdmpy.dimensions.Dimension.axis_label` attribute
+of both dimension and dependent variable instances. For the figure title,
+we use the :attr:`~csdmpy.dependent_variables.DependentVariable.name` attribute
+of the dependent variable instance. The following line adde the grid lines.
+For additional information, refer to `Matplotlib <https://matplotlib.org>`_
+documentation.
+
+The ``plot1D`` method is only for illustrative purpose. The users may use any
+plotting library to visualize the dataset.
+
+Now to plot the `sea_level` dataset.
+
+.. doctest::
+
+    >>> plot1D(sea_level)
 
 .. figure:: sea_level_none.*
    :align: center
@@ -176,8 +170,8 @@ Nuclear Magnetic Resonance (MNR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following dataset is a :math:`^{13}\mathrm{C}` time domain NMR Bloch decay
-signal of ethanol. Let's load the data file and take a quick look at the data
-structure.
+signal of ethanol. Let's load this data file and take a quick look at the data
+structure. We follow the same steps are previous described.
 
 .. doctest::
 
@@ -219,19 +213,17 @@ structure.
     }
 
 Unlike the previous example, the data structure of the NMR measurement shows
-a complex valued dataset. These complex values, `y00`, are the
-component of the dependent variable and are accessed as follows,
+a complex valued dependent variable. These values are accessed as follows,
 
 .. doctest::
 
     >>> y = NMR_data.dependent_variables
-    >>> y00 = y[0].components[0]
-    >>> print(y00)
+    >>> print(y[0].components[0])
     [-8899.406   -1276.7734j  -4606.8804   -742.4125j
       9486.438    -770.0413j  ...   -70.95386   -28.32843j
         37.548492  +20.15689j  -193.92285   -67.06525j]
 
-Similarly, the coordinates of the independent variable, `x0`, are
+Similarly, the coordinates along the dimension are
 
 .. doctest::
 
@@ -244,7 +236,7 @@ Now to the plot the dataset,
 
 .. doctest::
 
-    >>> cp.plot(NMR_data)
+    >>> plot1D(NMR_data)
 
 .. figure:: blochDecay_raw.*
    :align: center
@@ -294,7 +286,7 @@ plot follows,
         ]
       }
     }
-    >>> cp.plot(EPR_data)
+    >>> plot1D(EPR_data)
 
 .. figure:: xyinc2_base64.*
    :align: center
@@ -346,7 +338,7 @@ follows,
         ]
       }
     }
-    >>> cp.plot(GCData)
+    >>> plot1D(GCData)
 
 .. figure:: cinnamon_none.*
    :align: center
@@ -398,7 +390,7 @@ structure and the plot of the FTIR dataset follows
         ]
       }
     }
-    >>> cp.plot(FTIR_data)
+    >>> plot1D(FTIR_data)
 
 .. figure:: caffeine_none.*
    :align: center
@@ -451,7 +443,87 @@ model format. The data structure and the plot of the UV-vis dataset follows,
         ]
       }
     }
-    >>> cp.plot(UV_data)
+    >>> plot1D(UV_data)
 
 .. figure:: benzeneVapour_base64.*
+   :align: center
+
+
+Mass spectrometry dataset
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following is an example of a sparse dataset. The `acetone.csdf` CSDM data
+file is stored as a sparse dependent variable data. Upon import, the dependent
+variable component values sparsely populate the coordinate grid. The remaining
+unpopulated coordinates are assigned a zero value.
+
+.. doctest::
+
+    >>> filename = '../test-datasets0.0.12/Mass spect/acetone.csdf'
+    >>> mass_spec = cp.load(filename)
+    >>> print(mass_spec.data_structure)
+    {
+      "csdm": {
+        "version": "0.0.12",
+        "timestamp": "2019-06-23T17:53:26Z",
+        "read_only": true,
+        "description": "MASS spectrum of acetone",
+        "dimensions": [
+          {
+            "type": "linear",
+            "count": 51,
+            "increment": "1.0",
+            "coordinates_offset": "10.0",
+            "label": "m/z"
+          }
+        ],
+        "dependent_variables": [
+          {
+            "type": "internal",
+            "name": "acetone",
+            "numeric_type": "float32",
+            "quantity_type": "scalar",
+            "component_labels": [
+              "relative abundance"
+            ],
+            "components": [
+              [
+                "0.0, 0.0, ..., 10.0, 0.0"
+              ]
+            ]
+          }
+        ]
+      }
+    }
+
+Here, the coordinates along the dimension are
+
+.. doctest::
+
+    >>> print(mass_spec.dimensions[0].coordinates)
+    [10. 11. 12. 13. 14. 15. 16. 17. 18. 19. 20. 21. 22. 23. 24. 25. 26. 27.
+     28. 29. 30. 31. 32. 33. 34. 35. 36. 37. 38. 39. 40. 41. 42. 43. 44. 45.
+     46. 47. 48. 49. 50. 51. 52. 53. 54. 55. 56. 57. 58. 59. 60.]
+
+and the components of the dependent variable are
+
+.. doctest::
+
+    >>> print(mass_spec.dependent_variables[0].components[0])
+    [   0.    0.    0.    0.    0.    0.    0.    0.    0.    0.    0.    0.
+        0.    0.    0.    0.    0.    0.    0.    0.    0.    0.    0.    0.
+        0.    0.    0.    9.    9.   49.    0.    0.   79. 1000.   19.    0.
+        0.    0.    0.    0.    0.    0.    0.    0.    0.    0.    0.    0.
+      270.   10.    0.]
+
+Note, only eight dependent variable component values were specified in the
+`.csdf` file. The remaining component values are set as zeros.
+
+Now to plot the dataset.
+
+.. doctest::
+
+    >>> plot1D(mass_spec)
+
+.. figure:: acetone.*
    :align: center

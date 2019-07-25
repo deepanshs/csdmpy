@@ -235,7 +235,7 @@ examples demonstrating its effect on the coordinates along the dimension.
 
 * :attr:`~csdmpy.dimensions.Dimension.fft_output_order`
     Orders the coordinates along the dimension according to the output of a
-    Fast Fourier Transform (FFT) routine.
+    complex Fast Fourier Transform (FFT) routine.
 
     .. doctest::
 
@@ -244,7 +244,7 @@ examples demonstrating its effect on the coordinates along the dimension.
 
         >>> x0.fft_output_order = True
         >>> print('new coordinates =', x0.coordinates)
-        new coordinates = [  1.  11.  21.  31.  41.  51. -59. -49. -39. -29. -19.  -9.] s
+        new coordinates = [-59. -49. -39. -29. -19.  -9.   1.  11.  21.  31.  41.  51.] s
 
 
 **Other attributes**
@@ -301,14 +301,14 @@ This method is used for unit conversions.
     old unit = s
 
     >>> print('old coordinates =', x0.coordinates)
-    old coordinates = [  1.  11.  21.  31.  41.  51. -59. -49. -39. -29. -19.  -9.] s
+    old coordinates = [-59. -49. -39. -29. -19.  -9.   1.  11.  21.  31.  41.  51.] s
 
     >>> ## unit conversion
     >>> x0.to('min')
 
     >>> print ('new coordinates =', x0.coordinates)
-    new coordinates = [ 0.01666667  0.18333333  0.35        0.51666667  0.68333333  0.85
-     -0.98333333 -0.81666667 -0.65       -0.48333333 -0.31666667 -0.15      ] min
+    new coordinates = [-0.98333333 -0.81666667 -0.65       -0.48333333 -0.31666667 -0.15
+      0.01666667  0.18333333  0.35        0.51666667  0.68333333  0.85      ] min
 
 .. note::
 

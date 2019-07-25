@@ -78,8 +78,8 @@ We have successfully added a labeled dimension to the `fundata`
 instance.
 
 Next, add a dependent variable. Set up a python dictionary corresponding to the
-dependent variable object and add the dictionary as an argument of the
-:meth:`~csdmpy.CSDM.add_dependent_variable` method of the `fundata`
+dependent variable object and add this dictionary as an argument of the
+:meth:`~csdmpy.csdm.CSDM.add_dependent_variable` method of the `fundata`
 instance.
 
 .. doctest::
@@ -146,5 +146,5 @@ To serialize this file, use the :meth:`~csdmpy.csdm.CSDM.save` method of the
     os.remove('csdmpy/my_file.csdf')
 
 In the above code, the data values from the
-:attr:`~csdmpy.csdm.CSDM.dependent_variables` attribute are encoded as
-a `base64` string before serializing to `my_file.csdf` file.
+:attr:`~csdmpy.csdm.CSDM.dependent_variables` attribute are first encoded as
+a `base64` string prior to serializing to `my_file.csdf` file.

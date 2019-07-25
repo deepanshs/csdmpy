@@ -70,8 +70,8 @@ Let's load the file and look at its data structure.
       }
     }
 
-The tuples of the independent and dependent variable instances from
-the ``NMR_2D_data`` instance are
+The tuples of the dimension and dependent variable instances from the
+``NMR_2D_data`` instance are
 
 .. doctest::
 
@@ -79,11 +79,10 @@ the ``NMR_2D_data`` instance are
     >>> y = NMR_2D_data.dependent_variables
 
 respectively.
-There are two independent variable instances in this example. The coordinates
-of the first independent variable, labeled as `$t_2$`, are uniformly spaced
-while the coordinate spacing is non-linear, or monotonic, for the second
-independent variable, labeled as `$t_1$`.
-The coordinates of the two dimensions are
+There are two dimension instances in this example. The coordinates along the
+first dimension, labeled as :math:`t_2`, are uniformly spaced
+while the coordinate spacing is non-linear, or monotonic, along the second
+dimension labeled as :math:`t_1`. The coordinates of the two dimensions are
 
 .. doctest::
 
@@ -95,8 +94,8 @@ The coordinates of the two dimensions are
     >>> print(x1)
     [ 1.  5. 10. 20. 40. 80.] s
 
-Notice, the unit of `x0` is in seconds. Since all the values are less than one
-second, it might be convenient to convert the unit to milliseconds.
+Notice, the unit of ``x0`` is in seconds. Since all the values are less than
+one second, it might be convenient to convert the unit to milliseconds.
 Use the :meth:`~csdmpy.dimensions.Dimension.to` method of the respective
 :ref:`dim_api` instance for the unit conversion. In this case,
 it follows
@@ -135,12 +134,6 @@ As before, the components of the dependent variable is accessed using the
       -1765.7441    -375.72888j    407.0703    +162.24716j ]]
 
 
-To plot the dataset, we use the :meth:`~csdmpy.plot` method.
-
-.. .. doctest::
-
-..     >>> cp.plot(NMR_2D_data)
-
 
 **Plotting the dataset**
 
@@ -153,77 +146,81 @@ exhaustive. Here is one such example.
     >>> from matplotlib.image import NonUniformImage
     >>> import numpy as np
 
-    >>> """
-    ... Set the extents of the image.
-    ... To set the independent variable coordinates at the center of each image
-    ... pixel, subtract and add half the sampling interval from the first
-    ... and the last coordinate, respectively, of the linearly sampled
-    ... dimension, i.e., x0.
-    ... """  # doctest: +SKIP
-    >>> si=x[0].increment
-    >>> extent = ((x0[0]-0.5*si).value,
-    ...           (x0[-1]+0.5*si).value,
-    ...           x1[0].value,
-    ...           x1[-1].value)
+.. doctest::
 
-    >>> """
-    ... Create a 2x2 subplot grid. The subplot at the lower-left corner is for
-    ... the image intensity plot. The subplots at the top-left and bottom-right
-    ... are for the data slice at the horizontal and vertical cross-section,
-    ... respectively. The subplot at the top-right corner is empty.
-    ... """  # doctest: +SKIP
-    >>> fig, axi = plt.subplots(2,2, gridspec_kw = {'width_ratios':[4,1],
+    >>> def plot_nmr_2d(data_object):
+    ...     """
+    ...     Set the extents of the image.
+    ...     To set the independent variable coordinates at the center of each image
+    ...     pixel, subtract and add half the sampling interval from the first
+    ...     and the last coordinate, respectively, of the linearly sampled
+    ...     dimension, i.e., x0.
+    ...     """
+    ...     si=x[0].increment
+    ...     extent = ((x0[0]-0.5*si).value,
+    ...               (x0[-1]+0.5*si).value,
+    ...               x1[0].value,
+    ...               x1[-1].value)
+    ...
+    ...     """
+    ...     Create a 2x2 subplot grid. The subplot at the lower-left corner is for
+    ...     the image intensity plot. The subplots at the top-left and bottom-right
+    ...     are for the data slice at the horizontal and vertical cross-section,
+    ...     respectively. The subplot at the top-right corner is empty.
+    ...     """
+    ...     fig, axi = plt.subplots(2,2, gridspec_kw = {'width_ratios':[4,1],
     ...                                             'height_ratios':[1,4]})
+    ...
+    ...     """
+    ...     The image subplot quadrant.
+    ...     Add an image over a rectilinear grid. Here, only the real part of the
+    ...     data values is used.
+    ...     """
+    ...     ax = axi[1,0]
+    ...     im = NonUniformImage(ax, interpolation='nearest',
+    ...                          extent=extent, cmap='bone_r')
+    ...     im.set_data(x0, x1, y00.real/y00.real.max())
+    ...
+    ...     """Add the colorbar and the component label."""
+    ...     cbar = fig.colorbar(im)
+    ...     cbar.ax.set_ylabel(y[0].axis_label[0])
+    ...
+    ...     """Set up the grid lines."""
+    ...     ax.images.append(im)
+    ...     for i in range(x1.size):
+    ...         ax.plot(x0, np.ones(x0.size)*x1[i], 'k--', linewidth=0.5)
+    ...     ax.grid(axis='x', color='k', linestyle='--', linewidth=0.5, which='both')
+    ...
+    ...     """Setup the axes, add the axes labels, and the figure title."""
+    ...     ax.set_xlim([extent[0], extent[1]])
+    ...     ax.set_ylim([extent[2], extent[3]])
+    ...     ax.set_xlabel(x[0].axis_label)
+    ...     ax.set_ylabel(x[1].axis_label)
+    ...     ax.set_title(y[0].name)
+    ...
+    ...     """Add the horizontal data slice to the top-left subplot."""
+    ...     ax0 = axi[0,0]
+    ...     top = y00[-1].real
+    ...     ax0.plot(x0, top, 'k', linewidth=0.5)
+    ...     ax0.set_xlim([extent[0], extent[1]])
+    ...     ax0.set_ylim([top.min(), top.max()])
+    ...     ax0.axis('off')
+    ...
+    ...     """Add the vertical data slice to the bottom-right subplot."""
+    ...     ax1 = axi[1,1]
+    ...     right = y00[:,513].real
+    ...     ax1.plot(right, x1, 'k', linewidth=0.5)
+    ...     ax1.set_ylim([extent[2], extent[3]])
+    ...     ax1.set_xlim([right.min(),  right.max()])
+    ...     ax1.axis('off')
+    ...
+    ...     """Turn off the axis system for the top-right subplot."""
+    ...     axi[0,1].axis('off')
+    ...
+    ...     plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
+    ...     plt.show()
 
-    >>> """
-    ... The image subplot quadrant.
-    ... Add an image over a rectilinear grid. Here, only the real part of the
-    ... data values is used.
-    ... """  # doctest: +SKIP
-    >>> ax = axi[1,0]
-    >>> im = NonUniformImage(ax, interpolation='nearest',
-    ...                      extent=extent, cmap='bone_r')
-    >>> im.set_data(x0, x1, y00.real/y00.real.max())
-
-    >>> """Add the colorbar and the component label."""  # doctest: +SKIP
-    >>> cbar = fig.colorbar(im)
-    >>> cbar.ax.set_ylabel(y[0].axis_label[0])  # doctest: +SKIP
-
-    >>> """Set up the grid lines."""  # doctest: +SKIP
-    >>> ax.images.append(im)
-    >>> for i in range(x1.size):  # doctest: +SKIP
-    ...     ax.plot(x0, np.ones(x0.size)*x1[i], 'k--', linewidth=0.5)  # doctest: +SKIP
-    >>> ax.grid(axis='x', color='k', linestyle='--', linewidth=0.5, which='both')
-
-    >>> """Setup the axes, add the axes labels, and the figure title."""  # doctest: +SKIP
-    >>> ax.set_xlim([extent[0], extent[1]])  # doctest: +SKIP
-    >>> ax.set_ylim([extent[2], extent[3]])  # doctest: +SKIP
-    >>> ax.set_xlabel(x[0].axis_label)  # doctest: +SKIP
-    >>> ax.set_ylabel(x[1].axis_label)  # doctest: +SKIP
-    >>> ax.set_title(y[0].name)  # doctest: +SKIP
-
-    >>> """Add the horizontal data slice to the top-left subplot."""  # doctest: +SKIP
-    >>> ax0 = axi[0,0]
-    >>> top = y00[-1].real
-    >>> ax0.plot(x0, top, 'k', linewidth=0.5)  # doctest: +SKIP
-    >>> ax0.set_xlim([extent[0], extent[1]])  # doctest: +SKIP
-    >>> ax0.set_ylim([top.min(), top.max()])  # doctest: +SKIP
-    >>> ax0.axis('off')  # doctest: +SKIP
-
-    >>> """Add the vertical data slice to the bottom-right subplot."""  # doctest: +SKIP
-    >>> ax1 = axi[1,1]
-    >>> right = y00[:,513].real
-    >>> ax1.plot(right, x1, 'k', linewidth=0.5)  # doctest: +SKIP
-    >>> ax1.set_ylim([extent[2], extent[3]])  # doctest: +SKIP
-    >>> ax1.set_xlim([right.min(),  right.max()])  # doctest: +SKIP
-    >>> ax1.axis('off')  # doctest: +SKIP
-
-    >>> """Turn off the axis system for the top-right subplot."""  # doctest: +SKIP
-    >>> axi[0,1].axis('off')  # doctest: +SKIP
-
-    >>> plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
-    >>> plt.subplots_adjust(wspace=0.025, hspace=0.05)
-    >>> plt.savefig(NMR_2D_data.filename+'.pdf')
+    >>> plot_nmr_2d(NMR_2D_data)
 
 .. figure:: satRec_raw.pdf
    :align: center
