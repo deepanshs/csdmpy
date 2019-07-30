@@ -15,18 +15,18 @@ grid/space.
 Specialized Class
 *****************
 
-.. cssclass:: btn btn-light
+.. raw:: html
 
-    :ref:`linearDimension_uml`
+    <div class="btn-group">
+        <a class="btn btn-default" href=./linear.html#lineardimension-uml>
+        LinearDimension </a>
 
-.. cssclass:: btn btn-light
+        <a class="btn btn-default" href=./monotonic.html#monotonicdimension-uml>
+        MonotonicDimension </a>
 
-    :ref:`monotonicDimension_uml`
-
-.. cssclass:: btn btn-outline-dark
-
-    :ref:`labeledDimension_uml`
-
+        <a class="btn btn-default" href=./labeled.html#labeleddimension-uml>
+        LabeledDimension </a>
+    </div>
 
 Attributes
 **********

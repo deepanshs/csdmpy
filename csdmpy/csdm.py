@@ -11,6 +11,8 @@ from copy import deepcopy
 import numpy as np
 from numpy.fft import fft
 from numpy.fft import fftshift
+from numpy.fft import ifft
+from numpy.fft import ifftshift
 
 from csdmpy.dependent_variables import DependentVariable
 from csdmpy.dimensions import Dimension
@@ -89,7 +91,7 @@ class CSDM:
     @property
     def tags(self):
         """List of tags attached to the dataset."""
-        return deepcopy(self._tags)
+        return self._tags
 
     @tags.setter
     def tags(self, value):
@@ -428,9 +430,6 @@ class CSDM:
 
         dictionary["version"] = version
 
-        if self.timestamp != "":
-            dictionary["timestamp"] = self.timestamp
-
         if self.read_only:
             dictionary["read_only"] = self.read_only
 
@@ -499,10 +498,10 @@ class CSDM:
         dictionary = self._get_python_dictionary(filename, version=version)
 
         timestamp = datetime.datetime.utcnow().isoformat()[:-7] + "Z"
-        dictionary["timestamp"] = timestamp
+        dictionary["csdm"]["timestamp"] = timestamp
 
         if read_only:
-            dictionary["read_only"] = read_only
+            dictionary["csdm"]["read_only"] = read_only
 
         with open(filename, "w", encoding="utf8") as outfile:
             json.dump(
@@ -569,10 +568,10 @@ class CSDM:
         if isinstance(index, (tuple, list, np.ndarray)):
             for i, item in enumerate(index):
                 index[i] = _correct_index(item)
-            return index, "list"
+            return index
 
         elif isinstance(index, int):
-            return _correct_index(index), "number"
+            return [_correct_index(index)]
 
         else:
             raise TypeError(message)
@@ -593,91 +592,113 @@ class CSDM:
                 components_uri=variable.components_uri,
             )
         for i, variable in enumerate(self.dimensions):
-            if index[1] == "number":
-                if i != index[0]:
-                    new.add_dimension(variable)
-            else:
-                if i not in index[0]:
-                    new.add_dimension(variable)
+            if i not in index[0]:
+                new.add_dimension(variable)
         return new
 
-    def sum(self, index=0):
+    def sum(self, dimensions=0):
         """
-        Sum of the component values along the given dimension `index`.
+        Sum of the component values along the given dimension `dimensions`.
 
         Args:
-            index: An integer or tuple of `m` integers cooresponding to the
-                   index/indices of dimensions along which the sum of the
-                   dependent variables component values are performed.
+            dimensions: An integer or tuple of `m` integers cooresponding to the
+                        index/indices of dimensions along which the sum of the
+                        dependent variables component values are performed.
 
         Return:
             A CSDM object with `d-m` dimensions where `d` is the
             number of dimensions in the original csdm data.
         """
         func = np.sum
-        return self._get_new_csdmodel_object(func, index)
+        return self._get_new_csdmodel_object(func, dimensions)
 
-    def prod(self, index=0):
+    def prod(self, dimensions=0):
         """
-        Product of the component values along the given dimension `index`.
+        Product of the component values along the given dimension `dimensions`.
 
         Args:
-            index: An integer or tuple of `m` integers cooresponding to the
-                   index/indices of dimensions along which the product of the
-                   dependent variables component values are performed.
+            dimensions: An integer or tuple of `m` integers cooresponding to the
+                        index/indices of dimensions along which the product of the
+                        dependent variables component values are performed.
 
         Return:
             A CSDM object with `d-m` dimensions where `d` is the number of
             dimensions in the original csdm dataset.
         """
         func = np.prod
-        return self._get_new_csdmodel_object(func, index)
+        return self._get_new_csdmodel_object(func, dimensions)
 
-    def fft(self, index=0):
+    def fft(self, dimensions=0):
         """
-        Perform a FFT along the along the given dimension `index`.
+        Perform a FFT along the along the given dimension `dimensions`.
 
         Needs debugging.
         """
-        if self.dimensions[index].type != "linear":
-            raise NotImplementedError(
-                "FFT is available for dimensions with type 'linear'."
+        indexes = self._check_dimension_indices(dimensions)
+
+        for index in indexes:
+            if self.dimensions[index].type != "linear":
+                raise NotImplementedError(
+                    "FFT is available for dimensions with type 'linear'."
+                )
+
+            dimension_object = self.dimensions[index].subtype
+            unit_in = dimension_object._unit
+            # swap the values of object with the respective reciprocal object.
+            dimension_object._swap()
+
+            # compute the reciprocal increment using Nyquist-shannan theorem.
+            _reciprocal_increment = 1.0 / (
+                dimension_object._count * dimension_object._increment
             )
 
-        object_id = self.dimensions[index].subtype
-        unit_in = object_id._unit
-        # swap the values of object with the respective reciprocal object.
-        object_id._swap()
+            unit = dimension_object._unit
+            dimension_object._increment = _reciprocal_increment.to(unit)
 
-        # compute the reciprocal increment using Nyquist-shannan theorem.
-        _reciprocal_increment = 1.0 / (object_id._count * object_id._increment)
-
-        unit = object_id._unit
-        object_id._increment = _reciprocal_increment.to(unit)
-
-        # toggle the value of the FFT_output_order attribute
-        # if object_id._fft_output_order:
-        #     object_id._fft_output_order = False
-        # else:
-        #     object_id._fft_output_order = True
-
-        # get the coordinates of the reciprocal dimension.
-        object_id._get_coordinates()
-
-        # calculate the phase that will be applied to the fft amplitudes.
-        phase = np.exp(
-            2j
-            * np.pi
-            * object_id.reciprocal._coordinates_offset.to(unit_in).value
-            * object_id._coordinates.to(unit).value
-        )
+            # get the coordinates of the reciprocal dimension.
+            dimension_object._get_coordinates()
 
         ndim = len(self.dimensions)
 
+        # toggle the value of the FFT_output_order attribute
+        if dimension_object._fft_output_order:
+            phase = np.exp(
+                2j
+                * np.pi
+                * dimension_object.reciprocal._coordinates_offset.to(unit_in).value
+                * dimension_object._coordinates.to(unit).value
+            )
+            for i in range(len(self.dependent_variables)):
+                signal_ft = ifft(
+                    ifftshift(
+                        self.dependent_variables[i].subtype._components, axes=index
+                    )
+                    * get_broadcase_shape(phase, ndim, axis=index),
+                    axis=index,
+                )
+                self.dependent_variables[i].subtype._components = signal_ft
+            dimension_object._fft_output_order = False
+        else:  # FFT is false
+            # calculate the phase that will be applied to the fft amplitudes.
+            phase = np.exp(
+                2j
+                * np.pi
+                * dimension_object.reciprocal._coordinates_offset.to(unit_in).value
+                * dimension_object._coordinates.to(unit).value
+            )
+            for i in range(len(self.dependent_variables)):
+                signal_ft = fftshift(
+                    fft(self.dependent_variables[i].subtype._components, axis=index)
+                    * get_broadcase_shape(phase, ndim, axis=index),
+                    axes=index,
+                )
+                self.dependent_variables[i].subtype._components = signal_ft
+            dimension_object._fft_output_order = True
+
         for i in range(len(self.dependent_variables)):
             signal_ft = fftshift(
-                fft(self.dependent_variables[i].subtype._components, axis=-index - 1)
-                * get_broadcase_shape(phase, ndim, axis=-index - 1),
+                fft(self.dependent_variables[i].subtype._components, axis=index)
+                * get_broadcase_shape(phase, ndim, axis=index),
                 axes=-index - 1,
             )
 

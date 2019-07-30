@@ -17,7 +17,7 @@ The `DimObjectSubtype` contains the enumeration literals of the
 .. cssclass:: table-bordered table-hover table-striped
 
 =========   ===================================================================
-Enum        Description
+Literal     Description
 =========   ===================================================================
 linear      Literal specifying an instance of a :ref:`linearDimension_uml`
             object.
@@ -40,7 +40,7 @@ The `DVObjectSubtype` contains the enumeration literals of the
 .. cssclass:: table-bordered table-hover table-striped
 
 =========   ===================================================================
-Enum        Description
+Literal     Description
 =========   ===================================================================
 internal    Literal specifying an instance of a :ref:`linearDimension_uml`
             object.
@@ -61,7 +61,7 @@ dependent variable.
 .. cssclass:: table-bordered table-hover table-striped
 
 ================== ===========
-Enum               Description
+Literal            Description
 ================== ===========
 scalar             A dependent variable with :math:`p=1` component interpret
                    as a scalar, :math:`\mathcal{S}_i=U_{0,i}`.
@@ -92,7 +92,7 @@ An enumeration literal used in interpreting the dependent variable binary data.
 .. cssclass:: table-bordered table-hover table-striped
 
 ==================  ===========
-Enum                Description
+Literal             Description
 ==================  ===========
 uint8 			    8-bit unsigned integer
 uint16			    16-bit unsigned integer

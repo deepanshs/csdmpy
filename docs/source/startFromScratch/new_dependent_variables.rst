@@ -16,23 +16,23 @@ An instance of the DependentVariable class is added using the
 :meth:`~csdmpy.csdm.CSDM.add_dependent_variable` method of the :ref:`csdm_api`
 instance. There are two subtypes of DependentVariable class:
 
-  - **InternalDependentVariable**:
-    We refer an instance of the DependentVariable as *internal* when the
-    components of the dependent variable are listed along with the other
-    metadata specifying the dependent variable.
-  - **ExternalDependentVariable**:
-    We refer an instance of the DependentVariable as *external* when the
-    components of the dependent variable are stored in an external file as
-    binary data either locally or at a remote server.
+- **InternalDependentVariable**:
+  We refer an instance of the DependentVariable as *internal* when the
+  components of the dependent variable are listed along with the other
+  metadata specifying the dependent variable.
+- **ExternalDependentVariable**:
+  We refer an instance of the DependentVariable as *external* when the
+  components of the dependent variable are stored in an external file as
+  binary data either locally or at a remote server.
 
 In version 1.0, the CSD model allows dependent variables with quantity types
 as
 
-  - scalar
-  - vector_n
-  - pixel_n
-  - matrix_n_m
-  - symmetric_matrix_n
+- scalar
+- vector_n
+- pixel_n
+- matrix_n_m
+- symmetric_matrix_n
 
 .. seeAlso::
     Read more about :ref:`DependentVariable API <dv_api>`.
@@ -132,7 +132,7 @@ if quantity type is given as `pixel_3`.
 
 The data structure after adding the above dependent variable is
 
-  .. doctest::
+.. doctest::
 
     >>> print(new_data.data_structure)
     {

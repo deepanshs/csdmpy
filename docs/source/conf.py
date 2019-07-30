@@ -14,11 +14,8 @@ import os
 import sys
 
 import sphinx_bootstrap_theme
-import sphinx_rtd_theme
 
-# print(os.path.abspath("../.."))
 sys.path.insert(0, os.path.abspath("../.."))
-# sys.setrecursionlimit(1500)
 
 # -- Project information -----------------------------------------------------
 project = "csdmpy"
@@ -26,16 +23,15 @@ copyright = "2019, Deepansh J. Srivastava"
 author = "Deepansh J. Srivastava"
 
 # The short X.Y version
-version = "0.0.12"
+version = "0.1"
 # The full version, including alpha/beta/rc tags
-release = "0.0.12"
+release = "0.1.0"
 
 
 # -- General configuration ---------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
-#
-# needs_sphinx = '1.0'
+needs_sphinx = "2.0"
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -52,10 +48,7 @@ extensions = [
     # "sphinx.ext.inheritance_diagram",
     "sphinx.ext.napoleon",
     "sphinxjp.themes.basicstrap",
-    # "autoapi.sphinx",
 ]
-
-# autoapi_modules = {"csdmpy": {"output": "auto"}}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -75,7 +68,7 @@ autodoc_mock_imports = []
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -83,7 +76,7 @@ language = None
 exclude_patterns = ["_build", "**.ipynb_checkpoints", "Thumbs.db", ".DS_Store"]
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = "default"
+# pygments_style = "default"
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -92,7 +85,8 @@ pygments_style = "default"
 # a list of builtin themes.
 #
 
-# html_theme = 'alabaster'  or 'bootstrap' or 'sphinx_rtd_theme', 'classic'
+# Some html_theme options are 'alabaster', 'bootstrap', 'sphinx_rtd_theme',
+# 'classic', 'basicstrap'
 html_theme = "basicstrap"
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -105,7 +99,7 @@ html_theme_options = {
     # Disable showing the sidebar. Defaults to 'false'
     "nosidebar": False,
     # Show header searchbox. Defaults to false. works only "nosidebar=True",
-    "header_searchbox": False,
+    "header_searchbox": True,
     # Put the sidebar on the right side. Defaults to false.
     "rightsidebar": False,
     # Set the width of the sidebar. Defaults to 3
@@ -130,17 +124,17 @@ html_theme_options = {
     # Works only "bootstrap_version = 3"
     "noflatdesign": False,
     # Enable Google Web Font. Defaults to false
-    "googlewebfont": False,
+    "googlewebfont": True,
     # Set the URL of Google Web Font's CSS.
     # Defaults to 'http://fonts.googleapis.com/css?family=Text+Me+One'
     # "googlewebfont_url": "http://fonts.googleapis.com/css?family=Lily+Script+One",  # NOQA
     # Set the Style of Google Web Font's CSS.
     # Defaults to "font-family: 'Text Me One', sans-serif;"
-    "googlewebfont_style": u"font-family: 'Lily Script One' cursive;",
+    "googlewebfont_style": u"font-family: 'Roboto' Regular 24;",
     # Set 'navbar-inverse' attribute to header navbar. Defaults to false.
-    "header_inverse": False,
+    "header_inverse": True,
     # Set 'navbar-inverse' attribute to relbar navbar. Defaults to false.
-    "relbar_inverse": False,
+    "relbar_inverse": True,
     # Enable inner theme by Bootswatch. Defaults to false
     "inner_theme": False,
     # Set the name of inner theme. Defaults to 'bootswatch-simplex'
@@ -148,7 +142,7 @@ html_theme_options = {
     # Select Twitter bootstrap version 2 or 3. Defaults to '3'
     "bootstrap_version": "3",
     # Show "theme preview" button in header navbar. Defaults to false.
-    "theme_preview": False,
+    "theme_preview": True,
     # Set the Size of Heading text. Defaults to None
     # "h1_size": "3.0em",
     # "h2_size": "2.6em",
@@ -158,46 +152,21 @@ html_theme_options = {
     # "h6_size": "1.1em",
 }
 
-# html_sidebars = {
-#     "**": [
-#         "relations.html",  # needs 'show_related': True theme option to display
-#         "searchbox.html",
-#     ]
-# }
-
-# html_sidebars = {"**": ["sidebar.html", "searchbox.html"]}
-
 # Theme options
 html_logo = "_static/csdmpy.png"
-
-# html_theme_options = {
-#     "canonical_url": "",
-#     "logo_only": False,
-#     # 'display_version': True,
-#     "prev_next_buttons_location": "bottom",
-#     "style_external_links": True,
-#     "style_nav_header_background": "black",
-#     # 'github_url': 'https://github.com/DeepanshS/csdmpy/doc/source/index',
-#     # Toc options
-#     "collapse_navigation": True,
-#     "sticky_navigation": True,
-#     "navigation_depth": 4,
-#     "includehidden": True,
-#     "titles_only": False,
-# }
 
 html_context = {
     "display_github": True,
     "github_user": "DeepanshS",
     "github_repo": "csdmpy",
     "github_version": "master/docs/source/",
-    # "css_files": [
-    #     "_static/button.css",
-    #     "_static/theme_overrides.css",  # override wide tables in RTD theme
-    #     "_static/style.css",
-    #     "_static/custom.css",
-    #     "_static/bootstrap-toc.css",
-    # ],
+    "css_files": [
+        "_static/button.css",
+        #     "_static/theme_overrides.css",  # override wide tables in RTD theme
+        #     "_static/style.css",
+        #     "_static/custom.css",
+        #     "_static/bootstrap-toc.css",
+    ],
 }
 
 
@@ -205,17 +174,6 @@ html_context = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
-
-# Custom sidebar templates, must be a dictionary that maps document names
-# to template names.
-#
-# The default sidebars (for documents that don't match any pattern) are
-# defined by theme itself.  Builtin themes are using these templates by
-# default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
-# 'searchbox.html']``.
-#
-# html_sidebars = {}
-
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
@@ -306,9 +264,9 @@ todo_include_todos = True
 
 # def setup(app):
 #     app.add_javascript("copybutton.js")
-# app.add_javascript("jsquery.js")
-# app.add_javascript("init.js")
-# app.add_javascript("custom.js")
-# app.add_javascript(
+#     app.add_javascript("jsquery.js")
+#     app.add_javascript("init.js")
+#     app.add_javascript("custom.js")
+#     app.add_javascript(
 #     "https://cdn.jsdelivr.net/npm/clipboard@1/dist/clipboard.min.js"
 # )

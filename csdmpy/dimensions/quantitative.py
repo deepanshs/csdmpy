@@ -69,7 +69,7 @@ class BaseQuantitativeDimension:
     @property
     def application(self):
         """Return application metadata, if available."""
-        return deepcopy(self._application)
+        return self._application
 
     @application.setter
     def application(self, value):

@@ -127,15 +127,8 @@ class LinearDimension(BaseQuantitativeDimension):
                 _index -= _count / 2
             else:
                 _index -= (_count - 1) / 2
-            # _index = np.empty(_count, dtype=np.int)
-            # n = (_count - 1) // 2 + 1
-            # p1 = np.arange(0, n, dtype=np.int)
-            # _index[:n] = p1
-            # p2 = np.arange(-(_count // 2), 0, dtype=np.int)
-            # _index[n:] = p2
 
-        _value = _index * _increment
-        self._coordinates = _value
+        self._coordinates = _index * _increment
 
     def _get_python_dictionary(self):
         obj = {}

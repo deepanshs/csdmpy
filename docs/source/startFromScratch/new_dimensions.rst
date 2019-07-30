@@ -16,9 +16,9 @@ An instance of the Dimension class is added using the
 instance.
 There are three subtypes of Dimension objects,
 
-  - LinearDimension
-  - MonotonicDimension
-  - LabeledDimension
+- LinearDimension
+- MonotonicDimension
+- LabeledDimension
 
 .. seeAlso::
     :ref:`Dimension API <dim_api>` for further detail.
@@ -211,7 +211,7 @@ This generates a 3D{0} dataset with the data structure ---
       }
     }
 
-.. note::
+.. Attention::
 
     When using a :ref:`dim_api` instance as an argument of the
     :meth:`~csdmpy.csdm.CSDM.add_dimension` method, one

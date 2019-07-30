@@ -1,10 +1,5 @@
 # folders #
 __pycache__/
-docs/source/_build/**
-docs/source/_static/**
-docs/source/_templates/**
-docs/build/**
-docs/source/auto/**
 csdmpy.egg-info/**
 .eggs/**
 build/**
