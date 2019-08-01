@@ -56,7 +56,7 @@ The dataset is now a 1D{0} dataset with the following data structure,
     >>> print(new_data.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
         "description": "A new test dimension dataset",
         "dimensions": [
           {
@@ -100,7 +100,7 @@ structure form the updated ``new_data`` instance follows,
     >>> print(new_data.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
         "description": "A new test dimension dataset",
         "dimensions": [
           {
@@ -172,7 +172,7 @@ This generates a 3D{0} dataset with the data structure ---
     >>> print(new_data.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
         "description": "A new test dimension dataset",
         "dimensions": [
           {

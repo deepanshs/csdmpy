@@ -16,13 +16,13 @@ Let's load the `.csdfe` file and look at its data structure.
 .. doctest::
 
     >>> import csdmpy as cp
-    >>> bubble_nebula = cp.load('../test-datasets0.0.12/astronomy/source/Bubble Nebula/bubble.csdm')
+    >>> bubble_nebula = cp.load('Test Files/BubbleNebula/Bubble.csdfe')
     >>> print(bubble_nebula.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
-        "timestamp": "2019-06-25T01:29:53Z",
+        "version": "1.0",
         "read_only": true,
+        "timestamp": "2016-02-26T16:41:00Z",
         "description": "The dataset is a new observation of the Bubble Nebula acquired by The Hubble Heritage Team, in February 2016.",
         "dimensions": [
           {
@@ -30,7 +30,7 @@ Let's load the `.csdfe` file and look at its data structure.
             "count": 1024,
             "increment": "-0.0002581136196 °",
             "coordinates_offset": "350.311874957 °",
-            "quantity_name": "angle",
+            "quantity_name": "plane angle",
             "label": "Right Ascension"
           },
           {
@@ -38,14 +38,14 @@ Let's load the `.csdfe` file and look at its data structure.
             "count": 1024,
             "increment": "0.0001219957797701109 °",
             "coordinates_offset": "61.12851494969163 °",
-            "quantity_name": "angle",
+            "quantity_name": "plane angle",
             "label": "Declination"
           }
         ],
         "dependent_variables": [
           {
             "type": "internal",
-            "name": "hlsp_heritage_hst_wfc3-uvis_bubble_nebula_f656n_v1_drc",
+            "name": "Bubble Nebula, 656nm",
             "numeric_type": "float32",
             "quantity_type": "scalar",
             "components": [
@@ -61,13 +61,11 @@ Let's load the `.csdfe` file and look at its data structure.
 Here, the variable ``bubble_nebula`` is an instance of the :ref:`csdm_api`
 class. From the data structure, one finds two dimensions, labeled as
 *Right Ascension* and *Declination*, and a single one-component dependent
-variable named as *hlsp_heritage_hst_wfc3-uvis_bubble_nebula_f656n_v1_drc*.
-During the file conversion to the CSD model, we retained the original FITS
-standard naming convention.
+variable named as *Bubble Nebula, 656nm*.
 
 
 Let's get the tuples of the dimension and dependent variable instances from
-the `bubble_nebula` instance following,
+the ``bubble_nebula`` instance following,
 
 .. doctest::
 
@@ -112,7 +110,7 @@ Now, to plot the dataset.
     >>> from matplotlib.colors import LogNorm
     >>> import numpy as np
 
-    >>> def plot(dataobject):
+    >>> def plot():
     ...     # Figure setup.
     ...     fig, ax = plt.subplots(1,1,figsize=(6, 5))
     ...     ax.set_facecolor('w')
@@ -147,6 +145,6 @@ Now, to plot the dataset.
     ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
     ...     plt.show()
 
-    >>> plot(bubble_nebula)
+    >>> plot()
 
-.. figure:: bubble.png
+.. figure:: bubble.pdf

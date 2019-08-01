@@ -7,7 +7,9 @@ Nuclear Magnetic Resonance (NMR) dataset
 The following example is a :math:`^{29}\mathrm{Si}` NMR time domain
 saturation recovery measurement of a highly siliceous zeolite ZSM-12.
 Usually, the spin recovery measurements are acquired over a rectilinear grid
-where the grid spacing along one dimension is non-linear.
+where measurements along one of the dimensions are non-uniform or span several
+orders of magnitude. In this example, we show the use of `monotonic` dimensions
+for describing such datasets.
 
 Let's load the file and look at its data structure.
 
@@ -15,41 +17,54 @@ Let's load the file and look at its data structure.
 
     >>> import csdmpy as cp
 
-    >>> filename = '../test-datasets0.0.12/NMR/satrec/satRec_raw.csdfe'
+    >>> filename = 'Test Files/NMR/satrec/satRec.csdf'
     >>> NMR_2D_data = cp.load(filename)
     >>> print(NMR_2D_data.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
         "read_only": true,
-        "description": "A $^{29}$Si NMR saturation recovery measurement of highly siliceous zeolite ZSM-12.",
+        "timestamp": "2019-07-21T16:59:10Z",
+        "geographic_coordinate": {
+          "altitude": "238.7335815429688 m",
+          "longitude": "-83.05163999030603 °",
+          "latitude": "39.97966975623309 °"
+        },
+        "tags": [
+          "29Si",
+          "NMR",
+          "nuclear magnetism relaxation",
+          "zeolite ZSM-12"
+        ],
+        "description": "A 29Si NMR magnetization saturation recovery measurement of highly siliceous zeolite ZSM-12.",
         "dimensions": [
           {
             "type": "linear",
-            "description": "A full echo echo acquisition along the $t_2$ dimension using a Hahn echo.",
+            "description": "A full echo echo acquisition along the t2 dimension using a Hahn echo.",
             "count": 1024,
-            "increment": "8e-05 s",
-            "coordinates_offset": "-0.04104 s",
+            "increment": "80.0 µs",
+            "coordinates_offset": "-41.04 ms",
             "quantity_name": "time",
-            "label": "$t_2$",
+            "label": "t2",
             "reciprocal": {
-              "origin_offset": "79578822.26202029 Hz",
+              "coordinates_offset": "-8766.0626 Hz",
+              "origin_offset": "79578822.26200001 Hz",
               "quantity_name": "frequency",
-              "label": "$^{29}$Si frequency shift"
+              "label": "29Si frequency shift"
             }
           },
           {
             "type": "monotonic",
             "coordinates": [
-              "1.0 s",
-              "5.0 s",
-              "10.0 s",
-              "20.0 s",
-              "40.0 s",
-              "80.0 s"
+              "1 s",
+              "5 s",
+              "10 s",
+              "20 s",
+              "40 s",
+              "80 s"
             ],
             "quantity_name": "time",
-            "label": "$t_1$",
+            "label": "t1",
             "reciprocal": {
               "quantity_name": "frequency"
             }
@@ -82,32 +97,32 @@ respectively.
 There are two dimension instances in this example. The coordinates along the
 first dimension, labeled as :math:`t_2`, are uniformly spaced
 while the coordinate spacing is non-linear, or monotonic, along the second
-dimension labeled as :math:`t_1`. The coordinates of the two dimensions are
+dimension, labeled as :math:`t_1`. The coordinates of the two dimensions are
 
 .. doctest::
 
     >>> x0 = x[0].coordinates
     >>> print(x0)
-    [-0.04104 -0.04096 -0.04088 ...  0.04064  0.04072  0.0408 ] s
+    [-41040. -40960. -40880. ...  40640.  40720.  40800.] us
 
     >>> x1 = x[1].coordinates
     >>> print(x1)
     [ 1.  5. 10. 20. 40. 80.] s
 
-Notice, the unit of ``x0`` is in seconds. Since all the values are less than
-one second, it might be convenient to convert the unit to milliseconds.
-Use the :meth:`~csdmpy.dimensions.Dimension.to` method of the respective
-:ref:`dim_api` instance for the unit conversion. In this case,
-it follows
+Notice, the unit of ``x0`` is in microseconds. It might be convenient to
+convert the unit to milliseconds. To do so, use the
+:meth:`~csdmpy.dimensions.Dimension.to` method of the respective
+:ref:`dim_api` instance as follows
 
 .. doctest::
 
     >>> x[0].to('ms')
-    >>> print(x[0].coordinates)
+    >>> x0 = x[0].coordinates
+    >>> print(x0)
     [-41.04 -40.96 -40.88 ...  40.64  40.72  40.8 ] ms
 
 
-As before, the components of the dependent variable is accessed using the
+As before, the components of the dependent variable are accessed using the
 :attr:`~csdmpy.dependent_variables.DependentVariable.components` attribute.
 
 .. doctest::
@@ -148,7 +163,7 @@ exhaustive. Here is one such example.
 
 .. doctest::
 
-    >>> def plot_nmr_2d(data_object):
+    >>> def plot_nmr_2d():
     ...     """
     ...     Set the extents of the image.
     ...     To set the independent variable coordinates at the center of each image
@@ -157,8 +172,8 @@ exhaustive. Here is one such example.
     ...     dimension, i.e., x0.
     ...     """
     ...     si=x[0].increment
-    ...     extent = ((x0[0]-0.5*si).value,
-    ...               (x0[-1]+0.5*si).value,
+    ...     extent = ((x0[0]-0.5*si).to('ms').value,
+    ...               (x0[-1]+0.5*si).to('ms').value,
     ...               x1[0].value,
     ...               x1[-1].value)
     ...
@@ -218,9 +233,9 @@ exhaustive. Here is one such example.
     ...     axi[0,1].axis('off')
     ...
     ...     plt.tight_layout(pad=0., w_pad=0., h_pad=0.)
+    ...     plt.subplots_adjust(wspace=0.025, hspace=0.05)
     ...     plt.show()
 
-    >>> plot_nmr_2d(NMR_2D_data)
+    >>> plot_nmr_2d()
 
 .. figure:: satRec_raw.pdf
-   :align: center

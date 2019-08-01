@@ -22,12 +22,14 @@ Import the `csdmpy` model and load the dataset.
     >>> import numpy as np
     >>> import matplotlib.pyplot as plt
 
-    >>> filename = '../test-datasets0.0.12/multipleDatasets/05/NCEP_Global05_raw.csdfe'
+    >>> filename = 'Test Files/correlatedDataset/forecast/NCEI.csdfe'
     >>> multi_dataset = cp.load(filename)
     >>> print(multi_dataset.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
+        "read_only": true,
+        "timestamp": "2016-03-12T16:41:00Z",
         "description": "The dataset is obtained from NOAA/NCEP Global Forecast System (GFS) Atmospheric Model. The label for components are the standard attribute names used by the Dataset Attribute Structure (.das)",
         "dimensions": [
           {
@@ -36,7 +38,7 @@ Import the `csdmpy` model and load the dataset.
             "count": 192,
             "increment": "0.5 °",
             "coordinates_offset": "264.0 °",
-            "quantity_name": "angle",
+            "quantity_name": "plane angle",
             "label": "longitude"
           },
           {
@@ -45,7 +47,7 @@ Import the `csdmpy` model and load the dataset.
             "count": 89,
             "increment": "0.5 °",
             "coordinates_offset": "-4.0 °",
-            "quantity_name": "angle",
+            "quantity_name": "plane angle",
             "label": "latitude"
           }
         ],
@@ -59,7 +61,7 @@ Import the `csdmpy` model and load the dataset.
             "numeric_type": "float64",
             "quantity_type": "scalar",
             "component_labels": [
-              "tmpsfc"
+              "tmpsfc - surface air temperature"
             ],
             "components": [
               [
@@ -76,7 +78,7 @@ Import the `csdmpy` model and load the dataset.
             "numeric_type": "float64",
             "quantity_type": "scalar",
             "component_labels": [
-              "tmp2m"
+              "tmp2m - air temperature at 2m"
             ],
             "components": [
               [
@@ -93,8 +95,8 @@ Import the `csdmpy` model and load the dataset.
             "numeric_type": "float64",
             "quantity_type": "vector_2",
             "component_labels": [
-              "ugrd10m",
-              "vgrd10m"
+              "ugrd10m - eastward wind velocity at 10m",
+              "vgrd10m - northward wind velocity at 10m"
             ],
             "components": [
               [
@@ -113,7 +115,7 @@ Import the `csdmpy` model and load the dataset.
             "numeric_type": "float64",
             "quantity_type": "scalar",
             "component_labels": [
-              "rh2m"
+              "rh2m - relative humidity at 2m"
             ],
             "components": [
               [
@@ -130,7 +132,7 @@ Import the `csdmpy` model and load the dataset.
             "numeric_type": "float64",
             "quantity_type": "scalar",
             "component_labels": [
-              "prmslmsl"
+              "prmslmsl - mean sea level pressure"
             ],
             "components": [
               [

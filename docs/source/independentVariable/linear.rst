@@ -42,7 +42,7 @@ the dimension using examples. Consider the following test file.
 
     >>> import csdmpy as cp
     >>> url = 'https://github.com/DeepanshS/csdmpy-doc/raw/master/test_files/test1.csdf'
-    >>> filename = '../test-datasets0.0.12/test/test01.csdf'
+    >>> filename = cp.tests.test01
     >>> testdata1 = cp.load(filename)
 
 
@@ -59,7 +59,7 @@ In the above example, ``testdata1`` is an instance of the
     >>> print(testdata1.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
         "timestamp": "1994-11-05T13:15:30Z",
         "geographic_coordinate": {
           "latitude": "10 deg",
@@ -70,6 +70,7 @@ In the above example, ``testdata1`` is an instance of the
         "dimensions": [
           {
             "type": "linear",
+            "description": "A temporal dimension.",
             "count": 10,
             "increment": "0.1 s",
             "quantity_name": "time",
@@ -82,6 +83,7 @@ In the above example, ``testdata1`` is an instance of the
         "dependent_variables": [
           {
             "type": "internal",
+            "description": "A response dependent variable.",
             "name": "sine curve",
             "numeric_type": "float32",
             "quantity_type": "scalar",

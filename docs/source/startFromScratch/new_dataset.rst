@@ -23,7 +23,7 @@ The data structure from the above example is
     >>> print(new_data.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
         "description": "A new test dataset",
         "dimensions": [],
         "dependent_variables": []

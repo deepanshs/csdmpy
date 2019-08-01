@@ -26,7 +26,7 @@ The data structure of this instance is
     >>> print(fundata.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
         "description": "An emoji dataset",
         "dimensions": [],
         "dependent_variables": []
@@ -55,7 +55,7 @@ of the `fundata` instance.
     >>> print(fundata.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
         "description": "An emoji dataset",
         "dimensions": [
           {
@@ -87,6 +87,7 @@ instance.
     >>> y ={
     ...     'type': 'internal',
     ...     'numeric_type': 'float32',
+    ...     'quantity_type': 'scalar',
     ...     'components': [[0.5, 0.25, 1, 2, 1, 0.25]]
     ... }
     >>> fundata.add_dependent_variable(y)
@@ -102,7 +103,7 @@ Now, we have a 😂 dataset...
     >>> print(fundata.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
         "description": "An emoji dataset",
         "dimensions": [
           {

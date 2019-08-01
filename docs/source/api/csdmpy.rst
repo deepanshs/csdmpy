@@ -30,8 +30,8 @@ Methods
 .. rubric:: Methods Summary
 
 .. autosummary::
-    ~load
-    ~new
+    load
+    new
 
 .. rubric:: Method Documentation
 .. autofunction:: load

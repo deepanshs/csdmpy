@@ -26,7 +26,7 @@ def test_csdm():
         data.tags = "23"
 
     # version
-    assert data.version == cp.__version__
+    assert data.version == cp.csdm.CSDM.__latest_CSDM_version__
 
     # geographic_coordinate
     assert data.geographic_coordinate == {}
@@ -56,7 +56,7 @@ def test_csdm():
     # data_structure
     structure = {
         "csdm": {
-            "version": "0.0.12",
+            "version": "1.0",
             "read_only": True,
             "tags": ["1", "2", "3"],
             "description": "Enough with the tests",

@@ -35,7 +35,7 @@ class CSDM:
     space. Additional attributes of this class is listed below.
     """
 
-    __file_version__ = __version__
+    __latest_CSDM_version__ = "1.0"  # __version__
     _old_compatible_versions = ()
     _old_incompatible_versions = ("0.0.9", "0.0.10", "0.0.11")
 
@@ -55,11 +55,11 @@ class CSDM:
     def __init__(self, filename="", version=None, description=""):
         """Python module from reading and writing csdm files."""
         if version is None:
-            version = self.__file_version__
+            version = self.__latest_CSDM_version__
         elif version in self._old_incompatible_versions:
             raise Exception(
                 (
-                    "Files created with version {0} of the CSDM "
+                    "Files created with version {0} of the CSD Model "
                     "are no longer supported."
                 ).format(version)
             )
@@ -333,7 +333,7 @@ class CSDM:
             >>> print(datamodel.data_structure)
             {
               "csdm": {
-                "version": "0.0.12",
+                "version": "1.0",
                 "dimensions": [
                   {
                     "type": "linear",
@@ -423,15 +423,18 @@ class CSDM:
         self._dependent_variables[-1].type = "internal"
 
     def _get_python_dictionary(
-        self, filename, print_function=False, version=__file_version__
+        self, filename, print_function=False, version=__latest_CSDM_version__
     ):
         """Return the CSDM instance as a python dictionary."""
         dictionary = {}
 
-        dictionary["version"] = version
+        dictionary["version"] = self.version
 
         if self.read_only:
             dictionary["read_only"] = self.read_only
+
+        if self.timestamp != "":
+            dictionary["timestamp"] = self.timestamp
 
         if self.geographic_coordinate != {}:
             dictionary["geographic_coordinate"] = self.geographic_coordinate
@@ -454,7 +457,7 @@ class CSDM:
                     filename=filename,
                     dataset_index=i,
                     for_display=print_function,
-                    version=self.__file_version__,
+                    version=self.__latest_CSDM_version__,
                 )
             )
 
@@ -462,7 +465,7 @@ class CSDM:
         csdm["csdm"] = dictionary
         return csdm
 
-    def save(self, filename, read_only=False, version=__file_version__):
+    def save(self, filename, read_only=False, version=__latest_CSDM_version__):
         """
         Serialize the :ref:`CSDM_api` instance as a JSON data-exchange file.
 

@@ -25,14 +25,14 @@ Let's import this file.
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.12/gmsl/sea_level_none.csdf'
+    >>> filename = 'Test Files/gmsl/GMSL.csdf'
     >>> sea_level = cp.load(filename)
 
 The variable `filename` is a string with the address to the `sea_level.csdf`
 file.
 The :meth:`~csdmpy.load` method of the `csdmpy` module reads the
 file and returns an instance of the :ref:`csdm_api` class, in
-this case, as a variable `sea_level`. For a quick preview of the data
+this case, as a variable ``sea_level``. For a quick preview of the data
 structure, use the :attr:`~csdmpy.csdm.CSDM.data_structure` attribute of this
 instance.
 
@@ -41,9 +41,15 @@ instance.
     >>> print(sea_level.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
-        "timestamp": "2019-06-23T23:31:10Z",
+        "version": "1.0",
         "read_only": true,
+        "timestamp": "2019-05-21T13:43:00Z",
+        "tags": [
+          "Jason-2",
+          "satellite altimetry",
+          "mean sea level",
+          "climate"
+        ],
         "description": "Global Mean Sea Level (GMSL) rise from the late 19th to the Early 21st Century.",
         "dimensions": [
           {
@@ -52,7 +58,6 @@ instance.
             "increment": "0.08333333333 yr",
             "coordinates_offset": "1880.0416666667 yr",
             "quantity_name": "time",
-            "label": "Time",
             "reciprocal": {
               "quantity_name": "frequency"
             }
@@ -67,7 +72,7 @@ instance.
             "numeric_type": "float32",
             "quantity_type": "scalar",
             "component_labels": [
-              "Global Mean Sea Level"
+              "GMSL"
             ],
             "components": [
               [
@@ -109,7 +114,7 @@ component of the dependent variable are
 
 respectively.
 
-Before we plot the dataset, we find it convenient to write a small plotting
+Before we plot this dataset, we find it convenient to write a small plotting
 method. This method makes it easier, later, when we describe 1D{1}
 examples form a variety of scientific datasets. The method follows-
 
@@ -130,11 +135,9 @@ examples form a variety of scientific datasets. The method follows-
     ...     plt.title(y[0].name)
     ...
     ...     plt.grid(color='gray', linestyle='--', linewidth=0.5)
-    ...     plt.tight_layout()
+    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
     ...     plt.show()
 
-
-.. plt.savefig(dataObject.filename+'.pdf')
 
 A quick walk-through of the ``plot1D`` method. The method accepts an
 instance of the :ref:`csdm_api` class as an argument. Within the method, we
@@ -146,12 +149,12 @@ The next line sets the x-range. For labeling the axes,
 we use the :attr:`~csdmpy.dimensions.Dimension.axis_label` attribute
 of both dimension and dependent variable instances. For the figure title,
 we use the :attr:`~csdmpy.dependent_variables.DependentVariable.name` attribute
-of the dependent variable instance. The following line adde the grid lines.
+of the dependent variable instance. The next statement adds the grid lines.
 For additional information, refer to `Matplotlib <https://matplotlib.org>`_
 documentation.
 
 The ``plot1D`` method is only for illustrative purpose. The users may use any
-plotting library to visualize the dataset.
+plotting library to visualize their datasets.
 
 Now to plot the `sea_level` dataset.
 
@@ -159,29 +162,38 @@ Now to plot the `sea_level` dataset.
 
     >>> plot1D(sea_level)
 
-.. figure:: sea_level_none.*
-   :align: center
+.. figure:: sea_level_none.pdf
 
-.. :target: ../_static/sea_level_none.csdf.pdf
-
-.. .. image:: ../../images_/sea_level_none.csdf.pdf
 
 Nuclear Magnetic Resonance (MNR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following dataset is a :math:`^{13}\mathrm{C}` time domain NMR Bloch decay
-signal of ethanol. Let's load this data file and take a quick look at the data
+signal of ethanol. Let's load this data file and take a quick look at its data
 structure. We follow the same steps are previous described.
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.12/NMR/blochDecay/blochDecay_raw.csdfe'
+    >>> filename = 'Test Files/NMR/blochDecay/blochDecay.csdf'
     >>> NMR_data = cp.load(filename)
     >>> print(NMR_data.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
-        "description": "A time domain NMR $^{13}$C Bloch decay signal of ethanol.",
+        "version": "1.0",
+        "read_only": true,
+        "timestamp": "2016-03-12T16:41:00Z",
+        "geographic_coordinate": {
+          "altitude": "238.9719543457031 m",
+          "longitude": "-83.05154573892345 °",
+          "latitude": "39.97968794964322 °"
+        },
+        "tags": [
+          "13C",
+          "NMR",
+          "spectrum",
+          "ethanol"
+        ],
+        "description": "A time domain NMR 13C Bloch decay signal of ethanol.",
         "dimensions": [
           {
             "type": "linear",
@@ -191,20 +203,20 @@ structure. We follow the same steps are previous described.
             "quantity_name": "time",
             "reciprocal": {
               "coordinates_offset": "-3005.363 Hz",
-              "origin_offset": "75426328.864 Hz",
+              "origin_offset": "75426328.86 Hz",
               "quantity_name": "frequency",
-              "label": "$^{13}$C frequency shift"
+              "label": "13C frequency shift"
             }
           }
         ],
         "dependent_variables": [
           {
             "type": "internal",
-            "numeric_type": "complex64",
+            "numeric_type": "complex128",
             "quantity_type": "scalar",
             "components": [
               [
-                "(-8899.406-1276.7734j), (-4606.8804-742.4125j), ..., (37.548492+20.15689j), (-193.92285-67.06525j)"
+                "(-8899.40625-1276.7734375j), (-4606.88037109375-742.4124755859375j), ..., (37.548492431640625+20.156890869140625j), (-193.9228515625-67.06524658203125j)"
               ]
             ]
           }
@@ -212,16 +224,43 @@ structure. We follow the same steps are previous described.
       }
     }
 
+This particular example show two additional feature of the CSD model, namely,
+the :attr:`~csdmpy.csdm.CSDM.geographic_coordinate` and
+:attr:`~csdmpy.csdm.CSDM.tags`. The `geographic_coordinate` described the
+location where the CSDM file was last serialized. You may access this
+attribute through
+
+.. doctest::
+
+    >>> NMR_data.geographic_coordinate
+    {'altitude': '238.9719543457031 m', 'longitude': '-83.05154573892345 °', 'latitude': '39.97968794964322 °'}
+
+Similarly, the `tags` attribute can be accessed through
+
+.. doctest::
+
+    >>> NMR_data.tags
+    ['13C', 'NMR', 'spectrum', 'ethanol']
+
+You may add additional tags to this list using `append` method of python list
+as
+
+.. doctest::
+
+    >>> NMR_data.tags.append("Bloch decay")
+    >>> NMR_data.tags
+    ['13C', 'NMR', 'spectrum', 'ethanol', 'Bloch decay']
+
 Unlike the previous example, the data structure of the NMR measurement shows
-a complex valued dependent variable. These values are accessed as follows,
+a complex valued dependent variable where the values are
 
 .. doctest::
 
     >>> y = NMR_data.dependent_variables
     >>> print(y[0].components[0])
-    [-8899.406   -1276.7734j  -4606.8804   -742.4125j
-      9486.438    -770.0413j  ...   -70.95386   -28.32843j
-        37.548492  +20.15689j  -193.92285   -67.06525j]
+    [-8899.40625   -1276.7734375j  -4606.88037109 -742.41247559j
+      9486.43847656 -770.0413208j  ...   -70.95385742  -28.32843018j
+        37.54849243  +20.15689087j  -193.92285156  -67.06524658j]
 
 Similarly, the coordinates along the dimension are
 
@@ -238,8 +277,8 @@ Now to the plot the dataset,
 
     >>> plot1D(NMR_data)
 
-.. figure:: blochDecay_raw.*
-   :align: center
+.. figure:: blochDecay_raw.pdf
+
 
 Electron Paramagnetic Resonance (EPR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -252,12 +291,14 @@ plot follows,
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.12/EPR/xyinc2_base64.csdf'
+    >>> filename = 'Test Files/EPR/AmanitaMuscaria_base64.csdf'
     >>> EPR_data = cp.load(filename)
     >>> print(EPR_data.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
+        "read_only": true,
+        "timestamp": "2015-02-26T16:41:00Z",
         "description": "A Electron Paramagnetic Resonance simulated dataset.",
         "dimensions": [
           {
@@ -275,7 +316,7 @@ plot follows,
             "numeric_type": "float32",
             "quantity_type": "scalar",
             "component_labels": [
-              "Arbitrary"
+              "Intensity Derivative"
             ],
             "components": [
               [
@@ -288,8 +329,8 @@ plot follows,
     }
     >>> plot1D(EPR_data)
 
-.. figure:: xyinc2_base64.*
-   :align: center
+.. figure:: xyinc2_base64.pdf
+
 
 Gas Chromatography dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -302,12 +343,14 @@ follows,
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.12/GC/cinnamon_none.csdf'
+    >>> filename = 'Test Files/GC/cinnamon_none.csdf'
     >>> GCData = cp.load(filename)
     >>> print(GCData.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
+        "read_only": true,
+        "timestamp": "2011-12-16T12:24:10Z",
         "description": "A Gas Chromatography dataset of cinnamon stick.",
         "dimensions": [
           {
@@ -327,7 +370,7 @@ follows,
             "numeric_type": "float32",
             "quantity_type": "scalar",
             "component_labels": [
-              "Arbitrary"
+              "monotonic"
             ],
             "components": [
               [
@@ -340,8 +383,8 @@ follows,
     }
     >>> plot1D(GCData)
 
-.. figure:: cinnamon_none.*
-   :align: center
+.. figure:: cinnamon_none.pdf
+
 
 Fourier Transform Infrared Spectroscopy (FTIR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -353,12 +396,14 @@ structure and the plot of the FTIR dataset follows
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.12/IR/caffeine_none.csdf'
+    >>> filename = 'Test Files/IR/caffeine_none.csdf'
     >>> FTIR_data = cp.load(filename)
     >>> print(FTIR_data.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
+        "read_only": true,
+        "timestamp": "2019-07-01T21:03:42Z",
         "description": "An IR spectrum of caffeine.",
         "dimensions": [
           {
@@ -392,8 +437,8 @@ structure and the plot of the FTIR dataset follows
     }
     >>> plot1D(FTIR_data)
 
-.. figure:: caffeine_none.*
-   :align: center
+.. figure:: caffeine_none.pdf
+
 
 Ultraviolet–visible (UV-vis) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -405,12 +450,14 @@ model format. The data structure and the plot of the UV-vis dataset follows,
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.12/UV-Vis/benzeneVapour_base64.csdf'
+    >>> filename = 'Test Files/UV-Vis/benzeneVapour_base64.csdf'
     >>> UV_data = cp.load(filename)
     >>> print(UV_data.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
+        "read_only": true,
+        "timestamp": "2014-09-30T11:16:33Z",
         "description": "A UV-vis spectra of benzene vapours.",
         "dimensions": [
           {
@@ -445,28 +492,27 @@ model format. The data structure and the plot of the UV-vis dataset follows,
     }
     >>> plot1D(UV_data)
 
-.. figure:: benzeneVapour_base64.*
-   :align: center
+.. figure:: benzeneVapour_base64.pdf
 
 
 Mass spectrometry dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following is an example of a sparse dataset. The `acetone.csdf` CSDM data
-file is stored as a sparse dependent variable data. Upon import, the dependent
-variable component values sparsely populate the coordinate grid. The remaining
-unpopulated coordinates are assigned a zero value.
+file is stored as a sparse dependent variable data. Upon import, the values of
+the dependent variable component sparsely populate the coordinate grid. The
+remaining unpopulated coordinates are assigned a zero value.
 
 .. doctest::
 
-    >>> filename = '../test-datasets0.0.12/Mass spect/acetone.csdf'
+    >>> filename = 'Test Files/MassSpec/acetone.csdf'
     >>> mass_spec = cp.load(filename)
     >>> print(mass_spec.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
-        "timestamp": "2019-06-23T17:53:26Z",
+        "version": "1.0",
         "read_only": true,
+        "timestamp": "2019-06-23T17:53:26Z",
         "description": "MASS spectrum of acetone",
         "dimensions": [
           {
@@ -505,7 +551,7 @@ Here, the coordinates along the dimension are
      28. 29. 30. 31. 32. 33. 34. 35. 36. 37. 38. 39. 40. 41. 42. 43. 44. 45.
      46. 47. 48. 49. 50. 51. 52. 53. 54. 55. 56. 57. 58. 59. 60.]
 
-and the components of the dependent variable are
+and the components of the dependent variable
 
 .. doctest::
 
@@ -516,8 +562,8 @@ and the components of the dependent variable are
         0.    0.    0.    0.    0.    0.    0.    0.    0.    0.    0.    0.
       270.   10.    0.]
 
-Note, only eight dependent variable component values were specified in the
-`.csdf` file. The remaining component values are set as zeros.
+Note, only eight values were specified in the dependent variable `components`
+attribute in the `.csdf` file. The remaining component values are set to zero.
 
 Now to plot the dataset.
 
@@ -525,5 +571,4 @@ Now to plot the dataset.
 
     >>> plot1D(mass_spec)
 
-.. figure:: acetone.*
-   :align: center
+.. figure:: acetone.csdf.pdf

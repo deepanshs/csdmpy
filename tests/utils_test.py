@@ -28,9 +28,7 @@ def test_quantity_type():
     assert QuantityType("symmetric_matrix_10").value == "symmetric_matrix_10"
     assert QuantityType("symmetric_matrix_10").p == 55
 
-    error = (
-        "is not a valid `quantity_type` enumeration literal. " "The allowed values are"
-    )
+    error = "is not a valid `quantity_type` enumeration literal. The allowed values are"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         QuantityType("RGB")
 
@@ -54,8 +52,8 @@ def test_numeric_type():
     assert NumericType("int64").value == "int64"
     assert NumericType("int64").dtype == "<i8"
 
-    assert NumericType("float16").value == "float16"
-    assert NumericType("float16").dtype == "<f2"
+    # assert NumericType("float16").value == "float16"
+    # assert NumericType("float16").dtype == "<f2"
     assert NumericType("float32").value == "float32"
     assert NumericType("float32").dtype == "<f4"
     assert NumericType("float64").value == "float64"
@@ -69,6 +67,10 @@ def test_numeric_type():
     error = (
         "is not a valid `numeric_type` enumeration literal. " "The allowed values are"
     )
+
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        NumericType("float16")
+
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         NumericType("complex256")
 

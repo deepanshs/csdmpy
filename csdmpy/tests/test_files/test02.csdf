@@ -1,12 +1,14 @@
 {
   "csdm": {
-    "version": "0.0.12",
+    "version": "1.0",
+    "timestamp": "2019-06-23T17:53:26Z",
     "description": "Base64 encoding test",
     "dependent_variables": [
       {
         "type": "internal",
         "encoding": "base64",
         "numeric_type": "float64",
+        "quantity_type": "scalar",
         "component_labels": ["response"],
         "components": [
             "f89NmgkstT+GypBoSmmqP9aGuojQTaQ/ItYdQ/Vqnj95B2AkaaKdP7t7CWDlCIY/Ss6AfFmjNT/qQI0cVt9sPz2n1B662aA/Z4hFJvHtvj8="

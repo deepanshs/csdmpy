@@ -99,7 +99,7 @@ def test_linear_new():
 
     dict1 = {
         "csdm": {
-            "version": "0.0.12",
+            "version": "1.0",
             "dimensions": [
                 {
                     "type": "linear",
@@ -232,7 +232,7 @@ def test_monotonic_new():
 
     dict1 = {
         "csdm": {
-            "version": "0.0.12",
+            "version": "1.0",
             "dimensions": [
                 {
                     "type": "monotonic",

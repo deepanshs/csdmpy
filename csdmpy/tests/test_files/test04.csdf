@@ -1,6 +1,6 @@
 {
   "csdm": {
-    "version": "0.0.12",
+    "version": "1.0",
     "description": "MAS spectrum",
     "timestamp": "2019-06-23T17:53:26Z",
     "dimensions": [

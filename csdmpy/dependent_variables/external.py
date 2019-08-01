@@ -25,6 +25,12 @@ class ExternalDataset(BaseDependentVariable):
         """Initialize."""
         self._sparse_sampling = {}
         kwargs["encoding"] = "raw"
+
+        if kwargs["numeric_type"] is None:
+            raise ValueError(
+                "Missing a required `numeric_type` key from the dependent variable."
+            )
+
         super(ExternalDataset, self).__init__(**kwargs)
 
         components_url = kwargs["components_url"]

@@ -39,6 +39,11 @@ class InternalDataset(BaseDependentVariable):
             else:
                 kwargs["components"] = components.astype(kwargs["numeric_type"])
 
+        if kwargs["numeric_type"] is None:
+            raise ValueError(
+                "Missing a required `numeric_type` key from the dependent variable."
+            )
+
         # super base class must be initialized before retrieving
         # the components array.
         super(InternalDataset, self).__init__(**kwargs)

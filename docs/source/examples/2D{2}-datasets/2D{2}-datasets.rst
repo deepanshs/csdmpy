@@ -10,19 +10,21 @@ with one two-component dependent variable, :math:`p=2`.
 Vector dataset
 ^^^^^^^^^^^^^^
 
-The following is an example of a simulated electric field dataset of a dipole
-as a function of two spatial dimensions.
+The following is an example of a simulated electric field vector dataset of a
+dipole as a function of two linearly sampled spatial dimensions.
 
 .. doctest::
 
     >>> import csdmpy as cp
 
-    >>> filename = '../test-datasets0.0.12/vector/electricField/electric_field_raw.csdfe'
+    >>> filename = 'Test Files/vector/electric_field/electric_field_raw.csdfe'
     >>> vector_data = cp.load(filename)
     >>> print (vector_data.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
+        "read_only": true,
+        "timestamp": "2014-09-30T11:16:33Z",
         "description": "A simulated electric field dataset from an electric dipole.",
         "dimensions": [
           {
@@ -53,7 +55,7 @@ as a function of two spatial dimensions.
             "type": "internal",
             "name": "Electric field lines",
             "unit": "C^-1 * N",
-            "quantity_name": "electrical field strength",
+            "quantity_name": "electric field strength",
             "numeric_type": "float32",
             "quantity_type": "vector_2",
             "components": [
@@ -69,7 +71,7 @@ as a function of two spatial dimensions.
       }
     }
 
-The spatial dimensions are sampled linearly along the two dimensions.
+
 The tuples of the dimension and dependent variable instances from this example
 are
 
@@ -98,7 +100,9 @@ attribute of the corresponding dependent variable instance.
     >>> print(y[0].quantity_type)
     vector_2
 
-Let's plot the vector data. To do this, we use the *streamplot* method
+**Plot**
+
+Let's plot the vector data using the *streamplot* method
 from the matplotlib package. Before we could visualize, however, there
 is an initial processing step. We use the Numpy library for processing.
 
@@ -118,14 +122,12 @@ And now, the plot.
 
     >>> import matplotlib.pyplot as plt
     >>> def plot_vector():
-    ...     fig, ax = plt.subplots(1,1, figsize=(5.4,5))
+    ...     fig, ax = plt.subplots(1,1)
     ...     ax.streamplot(X.value, Y.value, U, V, density =1,
     ...                   linewidth=Rlog, color=Rlog, cmap='viridis')
     ...
-    ...     ax.set_xlim([x[0].coordinates[0].value,
-    ...                 x[0].coordinates[-1].value])
-    ...     ax.set_ylim([x[1].coordinates[0].value,
-    ...                 x[1].coordinates[-1].value])
+    ...     ax.set_xlim([x[0].coordinates[0].value, x[0].coordinates[-1].value])
+    ...     ax.set_ylim([x[1].coordinates[0].value, x[1].coordinates[-1].value])
     ...
     ...     # Set axes labels and figure title.
     ...     ax.set_xlabel(x[0].axis_label)
@@ -135,12 +137,11 @@ And now, the plot.
     ...     # Set grid lines.
     ...     ax.grid(color='gray', linestyle='--', linewidth=0.5)
     ...
-    ...     plt.tight_layout()
+    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
     ...     plt.show()
 
 .. doctest::
 
     >>> plot_vector()
 
-.. image:: electric_field_raw.png
-   :align: center
+.. figure:: electric_field_raw.pdf

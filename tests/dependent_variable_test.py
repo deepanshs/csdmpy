@@ -112,7 +112,7 @@ def test_internal_new():
 
     dict1 = {
         "csdm": {
-            "version": "0.0.12",
+            "version": "1.0",
             "dimensions": [],
             "dependent_variables": [
                 {
@@ -146,7 +146,7 @@ def test_external_new():
         "component_labels": ["monotonic"],
         "name": "Headspace from cinnamon stick",
         "numeric_type": "float32",
-        "encoding": "raw",
+        "quantity_type": "scalar",
     }
     data.add_dependent_variable(dim)
 
@@ -195,7 +195,7 @@ def test_external_new():
 
     dict1 = {
         "csdm": {
-            "version": "0.0.12",
+            "version": "1.0",
             "dimensions": [],
             "dependent_variables": [
                 {
@@ -218,7 +218,11 @@ def test_external_new():
 
 def test_missing_type():
     data = cp.new()
-    dim = {"numeric_type": "float32", "components": [np.arange(10)]}
+    dim = {
+        "numeric_type": "float32",
+        "quantity_type": "scalar",
+        "components": [np.arange(10)],
+    }
     error = "Missing a required `type` key from the dependent variable"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.add_dependent_variable(dim)
@@ -226,7 +230,12 @@ def test_missing_type():
 
 def test_wrong_type():
     data = cp.new()
-    dim = {"type": "", "numeric_type": "float32", "components": [np.arange(10)]}
+    dim = {
+        "type": "",
+        "numeric_type": "float32",
+        "quantity_type": "scalar",
+        "components": [np.arange(10)],
+    }
     error = "is an invalid DependentVariable 'type'"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.add_dependent_variable(dim)
@@ -234,7 +243,7 @@ def test_wrong_type():
 
 def test_missing_component():
     data = cp.new()
-    dim = {"type": "internal", "numeric_type": "float32"}
+    dim = {"type": "internal", "numeric_type": "float32", "quantity_type": "scalar"}
     error = "Missing a required `components` key"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.add_dependent_variable(dim)
@@ -242,7 +251,7 @@ def test_missing_component():
 
 def test_missing_component_url():
     data = cp.new()
-    dim = {"type": "external", "numeric_type": "float32"}
+    dim = {"type": "external", "numeric_type": "float32", "quantity_type": "scalar"}
     error = "Missing a required `components_url` key"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.add_dependent_variable(dim)

@@ -109,6 +109,16 @@ class DependentVariable:
                 ).format(input_dict["type"])
             )
 
+        if "quantity_type" not in input_keys:
+            raise ValueError(
+                "Missing a required `quantity_type` key from the dependent variable."
+            )
+
+        if input_dict["type"] == "external" and "encoding" in input_dict:
+            raise ValueError(
+                "The key `encoding` is invalid for dependent variables of subtype `external`."
+            )
+
         def message(item, subtype):
             return (
                 f"Missing a required `{item}` key from the dependent "

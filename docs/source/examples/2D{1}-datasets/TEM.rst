@@ -17,12 +17,14 @@ Let's import the CSD model data-file and look at its data structure.
     >>> import csdmpy as cp
     >>> import matplotlib.pyplot as plt
 
-    >>> filename = '../test-datasets0.0.12/ssTEM/TEM.csdf'
+    >>> filename = 'Test Files/TEM/TEM.csdf'
     >>> TEM = cp.load(filename)
     >>> print(TEM.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
+        "read_only": true,
+        "timestamp": "2016-03-12T16:41:00Z",
         "description": "TEM image of the early larval brain of Drosophila melanogaster used in the analysis of neuronal microcircuitry.",
         "dimensions": [
           {
@@ -73,12 +75,10 @@ with the respective coordinates (viewed only for the first ten coordinates),
 
 .. doctest::
 
-    >>> x0 = x[0].coordinates
-    >>> print(x0[:10])
+    >>> print(x[0].coordinates[:10])
     [ 0.  4.  8. 12. 16. 20. 24. 28. 32. 36.] nm
 
-    >>> x1 = x[1].coordinates
-    >>> print(x1[:10])
+    >>> print(x[1].coordinates[:10])
     [ 0.  4.  8. 12. 16. 20. 24. 28. 32. 36.] nm
 
 For convenience, let's convert the coordinate from `nm` to `µm` using the
@@ -94,15 +94,15 @@ and plot the data.
 
 .. doctest::
 
-    >>> def plot_image(data_object):
+    >>> def plot_image():
     ...     fig, ax = plt.subplots(1,1)
     ...
     ...     # Set the extents of the image plot.
-    ...     extent = [x0[0].value, x0[-1].value,
-    ...               x1[0].value, x1[-1].value]
+    ...     extent = [x[0].coordinates[0].value, x[0].coordinates[-1].value,
+    ...               x[1].coordinates[0].value, x[1].coordinates[-1].value]
     ...
     ...     # Add the image plot.
-    ...     im = ax.imshow(y[0].components[0], extent=extent, cmap='bone')
+    ...     im = ax.imshow(y[0].components[0], origin='lower', extent=extent, cmap='gray')
     ...
     ...     # Add a colorbar.
     ...     cbar = fig.colorbar(im)
@@ -116,12 +116,11 @@ and plot the data.
     ...     # Set up the grid lines.
     ...     ax.grid(color='k', linestyle='--', linewidth=0.5)
     ...
-    ...     plt.tight_layout()
+    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
     ...     plt.show()
 
 .. doctest::
 
-    >>> plot_image(TEM)
+    >>> plot_image()
 
 .. figure:: TEM.pdf
-   :align: center

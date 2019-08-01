@@ -48,6 +48,7 @@ variable. Consider the following python dictionary
 
     >>> d0 = {
     ...     'type': 'internal',
+    ...     'quantity_type': 'scalar',
     ...     'description': 'This is an internal scalar dependent variable',
     ...     'unit': 'cm',
     ...     'components': [np.arange(100)]
@@ -81,7 +82,7 @@ after adding the dependent variable is
     >>> print(new_data.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
         "description": "A new test dependent variables dataset",
         "dimensions": [],
         "dependent_variables": [
@@ -137,7 +138,7 @@ The data structure after adding the above dependent variable is
     >>> print(new_data.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
         "description": "A new test dependent variables dataset",
         "dimensions": [],
         "dependent_variables": [

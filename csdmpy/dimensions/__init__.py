@@ -126,6 +126,7 @@ class Dimension:
 
         if default["type"] == "labeled" and default["labels"] is None:
             raise KeyError("LabeledDimension is missing a required `labels` key.")
+
         if default["type"] == "labeled":
             self.subtype = LabeledDimension(**default)
 
@@ -145,7 +146,7 @@ class Dimension:
 
         for item in missing_key:
             if default[item] is None:
-                raise KeyError(f"LinearDimension is missing a required `{item}`` key.")
+                raise KeyError(f"LinearDimension is missing a required `{item}` key.")
 
         validate(default["count"], "count", int)
 

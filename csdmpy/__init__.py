@@ -16,8 +16,8 @@ from csdmpy.dependent_variables import DependentVariable
 from csdmpy.dependent_variables.download import download_file_from_url
 from csdmpy.dimensions import Dimension
 from csdmpy.helper_functions import _preview
+from csdmpy.utils import validate
 from csdmpy.version import __version__
-
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -33,7 +33,7 @@ def _import_json(filename):
         return json.loads(str(content, encoding="UTF-8"))
 
 
-def load(filename=None, application=False, sort_fft_order=True):
+def load(filename=None, application=False):
     r"""
     Load a .csdf/.csdfe file and return an instance of :ref:`csdm_api` class.
 
@@ -70,23 +70,23 @@ def load(filename=None, application=False, sort_fft_order=True):
 
     csdm_object = _load(csd_file)
 
-    if sort_fft_order:
-        axes = []
-        for i, dim in enumerate(csdm_object.dimensions):
-            if dim.type == "linear":
-                if dim.fft_output_order:
-                    n_points = dim.count
-                    if n_points % 2 == 0:
-                        temp = n_points * dim.increment / 2.0
-                    else:
-                        temp = (n_points - 1) * dim.increment / 2.0
-                    dim.coordinates_offset = dim.coordinates_offset - temp
+    # if sort_fft_order:
+    #     axes = []
+    #     for i, dim in enumerate(csdm_object.dimensions):
+    #         if dim.type == "linear":
+    #             if dim.fft_output_order:
+    #                 n_points = dim.count
+    #                 if n_points % 2 == 0:
+    #                     temp = n_points * dim.increment / 2.0
+    #                 else:
+    #                     temp = (n_points - 1) * dim.increment / 2.0
+    #                 dim.coordinates_offset = dim.coordinates_offset - temp
 
-                    axes.append(-i - 1)
-                    # dim.fft_output_order = False
+    #                 axes.append(-i - 1)
+    #                 # dim.fft_output_order = False
 
-        for var in csdm_object.dependent_variables:
-            var.components = fftshift(var.components, axes=axes)
+    #     for var in csdm_object.dependent_variables:
+    #         var.components = fftshift(var.components, axes=axes)
 
     if application is False:
         csdm_object.application = {}
@@ -110,6 +110,14 @@ def _load(filename):
     except Exception as e:
         raise Exception(e)
 
+    key_list_root = dictionary.keys()
+    if "CSDM" in key_list_root:
+        raise KeyError("'CSDM' is not a valid keyword. Did you mean 'csdm'?")
+
+    if "csdm" not in key_list_root:
+        raise KeyError("Missing a required `csdm` key.")
+
+    # inside csdm object
     optional_keys = [
         "read_only",
         "timestamp",
@@ -118,23 +126,34 @@ def _load(filename):
         "tags",
         "description",
     ]
+    required_keys = ["version"]
+    all_keys = optional_keys + required_keys
 
-    # required_keys = ["csdm", "version"]
+    key_list_csdm = list(dictionary["csdm"].keys())
+    key_list_csdm_lower_case = [item.lower() for item in key_list_csdm]
 
-    key_list_root = dictionary.keys()
+    for i in range(len(key_list_csdm)):
+        if key_list_csdm[i] not in all_keys and key_list_csdm_lower_case[i] in all_keys:
+            raise KeyError(
+                (
+                    f"{key_list_csdm[i]} is not a valid keyword. "
+                    f"Did you mean '{key_list_csdm_lower_case[i]}'?"
+                )
+            )
 
-    if "CSDM" in key_list_root:
-        raise KeyError("'CSDM' is not a valid keyword. Did you mean 'csdm'?")
-
-    if "csdm" not in key_list_root:
-        raise KeyError("'csdm' key is not present.")
+    for item in required_keys:
+        if item not in key_list_csdm:
+            raise KeyError(f"Missing a required `{item}` key.")
 
     _version = dictionary["csdm"]["version"]
-    # is version key required?
-
-    key_list_csdm = dictionary["csdm"].keys()
+    validate(_version, "version", str)
 
     csdm = CSDM(filename, _version)
+
+    if "timestamp" in dictionary["csdm"].keys():
+        _timestamp = dictionary["csdm"]["timestamp"]
+        validate(_timestamp, "timestamp", str)
+        csdm._timestamp = _timestamp
 
     if "dimensions" in key_list_csdm:
         for dim in dictionary["csdm"]["dimensions"]:
@@ -168,7 +187,7 @@ def new(description=""):
         >>> print(emptydata.data_structure)
         {
           "csdm": {
-            "version": "0.0.12",
+            "version": "1.0",
             "description": "Testing Testing 1 2 3",
             "dimensions": [],
             "dependent_variables": []

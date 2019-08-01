@@ -138,11 +138,11 @@ html_theme_options = {
     # Enable inner theme by Bootswatch. Defaults to false
     "inner_theme": False,
     # Set the name of inner theme. Defaults to 'bootswatch-simplex'
-    "inner_theme_name": "bootswatch-simplex",
+    # "inner_theme_name": "bootswatch-simplex",
     # Select Twitter bootstrap version 2 or 3. Defaults to '3'
     "bootstrap_version": "3",
     # Show "theme preview" button in header navbar. Defaults to false.
-    "theme_preview": True,
+    # "theme_preview": True,
     # Set the Size of Heading text. Defaults to None
     # "h1_size": "3.0em",
     # "h2_size": "2.6em",

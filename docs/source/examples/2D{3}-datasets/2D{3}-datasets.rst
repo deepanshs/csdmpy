@@ -11,7 +11,7 @@ Image datasets
 ^^^^^^^^^^^^^^
 
 A common example from this subset is perhaps the RGB image dataset.
-An image dataset has two spatial dimensions and one dependent
+A RGB image dataset has two spatial dimensions and one dependent
 variable with three components corresponding to the red, green, and blue color
 intensities.
 
@@ -21,29 +21,38 @@ The following is an example of the RGB image dataset.
 
     >>> import csdmpy as cp
 
-    >>> filename = '../test-datasets0.0.12/image/raccoon_raw.csdfe'
+    >>> filename = 'Test Files/image/raccoon_image.csdf'
     >>> ImageData = cp.load(filename)
     >>> print (ImageData.data_structure)
     {
       "csdm": {
-        "version": "0.0.12",
+        "version": "1.0",
+        "read_only": true,
+        "timestamp": "2016-03-12T16:41:00Z",
+        "tags": [
+          "racoon",
+          "image",
+          "Judy Weggelaar"
+        ],
         "description": "An RBG image of a raccoon face.",
         "dimensions": [
           {
             "type": "linear",
             "count": 1024,
-            "increment": "1.0"
+            "increment": "1.0",
+            "label": "horizontal index"
           },
           {
             "type": "linear",
             "count": 768,
-            "increment": "1.0"
+            "increment": "1.0",
+            "label": "vertical index"
           }
         ],
         "dependent_variables": [
           {
             "type": "internal",
-            "name": "raccoon face",
+            "name": "raccoon",
             "numeric_type": "uint8",
             "quantity_type": "pixel_3",
             "component_labels": [
@@ -90,7 +99,7 @@ respectively, where coordinates along both dimensions are spaced uniformly.
 In the above example, only the first ten coordinates along each dimension
 are displayed.
 
-The dependent variable is an RGB image as also seen from the
+The dependent variable is an image data as also seen from the
 :attr:`~csdmpy.dependent_variables.DependentVariable.quantity_type` attribute
 of the corresponding :ref:`dv_api` instance.
 
@@ -98,6 +107,9 @@ of the corresponding :ref:`dv_api` instance.
 
     >>> print(y[0].quantity_type)
     pixel_3
+
+From the value `pixel_3`, `pixel` indicates a pixel data point while `3`
+indicate the number of pixels.
 
 As usual, the components of the dependent variable are accessed through
 the :attr:`~csdmpy.dependent_variables.DependentVariable.components` attribute.
@@ -116,7 +128,8 @@ For example,
      [ 85  97 111 ... 120 119 118]]
 
 will return an array with the first component of all data values. Here, these
-components correspond to the red color intensity. The label corresponding to
+components correspond to the red color intensity, indicated by the
+corresponding component label. The label corresponding to
 this component array is accessed through the
 :attr:`~csdmpy.dependent_variables.DependentVariable.component_labels`
 attribute with appropriate indexing, that is
@@ -153,7 +166,8 @@ dimension instances.
         on the other hand, span through the number of components and are
         incremented.
 
-Now, to visualize the dataset.
+Now, to visualize the dataset as an RGB image we use the matplotlib `imshow`
+method.
 
 .. doctest::
 
@@ -164,10 +178,9 @@ Now, to visualize the dataset.
     ...     fig, ax = plt.subplots(1,1)
     ...     ax.imshow(np.moveaxis(y[0].components, 0, -1 ))
     ...     ax.set_axis_off()
-    ...     plt.tight_layout()
+    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
     ...     plt.show()
 
     >>> image_data()
 
 .. figure:: raccoon_raw.png
-   :align: center

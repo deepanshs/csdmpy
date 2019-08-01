@@ -25,7 +25,7 @@ literals_quantity_type_ = [
     "scalar",
     "vector_n",
     "matrix_n_m",
-    "audio_n",
+    # "audio_n",
     "pixel_n",
     "symmetric_matrix_n",
 ]
@@ -143,12 +143,13 @@ class QuantityType:
 
         lst = literals_quantity_type
         if keyword not in lst:
-            message = (
-                "`{0}` is not a valid `quantity_type` enumeration literal. "
-                "The allowed values are '{1}', '{2}', '{3}', '{4}', '{5}' and "
-                "'{6}'."
+            message = "`{0}` is not a valid `quantity_type` enumeration literal. The allowed values are {1}."
+
+            raise ValueError(
+                message.format(
+                    keyword, "'" + "', '".join(literals_quantity_type_) + "'"
+                )
             )
-            raise ValueError(message.format(keyword, *literals_quantity_type_))
 
         components = self._get_number_of_components(keyword, numbers)
         self.value = element
@@ -166,7 +167,7 @@ def numpy_dtype_to_numeric_type(element):
         "<i2": "int16",
         "<i4": "int32",
         "<i8": "int64",
-        "<f2": "float16",
+        # "<f2": "float16",
         "<f4": "float32",
         "<f8": "float64",
         "<c8": "complex64",
@@ -179,7 +180,7 @@ def numpy_dtype_to_numeric_type(element):
         ">i2": "int16",
         ">i4": "int32",
         ">i8": "int64",
-        ">f2": "float16",
+        # ">f2": "float16",
         ">f4": "float32",
         ">f8": "float64",
         ">c8": "complex64",
@@ -195,7 +196,7 @@ def numpy_dtype_to_numeric_type(element):
         "int16",
         "int32",
         "int64",
-        "float16",
+        # "float16",
         "float32",
         "float64",
         "complex64",
@@ -215,7 +216,7 @@ class NumericType:
 
     The valid options are
     `uint8`, `uint16`, `uint32`, `uint64`, `int8`, `int16`, `int32`, `int64`,
-    `float16`, `float32`, `float64`, `complex64`, and `complex128`.
+    `float32`, `float64`, `complex64`, and `complex128`.
     The byte order for multi-byte numeric_types are assumed to follow the
     little endianness format.
 
@@ -234,7 +235,7 @@ class NumericType:
         "int16": "<i2",
         "int32": "<i4",
         "int64": "<i8",
-        "float16": "<f2",
+        # "float16": "<f2",
         "float32": "<f4",
         "float64": "<f8",
         "complex64": "<c8",
@@ -247,7 +248,7 @@ class NumericType:
         ">i2": "<i2",
         ">i4": "<i4",
         ">i8": "<i8",
-        ">f2": "<f2",
+        # ">f2": "<f2",
         ">f4": "<f4",
         ">f8": "<f8",
         ">c8": "<c8",
@@ -263,7 +264,7 @@ class NumericType:
         "int16",
         "int32",
         "int64",
-        "float16",
+        # "float16",
         "float32",
         "float64",
         "complex64",
@@ -287,8 +288,7 @@ class NumericType:
         if element not in lst.keys():
             raise ValueError(
                 (
-                    "`{0}`, is not a valid `numeric_type` enumeration literal."
-                    " The allowed values are {1}".format(
+                    "`{0}`, is not a valid `numeric_type` enumeration literal. The allowed values are {1}".format(
                         element, "'" + "', '".join(self.__class__.literals) + "'"
                     )
                 )

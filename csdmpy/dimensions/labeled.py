@@ -40,8 +40,18 @@ class LabeledDimension:
 
     @labels.setter
     def labels(self, labels):
-        self._labels = np.asarray(labels)
-        self._count = len(labels)
+        if not isinstance(labels, list):
+            raise ValueError(f"A list of labels is required, found {type(labels)}.")
+
+        items = np.asarray([isinstance(item, str) for item in labels])
+        if np.all(items):
+            self._labels = np.asarray(labels)
+            self._count = len(labels)
+        else:
+            i = np.where(items is False)[0][0]
+            raise ValueError(
+                f"A list of string labels are required, found {type(labels[i])} at index {i}."
+            )
 
     @property
     def label(self):

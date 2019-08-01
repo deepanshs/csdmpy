@@ -76,13 +76,13 @@ def test02():
     assert dataset.dimensions[0].quantity_name == "length"
 
 
-def test03():
-    dataset1 = cp.load(cp.tests.test03, sort_fft_order=False)
-    dataset2 = cp.load(cp.tests.test03, sort_fft_order=True)
+# def test03():
+#     dataset1 = cp.load(cp.tests.test03, sort_fft_order=False)
+#     dataset2 = cp.load(cp.tests.test03, sort_fft_order=True)
 
-    dat1 = dataset1.dependent_variables[0].components[0]
-    dat2 = dataset2.dependent_variables[0].components[0]
-    assert np.all(np.fft.fftshift(dat1) == dat2)
+#     dat1 = dataset1.dependent_variables[0].components[0]
+#     dat2 = dataset2.dependent_variables[0].components[0]
+#     assert np.all(np.fft.fftshift(dat1) == dat2)
 
 
 def test04():

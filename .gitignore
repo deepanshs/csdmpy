@@ -10,6 +10,7 @@ archive/**
 .vscode
 .pytest_cache/**
 htmlcov/**
+Test Files/**
 
 # Compiled source #
 ###################
