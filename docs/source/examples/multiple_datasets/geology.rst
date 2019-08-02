@@ -11,8 +11,8 @@ dependent variables as correlated datasets.
 In this section, we go over a few examples.
 
 
-Geological dataset
-^^^^^^^^^^^^^^^^^^
+Meteorological dataset
+^^^^^^^^^^^^^^^^^^^^^^
 
 Import the `csdmpy` model and load the dataset.
 
@@ -21,9 +21,21 @@ Import the `csdmpy` model and load the dataset.
     >>> import csdmpy as cp
     >>> import numpy as np
     >>> import matplotlib.pyplot as plt
+    >>> from mpl_toolkits.axes_grid1 import make_axes_locatable
 
     >>> filename = 'Test Files/correlatedDataset/forecast/NCEI.csdfe'
     >>> multi_dataset = cp.load(filename)
+
+Let's get the tuple of dimension and dependent variable objects from
+``multi_dataset`` instance.
+
+.. doctest::
+
+    >>> x = multi_dataset.dimensions
+    >>> y = multi_dataset.dependent_variables
+
+.. testsetup::
+
     >>> print(multi_dataset.data_structure)
     {
       "csdm": {
@@ -37,7 +49,7 @@ Import the `csdmpy` model and load the dataset.
             "description": "The latitude are defined in the geographic coordinate system.",
             "count": 192,
             "increment": "0.5 °",
-            "coordinates_offset": "264.0 °",
+            "coordinates_offset": "-96.0 °",
             "quantity_name": "plane angle",
             "label": "longitude"
           },
@@ -144,8 +156,151 @@ Import the `csdmpy` model and load the dataset.
       }
     }
 
-From the data structure one finds two dimensions labeled as `longitude` and
-`latitude` respectively, and five dependent variables named as
-Surface temperature, Air temperature at 2m, Wind velocity, Relative humidity,
-and Air pressure at sea level. Lets take a look at individual dependent
-variables.
+This dataset contains two dimension objects representing the `longitude` and
+`latitude` of the earths surface. The dimensions are ``labels`` as
+
+.. doctest::
+
+    >>> x[0].label
+    'longitude'
+
+    >>> x[1].label
+    'latitude'
+
+There are a total of five dependent variables stored in this dataset. The first
+dependent variable is the surface air temperature. The data structure of this
+dependent variable is
+
+.. doctest::
+
+    >>> print(y[0].data_structure)
+    {
+      "type": "internal",
+      "description": "The label 'tmpsfc' is the standard attribute name for 'surface air temperature'.",
+      "name": "Surface temperature",
+      "unit": "K",
+      "quantity_name": "temperature",
+      "numeric_type": "float64",
+      "quantity_type": "scalar",
+      "component_labels": [
+        "tmpsfc - surface air temperature"
+      ],
+      "components": [
+        [
+          "292.8152160644531, 293.0152282714844, ..., 301.8152160644531, 303.8152160644531"
+        ]
+      ]
+    }
+
+If you have followed all previous examples, the above data structure should
+be self explanatory. The following snippit plots a dependent variable
+of scalar `quantity_type`.
+
+    >>> def plot_scalar(yx):
+    ...     fig, ax = plt.subplots(1,1, figsize=(6,3))
+    ...
+    ...     # Set the extents of the image plot.
+    ...     extent = [x[0].coordinates[0].value, x[0].coordinates[-1].value,
+    ...               x[1].coordinates[0].value, x[1].coordinates[-1].value]
+    ...
+    ...     # Add the image plot.
+    ...     im = ax.imshow(yx.components[0], origin='lower', extent=extent,
+    ...                    cmap='coolwarm')
+    ...
+    ...     # Add a colorbar.
+    ...     divider = make_axes_locatable(ax)
+    ...     cax = divider.append_axes("right", size="5%", pad=0.05)
+    ...     cbar = fig.colorbar(im, cax)
+    ...     cbar.ax.set_ylabel(yx.axis_label[0])
+    ...
+    ...     # Set up the axes label and figure title.
+    ...     ax.set_xlabel(x[0].axis_label)
+    ...     ax.set_ylabel(x[1].axis_label)
+    ...     ax.set_title(yx.name)
+    ...
+    ...     # Set up the grid lines.
+    ...     ax.grid(color='k', linestyle='--', linewidth=0.5)
+    ...
+    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+    ...     plt.show()
+
+Now to plot the data from the dependent variable.
+
+.. doctest::
+
+    >>> plot_scalar(y[0])
+
+.. figure:: 1.pdf
+
+Similarly, other dependent variables with their respective plots are
+
+.. doctest::
+
+    >>> y[1].name
+    'Air temperature at 2m'
+    >>> plot_scalar(y[1])
+
+.. figure:: 2.pdf
+
+.. doctest::
+
+    >>> y[3].name
+    'Relative humidity'
+    >>> plot_scalar(y[3])
+
+.. figure:: 4.pdf
+
+.. doctest::
+
+    >>> y[4].name
+    'Air pressure at sea level'
+    >>> plot_scalar(y[4])
+
+.. figure:: 5.pdf
+
+Notice, we didn't plot the dependent variable at index 2. This is because this
+particular dependent variable is a vector datasets of wind velocity.
+
+.. doctest::
+
+    >>> y[2].quantity_type
+    'vector_2'
+    >>> y[2].name
+    'Wind velocity'
+
+To visualize the vector data we use matplotlib streamline plot.
+
+.. doctest::
+
+    >>> def plot_vector(yx):
+    ...     fig, ax = plt.subplots(1,1, figsize=(6,3))
+    ...     X, Y = np.meshgrid(x[0].coordinates, x[1].coordinates)
+    ...     magnitude = np.sqrt(yx.components[0]**2 + yx.components[1]**2)
+    ...
+    ...     cf = ax.quiver(x[0].coordinates, x[1].coordinates,
+    ...                    yx.components[0], yx.components[1], magnitude,
+    ...                    pivot ='middle', cmap='inferno')
+    ...     divider = make_axes_locatable(ax)
+    ...     cax = divider.append_axes("right", size="5%", pad=0.05)
+    ...     cbar = fig.colorbar(cf, cax)
+    ...     cbar.ax.set_ylabel(yx.name+' / '+str(yx.unit))
+    ...
+    ...     ax.set_xlim([x[0].coordinates[0].value, x[0].coordinates[-1].value])
+    ...     ax.set_ylim([x[1].coordinates[0].value, x[1].coordinates[-1].value])
+    ...
+    ...     # Set axes labels and figure title.
+    ...     ax.set_xlabel(x[0].axis_label)
+    ...     ax.set_ylabel(x[1].axis_label)
+    ...     ax.set_title(yx.name)
+    ...
+    ...     # Set grid lines.
+    ...     ax.grid(color='gray', linestyle='--', linewidth=0.5)
+    ...
+    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+    ...     plt.show()
+
+.. doctest::
+
+    >>> plot_vector(y[2])
+
+.. figure:: 3.pdf

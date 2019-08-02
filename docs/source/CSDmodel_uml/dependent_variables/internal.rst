@@ -10,22 +10,18 @@ InternalDependentVariable
 Generalized Class
 -----------------
 
-.. cssclass:: btn btn-outline-secondary
-    :button: button
+.. raw:: html
 
-    :ref:`dimension_uml`
+    <a class="btn btn-default" href=./dependent_variable.html#_dependent-var-uml>
+    DependentVariable </a>
 
 
 Description
 ***********
 
-A labeled dimension is a qualitative dimension where the coordinates along
-the dimension are explicitly defined as labels. Let :math:`\mathbf{A}_k` be an
-ordered set of unique labels along the :math:`k^{th}` dimension, then the
-coordinates, :math:`\mathbf{X}_k`, along a labeled dimension are
-
-.. math ::
-    \mathbf{X}_k = \mathbf{A}_k
+An InternalDependentVariable is where the components of the dependent variable
+are defined within object as the value of the ``components`` key, along with
+other metadata describing the dependent variable.
 
 
 Attributes
@@ -36,6 +32,21 @@ Attributes
 ===============  =======================    =====================
 Name             Type                       Description
 ===============  =======================    =====================
-labels           [String, String, ... ]     An ordered array of labels along
-                                            the dimension.
+components       [String, String, ... ]     A base64 encoded array of strings
+                                            where each string is a component of
+                                            the dependent variable and decodes
+                                            to a binary array of `M` data
+                                            values. `Valid` only when the
+                                            ``encoding`` is `base64`.
+
+components       [[Float, Float, ...],      An array of arrays where each inner
+                 [Float, Float, ...],       array is a component of the
+                 ...]                       dependent variable with `M` data
+                                            values. `Valid` only when the
+                                            ``encoding`` is `none`.
+encoding         String                     Enumeration with the following valid
+                                            literals.
+
+                                            - ``none``
+                                            - ``base64``
 ===============  =======================    =====================

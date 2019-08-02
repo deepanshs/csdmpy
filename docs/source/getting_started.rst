@@ -172,7 +172,8 @@ plotting library.
 
 .. Attention::
 
-    This documentation is not a guide for data visualization.
+    Although we show code for visualzing the dataset, this documentation is not
+    a guide for data visualization.
 
 The following snippet plots the dataset from this example. Here, the
 `axis_label` is an attribute of both Dimension and DependentVariable
@@ -187,8 +188,7 @@ instances and `name` is an attribute of the DependentVariable instance.
     >>> plt.title(y[0].name)  # doctest: +SKIP
     >>> plt.show()
 
-.. figure:: /_static/test.pdf
-    :align: center
+.. figure:: test.pdf
 
 .. seealso::
 

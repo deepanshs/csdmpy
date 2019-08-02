@@ -10,10 +10,10 @@ MonotonicDimension
 Generalized Class
 -----------------
 
-.. cssclass:: btn btn-outline-secondary
-    :button: button
+.. raw:: html
 
-    :ref:`dimension_uml`
+    <a class="btn btn-default" href=./dimension.html#dimension-uml>
+    Dimension </a>
 
 
 Description
@@ -59,3 +59,21 @@ period           ScalarQuantity                         The period of the
 reciprocal       ReciprocalDimension                    The ReciprocalDimension
                                                         object.
 ===============  ====================================== =====================
+
+Example
+*******
+
+The following MonotonicDimension object,
+
+.. code::
+
+    {
+        "type": "monotonic",
+        "coordinates": ["1 µs", "10 µs", "100 µs", "1 ms", "10 ms", "100 ms", "1 s", "10 s"]
+    }
+
+will generate a dimension where coordinates :math:`\mathbf{X}_k` are
+
+.. code::
+
+    [1 µs, 10 µs, 100 µs, 1 ms, 10 ms, 100 ms, 1 s, 10 s]

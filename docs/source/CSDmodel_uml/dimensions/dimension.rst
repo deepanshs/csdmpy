@@ -6,8 +6,8 @@ Dimension
 =========
 
 
-Description
-***********
+.. Description
+.. ***********
 
 A generalized object describing a dimension of a multi-dimensional
 grid/space.
@@ -18,6 +18,7 @@ Specialized Class
 .. raw:: html
 
     <div class="btn-group">
+
         <a class="btn btn-default" href=./linear.html#lineardimension-uml>
         LinearDimension </a>
 

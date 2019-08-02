@@ -11,7 +11,7 @@ where measurements along one of the dimensions are non-uniform or span several
 orders of magnitude. In this example, we show the use of `monotonic` dimensions
 for describing such datasets.
 
-Let's load the file and look at its data structure.
+Let's load the file.
 
 .. doctest::
 
@@ -19,6 +19,9 @@ Let's load the file and look at its data structure.
 
     >>> filename = 'Test Files/NMR/satrec/satRec.csdf'
     >>> NMR_2D_data = cp.load(filename)
+
+.. testsetup::
+
     >>> print(NMR_2D_data.data_structure)
     {
       "csdm": {
@@ -93,11 +96,53 @@ The tuples of the dimension and dependent variable instances from the
     >>> x = NMR_2D_data.dimensions
     >>> y = NMR_2D_data.dependent_variables
 
-respectively.
-There are two dimension instances in this example. The coordinates along the
-first dimension, labeled as :math:`t_2`, are uniformly spaced
-while the coordinate spacing is non-linear, or monotonic, along the second
-dimension, labeled as :math:`t_1`. The coordinates of the two dimensions are
+respectively. There are two dimension instances in this example with respective
+dimension data structures as
+
+.. doctest::
+
+    >>> print(x[0].data_structure)
+    {
+      "type": "linear",
+      "description": "A full echo echo acquisition along the t2 dimension using a Hahn echo.",
+      "count": 1024,
+      "increment": "80.0 µs",
+      "coordinates_offset": "-41.04 ms",
+      "quantity_name": "time",
+      "label": "t2",
+      "reciprocal": {
+        "coordinates_offset": "-8766.0626 Hz",
+        "origin_offset": "79578822.26200001 Hz",
+        "quantity_name": "frequency",
+        "label": "29Si frequency shift"
+      }
+    }
+
+and
+
+.. doctest::
+
+    >>> print(x[1].data_structure)
+    {
+      "type": "monotonic",
+      "coordinates": [
+        "1 s",
+        "5 s",
+        "10 s",
+        "20 s",
+        "40 s",
+        "80 s"
+      ],
+      "quantity_name": "time",
+      "label": "t1",
+      "reciprocal": {
+        "quantity_name": "frequency"
+      }
+    }
+
+respectively. The first dimension is uniformly spaced, as indicated by the
+`linear` subtype, while the second dimension is non-linear and monotonic
+sampled. The coordinates along the respective dimensions are
 
 .. doctest::
 

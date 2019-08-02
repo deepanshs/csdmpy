@@ -37,8 +37,8 @@ operating system, application software, programming language, and the
 object-oriented file-serialization format utilized in serializing the CSD model
 to the file. Out of numerous file serialization formats, XML, JSON, property
 list, we adopt the data-exchange oriented JSON (JavaScript Object Notation)
-file-serialization format because it is `human-readable` if properly
-organized, and `easily integrable` with any number of programming languages
+file-serialization format because it is `human-readable`, and
+`easily integrable` with any number of programming languages
 and field related application-software.
 
 .. The serialization file names are designated with two possible extensions: .csdf

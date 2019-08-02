@@ -13,7 +13,7 @@
 import os
 import sys
 
-import sphinx_bootstrap_theme
+# import sphinx_bootstrap_theme
 
 sys.path.insert(0, os.path.abspath("../.."))
 
@@ -109,11 +109,11 @@ html_theme_options = {
     # Fix the width of the sidebar. Defaults to false
     "nav_fixed": False,
     # Set the width of the sidebar. Defaults to '900px'
-    "nav_width": "900px",
+    "nav_width": "1000px",
     # Fix the width of the content area. Defaults to false
     "content_fixed": False,
     # Set the width of the content area. Defaults to '900px'
-    "content_width": "900px",
+    "content_width": "1000px",
     # Fix the width of the row. Defaults to false
     "row_fixed": True,
     # Disable the responsive design. Defaults to false
@@ -127,10 +127,10 @@ html_theme_options = {
     "googlewebfont": True,
     # Set the URL of Google Web Font's CSS.
     # Defaults to 'http://fonts.googleapis.com/css?family=Text+Me+One'
-    # "googlewebfont_url": "http://fonts.googleapis.com/css?family=Lily+Script+One",  # NOQA
+    "googlewebfont_url": "http://fonts.googleapis.com/css?family=Roboto",  # NOQA
     # Set the Style of Google Web Font's CSS.
     # Defaults to "font-family: 'Text Me One', sans-serif;"
-    "googlewebfont_style": u"font-family: 'Roboto' Regular 24;",
+    "googlewebfont_style": u"font-family: 'Roboto' Regular;",  # font-size: 1.5em",
     # Set 'navbar-inverse' attribute to header navbar. Defaults to false.
     "header_inverse": True,
     # Set 'navbar-inverse' attribute to relbar navbar. Defaults to false.
@@ -142,13 +142,13 @@ html_theme_options = {
     # Select Twitter bootstrap version 2 or 3. Defaults to '3'
     "bootstrap_version": "3",
     # Show "theme preview" button in header navbar. Defaults to false.
-    # "theme_preview": True,
+    "theme_preview": False,
     # Set the Size of Heading text. Defaults to None
     # "h1_size": "3.0em",
     # "h2_size": "2.6em",
     # "h3_size": "2.2em",
     # "h4_size": "1.8em",
-    # "h5_size": "1.4em",
+    # "h5_size": "1.9em",
     # "h6_size": "1.1em",
 }
 

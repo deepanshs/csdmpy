@@ -13,11 +13,17 @@ DESCRIPTION = "A python module for importing and exporting CSD model file-format
 URL = "https://github.com/DeepanshS/csdmpy"
 EMAIL = "srivastava.89@osu.edu"
 AUTHOR = "Deepansh Srivastava"
-REQUIRES_PYTHON = ">=3.5"
-VERSION = "0.0.12"
+REQUIRES_PYTHON = ">=3.6"
+VERSION = "0.1.0"
 
 # What packages are required for this module to be executed?
-REQUIRED = ["numpy>=1.13.3", "astropy>=3.0", "requests>=2.21.0", "matplotlib>=3.0.2"]
+REQUIRED = [
+    "numpy>=1.13.3",
+    "setuptools>=27.3",
+    "astropy>=3.0",
+    "requests>=2.21.0",
+    "matplotlib>=3.0.2",
+]
 
 SETUP_REQUIRES = ["setuptools>=27.3"]
 

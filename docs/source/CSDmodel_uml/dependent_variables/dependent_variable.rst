@@ -10,21 +10,27 @@ Description
 ***********
 
 A generalized object describing a dependent variable of the dataset.
+A DependentVariable holds an ordered set of `p`-components indexed as `q=0`
+to `p-1`
+
+.. math::
+
+    [\mathbf{U}_0, ... \mathbf{U}_q, ... \mathbf{U}_{p-1}]
 
 Specialized Class
 *****************
 
-.. cssclass:: btn btn-light
+.. raw:: html
 
-    :ref:`linearDimension_uml`
+    <div class="btn-group">
 
-.. cssclass:: btn btn-light
+        <a class="btn btn-default" href=./internal.html#internal-uml>
+        InternalDependentVariable </a>
 
-    :ref:`monotonicDimension_uml`
+        <a class="btn btn-default" href=./external.html#external-uml>
+        ExternalDependentVariable </a>
 
-.. cssclass:: btn btn-outline-dark
-
-    :ref:`labeledDimension_uml`
+    </div>
 
 
 Attributes

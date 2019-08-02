@@ -10,10 +10,10 @@ LabeledDimension
 Generalized Class
 -----------------
 
-.. cssclass:: btn btn-outline-secondary
-    :button: button
+.. raw:: html
 
-    :ref:`dimension_uml`
+    <a class="btn btn-default" href=./dimension.html#dimension-uml>
+    Dimension </a>
 
 
 Description
@@ -39,3 +39,21 @@ Name             Type                       Description
 labels           [String, String, ... ]     An ordered array of labels along
                                             the dimension.
 ===============  =======================    =====================
+
+Example
+*******
+
+The following LabeledDimension object,
+
+.. code::
+
+    {
+        "type": "labeled",
+        "labels": ["Cu", "Fe", "Si", "H", "Li"]
+    }
+
+will generate a dimension where coordinates :math:`\mathbf{X}_k` are
+
+.. code::
+
+    ["Cu", "Fe", "Si", "H", "Li"]

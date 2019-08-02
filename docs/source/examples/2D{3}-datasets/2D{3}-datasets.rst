@@ -175,12 +175,13 @@ method.
     >>> import numpy as np
 
     >>> def image_data():
-    ...     fig, ax = plt.subplots(1,1)
+    ...     fig, ax = plt.subplots(1,1, figsize=(6,4.5))
     ...     ax.imshow(np.moveaxis(y[0].components, 0, -1 ))
-    ...     ax.set_axis_off()
+    ...     ax.set_xlabel(x[0].axis_label)
+    ...     ax.set_ylabel(x[1].axis_label)
     ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
     ...     plt.show()
 
     >>> image_data()
 
-.. figure:: raccoon_raw.png
+.. figure:: raccoon_raw.pdf

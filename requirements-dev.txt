@@ -15,5 +15,4 @@ matplotlib>=3.0.2
 # development packages
 pytest-runner>=5.0
 pytest>=4.6.3
-sphinx_rtd_theme
 pre-commit

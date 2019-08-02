@@ -80,7 +80,7 @@ are
     >>> x = vector_data.dimensions
     >>> y = vector_data.dependent_variables
 
-with the respective coordinates (viewed only up to five values).
+with the respective coordinates (viewed only up to five values),
 
 .. doctest::
 
@@ -90,7 +90,7 @@ with the respective coordinates (viewed only up to five values).
     >>> print(x[1].coordinates[:5])
     [-2.     -1.9375 -1.875  -1.8125 -1.75  ] cm
 
-respectively. In this example, the components of the dependent variable are
+In this example, the components of the dependent variable are
 vectors as seen from the
 :attr:`~csdmpy.dependent_variables.DependentVariable.quantity_type`
 attribute of the corresponding dependent variable instance.
@@ -99,6 +99,9 @@ attribute of the corresponding dependent variable instance.
 
     >>> print(y[0].quantity_type)
     vector_2
+
+From the value `vector_2`, `vector` indicates a vector dataset while `2`
+indicates the number of vector components.
 
 **Plot**
 
@@ -122,7 +125,7 @@ And now, the plot.
 
     >>> import matplotlib.pyplot as plt
     >>> def plot_vector():
-    ...     fig, ax = plt.subplots(1,1)
+    ...     fig, ax = plt.subplots(1,1, figsize=(5.5,4.5))
     ...     ax.streamplot(X.value, Y.value, U, V, density =1,
     ...                   linewidth=Rlog, color=Rlog, cmap='viridis')
     ...

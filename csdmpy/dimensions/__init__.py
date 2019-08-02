@@ -721,7 +721,7 @@ class Dimension:
 
             .. doctest::
 
-                >>> id(x2.coordinates) == id(x2.labels)
+                >>> np.all(x2.coordinates == x2.labels)
                 True
 
         In the above example, ``x2`` is an instance of the :ref:`dim_api` class with
@@ -733,7 +733,7 @@ class Dimension:
         Raises:
             AttributeError: For dimensions with subtype other than `labeled`.
         """
-        return self.subtype.labels
+        return self.coordinates
 
     @labels.setter
     def labels(self, array):
