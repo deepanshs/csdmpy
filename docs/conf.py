@@ -159,7 +159,7 @@ html_context = {
     "display_github": True,
     "github_user": "DeepanshS",
     "github_repo": "csdmpy",
-    "github_version": "master/docs/source/",
+    "github_version": "master/docs/",
     "css_files": [
         "_static/button.css",
         #     "_static/theme_overrides.css",  # override wide tables in RTD theme
