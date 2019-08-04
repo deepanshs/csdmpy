@@ -15,7 +15,7 @@ branches:
 
 before_install:
   - "pip install --upgrade pip"
-  - "pip install -r requirements.txt"
+  - "pip install -r requirements-dev.txt"
 
 install:
   - "python setup.py sdist"
@@ -23,4 +23,4 @@ install:
 
 # command to run tests
 script:
-  - "python setup.py test"
+  - "pytest"
