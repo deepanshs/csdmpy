@@ -3,8 +3,6 @@
 The requirements for csdmpy
 =============================
 
-.. * `python>=3.5 <https://www.python.org>`_
-
 The list of packages dependencies for `csdmpy` module
 
 - `numpy>=1.10.1 <https://www.numpy.org>`_ (for handling n-dimensional arrays)

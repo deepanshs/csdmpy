@@ -1,4 +1,2 @@
-
 sphinxjp.themes.basicstrap
 sphinx
-astropy
