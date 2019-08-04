@@ -1,23 +1,16 @@
 # folders #
 __pycache__/
-testFiles/
-docs/source/_build/**
-docs/source/_static/**
-docs/source/_templates/**
-docs/build/**
-csdfpy.egg-info/**
+csdmpy.egg-info/**
 .eggs/**
 build/**
 dist/**
-test_files/**
-tests/**
-test*.*
-docs/source/_static/**
-docs/source/_templates/**
 .ipynb_checkpoints/**
 archive/**
 .eggs/**
 .vscode
+.pytest_cache/**
+htmlcov/**
+Test Files/**
 
 # Compiled source #
 ###################
@@ -62,10 +55,14 @@ Thumbs.db
 # files
 files.txt
 info.txt
-**_test.py
 *.png
 *.ipynb
-*.csdf
-*.csdfe
-myfile
 *.pdf
+*schema
+
+
+# files #
+#########
+my_file.csdf
+.coverage
+csdm.code-workspace

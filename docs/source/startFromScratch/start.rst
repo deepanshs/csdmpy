@@ -1,0 +1,15 @@
+=====================
+Starting from scratch
+=====================
+
+The `csdmpy` module is not just designed for deserializing and serializing
+the `.csdf` or `.csdfe` files. It can also be used to create new datasets.
+This feature is useful when converting dataset to csdm compliant format.
+
+.. toctree::
+    :maxdepth: 2
+
+    new_dataset
+    new_dimensions
+    new_dependent_variables
+    A fun example

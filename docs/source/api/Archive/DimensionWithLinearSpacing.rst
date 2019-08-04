@@ -5,7 +5,7 @@
 .. DimensionWithLinearSpacing
 .. ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. .. currentmodule:: csdfpy._independent_variables
+.. .. currentmodule:: csdmpy._independent_variables
 .. .. autoclass:: DimensionWithLinearSpacing
 ..     :show-inheritance:
 

@@ -1,0 +1,46 @@
+{
+  "csdm": {
+    "version": "1.0",
+    "timestamp": "1994-11-05T13:15:30Z",
+    "description": "A simulated sine curve.",
+    "geographic_coordinate": {
+      "latitude": "10 deg",
+      "longitude": "93.2 deg",
+      "altitude": "10 m"
+    },
+    "dependent_variables": [
+      {
+        "type": "internal",
+        "description": "A response dependent variable.",
+        "name": "sine curve",
+        "numeric_type": "float32",
+        "quantity_type": "scalar",
+        "component_labels": ["response"],
+        "components": [
+          [
+            0.00000000e+00,
+            5.87785252e-01,
+            9.51056516e-01,
+            9.51056516e-01,
+            5.87785252e-01,
+            1.22464680e-16,
+            -5.87785252e-01,
+            -9.51056516e-01,
+            -9.51056516e-01,
+            -5.87785252e-01
+          ]
+        ]
+      }
+    ],
+    "dimensions": [
+      {
+        "type": "linear",
+        "description": "A temporal dimension.",
+        "count": 10,
+        "increment": "0.1 s",
+        "label": "time",
+        "quantity_name": "time"
+      }
+    ]
+  }
+}

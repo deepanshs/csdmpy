@@ -5,7 +5,7 @@
 .. DimensionWithArbitrarySpacing
 .. ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. .. currentmodule:: csdfpy._independent_variables
+.. .. currentmodule:: csdmpy._independent_variables
 .. .. autoclass:: DimensionWithArbitrarySpacing
 ..     :show-inheritance:
 
@@ -18,4 +18,3 @@
 ..     .. rubric:: Attributes Documentation
 
 ..     .. autoattribute:: coordinates
-

@@ -1,8 +1,8 @@
+
 include README.md
 include LICENSE
-include tests/*.csdf
-include tests/*.csdfe
-# include CHANGES.rst
+include CHANGELOG
+recursive-include csdmpy/tests/*
 include requirements.txt
 # include CITATION
 

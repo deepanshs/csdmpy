@@ -1,0 +1,51 @@
+{
+  "csdm": {
+    "version": "1.0",
+    "description": "MAS spectrum",
+    "timestamp": "2019-06-23T17:53:26Z",
+    "dimensions": [
+      {
+        "type": "linear",
+        "count": 51,
+        "increment": "1",
+        "coordinates_offset": "10",
+        "label": "mass per charge"
+      }
+    ],
+    "dependent_variables": [
+      {
+        "type": "internal",
+        "numeric_type": "float32",
+        "quantity_type": "scalar",
+        "component_labels": [
+          "relative abundance"
+        ],
+        "sparse_sampling": {
+          "dimension_indexes": [
+            0
+          ],
+          "sparse_grid_vertexes": [
+            27,
+            28,
+            29,
+            32,
+            33,
+            34,
+            48,
+            49
+          ]
+        },
+        "components": [[
+          9,
+          9,
+          49,
+          79,
+          1000,
+          19,
+          270,
+          10
+        ]]
+      }
+    ]
+  }
+}

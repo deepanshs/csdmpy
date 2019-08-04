@@ -1,0 +1,41 @@
+
+version0.0.12
+
+ - Added a tags attribute to the CSDmodel object.
+ - Changed 'sampling_interval' key to 'count'.
+ - Changed 'quantity' key to 'quantity_name'.
+ - Changed 'index_zero_value' key to 'coordinates_offset'.
+ - Changed 'fft_output_order' key to 'complex_fft'.
+
+
+version0.0.11
+
+- Renamed IndependentVariable class to Dimension.
+- Renamed LinearlySpacedDimension class to LinearDimension.
+- Renamed ArbitrarilySpacedDimension class to MonotonicDimension.
+
+- Added a reciprocal attribute to LinearDimension and MonotonicDimension classes.
+- Removed the reverse attribute from all Dimension classes.
+
+- Changed 'sampling_interval' keyword to 'increment'.
+- Changed 'reference_offset' keyword to 'index_zero_value'.
+- Changed 'linear_spacing' literal to 'linear'.
+- Changed 'arbitrarily_sampled' literal to 'monotonic'.
+- Changed the defining of the coordinates from LinearDimension to
+        $X^(ref) = m_k J_k - c_k 1$
+  to
+        $X^(ref) = m_k J_k + c_k 1$,
+  where $c_k$ is the reference offset, $m_k$ is the increment, and $J_k$ is the
+  set of integer indices along the dimension.
+
+- Added 'description' key to 'Dimension', 'DependentVariable' and 'CSDM' object.
+- Changed 'CSDM' keyword to 'csdm'
+- Changed 'FFT_output_order' keyword to 'fft_output_order'
+- Changed 'components_URL' keyword to 'components_url'
+
+New methods
+
+- sum(index=0) Sum of data values from the dependent variable along the
+        independent variable at indices given by `index`.
+- prop(index=0) Product of data values from the dependent variable along the
+        independent variable at indices given by `index`.

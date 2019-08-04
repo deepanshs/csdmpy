@@ -1,12 +1,13 @@
 
-===========================
-Reference/API documentation
-===========================
+=============
+API-Reference
+=============
 
 .. toctree::
-    api/csdfpy
-    api/CSDModel
-    api/IndependentVariable
+
+    api/csdmpy
+    api/CSDM
+    api/Dimensions
     api/DependentVariable
 
 

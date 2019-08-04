@@ -1,0 +1,18 @@
+
+# required
+numpy>=1.13.3
+setuptools>=27.3
+
+# for units
+astropy>=3.0
+
+# Dependencies of requests package
+requests>=2.21.0
+
+# Additional packages
+matplotlib>=3.0.2
+
+# development packages
+pytest-runner>=5.0
+pytest>=4.6.3
+pre-commit>=1.16.1

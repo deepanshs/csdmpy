@@ -1,0 +1,218 @@
+
+.. _dwas:
+
+-----------------------------
+DimensionWithArbitrarySpacing
+-----------------------------
+
+In this subsection, we describe an independent variable dimension which is
+monotonically spacing. This subtypes of dimensions are
+the instances of the :ref:`dwas_api` class.
+
+In the following we illustrate the various features :ref:`dwas_api` instance.
+using an illustrative example.
+The following snippet loads a test file with a linearly sampled grid dimension,
+
+.. doctest::
+
+    >>> import csdmpy as cp
+    >>> filename = '../test-datasets0.0.11/test/test02.csdf'
+    >>> testdata1 = cp.load(filename)
+
+The variable ``testdata1`` is an instance of the
+:ref:`CSDM <csdm_api>` class. For the remainder of this example,
+we will focus on its :attr:~csdmpy.CSDM.controlled_variables attribute,
+
+.. doctest::
+
+    >>> x = testdata1.dimensions
+
+In this case, the variable x is a tuple with a single object,
+only now, it contains a :ref:`cv_api` object. The controlled
+variable coordinates of this object are ::
+
+    >>> print (x[0].coordinates)
+    [-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172  -0.10372635 -0.01817061  0.05936719  0.18141424  0.34758913] cm
+
+where ``x[0].coordinates`` is a
+`Quantity <http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity>`_
+object. The value and the unit of this object are ::
+
+    >>> value = x[0].coordinates.value
+    >>> print ('value =', value)
+    value = [-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172  -0.10372635 -0.01817061  0.05936719  0.18141424  0.34758913]
+
+    >>> unit = x[0].coordinates.unit
+    >>> print ('unit =', unit)
+    unit = cm
+
+respectively.
+
+
+
+Attributes
+^^^^^^^^^^
+
+We go through the attributes of the :ref:`cv_api` class,
+and show how it affects the coordinates along this dimension.
+
+The attributes that modify the coordinates
+""""""""""""""""""""""""""""""""""""""""""
+
+**The number of points**:
+The number of points along the grid dimension
+is accessed through the ``number_of_points`` attribute. ::
+
+    >>> print ('number of points =', x[0].number_of_points)
+    number of points = 10
+
+To update the number of points, simply update the value of this
+attribute, ::
+
+    >>> x[0].number_of_points = 12
+    >>> print ('new number of points =', x[0].number_of_points)
+    >>> print ('new coordinates =', x[0].coordinates)
+    new number of points = 12
+    new coordinates = [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.  1.1] s
+
+**The sampling interval**: Similarly, ::
+
+    >>> print ('old sampling interval =', x[0].sampling_interval)
+    >>> x[0].sampling_interval = "10 s"
+    >>> print ('new sampling interval =', x[0].sampling_interval)
+    >>> print ('new coordinates =', x[0].coordinates)
+    old sampling interval = 0.1 s
+    new sampling interval = 10.0 s
+    new coordinates = [  0.  10.  20.  30.  40.  50.  60.  70.  80.  90. 100. 110.] s
+
+**The reference offset** ::
+
+    >>> print ('old reference offset =', x[0].sampling_interval)
+    >>> x[0].coordinates_offset = "-1 s"
+    >>> print ('new reference offset =', x[0].coordinates_offset)
+    >>> print ('new coordinates =', x[0].coordinates)
+    old reference offset = 0.0 s
+    new reference offset = -1.0 s
+    new coordinates = [  1.  11.  21.  31.  41.  51.  61.  71.  81.  91. 101. 111.] s
+
+**The origin offset** ::
+
+    >>> print ('old origin offset =', x[0].origin_offset)
+    >>> x[0].origin_offset = "1 day"
+    >>> print ('new origin offset =', x[0].origin_offset)
+    >>> print ('new coordinates =', x[0].coordinates)
+    old origin offset = 0.0 s
+    new origin offset = 1.0 d
+    new coordinates = [  1.  11.  21.  31.  41.  51.  61.  71.  81.  91. 101. 111.] s
+
+The last operation updates the value of the origin offset, however,
+the value of the ``coordinates`` attribure remains unchanged.
+This is because the ``coordinates`` refer to the reference coordinates.
+The absolute coordinates are accessed through the ``absolute_coordinates``
+attribute. ::
+
+    >>> print ('absolute coordinates =', x[0].absolute_coordinates)
+    absolute coordinates = [86401. 86411. 86421. 86431. 86441. 86451. 86461. 86471. 86481. 86491. 86501. 86511.] s
+
+
+.. _asgd_order_attributes:
+
+The attributes that modify the order of coordinates
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+**The fft output order option**: Orders the coordinates according to
+the output order from a Fast Fourier Transform (FFT) routine. ::
+
+    >>> print ('coordinates before =', x[0].coordinates)
+    >>> x[0].complex_fft = True
+    >>> print ('coordinates after =', x[0].coordinates)
+    before coordinates = [  1.  11.  21.  31.  41.  51.  61.  71.  81.  91. 101. 111.] s
+    after coordinates = [  1.  11.  21.  31.  41.  51. -59. -49. -39. -29. -19.  -9.] s
+
+**The reverse option**: Orders the coordinates in the reverse. ::
+
+    >>> print ('coordinates before =', x[0].coordinates)
+    >>> x[0].reverse = True
+    >>> print ('coordinates after =', x[0].coordinates)
+    coordinates before = [  1.  11.  21.  31.  41.  51. -59. -49. -39. -29. -19.  -9.] s
+    coordinates after = [ -9. -19. -29. -39. -49. -59.  51.  41.  31.  21.  11.   1.] s
+
+
+
+Other attributes
+""""""""""""""""
+
+**The label** ::
+
+    >>> print ('old label =', x[0].label)
+    >>> x[0].label = 't1'
+    >>> print ('new label =', x[0].label)
+    old label = time
+    new label = t1
+
+**The period** ::
+
+    >>> print ('old period =', x[0].period)
+    >>> x[0].period = '10 s'
+    >>> print ('new period =', x[0].period)
+    old period = 0.0 s
+    new period = 10.0 s
+
+**The quantity** Returns the quantity name. ::
+
+    >>> print ('quantity is', x[0].quantity)
+    quantity is time
+
+
+
+Methods
+^^^^^^^
+
+**to('unit')**:
+The method is used for unit conversions. It follows, ::
+
+    >>> print ('old unit =', x[0].coordinates.unit)
+    >>> print ('old coordinates =', x[0].coordinates)
+
+    >>> ## unit conversion
+    >>> x[0].to('min')
+
+    >>> print ('new unit =', x[0].unit)
+    >>> print ('new coordinates =', x[0].coordinates)
+    old unit = s
+    old coordinates = [ -9. -19. -29. -39. -49. -59.  51.  41.  31.  21.  11.   1.] s
+    new unit = min
+    new coordinates = [-0.15       -0.31666667 -0.48333333 -0.65       -0.81666667 -0.98333333  0.85        0.68333333  0.51666667  0.35        0.18333333  0.01666667] min
+
+.. note:: In the above examples, the coordinates are ordered according
+    to FFT output order and are also reversed. This follows directly
+    from our previous operations in section :ref:`asgd_order_attributes`.
+
+The argument of this method is a unit, in this case, 'min', whose
+dimensionality must be consistent with the dimensionality of the
+coordinates.  An exception will be raised otherwise, ::
+
+    >>> x[0].to('km/s')
+        :raises ExceptionType: ---------------------------------------------------------------------------
+    Exception                                 Traceback (most recent call last)
+    <ipython-input-18-28f505d29a22> in <module>()
+        3
+        4 ## An error will be raised when the dimensionality of the units are different
+    ----> 5 x[0].to('km/s')
+        6 # print ('new unit = ', x[0].unit)
+        7 # print ('new coordinates = ', x[0].coordinates)
+    ~/csdmpy/controlled_variables.py in to(self, unit)
+        981             self.set_attribute('_dimensionless_unit', _ppm)
+        982         else:
+    --> 983             self.set_attribute('_unit', _check_unit_consistency(string_to_quantity('1 '+unit), self.unit).unit)
+        984         # return self.coordinates
+        985
+    ~/csdmpy/_csdmChecks.py in _check_unit_consistency(element, unit)
+        198         #     raise Exception(e)
+        199         raise Exception("The unit '{0}' ({1}) is inconsistent with the unit '{2}' ({3}).".format(
+    --> 200                 str(element.unit), str(element.unit.physical_type), str(unit), unit.physical_type))
+        201     else:
+        202         return element
+    Exception: The unit 'km / s' (speed) is inconsistent with the unit 'min' (time).
+
+Also see :ref:`cv_api`
