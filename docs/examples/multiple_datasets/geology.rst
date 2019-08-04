@@ -278,8 +278,8 @@ To visualize the vector data we use matplotlib streamline plot.
     ...     magnitude = np.sqrt(yx.components[0]**2 + yx.components[1]**2)
     ...
     ...     cf = ax.quiver(x[0].coordinates, x[1].coordinates,
-    ...                    yx.components[0], yx.components[1], magnitude,
-    ...                    pivot ='middle', cmap='inferno')
+    ...                    yx.components[0], yx.components[1],
+    ...                    magnitude, pivot ='middle', cmap='inferno')
     ...     divider = make_axes_locatable(ax)
     ...     cax = divider.append_axes("right", size="5%", pad=0.05)
     ...     cbar = fig.colorbar(cf, cax)
@@ -303,4 +303,4 @@ To visualize the vector data we use matplotlib streamline plot.
 
     >>> plot_vector(y[2])
 
-.. figure:: 3.pdf
+.. figure:: 3.png

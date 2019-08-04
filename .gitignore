@@ -11,6 +11,8 @@ archive/**
 .pytest_cache/**
 htmlcov/**
 Test Files/**
+docs/examples/1D{1}-datasets/archive/**
+docs/examples/2D{1}-datasets/archive/**
 
 # Compiled source #
 ###################
@@ -55,9 +57,7 @@ Thumbs.db
 # files
 files.txt
 info.txt
-*.png
 *.ipynb
-*.pdf
 *schema
 
 
@@ -66,3 +66,4 @@ info.txt
 my_file.csdf
 .coverage
 csdm.code-workspace
+csdmpy.pdf
