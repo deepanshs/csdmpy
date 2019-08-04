@@ -79,7 +79,7 @@ class Dimension:
             "coordinates": None,  # valid for monotonic dimension subtype
             "coordinates_offset": None,  # valid for linear dimension subtype
             "origin_offset": None,  # valid for linear dimension subtype
-            "fft_output_order": False,  # valid for linear dimension subtype
+            "complex_fft": False,  # valid for linear dimension subtype
             "period": None,  # valid for monotonic and linear dimension subtypes
             "quantity_name": None,  # valid for monotonic and linear dimension subtypes
             "label": "",  # valid for all dimension subtypes
@@ -188,20 +188,20 @@ class Dimension:
 
         For `linear` dimensions, the order of the `absolute_coordinates`
         further depend on the value of the
-        :attr:`~csdmpy.dimensions.Dimension.fft_output_order` attributes. For
-        examples, when the value of the `fft_output_order` attribute is True,
+        :attr:`~csdmpy.dimensions.Dimension.complex_fft` attributes. For
+        examples, when the value of the `complex_fft` attribute is True,
         the absolute coordinates are
 
         .. doctest::
 
-            >>> x.fft_output_order = True
+            >>> x.complex_fft = True
             >>> print(x.absolute_coordinates)
             [100075. 100080. 100085. 100090. 100095. 100100. 100105. 100110. 100115.
              100120.] G
 
         .. testsetup::
 
-            >>> x.fft_output_order = False
+            >>> x.complex_fft = False
 
         Returns:
             A Quantity array of absolute coordinates for quantitative dimensions, `i.e`
@@ -298,19 +298,19 @@ class Dimension:
             [100. 105. 110. 115. 120. 125. 130. 135. 140. 145.] G
 
         For `linear` dimensions, the order of the `coordinates` also depend on the
-        value of the :attr:`~csdmpy.dimensions.Dimension.fft_output_order` attributes.
-        For examples, when the value of the `fft_output_order` attribute is True,
+        value of the :attr:`~csdmpy.dimensions.Dimension.complex_fft` attributes.
+        For examples, when the value of the `complex_fft` attribute is True,
         the coordinates are
 
         .. doctest::
 
-            >>> x.fft_output_order = True
+            >>> x.complex_fft = True
             >>> print(x.coordinates)
             [ 75.  80.  85.  90.  95. 100. 105. 110. 115. 120.] G
 
         .. testsetup::
 
-            >>> x.fft_output_order = False
+            >>> x.complex_fft = False
 
         Returns:
             A Quantity array of coordinates for quantitative dimensions, `i.e.` `linear`
@@ -404,7 +404,7 @@ class Dimension:
         self.subtype.description = value
 
     @property
-    def fft_output_order(self):
+    def complex_fft(self):
         r"""
         Boolean specifying if the coordinates along the dimension are the output of a complex fft.
 
@@ -423,12 +423,12 @@ class Dimension:
             ...            count = 10
             ...        )
 
-            >>> test.fft_output_order
+            >>> test.complex_fft
             False
             >>> print(test.coordinates)
             [0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]
 
-            >>> test.fft_output_order = True
+            >>> test.complex_fft = True
             >>> print(test.coordinates)
             [-5. -4. -3. -2. -1.  0.  1.  2.  3.  4.]
 
@@ -438,11 +438,11 @@ class Dimension:
         Raises:
             TypeError: When the assigned value is not a boolean.
         """
-        return self.subtype.fft_output_order
+        return self.subtype.complex_fft
 
-    @fft_output_order.setter
-    def fft_output_order(self, value):
-        self.subtype.fft_output_order = value
+    @complex_fft.setter
+    def complex_fft(self, value):
+        self.subtype.complex_fft = value
 
     @property
     def increment(self):

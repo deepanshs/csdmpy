@@ -235,7 +235,7 @@ examples demonstrating its effect on the coordinates along the dimension.
 
 **The attributes that modify the order of coordinates**
 
-* :attr:`~csdmpy.dimensions.Dimension.fft_output_order`
+* :attr:`~csdmpy.dimensions.Dimension.complex_fft`
     Orders the coordinates along the dimension according to the output of a
     complex Fast Fourier Transform (FFT) routine.
 
@@ -244,7 +244,7 @@ examples demonstrating its effect on the coordinates along the dimension.
         >>> print('old coordinates =', x0.coordinates)
         old coordinates = [  1.  11.  21.  31.  41.  51.  61.  71.  81.  91. 101. 111.] s
 
-        >>> x0.fft_output_order = True
+        >>> x0.complex_fft = True
         >>> print('new coordinates =', x0.coordinates)
         new coordinates = [-59. -49. -39. -29. -19.  -9.   1.  11.  21.  31.  41.  51.] s
 

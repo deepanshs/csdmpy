@@ -55,7 +55,7 @@ class LinearDimension(BaseQuantitativeDimension):
     __slots__ = (
         "_count",
         "_increment",
-        "_fft_output_order",
+        "_complex_fft",
         "reciprocal",
         "_reciprocal_count",
         "_reciprocal_increment",
@@ -64,11 +64,11 @@ class LinearDimension(BaseQuantitativeDimension):
 
     _type = "linear"
 
-    def __init__(self, count, increment, fft_output_order=False, **kwargs):
+    def __init__(self, count, increment, complex_fft=False, **kwargs):
         r"""Instantiate a DimensionWithLinearSpacing class instance."""
         self._count = count
         self._increment = ScalarQuantity(increment).quantity
-        self._fft_output_order = check_and_assign_bool(fft_output_order)
+        self._complex_fft = check_and_assign_bool(complex_fft)
         self._unit = self._increment.unit
 
         super(LinearDimension, self).__init__(unit=self._unit, **kwargs)
@@ -122,7 +122,7 @@ class LinearDimension(BaseQuantitativeDimension):
 
         _index = np.arange(_count, dtype=np.float64)
 
-        if self._fft_output_order:
+        if self._complex_fft:
             if _count % 2 == 0:
                 _index -= _count / 2
             else:
@@ -141,8 +141,8 @@ class LinearDimension(BaseQuantitativeDimension):
         obj["increment"] = ScalarQuantity(self.increment).format()
         obj.update(self._get_quantitative_dictionary())
 
-        if self.fft_output_order:
-            obj["fft_output_order"] = True
+        if self.complex_fft:
+            obj["complex_fft"] = True
 
         # reciprocal dictionary
         reciprocal_obj = {}
@@ -177,11 +177,11 @@ class LinearDimension(BaseQuantitativeDimension):
         self._get_coordinates()
 
     @property
-    def fft_output_order(self):
+    def complex_fft(self):
         """If True, orders the coordinates according to FFT output order."""
-        return deepcopy(self._fft_output_order)
+        return deepcopy(self._complex_fft)
 
-    @fft_output_order.setter
-    def fft_output_order(self, value):
-        self._fft_output_order = validate(value, "fft_output_order", bool)
+    @complex_fft.setter
+    def complex_fft(self, value):
+        self._complex_fft = validate(value, "complex_fft", bool)
         self._get_coordinates()

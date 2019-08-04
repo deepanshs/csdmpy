@@ -17,6 +17,7 @@ except ImportError as e:
 import numpy as np
 
 global SOUND
+scalar = ["scalar", "vector_1", "pixel_1", "matrix_1_1", "symmetric_matrix_1"]
 
 try:
     from matplotlib.backends.qt_compat import QtWidgets, is_pyqt5
@@ -44,18 +45,18 @@ def preview(data_object):
     """Quick preview od the dataset."""
     axes = []
     data = deepcopy(data_object)
-    for i, dim in enumerate(data.dimensions):
-        if hasattr(dim, "fft_output_order"):
-            if dim.fft_output_order:
-                npts = dim.count
-                if npts % 2 == 0:
-                    temp = npts * dim.increment / 2.0
-                else:
-                    temp = (npts - 1) * dim.increment / 2.0
-                dim.coordinates_offset = dim.coordinates_offset - temp
+    # for i, dim in enumerate(data.dimensions):
+    #     if hasattr(dim, "complex_fft"):
+    #         if dim.complex_fft:
+    #             npts = dim.count
+    #             if npts % 2 == 0:
+    #                 temp = npts * dim.increment / 2.0
+    #             else:
+    #                 temp = (npts - 1) * dim.increment / 2.0
+    #             dim.coordinates_offset = dim.coordinates_offset - temp
 
-                axes.append(-i - 1)
-                dim.fft_output_order = False
+    #             axes.append(-i - 1)
+    #             dim.complex_fft = False
 
     for var in data.dependent_variables:
         var.components = fftshift(var.components, axes=axes)
@@ -120,21 +121,21 @@ def _preview(data, *args, **kwargs):
 
     if len(x) == 1:
         for i in range(y_len):
-            if y[i].quantity_type == "scalar":
+            if y[i].quantity_type in scalar:
                 plot1D(x, y, i, ax, *args, **kwargs)
             if "vector" in y[i].quantity_type:
                 vector_plot(x, y, i, fig, ax, *args, **kwargs)
-            if "audio" in y[i].quantity_type:
-                audio(x, y, i, fig, ax, *args, **kwargs)
+            # if "audio" in y[i].quantity_type:
+            #     audio(x, y, i, fig, ax, *args, **kwargs)
 
         plt.tight_layout(w_pad=0.0, h_pad=0.0)
         plt.show()
 
     if len(x) == 2:
         for i in range(y_len):
-            if y[i].quantity_type in ["RGB", "RGBA"]:
-                RGB(x, y, i, fig, ax, *args, **kwargs)
-            if y[i].quantity_type in ["scalar"]:
+            # if y[i].quantity_type in ["RGB", "RGBA"]:
+            #     RGB(x, y, i, fig, ax, *args, **kwargs)
+            if y[i].quantity_type in scalar:
                 twoD_scalar(x, y, i, fig, ax, *args, **kwargs)
             if "vector" in y[i].quantity_type:
                 vector_plot(x, y, i, fig, ax, *args, **kwargs)
@@ -415,29 +416,31 @@ try:
 
                 if number_of_independents == 1:
 
-                    if y.quantity_type == "scalar":
+                    if y.quantity_type in scalar:
                         fig, ax = set_gui()
                         plot_line(x, y, ax)
-                    if "audio" in y.quantity_type:
-                        fig, ax = set_gui()
-                        plot_audio(x, y, ax)
+                    # if "audio" in y.quantity_type:
+                    #     fig, ax = set_gui()
+                    #     plot_audio(x, y, ax)
                     if y.quantity_type == "vector_2":
                         fig, ax = set_gui()
                         plot_vector(x, y, ax)
 
                 if number_of_independents == 2:
-                    if y.quantity_type == "scalar":
+                    print(y.quantity_type)
+                    if y.quantity_type in scalar:
                         fig, ax = set_gui()
                         if np.any([x[i].type == "labeled" for i in [0, 1]]):
                             plot_line(x, y, ax)
                         else:
+                            print("plot image")
                             plot_image(x, y, fig, ax)
                     if y.quantity_type == "vector_2":
                         fig, ax = set_gui()
                         plot_vector(x, y, ax)
-                    if y.quantity_type in ["RGB", "RGBA"]:
-                        fig, ax = set_gui()
-                        plot_RGB(x, y, ax)
+                    # if y.quantity_type in ["RGB", "RGBA"]:
+                    #     fig, ax = set_gui()
+                    #     plot_RGB(x, y, ax)
 
                 if number_of_independents > 2:
                     print(

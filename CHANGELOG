@@ -5,6 +5,7 @@ version0.0.12
  - Changed 'sampling_interval' key to 'count'.
  - Changed 'quantity' key to 'quantity_name'.
  - Changed 'index_zero_value' key to 'coordinates_offset'.
+ - Changed 'fft_output_order' key to 'complex_fft'.
 
 
 version0.0.11

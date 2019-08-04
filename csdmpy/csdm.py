@@ -663,8 +663,8 @@ class CSDM:
 
         ndim = len(self.dimensions)
 
-        # toggle the value of the FFT_output_order attribute
-        if dimension_object._fft_output_order:
+        # toggle the value of the complex_fft attribute
+        if dimension_object._complex_fft:
             phase = np.exp(
                 2j
                 * np.pi
@@ -680,7 +680,7 @@ class CSDM:
                     axis=index,
                 )
                 self.dependent_variables[i].subtype._components = signal_ft
-            dimension_object._fft_output_order = False
+            dimension_object._complex_fft = False
         else:  # FFT is false
             # calculate the phase that will be applied to the fft amplitudes.
             phase = np.exp(
@@ -696,7 +696,7 @@ class CSDM:
                     axes=index,
                 )
                 self.dependent_variables[i].subtype._components = signal_ft
-            dimension_object._fft_output_order = True
+            dimension_object._complex_fft = True
 
         for i in range(len(self.dependent_variables)):
             signal_ft = fftshift(
@@ -708,7 +708,7 @@ class CSDM:
             self.dependent_variables[i].subtype._components = signal_ft
 
         # self.dimensions[index].gcv._reciprocal()
-        # self._toggle_fft_output_order(self.dimensions[index])
+        # self._toggle_complex_fft(self.dimensions[index])
 
 
 #     def __add__(self, other):

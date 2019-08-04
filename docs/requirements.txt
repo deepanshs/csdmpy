@@ -1,4 +1,4 @@
 
-sphinx_rtd_theme
+sphinxjp.themes.basicstrap
 sphinx
 astropy

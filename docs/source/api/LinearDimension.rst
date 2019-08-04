@@ -15,9 +15,9 @@ LinearDimension
 
     .. autosummary::
         ~LinearDimension.increment
-        ~LinearDimension.fft_output_order
+        ~LinearDimension.complex_fft
 
     .. rubric:: Attributes Documentation
 
     .. autoattribute:: increment
-    .. autoattribute:: fft_output_order
+    .. autoattribute:: complex_fft

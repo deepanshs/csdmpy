@@ -24,7 +24,7 @@ Dimension
         ~Dimension.increment
         ~Dimension.coordinates_offset
         ~Dimension.origin_offset
-        ~Dimension.fft_output_order
+        ~Dimension.complex_fft
         ~Dimension.quantity_name
         ~Dimension.label
         ~Dimension.labels
@@ -49,7 +49,7 @@ Dimension
     .. autoattribute:: increment
     .. autoattribute:: coordinates_offset
     .. autoattribute:: origin_offset
-    .. autoattribute:: fft_output_order
+    .. autoattribute:: complex_fft
     .. autoattribute:: quantity_name
     .. autoattribute:: label
     .. autoattribute:: labels

@@ -48,8 +48,8 @@ def load(filename=None, application=False):
         application (bool): If true, the application metadata from application that
                 last serialized the file will be imported. Default is False.
         sort_fft_order (bool): If true, the coordinates and the components
-                corresponding to the dimension with `fft_output_order` as True will be
-                sorted upon import and the corresponding `fft_output_order` key-value
+                corresponding to the dimension with `complex_fft` as True will be
+                sorted upon import and the corresponding `complex_fft` key-value
                 will be set to False. Default is True.
 
     Returns:
@@ -74,7 +74,7 @@ def load(filename=None, application=False):
     #     axes = []
     #     for i, dim in enumerate(csdm_object.dimensions):
     #         if dim.type == "linear":
-    #             if dim.fft_output_order:
+    #             if dim.complex_fft:
     #                 n_points = dim.count
     #                 if n_points % 2 == 0:
     #                     temp = n_points * dim.increment / 2.0
@@ -83,7 +83,7 @@ def load(filename=None, application=False):
     #                 dim.coordinates_offset = dim.coordinates_offset - temp
 
     #                 axes.append(-i - 1)
-    #                 # dim.fft_output_order = False
+    #                 # dim.complex_fft = False
 
     #     for var in csdm_object.dependent_variables:
     #         var.components = fftshift(var.components, axes=axes)

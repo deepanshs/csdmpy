@@ -22,7 +22,7 @@ which are useful packages for handling scientific datasets.
 
 **Using PIP**:
 
-PIP is a package manager for Python packages and modules and is included with
+PIP is a package manager for Python packages and is included with
 python version 3.4 and higher.::
 
     $ pip install git+https://github.com/DeepanshS/csdmpy.git@master

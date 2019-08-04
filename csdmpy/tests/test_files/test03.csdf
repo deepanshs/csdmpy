@@ -11,7 +11,7 @@
         "origin_offset" : "75426328.864 Hz",
         "label" : "13C frequency shift",
         "quantity" : "frequency",
-        "fft_output_order" : true,
+        "complex_fft" : true,
         "reciprocal" : {
           "quantity" : "time",
           "coordinates_offset" : "-0.3 ms"

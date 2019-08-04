@@ -8,7 +8,7 @@ The core scientific dataset (CSD) model is a *light-weight*, *portable*,
 scientific datasets. The model only encapsulates
 data values and the minimum metadata, to accurately represent a `p`-component
 dependent variable,
-:math:`\mathbf{U}\equiv(\mathbf{U}_0, ... \mathbf{U}_q, ... \mathbf{U}_{p-1})`,
+:math:`(\mathbf{U}_0, ... \mathbf{U}_q, ... \mathbf{U}_{p-1})`,
 discretely sampled at `M` unique points in a `d`-dimensional coordinate space,
 :math:`(\mathbf{X}_0, \mathbf{X}_1, ... \mathbf{X}_k, ... \mathbf{X}_{d-1})`.
 The model is not intended to encapsulate
@@ -32,12 +32,12 @@ pressure, wind velocity, and
 solar-flux as a function of Earth’s latitude and longitude coordinates. We
 refer to these dependent variables as `correlated-datasets`.
 
-The CSD model is *standalone* because it is independent of the hardware,
+The CSD model is independent of the hardware,
 operating system, application software, programming language, and the
 object-oriented file-serialization format utilized in serializing the CSD model
 to the file. Out of numerous file serialization formats, XML, JSON, property
-list, we adopt the data-exchange oriented JSON (JavaScript Object Notation)
-file-serialization format because it is `human-readable`, and
+list, the data-exchange oriented JSON (JavaScript Object Notation)
+file-serialization format is chosen because it is `human-readable`, and
 `easily integrable` with any number of programming languages
 and field related application-software.
 

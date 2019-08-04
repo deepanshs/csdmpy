@@ -61,7 +61,7 @@ def test_linear_new():
     assert str(data.dimensions[0].origin_offset) == "0.0 m / s"
     assert data.dimensions[0].quantity_name == "speed"
     assert str(data.dimensions[0].period) == "inf m / s"
-    assert data.dimensions[0].fft_output_order is False
+    assert data.dimensions[0].complex_fft is False
     assert np.all(data.dimensions[0].coordinates.value == np.arange(10) * 10.0 + 5.0)
 
     data.dimensions[0].count = 12
@@ -87,8 +87,8 @@ def test_linear_new():
         == np.arange(12) * 20.0 + 5.0 + 1000.0
     )
 
-    data.dimensions[0].fft_output_order = True
-    assert data.dimensions[0].fft_output_order is True
+    data.dimensions[0].complex_fft = True
+    assert data.dimensions[0].complex_fft is True
     assert np.all(
         data.dimensions[0].coordinates.value == (np.arange(12) - 6) * 20.0 + 5.0
     )
@@ -109,7 +109,7 @@ def test_linear_new():
                     "origin_offset": "1.0 km * s^-1",
                     "quantity_name": "speed",
                     "application": {"my_application": {}},
-                    "fft_output_order": True,
+                    "complex_fft": True,
                 }
             ],
             "dependent_variables": [],
@@ -210,9 +210,9 @@ def test_monotonic_new():
     assert str(data.dimensions[0].period) == "inf m"
 
     # fft output order
-    error = "'MonotonicDimension' object has no attribute 'fft_output_order'"
+    error = "'MonotonicDimension' object has no attribute 'complex_fft'"
     with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
-        data.dimensions[0].fft_output_order
+        data.dimensions[0].complex_fft
 
     # coordinates
     assert np.allclose(
