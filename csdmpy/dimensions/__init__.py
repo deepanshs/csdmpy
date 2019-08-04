@@ -175,16 +175,15 @@ class Dimension:
 
             >>> print(x.origin_offset)
             10.0 T
-            >>> print(x.coordinates)
-            [100. 105. 110. 115. 120. 125. 130. 135. 140. 145.] G
+            >>> print(x.coordinates[:5])
+            [100. 105. 110. 115. 120.] G
 
         then the absolute coordinates are
 
         .. doctest::
 
-            >>> print(x.absolute_coordinates)
-            [100100. 100105. 100110. 100115. 100120. 100125. 100130. 100135.
-            100140. 100145.] G
+            >>> print(x.absolute_coordinates[:5])
+            [100100. 100105. 100110. 100115. 100120.] G
 
         For `linear` dimensions, the order of the `absolute_coordinates`
         further depend on the value of the
@@ -195,9 +194,8 @@ class Dimension:
         .. doctest::
 
             >>> x.complex_fft = True
-            >>> print(x.absolute_coordinates)
-            [100075. 100080. 100085. 100090. 100095. 100100. 100105. 100110. 100115.
-             100120.] G
+            >>> print(x.absolute_coordinates[:5])
+            [100075. 100080. 100085. 100090. 100095.] G
 
         .. testsetup::
 
