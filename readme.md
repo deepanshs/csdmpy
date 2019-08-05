@@ -1,4 +1,7 @@
 
+[![Build Status](https://travis-ci.org/DeepanshS/csdmpy.svg?branch=master)](https://travis-ci.org/DeepanshS/csdmpy)
+[![Documentation Status](https://readthedocs.org/projects/csdmpy/badge/?version=stable)](https://csdmpy.readthedocs.io/en/stable/?badge=stable)
+
 The `csdmpy` package
 ====================
 
@@ -21,9 +24,7 @@ The core scientific dataset (CSD) model
 
 The core scientific dataset (CSD) model is a *light-weight*, *portable*,
 *versatile*, and *standalone* data model capable of handling a variety of
-scientific datasets.
-
-The model only encapsulates
+scientific datasets. The model only encapsulates
 data values and the minimum metadata, to accurately represent a *p*-component
 dependent variable,
 discretely sampled at *M* unique points in a *d*-dimensional coordinate space.
@@ -48,10 +49,27 @@ pressure, wind velocity, and
 solar-flux as a function of Earth’s latitude and longitude coordinates. We
 refer to these dependent variables as *correlated-datasets*.
 
-The CSD model is *standalone* because it is independent of the hardware,
+The CSD model is independent of the hardware,
 operating system, application software, programming language, and the
 object-oriented file-serialization format utilized in serializing the CSD model
 to the file. Out of numerous file serialization formats, XML, JSON, property
 list, we adopt the data-exchange oriented JSON (JavaScript Object Notation)
 file-serialization format because it is *human-readable*, and *easily integrable* with any number of programming languages
 and field related application-software.
+
+
+Installing `csdmpy` package
+===========================
+
+We recommend installing [anaconda](https://www.anaconda.com/distribution/)
+distribution for python version 3.6 or higher. The anaconda distribution
+ships with numerous packages and modules including Numpy, Scipy, and Matplotlib
+which are useful packages for handling scientific datasets.
+
+
+**Using PIP**:
+
+PIP is a package manager for Python packages and is included with
+python version 3.4 and higher.
+
+    $ pip install git+https://github.com/DeepanshS/csdmpy.git@master

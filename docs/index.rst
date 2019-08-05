@@ -1,4 +1,11 @@
 
+.. image:: https://travis-ci.org/DeepanshS/csdmpy.svg?branch=master
+    :target: https://travis-ci.org/DeepanshS/csdmpy
+
+.. image:: https://readthedocs.org/projects/csdmpy/badge/?version=stable
+    :target: https://csdmpy.readthedocs.io/en/stable/?badge=stable
+    :alt: Documentation Status
+
 ==================================
 Welcome to csdmpy's documentation!
 ==================================
