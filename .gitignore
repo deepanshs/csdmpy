@@ -11,8 +11,7 @@ archive/**
 .pytest_cache/**
 htmlcov/**
 Test Files/**
-docs/examples/1D{1}-datasets/archive/**
-docs/examples/2D{1}-datasets/archive/**
+docs/_build/**
 
 # Compiled source #
 ###################

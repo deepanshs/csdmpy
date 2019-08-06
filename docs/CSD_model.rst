@@ -63,3 +63,5 @@ and field related application-software.
     CSDmodel_uml/csdm
     CSDmodel_uml/dimensions/dimension
     CSDmodel_uml/dependent_variables/dependent_variable
+    CSDmodel_uml/enumeration
+    CSDmodel_uml/scalarQuantity

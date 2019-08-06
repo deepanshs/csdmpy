@@ -1,5 +1,12 @@
 
 
+.. testsetup::
+
+    >>> import matplotlib
+    >>> font = {'family': 'normal', 'weight': 'light', 'size': 9};
+    >>> matplotlib.rc('font', **font)
+    >>> from os import path
+
 --------------
 1D{1} datasets
 --------------
@@ -125,18 +132,46 @@ examples form a variety of scientific datasets. The method follows-
     ...     # tuples of dependent and dimension instances.
     ...     x = dataObject.dimensions
     ...     y = dataObject.dependent_variables
-    ...     plt.plot(x[0].coordinates, y[0].components[0].real, color='k', linewidth=0.75)
     ...
-    ...     plt.xlim(x[0].coordinates[0].value, x[0].coordinates[-1].value)
+    ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
+    ...     ax.plot(x[0].coordinates, y[0].components[0].real, color='k', linewidth=0.5)
+    ...
+    ...     ax.set_xlim(x[0].coordinates[0].value, x[0].coordinates[-1].value)
     ...
     ...     # The axes labels and figure title.
-    ...     plt.xlabel(x[0].axis_label)
-    ...     plt.ylabel(y[0].axis_label[0])
-    ...     plt.title(y[0].name)
+    ...     ax.set_xlabel(x[0].axis_label)
+    ...     ax.set_ylabel(y[0].axis_label[0])
+    ...     ax.set_title(y[0].name)
     ...
-    ...     plt.grid(color='gray', linestyle='--', linewidth=0.5)
+    ...     plt.grid(color='gray', linestyle='--', linewidth=0.3)
     ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
     ...     plt.show()
+
+.. testsetup::
+
+    >>> def plot1D_save(dataObject):
+    ...     # tuples of dependent and dimension instances.
+    ...     x = dataObject.dimensions
+    ...     y = dataObject.dependent_variables
+    ...
+    ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
+    ...     ax.plot(x[0].coordinates, y[0].components[0].real, color='k', linewidth=0.5)
+    ...
+    ...     ax.set_xlim(x[0].coordinates[0].value, x[0].coordinates[-1].value)
+    ...
+    ...     # The axes labels and figure title.
+    ...     ax.set_xlabel(x[0].axis_label)
+    ...     ax.set_ylabel(y[0].axis_label[0])
+    ...     ax.set_title(y[0].name)
+    ...
+    ...     plt.grid(color='gray', linestyle='--', linewidth=0.3)
+    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+    ...     filename = path.split(dataObject.filename)[1]
+    ...     filepath = './docs/_images'
+    ...     pth = path.join(filepath, filename)
+    ...     plt.savefig(pth+'.pdf')
+    ...     plt.savefig(pth+'.png', dpi=100)
+    ...     plt.close()
 
 
 A quick walk-through of the ``plot1D`` method. The method accepts an
@@ -162,8 +197,12 @@ Now to plot the `sea_level` dataset.
 
     >>> plot1D(sea_level)
 
-.. figure:: sea_level_none.pdf
+.. testsetup::
 
+    >>> plot1D_save(sea_level)
+
+.. figure:: ../../_images/GMSL.csdf.*
+    :figclass: figure-polaroid
 
 Nuclear Magnetic Resonance (MNR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -277,7 +316,12 @@ Now to the plot the dataset,
 
     >>> plot1D(NMR_data)
 
-.. figure:: blochDecay_raw.pdf
+.. testsetup::
+
+    >>> plot1D_save(NMR_data)
+
+.. figure:: ../../_images/blochDecay.csdf.*
+    :figclass: figure-polaroid
 
 
 Electron Paramagnetic Resonance (EPR) dataset
@@ -329,7 +373,12 @@ plot follows,
     }
     >>> plot1D(EPR_data)
 
-.. figure:: xyinc2_base64.pdf
+.. testsetup::
+
+    >>> plot1D_save(EPR_data)
+
+.. figure:: ../../_images/AmanitaMuscaria_base64.csdf.*
+    :figclass: figure-polaroid
 
 
 Gas Chromatography dataset
@@ -383,7 +432,12 @@ follows,
     }
     >>> plot1D(GCData)
 
-.. figure:: cinnamon_none.pdf
+.. testsetup::
+
+    >>> plot1D_save(GCData)
+
+.. figure:: ../../_images/cinnamon_none.csdf.*
+    :figclass: figure-polaroid
 
 
 Fourier Transform Infrared Spectroscopy (FTIR) dataset
@@ -437,7 +491,12 @@ structure and the plot of the FTIR dataset follows
     }
     >>> plot1D(FTIR_data)
 
-.. figure:: caffeine_none.pdf
+.. testsetup::
+
+    >>> plot1D_save(FTIR_data)
+
+.. figure:: ../../_images/caffeine_none.csdf.*
+    :figclass: figure-polaroid
 
 
 Ultraviolet–visible (UV-vis) dataset
@@ -492,7 +551,12 @@ model format. The data structure and the plot of the UV-vis dataset follows,
     }
     >>> plot1D(UV_data)
 
-.. figure:: benzeneVapour_base64.pdf
+.. testsetup::
+
+    >>> plot1D_save(UV_data)
+
+.. figure:: ../../_images/benzeneVapour_base64.csdf.*
+    :figclass: figure-polaroid
 
 
 Mass spectrometry dataset
@@ -571,4 +635,9 @@ Now to plot the dataset.
 
     >>> plot1D(mass_spec)
 
-.. figure:: acetone.csdf.pdf
+.. testsetup::
+
+    >>> plot1D_save(mass_spec)
+
+.. figure:: ../../_images/acetone.csdf.*
+    :figclass: figure-polaroid

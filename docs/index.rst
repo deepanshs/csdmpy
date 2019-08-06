@@ -6,6 +6,15 @@
     :target: https://csdmpy.readthedocs.io/en/stable/?badge=stable
     :alt: Documentation Status
 
+.. image:: https://img.shields.io/badge/License-BSD%203--Clause-blue.svg
+    :target: https://opensource.org/licenses/BSD-3-Clause
+
+.. image:: https://img.shields.io/github/issues-raw/deepanshs/csdmpy
+    :alt: GitHub issues
+
+.. image:: https://img.shields.io/github/release-pre/deepanshs/csdmpy
+    :alt: GitHub release
+
 ==================================
 Welcome to csdmpy's documentation!
 ==================================

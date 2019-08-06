@@ -1,4 +1,10 @@
 
+.. testsetup::
+
+    >>> import matplotlib
+    >>> font = {'family': 'normal', 'weight': 'light', 'size': 9};
+    >>> matplotlib.rc('font', **font)
+    >>> from os import path
 
 ------------------
 Correlated Dataset
@@ -196,6 +202,8 @@ If you have followed all previous examples, the above data structure should
 be self explanatory. The following snippit plots a dependent variable
 of scalar `quantity_type`.
 
+.. doctest::
+
     >>> def plot_scalar(yx):
     ...     fig, ax = plt.subplots(1,1, figsize=(6,3))
     ...
@@ -224,13 +232,53 @@ of scalar `quantity_type`.
     ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
     ...     plt.show()
 
+.. testsetup::
+
+    >>> def plot_scalar_save(yx, dataObject):
+    ...     fig, ax = plt.subplots(1,1, figsize=(6,3))
+    ...
+    ...     # Set the extents of the image plot.
+    ...     extent = [x[0].coordinates[0].value, x[0].coordinates[-1].value,
+    ...               x[1].coordinates[0].value, x[1].coordinates[-1].value]
+    ...
+    ...     # Add the image plot.
+    ...     im = ax.imshow(yx.components[0], origin='lower', extent=extent,
+    ...                    cmap='coolwarm')
+    ...
+    ...     # Add a colorbar.
+    ...     divider = make_axes_locatable(ax)
+    ...     cax = divider.append_axes("right", size="5%", pad=0.05)
+    ...     cbar = fig.colorbar(im, cax)
+    ...     cbar.ax.set_ylabel(yx.axis_label[0])
+    ...
+    ...     # Set up the axes label and figure title.
+    ...     ax.set_xlabel(x[0].axis_label)
+    ...     ax.set_ylabel(x[1].axis_label)
+    ...     ax.set_title(yx.name)
+    ...
+    ...     # Set up the grid lines.
+    ...     ax.grid(color='k', linestyle='--', linewidth=0.5)
+    ...
+    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+    ...     filename = path.split(dataObject.filename)[1]
+    ...     filepath = './docs/_images'
+    ...     pth = path.join(filepath, filename)
+    ...     plt.savefig(pth+yx.name.replace(' ', '')+'.pdf')
+    ...     plt.savefig(pth+yx.name.replace(' ', '')+'.png', dpi=100)
+    ...     plt.close()
+
 Now to plot the data from the dependent variable.
 
 .. doctest::
 
     >>> plot_scalar(y[0])
 
-.. figure:: 1.pdf
+.. testsetup::
+
+    >>> plot_scalar_save(y[0], multi_dataset)
+
+.. figure:: ../../_images/NCEI.csdfeSurfacetemperature.*
+    :figclass: figure-polaroid
 
 Similarly, other dependent variables with their respective plots are
 
@@ -240,7 +288,12 @@ Similarly, other dependent variables with their respective plots are
     'Air temperature at 2m'
     >>> plot_scalar(y[1])
 
-.. figure:: 2.pdf
+.. testsetup::
+
+    >>> plot_scalar_save(y[1], multi_dataset)
+
+.. figure:: ../../_images/NCEI.csdfeAirtemperatureat2m.*
+    :figclass: figure-polaroid
 
 .. doctest::
 
@@ -248,7 +301,12 @@ Similarly, other dependent variables with their respective plots are
     'Relative humidity'
     >>> plot_scalar(y[3])
 
-.. figure:: 4.pdf
+.. testsetup::
+
+    >>> plot_scalar_save(y[3], multi_dataset)
+
+.. figure:: ../../_images/NCEI.csdfeRelativehumidity.*
+    :figclass: figure-polaroid
 
 .. doctest::
 
@@ -256,7 +314,12 @@ Similarly, other dependent variables with their respective plots are
     'Air pressure at sea level'
     >>> plot_scalar(y[4])
 
-.. figure:: 5.pdf
+.. testsetup::
+
+    >>> plot_scalar_save(y[4], multi_dataset)
+
+.. figure:: ../../_images/NCEI.csdfeAirpressureatsealevel.*
+    :figclass: figure-polaroid
 
 Notice, we didn't plot the dependent variable at index 2. This is because this
 particular dependent variable is a vector datasets of wind velocity.
@@ -303,4 +366,42 @@ To visualize the vector data we use matplotlib streamline plot.
 
     >>> plot_vector(y[2])
 
-.. figure:: 3.png
+.. testsetup::
+
+    >>> def plot_vector_save(yx, dataObject):
+    ...     fig, ax = plt.subplots(1,1, figsize=(6,3))
+    ...     X, Y = np.meshgrid(x[0].coordinates, x[1].coordinates)
+    ...     magnitude = np.sqrt(yx.components[0]**2 + yx.components[1]**2)
+    ...
+    ...     cf = ax.quiver(x[0].coordinates, x[1].coordinates,
+    ...                    yx.components[0], yx.components[1],
+    ...                    magnitude, pivot ='middle', cmap='inferno')
+    ...     divider = make_axes_locatable(ax)
+    ...     cax = divider.append_axes("right", size="5%", pad=0.05)
+    ...     cbar = fig.colorbar(cf, cax)
+    ...     cbar.ax.set_ylabel(yx.name+' / '+str(yx.unit))
+    ...
+    ...     ax.set_xlim([x[0].coordinates[0].value, x[0].coordinates[-1].value])
+    ...     ax.set_ylim([x[1].coordinates[0].value, x[1].coordinates[-1].value])
+    ...
+    ...     # Set axes labels and figure title.
+    ...     ax.set_xlabel(x[0].axis_label)
+    ...     ax.set_ylabel(x[1].axis_label)
+    ...     ax.set_title(yx.name)
+    ...
+    ...     # Set grid lines.
+    ...     ax.grid(color='gray', linestyle='--', linewidth=0.5)
+    ...
+    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+    ...     filename = path.split(dataObject.filename)[1]
+    ...     filepath = './docs/_images'
+    ...     pth = path.join(filepath, filename)
+    ...     plt.savefig(pth+yx.name.replace(' ', '')+'.png', dpi=100)
+    ...     plt.close()
+
+.. testsetup::
+
+    >>> plot_vector_save(y[2], multi_dataset)
+
+.. figure:: ../../_images/NCEI.csdfeWindvelocity.*
+    :figclass: figure-polaroid

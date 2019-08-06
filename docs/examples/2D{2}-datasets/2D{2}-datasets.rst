@@ -1,4 +1,10 @@
 
+.. testsetup::
+
+    >>> import matplotlib
+    >>> font = {'family': 'normal', 'weight': 'light', 'size': 9};
+    >>> matplotlib.rc('font', **font)
+    >>> from os import path
 
 --------------
 2D{2} datasets
@@ -125,7 +131,7 @@ And now, the plot.
 
     >>> import matplotlib.pyplot as plt
     >>> def plot_vector():
-    ...     fig, ax = plt.subplots(1,1, figsize=(5.5,4.5))
+    ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
     ...     ax.streamplot(X.value, Y.value, U, V, density =1,
     ...                   linewidth=Rlog, color=Rlog, cmap='viridis')
     ...
@@ -147,4 +153,37 @@ And now, the plot.
 
     >>> plot_vector()
 
-.. figure:: electric_field_raw.pdf
+
+.. testsetup::
+
+    >>> def plot_vector_save(dataObject):
+    ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
+    ...     ax.streamplot(X.value, Y.value, U, V, density =1,
+    ...                   linewidth=Rlog, color=Rlog, cmap='viridis')
+    ...
+    ...     ax.set_xlim([x[0].coordinates[0].value, x[0].coordinates[-1].value])
+    ...     ax.set_ylim([x[1].coordinates[0].value, x[1].coordinates[-1].value])
+    ...
+    ...     # Set axes labels and figure title.
+    ...     ax.set_xlabel(x[0].axis_label)
+    ...     ax.set_ylabel(x[1].axis_label)
+    ...     ax.set_title(y[0].name)
+    ...
+    ...     # Set grid lines.
+    ...     ax.grid(color='gray', linestyle='--', linewidth=0.5)
+    ...
+    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+    ...     filename = path.split(dataObject.filename)[1]
+    ...     filepath = './docs/_images'
+    ...     pth = path.join(filepath, filename)
+    ...     plt.savefig(pth+'.pdf')
+    ...     plt.savefig(pth+'.png', dpi=100)
+    ...     plt.close()
+
+.. testsetup::
+
+    >>> plot_vector_save(vector_data)
+
+
+.. figure:: ../../_images/electric_field_raw.csdfe.*
+    :figclass: figure-polaroid

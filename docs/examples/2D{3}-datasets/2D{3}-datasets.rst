@@ -1,5 +1,12 @@
 
 
+.. testsetup::
+
+    >>> import matplotlib
+    >>> font = {'family': 'normal', 'weight': 'light', 'size': 9};
+    >>> matplotlib.rc('font', **font)
+    >>> from os import path
+
 --------------
 2D{3} datasets
 --------------
@@ -175,7 +182,7 @@ method.
     >>> import numpy as np
 
     >>> def image_data():
-    ...     fig, ax = plt.subplots(1,1, figsize=(6,4.5))
+    ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
     ...     ax.imshow(np.moveaxis(y[0].components, 0, -1 ))
     ...     ax.set_xlabel(x[0].axis_label)
     ...     ax.set_ylabel(x[1].axis_label)
@@ -184,4 +191,24 @@ method.
 
     >>> image_data()
 
-.. figure:: raccoon_raw.pdf
+.. testsetup::
+
+    >>> import numpy as np
+
+    >>> def image_data_save(dataObject):
+    ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
+    ...     ax.imshow(np.moveaxis(y[0].components, 0, -1 ))
+    ...     ax.set_xlabel(x[0].axis_label)
+    ...     ax.set_ylabel(x[1].axis_label)
+    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+    ...     filename = path.split(dataObject.filename)[1]
+    ...     filepath = './docs/_images'
+    ...     pth = path.join(filepath, filename)
+    ...     plt.savefig(pth+'.pdf')
+    ...     plt.savefig(pth+'.png', dpi=100)
+    ...     plt.close()
+
+    >>> image_data_save(ImageData)
+
+.. figure:: ../../_images/raccoon_image.csdf.*
+    :figclass: figure-polaroid
