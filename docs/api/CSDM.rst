@@ -8,7 +8,7 @@ CSDM
 
 .. currentmodule:: csdmpy.csdm
 .. autoclass:: CSDM
-   :show-inheritance: ~
+   :show-inheritance:
 
    .. rubric:: Attributes Summary
 
