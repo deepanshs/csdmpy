@@ -1,6 +1,6 @@
 
 =============================
-The requirements for csdmpy
+The requirements for `csdmpy`
 =============================
 
 The list of packages dependencies for `csdmpy` module

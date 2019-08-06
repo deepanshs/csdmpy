@@ -12,4 +12,5 @@ This feature is useful when converting dataset to csdm compliant format.
     new_dataset
     new_dimensions
     new_dependent_variables
+    save_dataset
     A fun example
