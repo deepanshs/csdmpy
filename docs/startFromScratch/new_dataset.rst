@@ -1,7 +1,7 @@
 
---------------------
-Create a new dataset
---------------------
+---------------------------
+How to create a new dataset
+---------------------------
 
 To create a new dataset, import the `csdmpy` module and create a new
 instance of the CSDM class following,

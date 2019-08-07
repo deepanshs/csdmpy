@@ -1,5 +1,5 @@
 ==========
-How to . .
+How to ...
 ==========
 
 The `csdmpy` module is not just designed for deserializing and serializing

@@ -32,7 +32,7 @@ Attributes
 ===============  =======================    =====================
 Name             Type                       Description
 ===============  =======================    =====================
-components_url   string                     The location where the components
+components_url   String                     The location where the components
                                             of the dependent variable are
                                             stored as a binary data.
 ===============  =======================    =====================

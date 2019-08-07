@@ -6,8 +6,8 @@
     >>> from os import path
 
 
-Astronomy dataset (Creating image composition)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Astronomy, 2D{1,1,1} dataset (Creating image composition)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 More often the image in astronomy is a composition of datasets measured
 at a different wavelength over an area of the sky. Here, we show an example

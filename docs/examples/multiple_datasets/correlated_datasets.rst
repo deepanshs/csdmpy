@@ -10,7 +10,5 @@ from these datasets as `correlated datasets`.
 
 In this section, we go over a few examples.
 
-.. toctree::
-
-    meteorological
-    eagle_nebula
+.. include:: meteorological.rst
+.. include:: eagle_nebula.rst

@@ -1,7 +1,7 @@
 
-----------------------------------------
-Add instances of DependentVariable class
-----------------------------------------
+-----------------------------------------------
+How to add instances of DependentVariable class
+-----------------------------------------------
 
 In the previous two sections, we learnt how to create a new dataset and add
 dimensions to a dataset. In this example, we will see how to add

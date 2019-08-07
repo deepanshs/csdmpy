@@ -47,14 +47,14 @@ Name             Type                                   Description
 coordinates      [:ref:`sQ_uml`, :ref:`sQ_uml`, ... ]   An array of strictly
                                                         ascending or descending
                                                         ScalarQuantity.
-origin_offset    ScalarQuantity                         The origin offset, :math:`o_k`,
+origin_offset    :ref:`sQ_uml`                          The origin offset, :math:`o_k`,
                                                         of the dimension.
 quantity_name    String                                 The quantity name
                                                         associated with the
                                                         physical quantities
                                                         describing the
                                                         dimension.
-period           ScalarQuantity                         The period of the
+period           :ref:`sQ_uml`                          The period of the
                                                         dimension.
 reciprocal       ReciprocalDimension                    The ReciprocalDimension
                                                         object.
