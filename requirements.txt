@@ -11,3 +11,7 @@ requests>=2.21.0
 
 # Additional packages
 matplotlib>=3.0.2
+
+# doc build
+sphinxjp.themes.basicstrap
+sphinx>=2.1.2
