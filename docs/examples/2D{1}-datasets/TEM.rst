@@ -100,26 +100,26 @@ and plot the data.
 .. doctest::
 
     >>> def plot_image():
-    ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
+    ...     plt.figure(figsize=(4,3))
     ...
     ...     # Set the extents of the image plot.
     ...     extent = [x[0].coordinates[0].value, x[0].coordinates[-1].value,
     ...               x[1].coordinates[0].value, x[1].coordinates[-1].value]
     ...
     ...     # Add the image plot.
-    ...     im = ax.imshow(y[0].components[0], origin='lower', extent=extent, cmap='gray')
+    ...     im = plt.imshow(y[0].components[0], origin='lower', extent=extent, cmap='gray')
     ...
     ...     # Add a colorbar.
-    ...     cbar = fig.colorbar(im)
+    ...     cbar = plt.gca().figure.colorbar(im)
     ...     cbar.ax.set_ylabel(y[0].axis_label[0])
     ...
     ...     # Set up the axes label and figure title.
-    ...     ax.set_xlabel(x[0].axis_label)
-    ...     ax.set_ylabel(x[1].axis_label)
-    ...     ax.set_title(y[0].name)
+    ...     plt.xlabel(x[0].axis_label)
+    ...     plt.ylabel(x[1].axis_label)
+    ...     plt.title(y[0].name)
     ...
     ...     # Set up the grid lines.
-    ...     ax.grid(color='k', linestyle='--', linewidth=0.5)
+    ...     plt.grid(color='k', linestyle='--', linewidth=0.5)
     ...
     ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
     ...     plt.show()
@@ -131,26 +131,26 @@ and plot the data.
 .. testsetup::
 
     >>> def plot_image_save(dataObject):
-    ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
+    ...     plt.figure(figsize=(4,3))
     ...
     ...     # Set the extents of the image plot.
     ...     extent = [x[0].coordinates[0].value, x[0].coordinates[-1].value,
     ...               x[1].coordinates[0].value, x[1].coordinates[-1].value]
     ...
     ...     # Add the image plot.
-    ...     im = ax.imshow(y[0].components[0], origin='lower', extent=extent, cmap='gray')
+    ...     im = plt.imshow(y[0].components[0], origin='lower', extent=extent, cmap='gray')
     ...
     ...     # Add a colorbar.
-    ...     cbar = fig.colorbar(im)
+    ...     cbar = plt.gca().figure.colorbar(im)
     ...     cbar.ax.set_ylabel(y[0].axis_label[0])
     ...
     ...     # Set up the axes label and figure title.
-    ...     ax.set_xlabel(x[0].axis_label)
-    ...     ax.set_ylabel(x[1].axis_label)
-    ...     ax.set_title(y[0].name)
+    ...     plt.xlabel(x[0].axis_label)
+    ...     plt.ylabel(x[1].axis_label)
+    ...     plt.title(y[0].name)
     ...
     ...     # Set up the grid lines.
-    ...     ax.grid(color='k', linestyle='--', linewidth=0.5)
+    ...     plt.grid(color='k', linestyle='--', linewidth=0.5)
     ...
     ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
     ...

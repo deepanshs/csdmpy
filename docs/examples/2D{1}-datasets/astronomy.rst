@@ -103,55 +103,53 @@ The component of the dependent variable is accessed through the
 
     >>> y00 = y[0].components[0]
 
-.. We plot this dataset using the plot method.
-
-..     >>> from matplotlib.colors import LogNorm
-..     >>> cp.plot(bubble_nebula, cmap='cubehelix', vmin=0, vmax=0.55)
+**Visualizing the dataset**
 
 Now, to plot the dataset.
 
+.. tip:: **Plotting an intensity data**
 
-.. doctest::
+  .. doctest::
 
-    >>> import matplotlib.pyplot as plt
-    >>> from matplotlib.colors import LogNorm
-    >>> import numpy as np
+      >>> import matplotlib.pyplot as plt
+      >>> from matplotlib.colors import LogNorm
+      >>> import numpy as np
 
-    >>> def plot():
-    ...     # Figure setup.
-    ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
-    ...     ax.set_facecolor('w')
-    ...
-    ...     x0 = x[0].coordinates
-    ...     x1 = x[1].coordinates
-    ...
-    ...     # Set the extents of the image.
-    ...     extent=[x0[0].value, x0[-1].value, x1[0].value, x1[-1].value]
-    ...
-    ...     # Log intensity image plot.
-    ...     im = ax.imshow(np.abs(y00), origin='lower', cmap='bone_r',
-    ...                    norm=LogNorm(vmax=y00.max()/10, vmin=7.5e-3, clip=True),
-    ...                    extent=extent, aspect='auto')
-    ...
-    ...     # Set the axes labels and the figure tile.
-    ...     ax.set_xlabel(x[0].axis_label)
-    ...     ax.set_ylabel(x[1].axis_label)
-    ...     ax.set_title(y[0].name)
-    ...     ax.locator_params(nbins=5)
-    ...
-    ...     # Add a colorbar.
-    ...     cbar = fig.colorbar(im)
-    ...     cbar.ax.set_ylabel(y[0].axis_label[0])
-    ...
-    ...     # Set the x and y limits.
-    ...     ax.set_xlim([350.25, 350.1])
-    ...     ax.set_ylim([61.15, 61.22])
-    ...
-    ...     # Add grid lines.
-    ...     ax.grid(color='gray', linestyle='--', linewidth=0.5)
-    ...
-    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
-    ...     plt.show()
+      >>> def plot():
+      ...     # Figure setup.
+      ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
+      ...     ax.set_facecolor('w')
+      ...
+      ...     x0 = x[0].coordinates
+      ...     x1 = x[1].coordinates
+      ...
+      ...     # Set the extents of the image.
+      ...     extent=[x0[0].value, x0[-1].value, x1[0].value, x1[-1].value]
+      ...
+      ...     # Log intensity image plot.
+      ...     im = ax.imshow(np.abs(y00), origin='lower', cmap='bone_r',
+      ...                    norm=LogNorm(vmax=y00.max()/10, vmin=7.5e-3, clip=True),
+      ...                    extent=extent, aspect='auto')
+      ...
+      ...     # Set the axes labels and the figure tile.
+      ...     ax.set_xlabel(x[0].axis_label)
+      ...     ax.set_ylabel(x[1].axis_label)
+      ...     ax.set_title(y[0].name)
+      ...     ax.locator_params(nbins=5)
+      ...
+      ...     # Add a colorbar.
+      ...     cbar = fig.colorbar(im)
+      ...     cbar.ax.set_ylabel(y[0].axis_label[0])
+      ...
+      ...     # Set the x and y limits.
+      ...     ax.set_xlim([350.25, 350.1])
+      ...     ax.set_ylim([61.15, 61.22])
+      ...
+      ...     # Add grid lines.
+      ...     ax.grid(color='gray', linestyle='--', linewidth=0.5)
+      ...
+      ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+      ...     plt.show()
 
 .. doctest::
 

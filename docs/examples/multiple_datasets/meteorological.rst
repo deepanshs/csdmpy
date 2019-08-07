@@ -6,28 +6,23 @@
     >>> matplotlib.rc('font', **font)
     >>> from os import path
 
-------------------
-Correlated Dataset
-------------------
-
-The core scientific dataset model also support multiple dependent variables
-that share the same coordinate grid. We call the datasets with multiple
-dependent variables as correlated datasets.
-
-In this section, we go over a few examples.
-
-
 Meteorological dataset
 ^^^^^^^^^^^^^^^^^^^^^^
+The following dataset is obtained from `NOAA/NCEP Global Forecast System (GFS) Atmospheric Model
+<https://coastwatch.pfeg.noaa.gov/erddap/griddap/NCEP_Global_Best.graph?ugrd10m[(2017-09-17T12:00:00Z)][(-4.5):(52.0)][(275.0):(331.5)]&.draw=surface&.vars=longitude%7Clatitude%7Cugrd10m&.colorBar=%7C%7C%7C%7C%7C&.bgColor=0xffccccff>`_
+and subsequently converted to the CSD model file-format.
+The dataset consists of two spatial dimensions describing the geographical
+coordinates of the earth surface and five dependent variables with
+1) surface temperature, 2) air temperature at 2 m, 3) relative humidity,
+4) air pressure at sea level as the four `scalar` quantity_type dependent
+variable, and 5) wind velocity as the two-component `vector`, quantity type
+dependent variable.
 
-Import the `csdmpy` model and load the dataset.
+Let's import the `csdmpy` module and load this dataset.
 
 .. doctest::
 
     >>> import csdmpy as cp
-    >>> import numpy as np
-    >>> import matplotlib.pyplot as plt
-    >>> from mpl_toolkits.axes_grid1 import make_axes_locatable
 
     >>> filename = 'Test Files/correlatedDataset/forecast/NCEI.csdfe'
     >>> multi_dataset = cp.load(filename)
@@ -47,7 +42,7 @@ Let's get the tuple of dimension and dependent variable objects from
       "csdm": {
         "version": "1.0",
         "read_only": true,
-        "timestamp": "2016-03-12T16:41:00Z",
+        "timestamp": "2017-09-17T12:00:00Z",
         "description": "The dataset is obtained from NOAA/NCEP Global Forecast System (GFS) Atmospheric Model. The label for components are the standard attribute names used by the Dataset Attribute Structure (.das)",
         "dimensions": [
           {
@@ -162,8 +157,8 @@ Let's get the tuple of dimension and dependent variable objects from
       }
     }
 
-This dataset contains two dimension objects representing the `longitude` and
-`latitude` of the earths surface. The dimensions are ``labels`` as
+The dataset contains two dimension objects representing the `longitude` and
+`latitude` of the earth's surface. The respective dimensions are labeled as
 
 .. doctest::
 
@@ -199,38 +194,44 @@ dependent variable is
     }
 
 If you have followed all previous examples, the above data structure should
-be self explanatory. The following snippit plots a dependent variable
+be self-explanatory. The following snippet plots a dependent variable
 of scalar `quantity_type`.
 
-.. doctest::
+.. tip:: **Plotting a scalar intensity plot**
 
-    >>> def plot_scalar(yx):
-    ...     fig, ax = plt.subplots(1,1, figsize=(6,3))
-    ...
-    ...     # Set the extents of the image plot.
-    ...     extent = [x[0].coordinates[0].value, x[0].coordinates[-1].value,
-    ...               x[1].coordinates[0].value, x[1].coordinates[-1].value]
-    ...
-    ...     # Add the image plot.
-    ...     im = ax.imshow(yx.components[0], origin='lower', extent=extent,
-    ...                    cmap='coolwarm')
-    ...
-    ...     # Add a colorbar.
-    ...     divider = make_axes_locatable(ax)
-    ...     cax = divider.append_axes("right", size="5%", pad=0.05)
-    ...     cbar = fig.colorbar(im, cax)
-    ...     cbar.ax.set_ylabel(yx.axis_label[0])
-    ...
-    ...     # Set up the axes label and figure title.
-    ...     ax.set_xlabel(x[0].axis_label)
-    ...     ax.set_ylabel(x[1].axis_label)
-    ...     ax.set_title(yx.name)
-    ...
-    ...     # Set up the grid lines.
-    ...     ax.grid(color='k', linestyle='--', linewidth=0.5)
-    ...
-    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
-    ...     plt.show()
+  .. doctest::
+
+      >>> import numpy as np
+      >>> import matplotlib.pyplot as plt
+      >>> from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+      >>> def plot_scalar(yx):
+      ...     fig, ax = plt.subplots(1,1, figsize=(6,3))
+      ...
+      ...     # Set the extents of the image plot.
+      ...     extent = [x[0].coordinates[0].value, x[0].coordinates[-1].value,
+      ...               x[1].coordinates[0].value, x[1].coordinates[-1].value]
+      ...
+      ...     # Add the image plot.
+      ...     im = ax.imshow(yx.components[0], origin='lower', extent=extent,
+      ...                    cmap='coolwarm')
+      ...
+      ...     # Add a colorbar.
+      ...     divider = make_axes_locatable(ax)
+      ...     cax = divider.append_axes("right", size="5%", pad=0.05)
+      ...     cbar = fig.colorbar(im, cax)
+      ...     cbar.ax.set_ylabel(yx.axis_label[0])
+      ...
+      ...     # Set up the axes label and figure title.
+      ...     ax.set_xlabel(x[0].axis_label)
+      ...     ax.set_ylabel(x[1].axis_label)
+      ...     ax.set_title(yx.name)
+      ...
+      ...     # Set up the grid lines.
+      ...     ax.grid(color='k', linestyle='--', linewidth=0.5)
+      ...
+      ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+      ...     plt.show()
 
 .. testsetup::
 
@@ -322,7 +323,8 @@ Similarly, other dependent variables with their respective plots are
     :figclass: figure-polaroid
 
 Notice, we didn't plot the dependent variable at index 2. This is because this
-particular dependent variable is a vector datasets of wind velocity.
+particular dependent variable is a vector dataset representing the wind
+velocity.
 
 .. doctest::
 
@@ -331,36 +333,38 @@ particular dependent variable is a vector datasets of wind velocity.
     >>> y[2].name
     'Wind velocity'
 
-To visualize the vector data we use matplotlib streamline plot.
+To visualize the vector data, we use matplotlib streamline plot.
 
-.. doctest::
+.. tip:: **Plotting a vector quiver plot**
 
-    >>> def plot_vector(yx):
-    ...     fig, ax = plt.subplots(1,1, figsize=(6,3))
-    ...     X, Y = np.meshgrid(x[0].coordinates, x[1].coordinates)
-    ...     magnitude = np.sqrt(yx.components[0]**2 + yx.components[1]**2)
-    ...
-    ...     cf = ax.quiver(x[0].coordinates, x[1].coordinates,
-    ...                    yx.components[0], yx.components[1],
-    ...                    magnitude, pivot ='middle', cmap='inferno')
-    ...     divider = make_axes_locatable(ax)
-    ...     cax = divider.append_axes("right", size="5%", pad=0.05)
-    ...     cbar = fig.colorbar(cf, cax)
-    ...     cbar.ax.set_ylabel(yx.name+' / '+str(yx.unit))
-    ...
-    ...     ax.set_xlim([x[0].coordinates[0].value, x[0].coordinates[-1].value])
-    ...     ax.set_ylim([x[1].coordinates[0].value, x[1].coordinates[-1].value])
-    ...
-    ...     # Set axes labels and figure title.
-    ...     ax.set_xlabel(x[0].axis_label)
-    ...     ax.set_ylabel(x[1].axis_label)
-    ...     ax.set_title(yx.name)
-    ...
-    ...     # Set grid lines.
-    ...     ax.grid(color='gray', linestyle='--', linewidth=0.5)
-    ...
-    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
-    ...     plt.show()
+  .. doctest::
+
+      >>> def plot_vector(yx):
+      ...     fig, ax = plt.subplots(1,1, figsize=(6,3))
+      ...     X, Y = np.meshgrid(x[0].coordinates, x[1].coordinates)
+      ...     magnitude = np.sqrt(yx.components[0]**2 + yx.components[1]**2)
+      ...
+      ...     cf = ax.quiver(x[0].coordinates, x[1].coordinates,
+      ...                    yx.components[0], yx.components[1],
+      ...                    magnitude, pivot ='middle', cmap='inferno')
+      ...     divider = make_axes_locatable(ax)
+      ...     cax = divider.append_axes("right", size="5%", pad=0.05)
+      ...     cbar = fig.colorbar(cf, cax)
+      ...     cbar.ax.set_ylabel(yx.name+' / '+str(yx.unit))
+      ...
+      ...     ax.set_xlim([x[0].coordinates[0].value, x[0].coordinates[-1].value])
+      ...     ax.set_ylim([x[1].coordinates[0].value, x[1].coordinates[-1].value])
+      ...
+      ...     # Set axes labels and figure title.
+      ...     ax.set_xlabel(x[0].axis_label)
+      ...     ax.set_ylabel(x[1].axis_label)
+      ...     ax.set_title(yx.name)
+      ...
+      ...     # Set grid lines.
+      ...     ax.grid(color='gray', linestyle='--', linewidth=0.5)
+      ...
+      ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+      ...     plt.show()
 
 .. doctest::
 

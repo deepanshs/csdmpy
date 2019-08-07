@@ -7,9 +7,9 @@
     >>> matplotlib.rc('font', **font)
     >>> from os import path
 
---------------
-1D{1} datasets
---------------
+----------------------
+Scalar, 1D{1} datasets
+----------------------
 
 The 1D{1} datasets are one dimensional, :math:`d=1`, with
 one single-component, :math:`p=1`, dependent variable. In this section, we walk
@@ -121,72 +121,74 @@ component of the dependent variable are
 
 respectively.
 
-Before we plot this dataset, we find it convenient to write a small plotting
-method. This method makes it easier, later, when we describe 1D{1}
-examples form a variety of scientific datasets. The method follows-
+.. tip:: **Plotting a one-dimension scalar line-plot.**
 
-.. doctest::
+  Before we plot this dataset, we find it convenient to write a small plotting
+  method. This method makes it easier, later, when we describe 1D{1}
+  examples form a variety of scientific datasets. The method follows-
 
-    >>> import matplotlib.pyplot as plt
-    >>> def plot1D(dataObject):
-    ...     # tuples of dependent and dimension instances.
-    ...     x = dataObject.dimensions
-    ...     y = dataObject.dependent_variables
-    ...
-    ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
-    ...     ax.plot(x[0].coordinates, y[0].components[0].real, color='k', linewidth=0.5)
-    ...
-    ...     ax.set_xlim(x[0].coordinates[0].value, x[0].coordinates[-1].value)
-    ...
-    ...     # The axes labels and figure title.
-    ...     ax.set_xlabel(x[0].axis_label)
-    ...     ax.set_ylabel(y[0].axis_label[0])
-    ...     ax.set_title(y[0].name)
-    ...
-    ...     plt.grid(color='gray', linestyle='--', linewidth=0.3)
-    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
-    ...     plt.show()
+  .. doctest::
 
-.. testsetup::
+      >>> import matplotlib.pyplot as plt
+      >>> def plot1D(dataObject):
+      ...     # tuples of dependent and dimension instances.
+      ...     x = dataObject.dimensions
+      ...     y = dataObject.dependent_variables
+      ...
+      ...     plt.figure(figsize=(4,3))
+      ...     plt.plot(x[0].coordinates, y[0].components[0].real, color='k', linewidth=0.5)
+      ...
+      ...     plt.xlim(x[0].coordinates[0].value, x[0].coordinates[-1].value)
+      ...
+      ...     # The axes labels and figure title.
+      ...     plt.xlabel(x[0].axis_label)
+      ...     plt.ylabel(y[0].axis_label[0])
+      ...     plt.title(y[0].name)
+      ...
+      ...     plt.grid(color='gray', linestyle='--', linewidth=0.3)
+      ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+      ...     plt.show()
 
-    >>> def plot1D_save(dataObject):
-    ...     # tuples of dependent and dimension instances.
-    ...     x = dataObject.dimensions
-    ...     y = dataObject.dependent_variables
-    ...
-    ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
-    ...     ax.plot(x[0].coordinates, y[0].components[0].real, color='k', linewidth=0.5)
-    ...
-    ...     ax.set_xlim(x[0].coordinates[0].value, x[0].coordinates[-1].value)
-    ...
-    ...     # The axes labels and figure title.
-    ...     ax.set_xlabel(x[0].axis_label)
-    ...     ax.set_ylabel(y[0].axis_label[0])
-    ...     ax.set_title(y[0].name)
-    ...
-    ...     plt.grid(color='gray', linestyle='--', linewidth=0.3)
-    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
-    ...     filename = path.split(dataObject.filename)[1]
-    ...     filepath = './docs/_images'
-    ...     pth = path.join(filepath, filename)
-    ...     plt.savefig(pth+'.pdf')
-    ...     plt.savefig(pth+'.png', dpi=100)
-    ...     plt.close()
+  .. testsetup::
+
+      >>> def plot1D_save(dataObject):
+      ...     # tuples of dependent and dimension instances.
+      ...     x = dataObject.dimensions
+      ...     y = dataObject.dependent_variables
+      ...
+      ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
+      ...     ax.plot(x[0].coordinates, y[0].components[0].real, color='k', linewidth=0.5)
+      ...
+      ...     ax.set_xlim(x[0].coordinates[0].value, x[0].coordinates[-1].value)
+      ...
+      ...     # The axes labels and figure title.
+      ...     ax.set_xlabel(x[0].axis_label)
+      ...     ax.set_ylabel(y[0].axis_label[0])
+      ...     ax.set_title(y[0].name)
+      ...
+      ...     plt.grid(color='gray', linestyle='--', linewidth=0.3)
+      ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+      ...     filename = path.split(dataObject.filename)[1]
+      ...     filepath = './docs/_images'
+      ...     pth = path.join(filepath, filename)
+      ...     plt.savefig(pth+'.pdf')
+      ...     plt.savefig(pth+'.png', dpi=100)
+      ...     plt.close()
 
 
-A quick walk-through of the ``plot1D`` method. The method accepts an
-instance of the :ref:`csdm_api` class as an argument. Within the method, we
-make use of the instance's attributes in addition to the matplotlib
-functions. The first line assigns the tuple of the dimensions and dependent
-variables to `x` and `y`, respectively. The following line adds a plot of the
-component of the dependent variable versus the coordinates of the dimension.
-The next line sets the x-range. For labeling the axes,
-we use the :attr:`~csdmpy.dimensions.Dimension.axis_label` attribute
-of both dimension and dependent variable instances. For the figure title,
-we use the :attr:`~csdmpy.dependent_variables.DependentVariable.name` attribute
-of the dependent variable instance. The next statement adds the grid lines.
-For additional information, refer to `Matplotlib <https://matplotlib.org>`_
-documentation.
+  A quick walk-through of the ``plot1D`` method. The method accepts an
+  instance of the :ref:`csdm_api` class as an argument. Within the method, we
+  make use of the instance's attributes in addition to the matplotlib
+  functions. The first line assigns the tuple of the dimensions and dependent
+  variables to ``x`` and ``y``, respectively. The following two lines add a plot of
+  the components of the dependent variable versus the coordinates of the dimension.
+  The next line sets the x-range. For labeling the axes,
+  we use the :attr:`~csdmpy.dimensions.Dimension.axis_label` attribute
+  of both dimension and dependent variable instances. For the figure title,
+  we use the :attr:`~csdmpy.dependent_variables.DependentVariable.name` attribute
+  of the dependent variable instance. The next statement adds the grid lines.
+  For additional information, refer to `Matplotlib <https://matplotlib.org>`_
+  documentation.
 
 The ``plot1D`` method is only for illustrative purpose. The users may use any
 plotting library to visualize their datasets.

@@ -13,8 +13,6 @@
 import os
 import sys
 
-# import sphinx_bootstrap_theme
-
 sys.path.insert(0, os.path.abspath("../.."))
 
 # -- Project information -----------------------------------------------------
@@ -25,7 +23,7 @@ author = "Deepansh J. Srivastava"
 # The short X.Y version
 version = "0.1"
 # The full version, including alpha/beta/rc tags
-release = "0.1.0"
+release = "0.1.0a0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -40,12 +38,9 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
     "sphinx.ext.todo",
-    # "sphinx.ext.coverage",
     "sphinx.ext.mathjax",
-    # "sphinx.ext.githubpages",
     "sphinx.ext.autosummary",
     "sphinx.ext.viewcode",
-    # "sphinx.ext.inheritance_diagram",
     "sphinx.ext.napoleon",
     "sphinxjp.themes.basicstrap",
 ]

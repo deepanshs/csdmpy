@@ -1,7 +1,7 @@
 
------------------------------------
-Adding instances of Dimension class
------------------------------------
+--------------------------------
+Add instances of Dimension class
+--------------------------------
 
 In the previous section, we create a new dataset using,
 
