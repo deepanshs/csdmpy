@@ -465,7 +465,13 @@ class CSDM:
         csdm["csdm"] = dictionary
         return csdm
 
-    def save(self, filename, read_only=False, version=__latest_CSDM_version__):
+    def save(
+        self,
+        filename="",
+        read_only=False,
+        version=__latest_CSDM_version__,
+        output_device=None,
+    ):
         """
         Serialize the :ref:`CSDM_api` instance as a JSON data-exchange file.
 
@@ -490,6 +496,7 @@ class CSDM:
             filename (str): The filename of the serialized file.
             read_only (bool): If true, the file is serialized as read_only.
             version (str): The file is serialized with the given CSD model version.
+            output_device(object): Object where the data is written.
 
         Example:
             >>> data.save('my_file.csdf')
@@ -506,10 +513,20 @@ class CSDM:
         if read_only:
             dictionary["csdm"]["read_only"] = read_only
 
-        with open(filename, "w", encoding="utf8") as outfile:
+        if output_device is None:
+            with open(filename, "w", encoding="utf8") as outfile:
+                json.dump(
+                    dictionary,
+                    outfile,
+                    ensure_ascii=False,
+                    sort_keys=False,
+                    indent=2,
+                    allow_nan=False,
+                )
+        else:
             json.dump(
                 dictionary,
-                outfile,
+                output_device,
                 ensure_ascii=False,
                 sort_keys=False,
                 indent=2,
