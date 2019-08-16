@@ -22,7 +22,7 @@ package utilizes Numpy library and, therefore, offers the end users versatility
 to process or visualize the imported datasets with any third party package(s)
 compatible with Numpy.
 
-Read the **`csdmpy documentation`** [here](https://csdmpy.readthedocs.io/en/stable/).
+Read the **`csdmpy documentation`** [here](https://csdmpy.readthedocs.io/en/latest/).
 
 The core scientific dataset (CSD) model
 =======================================
