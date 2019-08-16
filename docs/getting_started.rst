@@ -188,7 +188,8 @@ instances and `name` is an attribute of the DependentVariable instance.
     >>> plt.title(y[0].name)  # doctest: +SKIP
     >>> plt.show()
 
-.. figure:: test.pdf
+.. figure:: _images/test.*
+    :figclass: figure-polaroid
 
 .. seealso::
 

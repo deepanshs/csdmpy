@@ -16,3 +16,9 @@ matplotlib>=3.0.2
 pytest-runner>=5.0
 pytest>=4.6.3
 pre-commit>=1.16.1
+coverage>=4.5.3
+pytest-cov
+
+# doc build
+sphinxjp.themes.basicstrap
+sphinx>=2.1.2

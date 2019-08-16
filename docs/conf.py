@@ -13,8 +13,6 @@
 import os
 import sys
 
-# import sphinx_bootstrap_theme
-
 sys.path.insert(0, os.path.abspath("../.."))
 
 # -- Project information -----------------------------------------------------
@@ -25,7 +23,7 @@ author = "Deepansh J. Srivastava"
 # The short X.Y version
 version = "0.1"
 # The full version, including alpha/beta/rc tags
-release = "0.1.0"
+release = "0.1.0a0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -40,12 +38,9 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
     "sphinx.ext.todo",
-    # "sphinx.ext.coverage",
     "sphinx.ext.mathjax",
-    # "sphinx.ext.githubpages",
     "sphinx.ext.autosummary",
     "sphinx.ext.viewcode",
-    # "sphinx.ext.inheritance_diagram",
     "sphinx.ext.napoleon",
     "sphinxjp.themes.basicstrap",
 ]
@@ -99,7 +94,7 @@ html_theme_options = {
     # Disable showing the sidebar. Defaults to 'false'
     "nosidebar": False,
     # Show header searchbox. Defaults to false. works only "nosidebar=True",
-    "header_searchbox": True,
+    "header_searchbox": False,
     # Put the sidebar on the right side. Defaults to false.
     "rightsidebar": False,
     # Set the width of the sidebar. Defaults to 3
@@ -109,13 +104,13 @@ html_theme_options = {
     # Fix the width of the sidebar. Defaults to false
     "nav_fixed": False,
     # Set the width of the sidebar. Defaults to '900px'
-    "nav_width": "1000px",
+    "nav_width": "900px",
     # Fix the width of the content area. Defaults to false
     "content_fixed": False,
     # Set the width of the content area. Defaults to '900px'
-    "content_width": "1000px",
+    "content_width": "900px",
     # Fix the width of the row. Defaults to false
-    "row_fixed": True,
+    "row_fixed": False,
     # Disable the responsive design. Defaults to false
     "noresponsive": False,
     # Disable the responsive footer relbar. Defaults to false
@@ -124,21 +119,21 @@ html_theme_options = {
     # Works only "bootstrap_version = 3"
     "noflatdesign": False,
     # Enable Google Web Font. Defaults to false
-    "googlewebfont": True,
+    # "googlewebfont": True,
     # Set the URL of Google Web Font's CSS.
     # Defaults to 'http://fonts.googleapis.com/css?family=Text+Me+One'
-    "googlewebfont_url": "http://fonts.googleapis.com/css?family=Roboto",  # NOQA
+    # "googlewebfont_url": "http://fonts.googleapis.com/css?family=Roboto",  # NOQA
     # Set the Style of Google Web Font's CSS.
     # Defaults to "font-family: 'Text Me One', sans-serif;"
-    "googlewebfont_style": u"font-family: 'Roboto' Regular;",  # font-size: 1.5em",
+    # "googlewebfont_style": u"font-family: 'Roboto' Regular;",  # font-size: 1.5em",
     # Set 'navbar-inverse' attribute to header navbar. Defaults to false.
-    "header_inverse": True,
+    "header_inverse": False,
     # Set 'navbar-inverse' attribute to relbar navbar. Defaults to false.
-    "relbar_inverse": True,
+    "relbar_inverse": False,
     # Enable inner theme by Bootswatch. Defaults to false
     "inner_theme": False,
     # Set the name of inner theme. Defaults to 'bootswatch-simplex'
-    # "inner_theme_name": "bootswatch-simplex",
+    "inner_theme_name": "bootswatch-simplex",
     # Select Twitter bootstrap version 2 or 3. Defaults to '3'
     "bootstrap_version": "3",
     # Show "theme preview" button in header navbar. Defaults to false.

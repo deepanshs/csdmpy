@@ -1,8 +1,14 @@
 
+.. testsetup::
 
---------------
-2D{2} datasets
---------------
+    >>> import matplotlib
+    >>> font = {'family': 'normal', 'weight': 'light', 'size': 9};
+    >>> matplotlib.rc('font', **font)
+    >>> from os import path
+
+----------------------
+Vector, 2D{2} datasets
+----------------------
 
 The 2D{2} datasets are two-dimensional, :math:`d=2`,
 with one two-component dependent variable, :math:`p=2`.
@@ -103,9 +109,9 @@ attribute of the corresponding dependent variable instance.
 From the value `vector_2`, `vector` indicates a vector dataset while `2`
 indicates the number of vector components.
 
-**Plot**
+**Visualizing the dataset**
 
-Let's plot the vector data using the *streamplot* method
+Let's visualize the vector data using the *streamplot* method
 from the matplotlib package. Before we could visualize, however, there
 is an initial processing step. We use the Numpy library for processing.
 
@@ -121,30 +127,65 @@ is an initial processing step. We use the Numpy library for processing.
 
 And now, the plot.
 
-.. doctest::
+.. tip:: **Plotting a streamplot vector data**
 
-    >>> import matplotlib.pyplot as plt
-    >>> def plot_vector():
-    ...     fig, ax = plt.subplots(1,1, figsize=(5.5,4.5))
-    ...     ax.streamplot(X.value, Y.value, U, V, density =1,
-    ...                   linewidth=Rlog, color=Rlog, cmap='viridis')
-    ...
-    ...     ax.set_xlim([x[0].coordinates[0].value, x[0].coordinates[-1].value])
-    ...     ax.set_ylim([x[1].coordinates[0].value, x[1].coordinates[-1].value])
-    ...
-    ...     # Set axes labels and figure title.
-    ...     ax.set_xlabel(x[0].axis_label)
-    ...     ax.set_ylabel(x[1].axis_label)
-    ...     ax.set_title(y[0].name)
-    ...
-    ...     # Set grid lines.
-    ...     ax.grid(color='gray', linestyle='--', linewidth=0.5)
-    ...
-    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
-    ...     plt.show()
+  .. doctest::
+
+      >>> import matplotlib.pyplot as plt
+      >>> def plot_vector():
+      ...     plt.figure(figsize=(4,3.5))
+      ...     plt.streamplot(X.value, Y.value, U, V, density =1,
+      ...                   linewidth=Rlog, color=Rlog, cmap='viridis')
+      ...
+      ...     plt.xlim([x[0].coordinates[0].value, x[0].coordinates[-1].value])
+      ...     plt.ylim([x[1].coordinates[0].value, x[1].coordinates[-1].value])
+      ...
+      ...     # Set axes labels and figure title.
+      ...     plt.xlabel(x[0].axis_label)
+      ...     plt.ylabel(x[1].axis_label)
+      ...     plt.title(y[0].name)
+      ...
+      ...     # Set grid lines.
+      ...     plt.grid(color='gray', linestyle='--', linewidth=0.5)
+      ...
+      ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+      ...     plt.show()
 
 .. doctest::
 
     >>> plot_vector()
 
-.. figure:: electric_field_raw.pdf
+
+.. testsetup::
+
+    >>> def plot_vector_save(dataObject):
+    ...     plt.figure(figsize=(4,3.5))
+    ...     plt.streamplot(X.value, Y.value, U, V, density =1,
+    ...                   linewidth=Rlog, color=Rlog, cmap='viridis')
+    ...
+    ...     plt.xlim([x[0].coordinates[0].value, x[0].coordinates[-1].value])
+    ...     plt.ylim([x[1].coordinates[0].value, x[1].coordinates[-1].value])
+    ...
+    ...     # Set axes labels and figure title.
+    ...     plt.xlabel(x[0].axis_label)
+    ...     plt.ylabel(x[1].axis_label)
+    ...     plt.title(y[0].name)
+    ...
+    ...     # Set grid lines.
+    ...     plt.grid(color='gray', linestyle='--', linewidth=0.5)
+    ...
+    ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+    ...     filename = path.split(dataObject.filename)[1]
+    ...     filepath = './docs/_images'
+    ...     pth = path.join(filepath, filename)
+    ...     plt.savefig(pth+'.pdf')
+    ...     plt.savefig(pth+'.png', dpi=100)
+    ...     plt.close()
+
+.. testsetup::
+
+    >>> plot_vector_save(vector_data)
+
+
+.. figure:: ../../_images/electric_field_raw.csdfe.*
+    :figclass: figure-polaroid

@@ -1,8 +1,15 @@
 
 
---------------
-2D{3} datasets
---------------
+.. testsetup::
+
+    >>> import matplotlib
+    >>> font = {'family': 'normal', 'weight': 'light', 'size': 9};
+    >>> matplotlib.rc('font', **font)
+    >>> from os import path
+
+---------------------
+Pixel, 2D{3} datasets
+---------------------
 
 The 2D{3} datasets is two dimensional, :math:`d=2`, with
 a single three-component dependent variable, :math:`p=3`.
@@ -169,19 +176,43 @@ dimension instances.
 Now, to visualize the dataset as an RGB image we use the matplotlib `imshow`
 method.
 
+.. tip:: **Plotting an RGB image dataset**
+
+  .. doctest::
+
+      >>> import matplotlib.pyplot as plt
+      >>> import numpy as np
+
+      >>> def image_data():
+      ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
+      ...     ax.imshow(np.moveaxis(y[0].components, 0, -1 ))
+      ...     ax.set_xlabel(x[0].axis_label)
+      ...     ax.set_ylabel(x[1].axis_label)
+      ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+      ...     plt.show()
+
 .. doctest::
 
-    >>> import matplotlib.pyplot as plt
+    >>> image_data()
+
+.. testsetup::
+
     >>> import numpy as np
 
-    >>> def image_data():
-    ...     fig, ax = plt.subplots(1,1, figsize=(6,4.5))
+    >>> def image_data_save(dataObject):
+    ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
     ...     ax.imshow(np.moveaxis(y[0].components, 0, -1 ))
     ...     ax.set_xlabel(x[0].axis_label)
     ...     ax.set_ylabel(x[1].axis_label)
     ...     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
-    ...     plt.show()
+    ...     filename = path.split(dataObject.filename)[1]
+    ...     filepath = './docs/_images'
+    ...     pth = path.join(filepath, filename)
+    ...     plt.savefig(pth+'.pdf')
+    ...     plt.savefig(pth+'.png', dpi=100)
+    ...     plt.close()
 
-    >>> image_data()
+    >>> image_data_save(ImageData)
 
-.. figure:: raccoon_raw.pdf
+.. figure:: ../../_images/raccoon_image.csdf.*
+    :figclass: figure-polaroid

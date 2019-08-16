@@ -59,7 +59,7 @@ quantity_type       :ref:`quantityType_uml`     An enumeration literal with a
 component_labels    [String, String, ... ]      Ordered array of labels
                                                 associated with each component
                                                 of the dependent variable.
-sparse_sampling     :ref:`SparseSampling`       Object with attribute required
+sparse_sampling     :ref:`sparseSampling_uml`   Object with attribute required
                                                 to describe a sparsely sampled
                                                 dependent variable components.
 description         String                      Description of the dependent

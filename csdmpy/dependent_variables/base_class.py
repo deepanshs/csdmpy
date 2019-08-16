@@ -36,7 +36,6 @@ class BaseDependentVariable:
         "_quantity_type",
         "_component_labels",
         "_components",
-        "_total_components",
         "_application",
         "_description",
     )

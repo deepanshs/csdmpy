@@ -23,4 +23,5 @@ For the following examples, you can download the corresponding files here.
     2D{1}-datasets/2D{1}-datasets
     2D{2}-datasets/2D{2}-datasets
     2D{3}-datasets/2D{3}-datasets
-    multiple_datasets/geology
+    multiple_datasets/correlated_datasets
+    labeled_datasets
