@@ -22,6 +22,8 @@ package utilizes Numpy library and, therefore, offers the end users versatility
 to process or visualize the imported datasets with any third party package(s)
 compatible with Numpy.
 
+Read the **`csdmpy documentation`** [here](https://csdmpy.readthedocs.io/en/stable/).
+
 The core scientific dataset (CSD) model
 =======================================
 
@@ -60,7 +62,6 @@ list, we adopt the data-exchange oriented JSON (JavaScript Object Notation)
 file-serialization format because it is *human-readable*, and *easily integrable* with any number of programming languages
 and field related application-software.
 
-
 Installing `csdmpy` package
 ===========================
 
@@ -69,10 +70,9 @@ distribution for python version 3.6 or higher. The anaconda distribution
 ships with numerous packages and modules including Numpy, Scipy, and Matplotlib
 which are useful packages for handling scientific datasets.
 
-
 **Using PIP**:
 
 PIP is a package manager for Python packages and is included with
 python version 3.4 and higher.
 
-    $ pip install git+https://github.com/DeepanshS/csdmpy.git@master
+    $ pip install csdmpy

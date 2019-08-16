@@ -39,8 +39,8 @@ compatible with Numpy.
     :name: mastertoc
 
     CSD_model
-    requirement
     installation
+    requirement
     getting_started
     examples/examples
     startFromScratch/start

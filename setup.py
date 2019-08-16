@@ -10,7 +10,7 @@ NAME = "csdmpy"
 DESCRIPTION = "A python module for importing and exporting CSD model file-format."
 URL = "https://github.com/DeepanshS/csdmpy"
 EMAIL = "srivastava.89@osu.edu"
-AUTHOR = "Deepansh Srivastava"
+AUTHOR = "Deepansh J. Srivastava"
 REQUIRES_PYTHON = ">=3.6"
 VERSION = "0.1.0b1"
 
@@ -49,10 +49,11 @@ setup(
     version=about["__version__"],
     description="A python module for importing and exporting CSD model file-format.",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     author="Deepansh Srivastava",
     author_email="srivastava.89@osu.edu",
     python_requires=">=3.6",
-    url="https://github.com/DeepanshS/csdmpy",
+    url="https://github.com/DeepanshS/csdmpy/archive/v0.1-beta.1.tar.gz",
     packages=find_packages(),
     install_requires=REQUIRED,
     setup_requires=SETUP_REQUIRES,
@@ -65,7 +66,7 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Development Status :: 3 - Beta",
+        "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
