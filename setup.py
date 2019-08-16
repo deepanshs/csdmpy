@@ -5,8 +5,6 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-# from csdmpy._version import __version__
-
 # Package meta-data.
 NAME = "csdmpy"
 DESCRIPTION = "A python module for importing and exporting CSD model file-format."
@@ -14,7 +12,7 @@ URL = "https://github.com/DeepanshS/csdmpy"
 EMAIL = "srivastava.89@osu.edu"
 AUTHOR = "Deepansh Srivastava"
 REQUIRES_PYTHON = ">=3.6"
-VERSION = "0.1.0"
+VERSION = "0.1.0b1"
 
 # What packages are required for this module to be executed?
 REQUIRED = [
@@ -26,12 +24,6 @@ REQUIRED = [
 ]
 
 SETUP_REQUIRES = ["setuptools>=27.3"]
-
-# The rest you shouldn't have to touch too much :)
-# ------------------------------------------------
-# Except, perhaps the License and Trove Classifiers!
-# If you do change the License, remember to change the Trove Classifier
-# for that!
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -53,17 +45,16 @@ else:
     about["__version__"] = VERSION
 
 setup(
-    name=NAME,
+    name="csdmpy",
     version=about["__version__"],
-    description=DESCRIPTION,
+    description="A python module for importing and exporting CSD model file-format.",
     long_description=long_description,
-    author=AUTHOR,
-    author_email=EMAIL,
-    python_requires=REQUIRES_PYTHON,
-    url=URL,
+    author="Deepansh Srivastava",
+    author_email="srivastava.89@osu.edu",
+    python_requires=">=3.6",
+    url="https://github.com/DeepanshS/csdmpy",
     packages=find_packages(),
     install_requires=REQUIRED,
-    # extras_require=EXTRAS,
     setup_requires=SETUP_REQUIRES,
     tests_require=["pytest", "pytest-runner"],
     include_package_data=True,
@@ -74,10 +65,8 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 3 - Beta",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
-        # 'Programming Language :: Python :: Implementation :: CPython',
-        # 'Programming Language :: Python :: Implementation :: PyPy'
     ],
 )
