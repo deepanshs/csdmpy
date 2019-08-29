@@ -13,7 +13,7 @@ def test_csdm():
     assert data.read_only is False
     data.read_only = True
     assert data.read_only is True
-    error = "Expecting an instance of type,"
+    error = "Expecting an instance of type"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.read_only = "True"
 
@@ -21,7 +21,7 @@ def test_csdm():
     assert data.tags == []
     data.tags = ["1", "2", "3"]
     assert data.tags == ["1", "2", "3"]
-    error = "Expecting an instance of type,"
+    error = "Expecting an instance of type"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.tags = "23"
 
@@ -38,7 +38,7 @@ def test_csdm():
     assert data.description == "This is a test"
     data.description = "Enough with the tests"
     assert data.description == "Enough with the tests"
-    error = "Expecting an instance of type,"
+    error = "Expecting an instance of type"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.description = {}
 
@@ -46,7 +46,7 @@ def test_csdm():
     assert data.application == {}
     data.application = {"csdmpy": "Some day"}
     assert data.application == {"csdmpy": "Some day"}
-    error = "Expecting an instance of type,"
+    error = "Expecting an instance of type"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.application = "Some other day"
 

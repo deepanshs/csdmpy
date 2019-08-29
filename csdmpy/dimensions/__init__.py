@@ -24,7 +24,7 @@ class Dimension:
     Create an instance of the Dimension class.
 
     An instance of this class describes a dimension of a multi-dimensional system.
-    In version 1.0, there are three subtypes of the Dimension class:
+    In version 1.0 of the CSD model, there are three subtypes of the Dimension class:
 
     - :ref:`linearDimension_uml`,
     - :ref:`monotonicDimension_uml`, and

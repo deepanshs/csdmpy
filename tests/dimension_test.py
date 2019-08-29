@@ -33,7 +33,7 @@ def test_linear_new():
     data.dimensions[0].increment = 20.0 * u.Unit("m / s")
     assert str(data.dimensions[0].increment) == "20.0 m / s"
 
-    error = "Expecting an instance of type,"
+    error = "Expecting an instance of type"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.dimensions[0].increment = 10
 
@@ -45,13 +45,13 @@ def test_linear_new():
     assert data.dimensions[0].application == {}
     data.dimensions[0].application = {"my_application": {}}
     assert data.dimensions[0].application == {"my_application": {}}
-    error = "Expecting an instance of type,"
+    error = "Expecting an instance of type"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.dimensions[0].application = "my_application"
 
     assert str(data.dimensions[0].coordinates_offset) == "5.0 m / s"
 
-    error = "Expecting an instance of type,"
+    error = "Expecting an instance of type"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.dimensions[0].coordinates_offset = 50
 
@@ -135,7 +135,7 @@ def test_monotonic_new():
     data.dimensions[0].description = "A galaxy far far away."
     assert data.dimensions[0].description == "A galaxy far far away."
 
-    error = "Expecting an instance of type,"
+    error = "Expecting an instance of type"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.dimensions[0].description = 12
 
@@ -161,7 +161,7 @@ def test_monotonic_new():
     data.dimensions[0].label = "some string"
     assert data.dimensions[0].label == "some string"
 
-    error = "Expecting an instance of type,"
+    error = "Expecting an instance of type"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.dimensions[0].label = {}
 
@@ -171,7 +171,7 @@ def test_monotonic_new():
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.dimensions[0].count = 12
 
-    error = "Expecting an instance of type,"
+    error = "Expecting an instance of type"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.dimensions[0].count = "12"
 
@@ -189,7 +189,7 @@ def test_monotonic_new():
     data.dimensions[0].origin_offset = "1 lyr"
     assert str(data.dimensions[0].origin_offset) == "1.0 lyr"
 
-    error = "Expecting an instance of type,"
+    error = "Expecting an instance of type"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.dimensions[0].origin_offset = {"12 m"}
 

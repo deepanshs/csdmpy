@@ -83,6 +83,6 @@ def test_boolean():
     assert check_and_assign_bool(False) is False
     assert check_and_assign_bool(True) is True
 
-    error = "Expecting an instance of type,"
+    error = "Expecting an instance of type"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         check_and_assign_bool("True")

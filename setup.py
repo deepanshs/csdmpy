@@ -12,7 +12,7 @@ URL = "https://github.com/DeepanshS/csdmpy"
 EMAIL = "srivastava.89@osu.edu"
 AUTHOR = "Deepansh J. Srivastava"
 REQUIRES_PYTHON = ">=3.6"
-VERSION = "0.1.0b1"
+VERSION = "0.1.1"
 
 # What packages are required for this module to be executed?
 REQUIRED = [
