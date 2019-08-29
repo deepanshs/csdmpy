@@ -206,7 +206,7 @@ Now to plot the `sea_level` dataset.
 .. figure:: ../../_images/GMSL.csdf.*
     :figclass: figure-polaroid
 
-Nuclear Magnetic Resonance (MNR) dataset
+Nuclear Magnetic Resonance (NMR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following dataset is a :math:`^{13}\mathrm{C}` time domain NMR Bloch decay

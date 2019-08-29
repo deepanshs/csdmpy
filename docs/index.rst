@@ -33,6 +33,9 @@ package utilizes Numpy library and, therefore, offers the end users versatility
 to process or visualize the imported datasets with any third party package(s)
 compatible with Numpy.
 
+The sample CSDM files used in this documentation are available
+`online <https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u>`_.
+
 .. toctree::
     :maxdepth: 2
     :caption: Table of Contents
