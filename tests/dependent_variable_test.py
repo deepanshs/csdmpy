@@ -101,7 +101,7 @@ def test_internal_new():
     assert data.dependent_variables[0].description == ""
     data.dependent_variables[0].description = "This is a test"
     assert data.dependent_variables[0].description == "This is a test"
-    error = "Expecting an instance of type,"
+    error = "Expecting an instance of type"
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.dependent_variables[0].description = {}
 

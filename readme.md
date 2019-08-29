@@ -3,7 +3,7 @@
 [![Documentation Status](https://readthedocs.org/projects/csdmpy/badge/?version=stable)](https://csdmpy.readthedocs.io/en/stable/?badge=stable)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 ![GitHub issues](https://img.shields.io/github/issues-raw/deepanshs/csdmpy)
-![GitHub release](https://img.shields.io/github/release-pre/deepanshs/csdmpy)
+![GitHub release](https://img.shields.io/github/release/deepanshs/csdmpy)
 
 The `csdmpy` package
 ====================

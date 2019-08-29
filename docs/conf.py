@@ -21,9 +21,9 @@ copyright = "2019, Deepansh J. Srivastava"
 author = "Deepansh J. Srivastava"
 
 # The short X.Y version
-version = "0.1"
+version = "0.1.1"
 # The full version, including alpha/beta/rc tags
-release = "0.1-beta.1"
+release = "0.1.1"
 
 
 # -- General configuration ---------------------------------------------------

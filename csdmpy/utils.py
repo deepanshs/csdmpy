@@ -45,7 +45,7 @@ def type_error(a, b, c):
         a = " or ".join(a)
     else:
         a = a.__name__
-    return ("Expecting an instance of type, `{0}` for {1}, but got `{2}`.").format(
+    return ("Expecting an instance of type `{0}` for {1}, got `{2}`.").format(
         a, b, type(c).__name__
     )
 
