@@ -34,32 +34,32 @@ of it's encoding attribute to the respective encoding. For example,
 .. code::
 
     >>> data.dependent_variables[0].encoding = "none"
-    >>> data.save('file.csdf')
+    >>> data.save('my_file.csdf')
 
 This will serialize the components from the dependent variable at index 0 to a
-JSON file, `file.csdf`, where each component of the dependent variable is
+JSON file, `my_file.csdf`, where each component of the dependent variable is
 serialized as an array of JSON number.
 
 **As ``base64`` encoding**
 
     >>> data.dependent_variables[0].encoding = "base64"
-    >>> data.save('file.csdf')
+    >>> data.save('my_file.csdf')
 
 This will serialize the components from the dependent variable at index 0 to a
-JSON file, `file.csdf`, where each component of the dependent variable is
+JSON file, `my_file.csdf`, where each component of the dependent variable is
 serialized as a base64 string.
 
 **As ``raw`` encoding**
 
     >>> data.dependent_variables[0].encoding = "raw"
-    >>> data.save('file.csdfe')
+    >>> data.save('my_file.csdfe')
 
 This will serialize the metadata from the dependent variable at index 0 to a
-JSON file, `file.csdfe`, which includes a link to an external file where the
+JSON file, `my_file.csdfe`, which includes a link to an external file where the
 components of the respective dependent variable are serialized as a binary
-array. The binary file is named, `file_0.dat`, where `file` is the filename
-from the argument of the save method, and `0` is the index number of the
-dependent variable from the CSDM object.
+array. The binary file is named, `my_file_0.dat`, where `my_file` is the
+filename from the argument of the save method, and `0` is the index number of
+the dependent variable from the CSDM object.
 
 **Multiple encoding types**
 
@@ -68,13 +68,13 @@ each dependent variables with a different encoding, for example,
 
 .. code::
 
-    >>> data.dependent_variables[0].encoding = "raw"
-    >>> data.dependent_variables[1].encoding = "base64"
-    >>> data.dependent_variables[2].encoding = "none"
-    >>> data.dependent_variables[3].encoding = "base64"
-    >>> data.save('file.csdfe')
+    >>> my_data.dependent_variables[0].encoding = "raw"
+    >>> my_data.dependent_variables[1].encoding = "base64"
+    >>> my_data.dependent_variables[2].encoding = "none"
+    >>> my_data.dependent_variables[3].encoding = "base64"
+    >>> my_data.save('my_file.csdfe')
 
-In the above example, ``data`` is a CSDM object containing four
+In the above example, ``my_data`` is a CSDM object containing four
 :attr:`~csdmpy.dependent_variables.DependentVariable` objects. Here, we
 serialize the dependent variable at index 2 with ``none`` encoding,
 the dependent variables at index 1 and 3 as ``bae64``,

@@ -63,7 +63,7 @@ def test02():
 
     assert dataset.description == "Base64 encoding test"
 
-    assert len(dataset.dependent_variables) == 1
+    assert len(dataset.dependent_variables) == 4
 
     assert len(dataset.dimensions) == 1
 
