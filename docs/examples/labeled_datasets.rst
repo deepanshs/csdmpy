@@ -145,4 +145,8 @@ the ``x[1]`` dimension.
 
 .. rubric:: Footnotes
 
-.. [#f1] In CSD model, the attribute count is only valid for the :ref:`linearDimension_uml`. In `csdmpy`, however, the :attr:`~csdmpy.dimensions.Dimension.count` attribute is valid for all dimension objects and returns an integer with the number of grid points along the dimension.
+.. [#f1] In CSD model, the attribute count is only valid for the
+         :ref:`linearDimension_uml`. In `csdmpy`, however, the
+         :attr:`~csdmpy.dimensions.Dimension.count` attribute is valid for all
+         dimension objects and returns an integer with the number of grid
+         points along the dimension.

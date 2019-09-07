@@ -17,8 +17,6 @@ from numpy.fft import ifftshift
 from csdmpy.dependent_variables import DependentVariable
 from csdmpy.dimensions import Dimension
 from csdmpy.utils import validate
-from csdmpy.version import __version__
-
 
 __all__ = ["CSDM"]
 
@@ -475,28 +473,38 @@ class CSDM:
         """
         Serialize the :ref:`CSDM_api` instance as a JSON data-exchange file.
 
-        The serialized file is saved with two file extensions.
-        When every instance of the DependentVariable class from the CSDM
-        instance has an `internal` subtype, the corresponding CSDM instance is
-        serialized with a `.csdf` file extension.
+        There are two types of file serialization extensions, `.csdf` and
+        `.csdfe`. In the CSD model, when every instance of the DependentVariable
+        objects from a CSDM class has an `internal` subtype, the corresponding
+        CSDM instance is serialized with a `.csdf` file extension.
         If any single DependentVariable instance has an `external` subtype, the
         CSDM instance is serialized with a `.csdfe` file extension.
-        We use the two different file extensions to alert the end use of the
+        The two different file extensions are used to alert the end-user of the
         possible deserialization error associated with the `.csdfe` file
-        extensions when the external data file is inaccessible.
+        extensions had the external data file becomes inaccessible.
 
-        .. Important::
-            Irrespective of the subtypes from the serialized JSON file, by default,
-            all instances of DependentVariable class are assigned an `internal`
-            subtype upon import with `base64` as the value of the `encoding` attribute.
-            The user may, however, change these attribute at any time after the
-            file import and before serializing to a file.
+        In `csdmpy`, however, irrespective of the dependent variable subtypes
+        from the serialized JSON file, by default, all instances of
+        DependentVariable class are treated an `internal` after import.
+        Therefore, when serialized, the CSDM object should be stored as a `.csdf`
+        file.
+
+        To store a file as a `.csdfe` file, the user much set the value of
+        the :attr:`~csdmpy.dependent_variables.DependentVariable.encoding`
+        attribute from the dependent variables to ``raw``.
+        In which case, a binary file named `filename_i.dat` will be generated
+        where :math:`i` is the :math:`i^\\text{th}` dependent variable.
+        The parameter `filename` is an argument of this method.
+
+        .. note:: Only dependent variables with ``encoding="raw"`` will be
+            serialized as binary.
 
         Args:
             filename (str): The filename of the serialized file.
             read_only (bool): If true, the file is serialized as read_only.
             version (str): The file is serialized with the given CSD model version.
-            output_device(object): Object where the data is written.
+            output_device(object): Object where the data is written. If provided,
+                the argument `filename` become irrelevant.
 
         Example:
             >>> data.save('my_file.csdf')

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""The SparseSampling class."""
 from copy import deepcopy
 
 from csdmpy.dependent_variables.decoder import Decoder
@@ -21,7 +22,7 @@ class SparseSampling:
         "_sparse_grid_vertexes",
         "_encoding",
         "_quantity_type",
-        "_numeric_type",
+        "_unsigned_integer_type",
         "_description",
         "_application",
     )
@@ -32,14 +33,14 @@ class SparseSampling:
         sparse_grid_vertexes,
         encoding="none",
         quantity_type="scalar",
-        numeric_type="int64",
+        unsigned_integer_type="int64",
         description="",
         application={},
         **kwargs,
     ):
         """Initialize a SparseDimension class."""
         self.encoding = encoding
-        self._numeric_type = NumericType(numeric_type)
+        self._unsigned_integer_type = NumericType(unsigned_integer_type)
         self._quantity_type = QuantityType(quantity_type)
         self.description = description
         self.application = application
@@ -48,7 +49,7 @@ class SparseSampling:
             self._encoding,
             self._quantity_type,
             [sparse_grid_vertexes],
-            self._numeric_type.dtype,
+            self._unsigned_integer_type.dtype,
         )
 
     # ----------------------------------------------------------------------- #
@@ -65,13 +66,13 @@ class SparseSampling:
         self._encoding = validate(value, "encoding", str, check_encoding)
 
     @property
-    def numeric_type(self):
-        r"""Return the numeric type of data values."""
-        return deepcopy(self._numeric_type)
+    def unsigned_integer_type(self):
+        r"""Return the unsigned integer type of data values."""
+        return deepcopy(self._unsigned_integer_type)
 
-    @numeric_type.setter
-    def numeric_type(self, value):
-        self._numeric_type.update(value)
+    @unsigned_integer_type.setter
+    def unsigned_integer_type(self, value):
+        self._unsigned_integer_type.update(value)
 
     @property
     def application(self):

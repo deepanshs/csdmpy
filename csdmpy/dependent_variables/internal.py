@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The Internal DependentVariable SubType classes."""
+"""The Internal DependentVariable SubType class."""
 from __future__ import division
 from __future__ import print_function
 
@@ -40,7 +40,7 @@ class InternalDataset(BaseDependentVariable):
                 kwargs["components"] = components.astype(kwargs["numeric_type"])
 
         if kwargs["numeric_type"] is None:
-            raise ValueError(
+            raise KeyError(
                 "Missing a required `numeric_type` key from the dependent variable."
             )
 

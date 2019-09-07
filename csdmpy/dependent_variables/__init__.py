@@ -97,9 +97,7 @@ class DependentVariable:
         input_keys = input_dict.keys()
 
         if "type" not in input_keys:
-            raise ValueError(
-                "Missing a required `type` key from the dependent variable."
-            )
+            raise KeyError("Missing a required `type` key from the dependent variable.")
 
         if input_dict["type"] not in ["internal", "external"]:
             raise ValueError(
@@ -110,13 +108,13 @@ class DependentVariable:
             )
 
         if "quantity_type" not in input_keys:
-            raise ValueError(
+            raise KeyError(
                 "Missing a required `quantity_type` key from the dependent variable."
             )
 
         if input_dict["type"] == "external" and "encoding" in input_dict:
             raise ValueError(
-                "The key `encoding` is invalid for dependent variables of subtype `external`."
+                "The `encoding` key is invalid for dependent variables of subtype `external`."
             )
 
         def message(item, subtype):
@@ -126,11 +124,11 @@ class DependentVariable:
             )
 
         if input_dict["type"] == "internal" and "components" not in input_keys:
-            raise ValueError(message("components", "internal"))
+            raise KeyError(message("components", "internal"))
 
         if input_dict["type"] == "external":
             if "components_url" not in input_keys:
-                raise ValueError(message("components_url", "external"))
+                raise KeyError(message("components_url", "external"))
 
         if "filename" in kwargs.keys():
             dictionary["filename"] = kwargs["filename"]
@@ -140,6 +138,7 @@ class DependentVariable:
                 dictionary[key] = input_dict[key]
 
         if "sparse_sampling" in input_keys:
+            check_sparse_sampling_key_value(input_dict)
             for key in input_dict["sparse_sampling"].keys():
                 dictionary["sparse_sampling"][key] = input_dict["sparse_sampling"][key]
         else:
@@ -731,3 +730,27 @@ class DependentVariable:
             filename, dataset_index, for_display, version
         )
         return dictionary
+
+
+def check_sparse_sampling_key_value(input_dict):
+    def message2(item):
+        return (
+            f"Missing a required `{item}` key from the sparse "
+            "sampling object of the dependent variable."
+        )
+
+    sparse_keys = input_dict["sparse_sampling"].keys()
+    if "dimension_indexes" not in sparse_keys:
+        raise KeyError(message2("dimension_indexes"))
+    if "sparse_grid_vertexes" not in sparse_keys:
+        raise KeyError(message2("sparse_grid_vertexes"))
+    if "unsigned_integer_type" not in sparse_keys:
+        raise KeyError(message2("unsigned_integer_type"))
+
+    uint_value = input_dict["sparse_sampling"]["unsigned_integer_type"]
+    if uint_value not in ["uint8", "uint16", "uint32", "uint64"]:
+        raise ValueError(
+            f"{uint_value} is not a valid `unsigned_integer_type` "
+            "enumeration literal. "
+            f"The allowed values are `uint8`, `uint16`, `uint32`, `uint64`."
+        )

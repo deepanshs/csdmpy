@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The base ControlledVariable object: attributes and methods."""
+"""The Dimension object: attributes and methods."""
 import json
 import warnings
 
@@ -101,7 +101,7 @@ class Dimension:
         input_keys = input_dict.keys()
 
         if "type" not in input_keys:
-            raise ValueError("Missing a required 'type' key from the dimension object.")
+            raise KeyError("Missing a required 'type' key from the dimension object.")
 
         if "reciprocal" in input_keys:
             input_subkeys = input_dict["reciprocal"].keys()
@@ -132,7 +132,8 @@ class Dimension:
 
         if default["type"] == "monotonic" and default["coordinates"] is None:
             raise KeyError(
-                "MonotonicDimension is missing a required `coordinates` key."
+                "Missing a required `coordinates` key from the MonotonicDimension "
+                "object."
             )
         if default["type"] == "monotonic":
             self.subtype = MonotonicDimension(values=default["coordinates"], **default)
@@ -146,7 +147,10 @@ class Dimension:
 
         for item in missing_key:
             if default[item] is None:
-                raise KeyError(f"LinearDimension is missing a required `{item}` key.")
+                raise KeyError(
+                    f"Missing a required `{item}` key from the "
+                    "LinearDimension object."
+                )
 
         validate(default["count"], "count", int)
 
@@ -158,7 +162,7 @@ class Dimension:
     @property
     def absolute_coordinates(self):
         r"""
-        Absolute coordinates, :math:`{\bf X}_k^\rm{abs}`, along the dimension.
+        Absolute coordinates, :math:`\bf X_k^{\rm{abs}}`, along the dimension.
 
         This attribute is only *valid* for quantitative dimensions, that is,
         `linear` and `monotonic` dimensions. The absolute coordinates are given as

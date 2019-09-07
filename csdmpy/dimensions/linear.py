@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The LinearDimension SubTypes class."""
+"""The LinearDimension sub type class."""
 from __future__ import division
 from __future__ import print_function
 

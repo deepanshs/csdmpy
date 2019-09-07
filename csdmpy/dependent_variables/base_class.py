@@ -268,6 +268,7 @@ class BaseDependentVariable:
 
             obj["type"] = "external"
             obj["components_url"] = url_relative_path
+            del obj["encoding"]
 
         del c
         return obj

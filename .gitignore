@@ -62,7 +62,7 @@ info.txt
 
 # files #
 #########
-my_file.csdf
+my_file**
 .coverage
 csdm.code-workspace
 csdmpy.pdf

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The External DependentVariable SubType classes."""
+"""The External DependentVariable SubType class."""
 from __future__ import division
 from __future__ import print_function
 
@@ -27,7 +27,7 @@ class ExternalDataset(BaseDependentVariable):
         kwargs["encoding"] = "raw"
 
         if kwargs["numeric_type"] is None:
-            raise ValueError(
+            raise KeyError(
                 "Missing a required `numeric_type` key from the dependent variable."
             )
 

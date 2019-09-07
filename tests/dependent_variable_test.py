@@ -223,8 +223,8 @@ def test_missing_type():
         "quantity_type": "scalar",
         "components": [np.arange(10)],
     }
-    error = "Missing a required `type` key from the dependent variable"
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    error = "Missing a required `type` key from the dependent variable."
+    with pytest.raises(KeyError, match=".*{0}.*".format(error)):
         data.add_dependent_variable(dim)
 
 
@@ -245,7 +245,7 @@ def test_missing_component():
     data = cp.new()
     dim = {"type": "internal", "numeric_type": "float32", "quantity_type": "scalar"}
     error = "Missing a required `components` key"
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(KeyError, match=".*{0}.*".format(error)):
         data.add_dependent_variable(dim)
 
 
@@ -253,5 +253,5 @@ def test_missing_component_url():
     data = cp.new()
     dim = {"type": "external", "numeric_type": "float32", "quantity_type": "scalar"}
     error = "Missing a required `components_url` key"
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(KeyError, match=".*{0}.*".format(error)):
         data.add_dependent_variable(dim)

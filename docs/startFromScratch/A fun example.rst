@@ -1,7 +1,7 @@
 
-----------------
-A fun 🤪 example
-----------------
+-------------------
+An emoji 😁 example
+-------------------
 
 Let's make use of what we learnt so far and create a simple 1D{1} dataset.
 To make it interesting, let's create an emoji dataset.
@@ -38,10 +38,7 @@ python dictionary.
 
 .. doctest::
 
-    >>> x = {
-    ...     'type': 'labeled',
-    ...     'labels': ['🍈','🍉','🍋','🍌','🥑','🍍']
-    ... }
+    >>> x = dict(type='labeled', labels=['🍈','🍉','🍋','🍌','🥑','🍍'])
 
 The above python dictionary contains two keys. The `type` key identifies the
 dimension as a labeled dimension while the `labels` key holds an
@@ -84,12 +81,8 @@ instance.
 
 .. doctest::
 
-    >>> y ={
-    ...     'type': 'internal',
-    ...     'numeric_type': 'float32',
-    ...     'quantity_type': 'scalar',
-    ...     'components': [[0.5, 0.25, 1, 2, 1, 0.25]]
-    ... }
+    >>> y =dict(type='internal', numeric_type='float32', quantity_type='scalar',
+    ...     components=[[0.5, 0.25, 1, 2, 1, 0.25]])
     >>> fundata.add_dependent_variable(y)
 
 Here, the python dictionary contains `type`, `numeric_type` and
@@ -147,5 +140,12 @@ To serialize this file, use the :meth:`~csdmpy.csdm.CSDM.save` method of the
     os.remove('csdmpy/my_file.csdf')
 
 In the above code, the data values from the
-:attr:`~csdmpy.csdm.CSDM.dependent_variables` attribute are first encoded as
+:attr:`~csdmpy.csdm.CSDM.dependent_variables` attribute are encoded as
 a `base64` string prior to serializing to `my_file.csdf` file.
+
+You may also save a binary file in which case the file should be serialized
+with a `.csdfe` file extension.
+
+.. doctest::
+
+  >>> fundata.dependent_variables[0].encoding = 'base64'

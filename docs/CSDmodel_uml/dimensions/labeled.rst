@@ -2,22 +2,23 @@
 
 .. _labeledDimension_uml:
 
-================
+
 LabeledDimension
-================
+^^^^^^^^^^^^^^^^
 
------------------
-Generalized Class
------------------
+.. only:: html
 
-.. raw:: html
+    Generalized Class
+    """""""""""""""""
 
-    <a class="btn btn-default" href=./dimension.html#dimension-uml>
-    Dimension </a>
+    .. raw:: html
+
+        <a class="btn btn-default" href=./dimension.html#dimension-uml>
+        Dimension </a>
 
 
 Description
-***********
+"""""""""""
 
 A labeled dimension is a qualitative dimension where the coordinates along
 the dimension are explicitly defined as labels. Let :math:`\mathbf{A}_k` be an
@@ -29,19 +30,25 @@ coordinates, :math:`\mathbf{X}_k`, along a labeled dimension are
 
 
 Attributes
-**********
+""""""""""
 
-.. cssclass:: table-bordered table-hover table-striped
+.. cssclass:: table-bordered table-hover centered table-striped
 
-===============  =======================    =====================
-Name             Type                       Description
-===============  =======================    =====================
-labels           [String, String, ... ]     An ordered array of labels along
-                                            the dimension.
-===============  =======================    =====================
+.. list-table::
+  :widths: 25 25 50
+  :header-rows: 1
+
+  * - Name
+    - Type
+    - Description
+
+  * - labels
+    - [String, String, ... ]
+    - A `required` ordered array of labels along the dimension.
+
 
 Example
-*******
+"""""""
 
 The following LabeledDimension object,
 

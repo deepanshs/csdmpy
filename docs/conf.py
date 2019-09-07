@@ -20,10 +20,18 @@ project = "csdmpy"
 copyright = "2019, Deepansh J. Srivastava"
 author = "Deepansh J. Srivastava"
 
+path = os.path.split(__file__)[0]
+# get version number from the file
+with open(os.path.join(path, "../csdmpy/__init__.py"), "r") as f:
+    for line in f.readlines():
+        if "__version__" in line:
+            before_keyword, keyword, after_keyword = line.partition("=")
+            __version__ = after_keyword.strip()[1:-1]
+
 # The short X.Y version
-version = "0.1.1"
+version = __version__
 # The full version, including alpha/beta/rc tags
-release = "0.1.1"
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -175,29 +183,35 @@ html_static_path = ["_static"]
 # Output file base name for HTML help builder.
 htmlhelp_basename = "CSDMdoc"
 
-
 # -- Options for LaTeX output ------------------------------------------------
-
+latex_engine = "xelatex"
+latex_logo = "_static/csdmpy.png"
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     "papersize": "letterpaper",
     # The font size ('10pt', '11pt' or '12pt').
     #
-    "pointsize": "10pt",
+    "pointsize": "9pt",
+    "fontenc": "\\usepackage[utf8]{inputenc}",
     # Additional stuff for the LaTeX preamble.
-    #
-    # 'preamble': '',
+    "preamble": """\
+        \\usepackage[T1]{fontenc}
+        \\usepackage{amsfonts, amsmath, amssymb}
+        \\usepackage{graphicx}
+        \\usepackage{setspace}
+        \\singlespacing
+    """,
     # Latex figure (float) alignment
     #
-    "figure_align": "htbp",
+    # "figure_align": "htbp",
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "CSDM.tex", "CSDM Documentation", "Deepansh J. Srivastava", "manual")
+    (master_doc, "CSDM.tex", "Documentation", "Deepansh J. Srivastava", "manual")
 ]
 
 
@@ -250,18 +264,3 @@ epub_exclude_files = ["search.html"]
 
 # Example configuration for intersphinx: refer to the Python standard library.
 # intersphinx_mapping = {'https://docs.python.org/': None}
-
-# -- Options for todo extension ----------------------------------------------
-
-# If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = True
-
-
-# def setup(app):
-#     app.add_javascript("copybutton.js")
-#     app.add_javascript("jsquery.js")
-#     app.add_javascript("init.js")
-#     app.add_javascript("custom.js")
-#     app.add_javascript(
-#     "https://cdn.jsdelivr.net/npm/clipboard@1/dist/clipboard.min.js"
-# )
