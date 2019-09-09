@@ -150,3 +150,9 @@ the ``x[1]`` dimension.
          :attr:`~csdmpy.dimensions.Dimension.count` attribute is valid for all
          dimension objects and returns an integer with the number of grid
          points along the dimension.
+
+.. Example 2
+.. ---------
+
+.. Another example is the weather prediction as a function of datetime stamp,
+.. datetime stamp is the labled dimension.

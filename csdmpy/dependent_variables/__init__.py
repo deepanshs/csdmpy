@@ -246,9 +246,6 @@ class DependentVariable:
             >>> y.component_labels[2]
             'channel 2'
 
-        .. todo::
-            Check the component labels.
-
         Returns:
             A list of component label strings.
 

@@ -497,7 +497,7 @@ class CSDM:
         The parameter `filename` is an argument of this method.
 
         .. note:: Only dependent variables with ``encoding="raw"`` will be
-            serialized as binary.
+            serialized to a binary file.
 
         Args:
             filename (str): The filename of the serialized file.

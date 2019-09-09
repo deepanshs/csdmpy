@@ -24,6 +24,8 @@ Welcome to csdmpy's documentation!
     .. image:: https://badge.fury.io/py/csdmpy.svg
         :target: https://badge.fury.io/py/csdmpy
 
+----
+
 The `csdmpy` package is the Python support for the core scientific
 dataset (CSD) model file exchange-format.
 The package is based on the core scientific dataset (CSD) model which is
@@ -38,8 +40,21 @@ package utilizes Numpy library and, therefore, offers the end users versatility
 to process or visualize the imported datasets with any third party package(s)
 compatible with Numpy.
 
-The sample CSDM files used in this documentation are available
-`online <https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u>`_.
+----
+
+.. only:: latex
+
+    **The sample CSDM compliant files used in this documentation are available**
+    `online <https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u>`_.
+
+.. only:: html
+
+    **The sample CSDM compliant files used in this documentation are available online.**
+
+    .. image:: https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet
+        :target: https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u
+
+----
 
 .. toctree::
     :maxdepth: 2
