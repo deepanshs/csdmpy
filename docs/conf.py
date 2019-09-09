@@ -20,10 +20,18 @@ project = "csdmpy"
 copyright = "2019, Deepansh J. Srivastava"
 author = "Deepansh J. Srivastava"
 
+path = os.path.split(__file__)[0]
+# get version number from the file
+with open(os.path.join(path, "../csdmpy/__init__.py"), "r") as f:
+    for line in f.readlines():
+        if "__version__" in line:
+            before_keyword, keyword, after_keyword = line.partition("=")
+            __version__ = after_keyword.strip()[1:-1]
+
 # The short X.Y version
-version = "0.1.1"
+version = __version__
 # The full version, including alpha/beta/rc tags
-release = "0.1.1"
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -37,7 +45,6 @@ needs_sphinx = "2.0"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
-    "sphinx.ext.todo",
     "sphinx.ext.mathjax",
     "sphinx.ext.autosummary",
     "sphinx.ext.viewcode",
@@ -63,7 +70,7 @@ autodoc_mock_imports = []
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = "en"
+language = None
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -71,7 +78,7 @@ language = "en"
 exclude_patterns = ["_build", "**.ipynb_checkpoints", "Thumbs.db", ".DS_Store"]
 
 # The name of the Pygments (syntax highlighting) style to use.
-# pygments_style = "default"
+pygments_style = None
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -119,7 +126,7 @@ html_theme_options = {
     # Works only "bootstrap_version = 3"
     "noflatdesign": False,
     # Enable Google Web Font. Defaults to false
-    # "googlewebfont": True,
+    "googlewebfont": False,
     # Set the URL of Google Web Font's CSS.
     # Defaults to 'http://fonts.googleapis.com/css?family=Text+Me+One'
     # "googlewebfont_url": "http://fonts.googleapis.com/css?family=Roboto",  # NOQA
@@ -127,13 +134,13 @@ html_theme_options = {
     # Defaults to "font-family: 'Text Me One', sans-serif;"
     # "googlewebfont_style": u"font-family: 'Roboto' Regular;",  # font-size: 1.5em",
     # Set 'navbar-inverse' attribute to header navbar. Defaults to false.
-    "header_inverse": False,
+    "header_inverse": True,
     # Set 'navbar-inverse' attribute to relbar navbar. Defaults to false.
-    "relbar_inverse": False,
+    "relbar_inverse": True,
     # Enable inner theme by Bootswatch. Defaults to false
     "inner_theme": False,
     # Set the name of inner theme. Defaults to 'bootswatch-simplex'
-    "inner_theme_name": "bootswatch-simplex",
+    # "inner_theme_name": "bootswatch-simplex",
     # Select Twitter bootstrap version 2 or 3. Defaults to '3'
     "bootstrap_version": "3",
     # Show "theme preview" button in header navbar. Defaults to false.
@@ -150,19 +157,19 @@ html_theme_options = {
 # Theme options
 html_logo = "_static/csdmpy.png"
 
-html_context = {
-    "display_github": True,
-    "github_user": "DeepanshS",
-    "github_repo": "csdmpy",
-    "github_version": "master/docs/",
-    "css_files": [
-        "_static/button.css",
-        #     "_static/theme_overrides.css",  # override wide tables in RTD theme
-        #     "_static/style.css",
-        #     "_static/custom.css",
-        #     "_static/bootstrap-toc.css",
-    ],
-}
+# html_context = {
+#     "display_github": True,
+#     "github_user": "DeepanshS",
+#     "github_repo": "csdmpy",
+#     "github_version": "master/docs/",
+#     "css_files": [
+#         "_static/button.css",
+#         #     "_static/theme_overrides.css",  # override wide tables in RTD theme
+#         #     "_static/style.css",
+#         #     "_static/custom.css",
+#         #     "_static/bootstrap-toc.css",
+#     ],
+# }
 
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -175,30 +182,34 @@ html_static_path = ["_static"]
 # Output file base name for HTML help builder.
 htmlhelp_basename = "CSDMdoc"
 
-
 # -- Options for LaTeX output ------------------------------------------------
-
+latex_engine = "xelatex"
+latex_logo = "_static/csdmpy.png"
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     "papersize": "letterpaper",
     # The font size ('10pt', '11pt' or '12pt').
     #
-    "pointsize": "10pt",
+    "pointsize": "9pt",
+    "fontenc": "\\usepackage[utf8]{inputenc}",
     # Additional stuff for the LaTeX preamble.
-    #
-    # 'preamble': '',
+    "preamble": """\
+        \\usepackage[T1]{fontenc}
+        \\usepackage{amsfonts, amsmath, amssymb}
+        \\usepackage{graphicx}
+        \\usepackage{setspace}
+        \\singlespacing
+    """,
     # Latex figure (float) alignment
     #
-    "figure_align": "htbp",
+    # "figure_align": "htbp",
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (master_doc, "CSDM.tex", "CSDM Documentation", "Deepansh J. Srivastava", "manual")
-]
+latex_documents = [(master_doc, "CSDM.tex", "Documentation", author, "manual")]
 
 
 # -- Options for manual page output ------------------------------------------
@@ -242,26 +253,3 @@ epub_title = project
 
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ["search.html"]
-
-
-# -- Extension configuration -------------------------------------------------
-
-# -- Options for intersphinx extension ---------------------------------------
-
-# Example configuration for intersphinx: refer to the Python standard library.
-# intersphinx_mapping = {'https://docs.python.org/': None}
-
-# -- Options for todo extension ----------------------------------------------
-
-# If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = True
-
-
-# def setup(app):
-#     app.add_javascript("copybutton.js")
-#     app.add_javascript("jsquery.js")
-#     app.add_javascript("init.js")
-#     app.add_javascript("custom.js")
-#     app.add_javascript(
-#     "https://cdn.jsdelivr.net/npm/clipboard@1/dist/clipboard.min.js"
-# )

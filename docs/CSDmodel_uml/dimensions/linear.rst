@@ -2,22 +2,23 @@
 
 .. _linearDimension_uml:
 
-===============
+
 LinearDimension
-===============
+^^^^^^^^^^^^^^^
 
------------------
-Generalized Class
------------------
+.. only:: html
 
-.. raw:: html
+  Generalized Class
+  """""""""""""""""
 
-    <a class="btn btn-default" href=./dimension.html#dimension-uml>
-    Dimension </a>
+  .. raw:: html
+
+      <a class="btn btn-default" href=./dimension.html#dimension-uml>
+      Dimension </a>
 
 
 Description
-***********
+"""""""""""
 
 A LinearDimension is where the coordinates along the dimension follow a linear
 relationship with the indexes, :math:`\mathbf{J}_k`, along the dimension. Let
@@ -41,8 +42,8 @@ array of indexes along the :math:`k^\mathrm{th}` dimension given as
     \mathbf{J}_k = [0, 1, 2, 3, ..., N_k-1]
 
 The term, :math:`Z_k`, is an integer with a value of :math:`Z_k=0` and
-:math:`\frac{T_k}{2}` when the value of `complex_fft` is true and
-false, respectively. Here, :math:`T_k=N_k` and :math:`N_k-1` for even and odd
+:math:`\frac{T_k}{2}` when the value of `complex_fft` is false and true,
+respectively. Here, :math:`T_k=N_k` and :math:`N_k-1` for even and odd
 value of :math:`N_k`, respectively.
 
 .. note::
@@ -51,38 +52,61 @@ value of :math:`N_k`, respectively.
 
 
 Attributes
-**********
+""""""""""
 
-.. cssclass:: table-bordered table-hover table-striped
+.. cssclass:: table-bordered table-hover centered table-striped
 
-=====================   ===================  ==================================
-Name                    Type                 Description
-=====================   ===================  ==================================
-count                   Integer              The number of points, :math:`N_k`,
-                                             along the dimension.
-increment               :ref:`sQ_uml`        The increment, :math:`\Delta x_k`,
-                                             along the dimension.
-coordinates_offset      :ref:`sQ_uml`        The coordinate, :math:`b_k`,
-                                             corresponding to the zero of the
-                                             indexes array, :math:`\bf{J}_k`.
-origin_offset           :ref:`sQ_uml`        The origin offset, :math:`o_k`,
-                                             along the dimension.
-quantity_name           String               The quantity name associated with
-                                             the physical quantities describing
-                                             the dimension.
-period                  :ref:`sQ_uml`        The period of the dimension.
-complex_fft             Boolean              If true, the coordinates along the
-                                             dimension are evaluated as the
-                                             output of a complex fast Fourier
-                                             transform (FFT) routine. See the
-                                             above description.
-reciprocal              ReciprocalDimension  Object with attributes required to
-                                             describe the reciprocal dimension.
-=====================   ===================  ==================================
+.. list-table::
+  :widths: 25 25 50
+  :header-rows: 1
+
+  * - Name
+    - Type
+    - Description
+
+  * - count
+    - Integer
+    - A `required` number of points, :math:`N_k`, along the dimension.
+
+  * - increment
+    - :ref:`sQ_uml`
+    - A `required` increment, :math:`\Delta x_k`, along the dimension.
+
+  * - coordinates_offset
+    - :ref:`sQ_uml`
+    - An `optional` coordinate, :math:`b_k`, corresponding to the zero of the
+      indexes array, :math:`\bf{J}_k`. The default value is a physical quantity
+      with zero numerical value.
+
+  * - origin_offset
+    - :ref:`sQ_uml`
+    - An `optional` origin offset, :math:`o_k`, along the dimension. The
+      default value is a physical quantity with zero numerical value.
+
+  * - quantity_name
+    - String
+    - An `optional` quantity name associated with the physical quantities
+      describing the dimension.
+
+  * - period
+    - :ref:`sQ_uml`
+    - An `optional` period of the dimension. By default, the dimension is
+      considered non-periodic.
+
+  * - complex_fft
+    - Boolean
+    - An `optional` boolean with default value as False.
+      If true, the coordinates along the dimension are evaluated as the output
+      of a complex fast Fourier transform (FFT) routine. See the description.
+
+  * - reciprocal
+    - ReciprocalDimension
+    - An `optional` object with attributes required to describe the reciprocal
+      dimension.
 
 
 Example
-*******
+"""""""
 
 The following LinearDimension object,
 
@@ -99,4 +123,15 @@ will generate a dimension where coordinates :math:`\mathbf{X}_k` are
 
 .. code::
 
-    [0.1 µA, 2.1 µA, 4.1 µA, 6.1 µA, 8.1 µA, 10.1 µA, 12.1 µA, 14.1 µA, 16.1 µA, 18.1 µA]
+    [
+        "0.1 µA",
+        "2.1 µA",
+        "4.1 µA",
+        "6.1 µA",
+        "8.1 µA",
+        "10.1 µA",
+        "12.1 µA",
+        "14.1 µA",
+        "16.1 µA",
+        "18.1 µA"
+    ]

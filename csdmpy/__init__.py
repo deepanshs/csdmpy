@@ -17,10 +17,13 @@ from csdmpy.dependent_variables.download import download_file_from_url
 from csdmpy.dimensions import Dimension
 from csdmpy.helper_functions import _preview
 from csdmpy.utils import validate
-from csdmpy.version import __version__
+
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
+__version__ = "0.1.2"
+
+
 __all__ = ["load", "new", "plot"]
 
 

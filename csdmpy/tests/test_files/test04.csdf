@@ -24,6 +24,7 @@
           "dimension_indexes": [
             0
           ],
+          "unsigned_integer_type": "uint8",
           "sparse_grid_vertexes": [
             27,
             28,

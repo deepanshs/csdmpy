@@ -1,14 +1,14 @@
+The csdmpy package
+==================
 
 [![Build Status](https://travis-ci.org/DeepanshS/csdmpy.svg?branch=master)](https://travis-ci.org/DeepanshS/csdmpy)
 [![Documentation Status](https://readthedocs.org/projects/csdmpy/badge/?version=stable)](https://csdmpy.readthedocs.io/en/stable/?badge=stable)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 ![GitHub issues](https://img.shields.io/github/issues-raw/deepanshs/csdmpy)
 ![GitHub release](https://img.shields.io/github/release/deepanshs/csdmpy)
+[![PyPI version](https://badge.fury.io/py/csdmpy.svg)](https://badge.fury.io/py/csdmpy)
 
-The `csdmpy` package
-====================
-
-The `csdmpy` package is a Python support for the core scientific
+The *csdmpy* package is a Python support for the core scientific
 dataset (CSD) model file exchange-format.
 The package is based on the core scientific dataset (CSD) model which is
 designed as a building block in the development of a more sophisticated
@@ -22,10 +22,10 @@ package utilizes Numpy library and, therefore, offers the end users versatility
 to process or visualize the imported datasets with any third party package(s)
 compatible with Numpy.
 
-Read the **`csdmpy documentation`** [here](https://csdmpy.readthedocs.io/en/latest/).
+For further reading, refer to the [documentation](https://csdmpy.readthedocs.io/en/latest/).
 
 The core scientific dataset (CSD) model
-=======================================
+---------------------------------------
 
 The core scientific dataset (CSD) model is a *light-weight*, *portable*,
 *versatile*, and *standalone* data model capable of handling a variety of
@@ -62,8 +62,8 @@ list, we adopt the data-exchange oriented JSON (JavaScript Object Notation)
 file-serialization format because it is *human-readable*, and *easily integrable* with any number of programming languages
 and field related application-software.
 
-Installing `csdmpy` package
-===========================
+Installing *csdmpy* package
+---------------------------
 
 We recommend installing [anaconda](https://www.anaconda.com/distribution/)
 distribution for python version 3.6 or higher. The anaconda distribution

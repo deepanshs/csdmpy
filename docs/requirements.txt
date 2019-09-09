@@ -1,2 +1,2 @@
 sphinxjp.themes.basicstrap
-sphinx>=2.1.2
+sphinx>=2.0

@@ -1,23 +1,30 @@
 
-.. image:: https://travis-ci.org/DeepanshS/csdmpy.svg?branch=master
-    :target: https://travis-ci.org/DeepanshS/csdmpy
-
-.. image:: https://readthedocs.org/projects/csdmpy/badge/?version=stable
-    :target: https://csdmpy.readthedocs.io/en/stable/?badge=stable
-    :alt: Documentation Status
-
-.. image:: https://img.shields.io/badge/License-BSD%203--Clause-blue.svg
-    :target: https://opensource.org/licenses/BSD-3-Clause
-
-.. image:: https://img.shields.io/github/issues-raw/deepanshs/csdmpy
-    :alt: GitHub issues
-
-.. image:: https://img.shields.io/github/release-pre/deepanshs/csdmpy
-    :alt: GitHub release
-
 ==================================
 Welcome to csdmpy's documentation!
 ==================================
+
+.. only:: html
+
+    .. image:: https://travis-ci.org/DeepanshS/csdmpy.svg?branch=master
+        :target: https://travis-ci.org/DeepanshS/csdmpy
+
+    .. image:: https://readthedocs.org/projects/csdmpy/badge/?version=stable
+        :target: https://csdmpy.readthedocs.io/en/stable/?badge=stable
+        :alt: Documentation Status
+
+    .. image:: https://img.shields.io/badge/License-BSD%203--Clause-blue.svg
+        :target: https://opensource.org/licenses/BSD-3-Clause
+
+    .. image:: https://img.shields.io/github/issues-raw/deepanshs/csdmpy
+        :alt: GitHub issues
+
+    .. image:: https://img.shields.io/github/release-pre/deepanshs/csdmpy
+        :alt: GitHub release
+
+    .. image:: https://badge.fury.io/py/csdmpy.svg
+        :target: https://badge.fury.io/py/csdmpy
+
+----
 
 The `csdmpy` package is the Python support for the core scientific
 dataset (CSD) model file exchange-format.
@@ -33,23 +40,38 @@ package utilizes Numpy library and, therefore, offers the end users versatility
 to process or visualize the imported datasets with any third party package(s)
 compatible with Numpy.
 
+----
+
+.. only:: latex
+
+    **The sample CSDM compliant files used in this documentation are available**
+    `online <https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u>`_.
+
+.. only:: html
+
+    **The sample CSDM compliant files used in this documentation are available online.**
+
+    .. image:: https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet
+        :target: https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u
+
+----
+
 .. toctree::
     :maxdepth: 2
     :caption: Table of Contents
-    :name: mastertoc
 
     CSD_model
     installation
-    requirement
     getting_started
     examples/examples
     startFromScratch/start
     referenceAPI
 
-------------------
-Indices and tables
-------------------
+.. only:: html
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    Indices and tables
+    ^^^^^^^^^^^^^^^^^^
+
+    * :ref:`genindex`
+    * :ref:`modindex`
+    * :ref:`search`

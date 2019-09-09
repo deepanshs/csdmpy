@@ -57,3 +57,4 @@ def add_cp_dimension(doctest_namespace):
     }
 
     doctest_namespace["data"] = cp.load(cp.tests.test01)
+    doctest_namespace["my_data"] = cp.load(cp.tests.test02)

@@ -13,6 +13,36 @@
         "components": [
             "f89NmgkstT+GypBoSmmqP9aGuojQTaQ/ItYdQ/Vqnj95B2AkaaKdP7t7CWDlCIY/Ss6AfFmjNT/qQI0cVt9sPz2n1B662aA/Z4hFJvHtvj8="
         ]
+      },
+      {
+        "type": "internal",
+        "encoding": "base64",
+        "numeric_type": "float64",
+        "quantity_type": "scalar",
+        "component_labels": ["response"],
+        "components": [
+            "f89NmgkstT+GypBoSmmqP9aGuojQTaQ/ItYdQ/Vqnj95B2AkaaKdP7t7CWDlCIY/Ss6AfFmjNT/qQI0cVt9sPz2n1B662aA/Z4hFJvHtvj8="
+        ]
+      },
+      {
+        "type": "internal",
+        "encoding": "base64",
+        "numeric_type": "float64",
+        "quantity_type": "scalar",
+        "component_labels": ["response"],
+        "components": [
+            "f89NmgkstT+GypBoSmmqP9aGuojQTaQ/ItYdQ/Vqnj95B2AkaaKdP7t7CWDlCIY/Ss6AfFmjNT/qQI0cVt9sPz2n1B662aA/Z4hFJvHtvj8="
+        ]
+      },
+      {
+        "type": "internal",
+        "encoding": "base64",
+        "numeric_type": "float64",
+        "quantity_type": "scalar",
+        "component_labels": ["response"],
+        "components": [
+            "f89NmgkstT+GypBoSmmqP9aGuojQTaQ/ItYdQ/Vqnj95B2AkaaKdP7t7CWDlCIY/Ss6AfFmjNT/qQI0cVt9sPz2n1B662aA/Z4hFJvHtvj8="
+        ]
       }
     ],
     "dimensions": [

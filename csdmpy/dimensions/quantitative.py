@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Base Quantitative class."""
 from copy import deepcopy
 
 from astropy.units import Quantity

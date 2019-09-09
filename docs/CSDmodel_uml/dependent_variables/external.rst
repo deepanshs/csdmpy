@@ -2,22 +2,22 @@
 
 .. _external_uml:
 
-=========================
 ExternalDependentVariable
-=========================
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
------------------
-Generalized Class
------------------
+.. only:: html
 
-.. raw:: html
+  Generalized Class
+  """""""""""""""""
 
-    <a class="btn btn-default" href=./dependent_variable.html#_dependent-var-uml>
-    DependentVariable </a>
+  .. raw:: html
+
+      <a class="btn btn-default" href=./dependent_variable.html#_dependent-var-uml>
+      DependentVariable </a>
 
 
 Description
-***********
+"""""""""""
 
 An ExternalDependentVariable is where the components of the dependent variable
 are defined in an external file whose location is defined as the value of the
@@ -25,14 +25,19 @@ are defined in an external file whose location is defined as the value of the
 
 
 Attributes
-**********
+""""""""""
 
-.. cssclass:: table-bordered table-hover table-striped
+.. cssclass:: table-bordered table-hover centered table-striped
 
-===============  =======================    =====================
-Name             Type                       Description
-===============  =======================    =====================
-components_url   String                     The location where the components
-                                            of the dependent variable are
-                                            stored as a binary data.
-===============  =======================    =====================
+.. list-table::
+  :widths: 25 25 50
+  :header-rows: 1
+
+  * - Name
+    - Type
+    - Description
+
+  * - components_url
+    - String
+    - A `required` URL location where the components of the dependent variable
+      are serialized as a binary data.

@@ -1,6 +1,6 @@
-==========
-How to ...
-==========
+======================
+Using csdmpy's objects
+======================
 
 The `csdmpy` module is not just designed for deserializing and serializing
 the `.csdf` or `.csdfe` files. It can also be used to create new datasets,

@@ -1,52 +1,64 @@
 
 .. _sparseSampling_uml:
 
-==============
 SparseSampling
-==============
+^^^^^^^^^^^^^^
 
 
 Description
-***********
+"""""""""""
 
 A SparseSampling object describes the dimensions indexes and grid vertexes
 where the components of the dependent variable are sparsely sampled.
 
 
 Attributes
-**********
+""""""""""
 
-.. cssclass:: table-bordered table-hover table-striped
+.. cssclass:: table-bordered table-hover centered table-striped
 
-====================  ========================   =====================
-Name                  Type                       Description
-====================  ========================   =====================
-dimension_indexes     [Integer, Integer, ...]    An array integers indicating
-                                                 along which dimensions the
-                                                 :ref:`dependent_var_uml` is
-                                                 sparsely sampled.
-sparse_grid_vertexes  [Integer, Integer, ...]    An flattened array of integer
-                                                 indexes along the sparse
-                                                 dimensions where the dependent
-                                                 variable is sampled. This is
-                                                 only `valid` when encoding is
-                                                 ``none``.
-sparse_grid_vertexes  String                     A `base64` string of a binary
-                                                 integer array of ``int32``
-                                                 numeric type representing
-                                                 the grid vertexes where the
-                                                 dependent variable is sampled
-                                                 This is only `valid` when
-                                                 encoding is ``base64``.
-encoding              String                     Enumeration with the following
-                                                 valid literals.
+.. list-table::
+  :widths: 25 25 50
+  :header-rows: 1
 
-                                                 - ``none``
-                                                 - ``base64``
-description           String                     Description of the dependent
-                                                 variable.
-application           Generic                    Generic dictionary object
-                                                 containing application
-                                                 specific metadata describing
-                                                 the dependent variable.
-====================  ========================   =====================
+  * - Name
+    - Type
+    - Description
+
+  * - dimension_indexes
+    - [Integer, Integer, ...]
+    - A `required` array of integers indicating along which dimensions the
+      :ref:`dependent_var_uml` is sparsely sampled.
+
+  * - sparse_grid_vertexes
+    - [Integer, Integer, ...]
+    - A required flattened array of integer indexes along the sparse dimensions
+      where the components of the dependent variable are sampled. This is only
+      `valid` when the encoding from the corresponding SparseSampling object is
+      ``none``.
+
+  * - sparse_grid_vertexes
+    - String
+    - A `required` base64 string of a flattened binary array of integer indexes
+      along the sparse dimensions where the components of the dependent
+      variable are sampled. This is only `valid` when the encoding from the
+      corresponding SparseSampling object is ``base64``.
+
+  * - encoding
+    - String
+    - A `required` enumeration with the following valid literals.
+      ``none``, ``base64``
+
+  * - unsigned_integer_type
+    - String
+    - A `required` enumeration with the following valid literals.
+      ``uint8``, ``uint16``, ``uint32``, ``uint64``
+
+  * - description
+    - String
+    - An `optional` description of the dependent variable.
+
+  * - application
+    - Generic
+    - An `optional` generic dictionary object containing application specific
+      metadata describing the SparseSampling object.

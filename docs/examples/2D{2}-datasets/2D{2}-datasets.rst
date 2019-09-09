@@ -125,6 +125,12 @@ is an initial processing step. We use the Numpy library for processing.
     >>> R/=R.min()
     >>> Rlog=np.log10(R)
 
+In the above processing, we calculate the X-Y grid points along with a
+scaled magnitude of the vector dataset. The magnitude is scaled such that the
+minimum value is one. This scaled magnitude is stored in ``R``.
+Next, we calculate the log of ``R`` to visualize the intensity of the plot on
+a logarithmic scale.
+
 And now, the plot.
 
 .. tip:: **Plotting a streamplot vector data**

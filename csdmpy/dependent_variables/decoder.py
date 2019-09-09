@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Decode for components encoding types."""
+"""Decoder for components' encoding types."""
 import base64
 
 import numpy as np
