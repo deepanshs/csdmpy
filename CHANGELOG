@@ -1,4 +1,9 @@
 
+version 0.1.3
+ - Fixed warning message when physical quantity name is not found in the astropy units package.
+ - Added dumps and loads function to dump and load the data model as json serialized string, respectively
+   without serializing it to a file.
+
 version 0.1.2
  - Add a required `unsigned_interger_type` for SparseSampling dimension.
  - Fixed minor bugs.

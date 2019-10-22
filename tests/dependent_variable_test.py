@@ -141,7 +141,7 @@ def test_external_new():
     dim = {
         "type": "external",
         "components_url": (
-            "https://www.grandinetti.org/resources/CSDM/cinnamon_raw_cinnamon stick.dat"
+            "https://osu.box.com/shared/static/b967zfl7efcvf471wm9a7tqb74kqomuh.dat"
         ),
         "component_labels": ["monotonic"],
         "name": "Headspace from cinnamon stick",
@@ -171,7 +171,7 @@ def test_external_new():
 
     # check component_url
     assert data.dependent_variables[0].components_url == (
-        "https://www.grandinetti.org/resources/CSDM/cinnamon_raw_cinnamon stick.dat"
+        "https://osu.box.com/shared/static/b967zfl7efcvf471wm9a7tqb74kqomuh.dat"
     )
 
     # component names

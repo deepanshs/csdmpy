@@ -7,7 +7,7 @@ from urllib.request import urlopen
 
 from csdmpy.dependent_variables.base_class import BaseDependentVariable
 from csdmpy.dependent_variables.decoder import Decoder
-from csdmpy.dependent_variables.download import get_absolute_uri_path
+from csdmpy.dependent_variables.download import get_absolute_url_path
 from csdmpy.dependent_variables.sparse import SparseSampling
 
 
@@ -35,10 +35,10 @@ class ExternalDataset(BaseDependentVariable):
 
         components_url = kwargs["components_url"]
         filename = kwargs["filename"]
-        absolute_URI = get_absolute_uri_path(components_url, filename)
+        absolute_url = get_absolute_url_path(components_url, filename)
         self._components_url = components_url
 
-        components = urlopen(absolute_URI).read()
+        components = urlopen(absolute_url).read()
         self._components = Decoder(
             self._encoding, self._quantity_type, components, self._numeric_type.dtype
         )

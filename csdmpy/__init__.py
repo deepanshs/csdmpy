@@ -21,7 +21,7 @@ from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 
 __all__ = ["load", "new", "plot"]
@@ -61,17 +61,26 @@ def load(filename=None, application=False):
     if filename is None:
         raise Exception("Missing a required data file address.")
 
-    if isdir(filename) and filename.endswith((".csdm", ".csdm/")):
-        csdm_files = [f for f in listdir(filename) if f.endswith((".csdf", ".csdfe"))]
-        if len(csdm_files) != 1:
-            raise Exception(
-                ("More that one csdf(e) files encountered in the .csdm folder")
-            )
-        csd_file = join(filename, csdm_files[0])
-    else:
-        csd_file = filename
+    # if isdir(filename):
+    #     csdm_files = [f for f in listdir(filename) if f.endswith((".csdf", ".csdfe"))]
+    #     if len(csdm_files) > 1:
+    #         raise Exception(
+    #             ("The given path is a folder. More that one csdf(e) files found in this folder")
+    #         )
+    #     if len(csdm_files) == 0:
+    #         raise Exception(
+    #             ("The given path is a folder. No csdf(e) file found in the folder.")
+    #         )
+    #     csd_file = join(filename, csdm_files[0])
+    # else:
+    #     csd_file = filename
 
-    csdm_object = _load(csd_file)
+    try:
+        dictionary = _import_json(filename)
+    except Exception as e:
+        raise Exception(e)
+
+    csdm_object = _load(dictionary, filename)
 
     # if sort_fft_order:
     #     axes = []
@@ -107,12 +116,7 @@ def load(filename=None, application=False):
     return csdm_object
 
 
-def _load(filename):
-    try:
-        dictionary = _import_json(filename)
-    except Exception as e:
-        raise Exception(e)
-
+def _load(dictionary, filename=None):
     key_list_root = dictionary.keys()
     if "CSDM" in key_list_root:
         raise KeyError("'CSDM' is not a valid keyword. Did you mean 'csdm'?")
@@ -175,6 +179,33 @@ def _load(filename):
             setattr(csdm, "_" + key, dictionary["csdm"][key])
 
     return csdm
+
+
+def loads(string):
+    """
+        Loads a JSON serialized string as a CSDM object.
+
+        Args:
+            string: A JSON serialized CSDM string.
+        Returns:
+            A CSDM object
+
+        Example:
+            >>> object_from_string = cp.loads(cp.new('A test dump').dumps())
+            >>> print(object_from_string.data_structure)  # doctest: +SKIP
+            {
+              "csdm": {
+                "version": "1.0",
+                "timestamp": "2019-10-21T20:33:17Z",
+                "description": "A test dump",
+                "dimensions": [],
+                "dependent_variables": []
+              }
+            }
+        """
+    dictionary = json.loads(string)
+    csdm_object = _load(dictionary)
+    return csdm_object
 
 
 def new(description=""):
