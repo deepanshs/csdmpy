@@ -50,7 +50,7 @@ class CSDM:
         "_filename",
     ]
 
-    def __init__(self, filename="", version=None, description=""):
+    def __init__(self, filename="", version=None, description="", **kwargs):
         """Python module from reading and writing csdm files."""
         if version is None:
             version = self.__latest_CSDM_version__
@@ -62,8 +62,6 @@ class CSDM:
                 ).format(version)
             )
 
-        self._dependent_variables = ()
-        self._dimensions = ()
         self._tags = []
         self._read_only = False
         self._version = version
@@ -72,6 +70,24 @@ class CSDM:
         self._description = description
         self._application = {}
         self._filename = filename
+
+        self._dimensions = ()
+        if "dimensions" in kwargs.keys():
+            if not isinstance(kwargs["dimensions"], list):
+                raise ValueError(
+                    "A list of valid Dimension dictionary objects is required."
+                )
+            for item in kwargs["dimensions"]:
+                self.add_dimension(item)
+
+        self._dependent_variables = ()
+        if "dependent_variables" in kwargs.keys():
+            if not isinstance(kwargs["dependent_variables"], list):
+                raise ValueError(
+                    "A list of valid DependentVariable dictionary objects is required."
+                )
+            for item in kwargs["dependent_variables"]:
+                self.add_dependent_variable(item)
 
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
@@ -462,6 +478,29 @@ class CSDM:
         csdm = {}
         csdm["csdm"] = dictionary
         return csdm
+
+    def dumps(self, read_only=False, version=__latest_CSDM_version__):
+        """
+        Serialize the :ref:`CSDM_api` instance as a JSON data-exchange string.
+
+        Args:
+            read_only (bool): If true, the file is serialized as read_only.
+            version (str): The file is serialized with the given CSD model version.
+
+        Example:
+            >>> data.dumps()  # doctest: +SKIP
+        """
+        dictionary = self._get_python_dictionary(None, version=version)
+
+        timestamp = datetime.datetime.utcnow().isoformat()[:-7] + "Z"
+        dictionary["csdm"]["timestamp"] = timestamp
+
+        if read_only:
+            dictionary["csdm"]["read_only"] = read_only
+
+        return json.dumps(
+            dictionary, ensure_ascii=False, sort_keys=False, indent=2, allow_nan=False
+        )
 
     def save(
         self,

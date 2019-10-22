@@ -267,8 +267,8 @@ def check_quantity_name(element, unit):
         warnings.warn(
             (
                 "The physical quantity name, '{0}', is not defined in the "
-                "astropy.units package. Continuing with '{1}' as the physical "
-                "quantity name."
+                "astropy.units package. Continuing with '{0}' as the physical "
+                "quantity name for unit {1}."
             ).format(element, str(unit))
         )
 
