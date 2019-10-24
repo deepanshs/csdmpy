@@ -51,10 +51,10 @@ class ExternalDataset(BaseDependentVariable):
         """Return the components_url of the CSDM serialized file."""
         return self._components_url
 
-    def _get_python_dictionary(
-        self, filename=None, dataset_index=None, for_display=True, version=None
+    def to_dict(
+        self, filename=None, dataset_index=None, for_display=False, version=None
     ):
-        """Serialize the ExternalDataset object as a python dictionary."""
+        """Return ExternalDataset object as a python dictionary."""
         dictionary = {}
 
         dictionary["type"] = "internal"

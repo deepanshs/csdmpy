@@ -130,7 +130,8 @@ class LinearDimension(BaseQuantitativeDimension):
 
         self._coordinates = _index * _increment
 
-    def _get_python_dictionary(self):
+    def to_dict(self):
+        """Return LinearDimension as a python dictionary."""
         obj = {}
         obj["type"] = self.__class__._type
 

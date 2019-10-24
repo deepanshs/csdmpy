@@ -139,9 +139,9 @@ class Dimension:
             self.subtype = MonotonicDimension(values=default["coordinates"], **default)
 
         if default["type"] == "linear":
-            self.subtype = self.linear(default)
+            self.subtype = self._linear(default)
 
-    def linear(self, default):
+    def _linear(self, default):
         """Create and assign a linear dimension."""
         missing_key = ["increment", "count"]
 
@@ -375,8 +375,7 @@ class Dimension:
         Raises:
             AttributeError: When modified.
         """
-        dictionary = self._get_python_dictionary()
-        return json.dumps(dictionary, ensure_ascii=False, sort_keys=False, indent=2)
+        return json.dumps(self.to_dict(), ensure_ascii=False, sort_keys=False, indent=2)
 
     @property
     def description(self):
@@ -762,12 +761,24 @@ class Dimension:
     #                           Dimension Methods                             #
     # ======================================================================= #
 
-    def _get_python_dictionary(self):
-        r"""Return the Dimension instance as a python dictionary."""
-        return self.subtype._get_python_dictionary()
+    def to_dict(self):
+        r"""
+        Return Dimension object as a python dictionary.
+
+        Example:
+            >>> x.to_dict()
+            {'type': 'linear', 'description': 'This is a test', 'count': 10, 'increment': '5.0 G', 'coordinates_offset': '10.0 mT', 'origin_offset': '10.0 T', 'quantity_name': 'magnetic flux density', 'label': 'field strength'}
+        """
+        return self.subtype.to_dict()
 
     def is_quantitative(self):
-        r"""Return True if the independent variable is quantitative."""
+        r"""
+        Return True if the dependent variable is quantitative.
+
+        Example:
+            >>> x.is_quantitative()
+            True
+        """
         return self.subtype._is_quantitative()
 
     def to(self, unit="", equivalencies=None):

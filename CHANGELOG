@@ -1,3 +1,5 @@
+v0.1.4
+ - Added to_dict method to the CSDM, Dimension, and DependentVariable objects. Return the said object as python dictionary.
 
 version 0.1.3
  - Fixed warning message when physical quantity name is not found in the astropy units package.

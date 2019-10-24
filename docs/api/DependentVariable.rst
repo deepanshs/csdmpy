@@ -33,6 +33,7 @@ DependentVariable
 
     .. autosummary::
         ~DependentVariable.to
+        ~DependentVariable.to_dict
 
 
     .. rubric:: Attributes Documentation
@@ -54,3 +55,4 @@ DependentVariable
 
     .. rubric:: Method Documentation
     .. automethod:: to
+    .. automethod:: to_dict

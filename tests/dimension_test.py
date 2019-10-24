@@ -118,6 +118,7 @@ def test_linear_new():
     assert data.data_structure == json.dumps(
         dict1, ensure_ascii=False, sort_keys=False, indent=2
     )
+    assert data.dimensions[0].to_dict() == dict1["csdm"]["dimensions"][0]
 
 
 # monotonic dimension
@@ -250,6 +251,7 @@ def test_monotonic_new():
     assert data.data_structure == json.dumps(
         dict1, ensure_ascii=False, sort_keys=False, indent=2
     )
+    assert data.dimensions[0].to_dict() == dict1["csdm"]["dimensions"][0]
 
 
 # labeled dimension

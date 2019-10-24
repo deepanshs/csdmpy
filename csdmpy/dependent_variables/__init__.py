@@ -393,8 +393,12 @@ class DependentVariable:
         Raises:
             AttributeError: When modified.
         """
-        dictionary = self._get_python_dictionary()
-        return json.dumps(dictionary, ensure_ascii=False, sort_keys=False, indent=2)
+        return json.dumps(
+            self._to_dict(for_display=True),
+            ensure_ascii=False,
+            sort_keys=False,
+            indent=2,
+        )
 
     @property
     def description(self):
@@ -673,14 +677,6 @@ class DependentVariable:
     #                                  Methods                                #
     # ======================================================================= #
 
-    # def scale(self, value):
-    #     r"""NotImplemented."""
-    #     value = _assign_and_check_unit_consistency(value, None)
-    #     self._unit = self.unit*value.unit
-    #     # self.subtype.set_attribute('_unit', self.unit*value.unit)
-    #     value = self.unit*value.value
-    #     self.subtype.set_attribute('_components', self.components*value)
-
     def to(self, unit):
         r"""
         Convert the unit of the dependent variable to the `unit`.
@@ -719,14 +715,21 @@ class DependentVariable:
         # )
         # self.subtype.set_attribute('_unit', factor.unit)
 
-    def _get_python_dictionary(
-        self, filename=None, dataset_index=None, for_display=True, version=None
+    def to_dict(self):
+        """
+        Return DependentVariable object as a python dictionary.
+
+        Example:
+            >>> y.to_dict()
+            {'type': 'internal', 'description': 'A test image', 'name': 'star', 'unit': 's * W', 'quantity_name': 'energy', 'encoding': 'none', 'numeric_type': 'float32', 'quantity_type': 'pixel_3', 'components': [[0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0], [10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0], [20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0]]}
+        """
+        return self.subtype.to_dict()
+
+    def _to_dict(
+        self, filename=None, dataset_index=None, for_display=False, version=None
     ):
-        """Return the DependentVariable instance as a python dictionary."""
-        dictionary = self.subtype._get_python_dictionary(
-            filename, dataset_index, for_display, version
-        )
-        return dictionary
+        """Return DependentVariable object as a python dictionary."""
+        return self.subtype.to_dict(filename, dataset_index, for_display, version)
 
 
 def check_sparse_sampling_key_value(input_dict):

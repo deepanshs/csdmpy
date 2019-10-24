@@ -67,3 +67,5 @@ def test_csdm():
     assert data.data_structure == str(
         json.dumps(structure, ensure_ascii=False, sort_keys=False, indent=2)
     )
+
+    assert data.to_dict() == structure

@@ -110,30 +110,47 @@ def test_internal_new():
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.dependent_variables[0].application = ""
 
+    dependent_variables_dict_1 = [
+        {
+            "type": "internal",
+            "description": "This is a test",
+            "name": "happy days",
+            "numeric_type": "complex64",
+            "quantity_type": "vector_2",
+            "component_labels": [":(", "2"],
+            "components": [
+                ["(100+0j), (101+0j), ..., " "(108+0j), (109+0j)"],
+                ["(110+0j), (111+0j), ..., (118+0j), (119+0j)"],
+            ],
+        }
+    ]
     dict1 = {
         "csdm": {
             "version": "1.0",
             "dimensions": [],
-            "dependent_variables": [
-                {
-                    "type": "internal",
-                    "description": "This is a test",
-                    "name": "happy days",
-                    "numeric_type": "complex64",
-                    "quantity_type": "vector_2",
-                    "component_labels": [":(", "2"],
-                    "components": [
-                        ["(100+0j), (101+0j), ..., " "(108+0j), (109+0j)"],
-                        ["(110+0j), (111+0j), ..., (118+0j), (119+0j)"],
-                    ],
-                }
-            ],
+            "dependent_variables": dependent_variables_dict_1,
         }
     }
 
     assert data.data_structure == str(
         json.dumps(dict1, ensure_ascii=False, sort_keys=False, indent=2)
     )
+
+    data.dependent_variables[0].encoding = "base64"
+    dependent_variables_dict_2 = {
+        "type": "internal",
+        "description": "This is a test",
+        "name": "happy days",
+        "numeric_type": "complex64",
+        "quantity_type": "vector_2",
+        "component_labels": [":(", "2"],
+        "encoding": "base64",
+        "components": [
+            "AADIQgAAAAAAAMpCAAAAAAAAzEIAAAAAAADOQgAAAAAAANBCAAAAAAAA0kIAAAAAAADUQgAAAAAAANZCAAAAAAAA2EIAAAAAAADaQgAAAAA=",
+            "AADcQgAAAAAAAN5CAAAAAAAA4EIAAAAAAADiQgAAAAAAAORCAAAAAAAA5kIAAAAAAADoQgAAAAAAAOpCAAAAAAAA7EIAAAAAAADuQgAAAAA=",
+        ],
+    }
+    assert data.dependent_variables[0].to_dict() == dependent_variables_dict_2
 
 
 def test_external_new():

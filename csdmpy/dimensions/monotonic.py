@@ -80,7 +80,8 @@ class MonotonicDimension(BaseQuantitativeDimension):
         self._values = values
         self._coordinates = _value
 
-    def _get_python_dictionary(self):
+    def to_dict(self):
+        """Return MonotonicDimension as a python dictionary."""
         dictionary = {}
 
         dictionary["type"] = self.__class__._type

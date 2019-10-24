@@ -21,6 +21,7 @@ CSDM
       ~CSDM.geographic_coordinate
       ~CSDM.dimensions
       ~CSDM.dependent_variables
+      ~CSDM.tags
       ~CSDM.application
       ~CSDM.data_structure
       ~CSDM.filename
@@ -31,6 +32,8 @@ CSDM
 
       ~CSDM.add_dimension
       ~CSDM.add_dependent_variable
+      ~CSDM.to_dict
+      ~CSDM.dumps
       ~CSDM.save
       ~CSDM.copy
 
@@ -43,6 +46,7 @@ CSDM
    .. autoattribute:: geographic_coordinate
    .. autoattribute:: dimensions
    .. autoattribute:: dependent_variables
+   .. autoattribute:: tags
    .. autoattribute:: application
    .. autoattribute:: data_structure
    .. autoattribute:: filename
@@ -51,5 +55,7 @@ CSDM
 
    .. automethod:: add_dimension
    .. automethod:: add_dependent_variable
+   .. automethod:: to_dict
+   .. automethod:: dumps
    .. automethod:: save
    .. automethod:: copy

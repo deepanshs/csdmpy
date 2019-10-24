@@ -90,7 +90,8 @@ class LabeledDimension:
         """
         return False
 
-    def _get_python_dictionary(self):
+    def to_dict(self):
+        """Return LabeledDimension as a python dictionary."""
         dictionary = {}
         dictionary["type"] = self._type
         if self._description.strip() != "":

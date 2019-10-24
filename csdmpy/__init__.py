@@ -21,7 +21,7 @@ from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 
 __all__ = ["load", "new", "plot"]
@@ -80,7 +80,8 @@ def load(filename=None, application=False):
     except Exception as e:
         raise Exception(e)
 
-    csdm_object = _load(dictionary, filename)
+    dictionary["filename"] = filename
+    csdm_object = parse_dict(dictionary)
 
     # if sort_fft_order:
     #     axes = []
@@ -116,7 +117,12 @@ def load(filename=None, application=False):
     return csdm_object
 
 
-def _load(dictionary, filename=None):
+def parse_dict(dictionary):
+    """Parse a CSDM compliant python dictionary and return a CSDM object.
+
+        Args:
+            dictionary: A CSDM compliant python dictionary.
+    """
     key_list_root = dictionary.keys()
     if "CSDM" in key_list_root:
         raise KeyError("'CSDM' is not a valid keyword. Did you mean 'csdm'?")
@@ -155,7 +161,11 @@ def _load(dictionary, filename=None):
     _version = dictionary["csdm"]["version"]
     validate(_version, "version", str)
 
-    csdm = CSDM(filename, _version)
+    if "filename" in dictionary.keys():
+        filename = dictionary["filename"]
+    else:
+        filename = None
+    csdm = CSDM(filename=filename, version=_version)
 
     if "timestamp" in dictionary["csdm"].keys():
         _timestamp = dictionary["csdm"]["timestamp"]
@@ -204,7 +214,7 @@ def loads(string):
             }
         """
     dictionary = json.loads(string)
-    csdm_object = _load(dictionary)
+    csdm_object = parse_dict(dictionary)
     return csdm_object
 
 

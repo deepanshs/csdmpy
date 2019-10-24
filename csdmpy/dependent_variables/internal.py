@@ -60,10 +60,10 @@ class InternalDataset(BaseDependentVariable):
         if kwargs["sparse_sampling"] != {}:
             self._sparse_sampling = SparseSampling(**kwargs["sparse_sampling"])
 
-    def _get_python_dictionary(
-        self, filename=None, dataset_index=None, for_display=True, version=None
+    def to_dict(
+        self, filename=None, dataset_index=None, for_display=False, version=None
     ):
-        """Serialize the InternalData object as a python dictionary."""
+        """Return InternalDataset object as a python dictionary."""
         dictionary = {}
 
         dictionary["type"] = "internal"

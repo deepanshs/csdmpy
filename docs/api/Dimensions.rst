@@ -36,6 +36,8 @@ Dimension
 
     .. autosummary::
         ~Dimension.to
+        ~Dimension.to_dict
+        ~Dimension.is_quantitative
 
 
     .. rubric:: Attributes Documentation
@@ -61,3 +63,5 @@ Dimension
     .. rubric:: Method Documentation
 
     .. automethod:: to
+    .. automethod:: to_dict
+    .. automethod:: is_quantitative

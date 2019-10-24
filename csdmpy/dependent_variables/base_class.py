@@ -214,7 +214,7 @@ class BaseDependentVariable:
     # ----------------------------------------------------------------------- #
 
     def _get_dictionary(
-        self, filename=None, dataset_index=None, for_display=True, version=None
+        self, filename=None, dataset_index=None, for_display=False, version=None
     ):
         r"""Return a dictionary object of the base class."""
         obj = {}

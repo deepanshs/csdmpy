@@ -71,8 +71,10 @@ class CSDM:
         self._application = {}
         self._filename = filename
 
+        kwargs_keys = kwargs.keys()
+
         self._dimensions = ()
-        if "dimensions" in kwargs.keys():
+        if "dimensions" in kwargs_keys:
             if not isinstance(kwargs["dimensions"], list):
                 raise ValueError(
                     "A list of valid Dimension dictionary objects is required."
@@ -81,7 +83,7 @@ class CSDM:
                 self.add_dimension(item)
 
         self._dependent_variables = ()
-        if "dependent_variables" in kwargs.keys():
+        if "dependent_variables" in kwargs_keys:
             if not isinstance(kwargs["dependent_variables"], list):
                 raise ValueError(
                     "A list of valid DependentVariable dictionary objects is required."
@@ -244,7 +246,7 @@ class CSDM:
         Raises:
             AttributeError: When modified.
         """
-        dictionary = self._get_python_dictionary(self.filename, print_function=True)
+        dictionary = self._to_dict(filename=self.filename, for_display=True)
 
         return json.dumps(dictionary, ensure_ascii=False, sort_keys=False, indent=2)
 
@@ -436,10 +438,31 @@ class CSDM:
         self._dependent_variables[-1].encoding = "base64"
         self._dependent_variables[-1].type = "internal"
 
-    def _get_python_dictionary(
-        self, filename, print_function=False, version=__latest_CSDM_version__
+    def to_dict(
+        self, update_timestamp=False, read_only=False, version=__latest_CSDM_version__
     ):
-        """Return the CSDM instance as a python dictionary."""
+        """
+        Serialize the :ref:`CSDM_api` instance as a python dictionary.
+
+        Args:
+            update_timestamp(bool): If True, timestamp is updated to current time.
+            read_only (bool): If true, the read_only flag is set true.
+            version (str): Serialize the dict with the given csdm version.
+
+        Example:
+            >>> data.to_dict()
+            {'csdm': {'version': '1.0', 'timestamp': '1994-11-05T13:15:30Z', 'geographic_coordinate': {'latitude': '10 deg', 'longitude': '93.2 deg', 'altitude': '10 m'}, 'description': 'A simulated sine curve.', 'dimensions': [{'type': 'linear', 'description': 'A temporal dimension.', 'count': 10, 'increment': '0.1 s', 'quantity_name': 'time', 'label': 'time', 'reciprocal': {'quantity_name': 'frequency'}}], 'dependent_variables': [{'type': 'internal', 'description': 'A response dependent variable.', 'name': 'sine curve', 'encoding': 'base64', 'numeric_type': 'float32', 'quantity_type': 'scalar', 'component_labels': ['response'], 'components': ['AAAAABh5Fj9xeHM/cXhzPxh5Fj8yMQ0lGHkWv3F4c79xeHO/GHkWvw==']}]}}
+        """
+        return self._to_dict()
+
+    def _to_dict(
+        self,
+        filename=None,
+        update_timestamp=False,
+        read_only=False,
+        version=__latest_CSDM_version__,
+        for_display=False,
+    ):
         dictionary = {}
 
         dictionary["version"] = self.version
@@ -447,8 +470,12 @@ class CSDM:
         if self.read_only:
             dictionary["read_only"] = self.read_only
 
-        if self.timestamp != "":
-            dictionary["timestamp"] = self.timestamp
+        if update_timestamp:
+            timestamp = datetime.datetime.utcnow().isoformat()[:-7] + "Z"
+            dictionary["timestamp"] = timestamp
+        else:
+            if self.timestamp != "":
+                dictionary["timestamp"] = self.timestamp
 
         if self.geographic_coordinate != {}:
             dictionary["geographic_coordinate"] = self.geographic_coordinate
@@ -462,15 +489,15 @@ class CSDM:
         dictionary["dependent_variables"] = []
 
         for i in range(len(self.dimensions)):
-            dictionary["dimensions"].append(self.dimensions[i]._get_python_dictionary())
+            dictionary["dimensions"].append(self.dimensions[i].to_dict())
 
         _length_of_dependent_variables = len(self.dependent_variables)
         for i in range(_length_of_dependent_variables):
             dictionary["dependent_variables"].append(
-                self.dependent_variables[i]._get_python_dictionary(
+                self.dependent_variables[i]._to_dict(
                     filename=filename,
                     dataset_index=i,
-                    for_display=print_function,
+                    for_display=for_display,
                     version=self.__latest_CSDM_version__,
                 )
             )
@@ -479,27 +506,26 @@ class CSDM:
         csdm["csdm"] = dictionary
         return csdm
 
-    def dumps(self, read_only=False, version=__latest_CSDM_version__):
+    def dumps(
+        self, update_timestamp=False, read_only=False, version=__latest_CSDM_version__
+    ):
         """
         Serialize the :ref:`CSDM_api` instance as a JSON data-exchange string.
 
         Args:
+            update_timestamp(bool): If True, timestamp is updated to current time.
             read_only (bool): If true, the file is serialized as read_only.
             version (str): The file is serialized with the given CSD model version.
 
         Example:
             >>> data.dumps()  # doctest: +SKIP
         """
-        dictionary = self._get_python_dictionary(None, version=version)
-
-        timestamp = datetime.datetime.utcnow().isoformat()[:-7] + "Z"
-        dictionary["csdm"]["timestamp"] = timestamp
-
-        if read_only:
-            dictionary["csdm"]["read_only"] = read_only
-
         return json.dumps(
-            dictionary, ensure_ascii=False, sort_keys=False, indent=2, allow_nan=False
+            self._to_dict(update_timestamp, read_only, version),
+            ensure_ascii=False,
+            sort_keys=False,
+            indent=2,
+            allow_nan=False,
         )
 
     def save(
@@ -552,7 +578,7 @@ class CSDM:
             import os
             os.remove('my_file.csdf')
         """
-        dictionary = self._get_python_dictionary(filename, version=version)
+        dictionary = self._to_dict(filename=filename, version=version)
 
         timestamp = datetime.datetime.utcnow().isoformat()[:-7] + "Z"
         dictionary["csdm"]["timestamp"] = timestamp
@@ -583,6 +609,9 @@ class CSDM:
     def copy(self):
         """
         Create a copy of the current CSDM instance.
+
+        Example:
+            >>> data.copy()  #doctest: +SKIP
 
         Returns:
             A CSDM instance.
