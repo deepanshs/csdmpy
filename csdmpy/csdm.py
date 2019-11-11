@@ -756,49 +756,35 @@ class CSDM:
 
         ndim = len(self.dimensions)
 
+        # calculate the phase that will be applied to the fft amplitudes.
+        reciprocal_coordinates = dimension_object.reciprocal._coordinates_offset.to(
+            unit_in
+        ).value
+        coordinates = dimension_object._coordinates.to(unit).value
+        phase = np.exp(2j * np.pi * reciprocal_coordinates * coordinates)
+        phase_grid = get_broadcase_shape(phase, ndim, axis=index)
         # toggle the value of the complex_fft attribute
         if dimension_object._complex_fft:
-            phase = np.exp(
-                2j
-                * np.pi
-                * dimension_object.reciprocal._coordinates_offset.to(unit_in).value
-                * dimension_object._coordinates.to(unit).value
-            )
-            for i in range(len(self.dependent_variables)):
+            for item in self.dependent_variables:
                 signal_ft = ifft(
-                    ifftshift(
-                        self.dependent_variables[i].subtype._components, axes=index
-                    )
-                    * get_broadcase_shape(phase, ndim, axis=index),
+                    ifftshift(item.subtype._components, axes=index) * phase_grid,
                     axis=index,
                 )
-                self.dependent_variables[i].subtype._components = signal_ft
+                item.subtype._components = signal_ft
             dimension_object._complex_fft = False
         else:  # FFT is false
-            # calculate the phase that will be applied to the fft amplitudes.
-            phase = np.exp(
-                2j
-                * np.pi
-                * dimension_object.reciprocal._coordinates_offset.to(unit_in).value
-                * dimension_object._coordinates.to(unit).value
-            )
-            for i in range(len(self.dependent_variables)):
+            for item in self.dependent_variables:
                 signal_ft = fftshift(
-                    fft(self.dependent_variables[i].subtype._components, axis=index)
-                    * get_broadcase_shape(phase, ndim, axis=index),
-                    axes=index,
+                    fft(item.subtype._components, axis=index) * phase_grid, axes=index
                 )
-                self.dependent_variables[i].subtype._components = signal_ft
+                item.subtype._components = signal_ft
             dimension_object._complex_fft = True
 
-        for i in range(len(self.dependent_variables)):
+        for item in self.dependent_variables:
             signal_ft = fftshift(
-                fft(self.dependent_variables[i].subtype._components, axis=index)
-                * get_broadcase_shape(phase, ndim, axis=index),
-                axes=-index - 1,
+                fft(item.subtype._components, axis=index) * phase_grid, axes=-index - 1
             )
-
-            self.dependent_variables[i].subtype._components = signal_ft
+            item.subtype._components = signal_ft
 
         # self.dimensions[index].gcv._reciprocal()
         # self._toggle_complex_fft(self.dimensions[index])

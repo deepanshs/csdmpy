@@ -4,7 +4,6 @@ import json
 import numpy as np
 import pytest
 from astropy import units as u
-from numpy.fft import fftshift
 
 import csdmpy as cp
 from csdmpy.units import ScalarQuantity
@@ -74,28 +73,25 @@ def test_linear_new():
     data.dimensions[0].origin_offset = "1 km/s"
     assert str(data.dimensions[0].origin_offset) == "1.0 km / s"
     assert np.all(data.dimensions[0].coordinates.value == np.arange(12) * 10.0 + 5.0)
-    assert np.all(
-        data.dimensions[0].absolute_coordinates.value
-        == np.arange(12) * 10.0 + 5.0 + 1000.0
-    )
+
+    test_with = np.arange(12) * 10.0 + 5.0 + 1000.0
+    assert np.all(data.dimensions[0].absolute_coordinates.value == test_with)
 
     data.dimensions[0].increment = "20 m/s"
     assert str(data.dimensions[0].increment) == "20.0 m / s"
     assert np.all(data.dimensions[0].coordinates.value == np.arange(12) * 20.0 + 5.0)
-    assert np.all(
-        data.dimensions[0].absolute_coordinates.value
-        == np.arange(12) * 20.0 + 5.0 + 1000.0
-    )
+
+    test_with = np.arange(12) * 20.0 + 5.0 + 1000.0
+    assert np.all(data.dimensions[0].absolute_coordinates.value == test_with)
 
     data.dimensions[0].complex_fft = True
     assert data.dimensions[0].complex_fft is True
     assert np.all(
         data.dimensions[0].coordinates.value == (np.arange(12) - 6) * 20.0 + 5.0
     )
-    assert np.all(
-        data.dimensions[0].absolute_coordinates.value
-        == (np.arange(12) - 6) * 20.0 + 5.0 + 1000.0
-    )
+
+    test_with = (np.arange(12) - 6) * 20.0 + 5.0 + 1000.0
+    assert np.all(data.dimensions[0].absolute_coordinates.value == test_with)
 
     dict1 = {
         "csdm": {

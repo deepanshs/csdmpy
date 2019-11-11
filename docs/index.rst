@@ -24,6 +24,14 @@ Welcome to csdmpy's documentation!
     .. image:: https://badge.fury.io/py/csdmpy.svg
         :target: https://badge.fury.io/py/csdmpy
 
+    .. image:: https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18
+        :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/
+        :alt: Total alerts
+
+    .. image:: https://img.shields.io/lgtm/grade/python/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18
+        :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/context:python
+        :alt: Language grade: Python
+
 ----
 
 The `csdmpy` package is the Python support for the core scientific

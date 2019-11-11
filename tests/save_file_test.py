@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
-import pytest
-
 import csdmpy as cp
-from csdmpy.utils import check_and_assign_bool
-from csdmpy.utils import check_encoding
-from csdmpy.utils import NumericType
-from csdmpy.utils import QuantityType
 
 
 def setup():

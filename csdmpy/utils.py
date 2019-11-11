@@ -143,7 +143,10 @@ class QuantityType:
 
         lst = literals_quantity_type
         if keyword not in lst:
-            message = "`{0}` is not a valid `quantity_type` enumeration literal. The allowed values are {1}."
+            message = (
+                "`{0}` is not a valid `quantity_type` enumeration literal. "
+                "The allowed values are {1}."
+            )
 
             raise ValueError(
                 message.format(
@@ -285,11 +288,14 @@ class NumericType:
 
     def _check_numeric_type(self, element):
         lst = self.__class__._lst
+        text = (
+            "is not a valid `numeric_type` enumeration literal. The allowed values are"
+        )
         if element not in lst.keys():
             raise ValueError(
                 (
-                    "`{0}`, is not a valid `numeric_type` enumeration literal. The allowed values are {1}".format(
-                        element, "'" + "', '".join(self.__class__.literals) + "'"
+                    "`{0}`, {1} {2}".format(
+                        element, text, "'" + "', '".join(self.__class__.literals) + "'"
                     )
                 )
             )

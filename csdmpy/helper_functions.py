@@ -16,7 +16,7 @@ except ImportError as e:
 
 import numpy as np
 
-global SOUND
+# global SOUND
 scalar = ["scalar", "vector_1", "pixel_1", "matrix_1_1", "symmetric_matrix_1"]
 
 try:
@@ -227,23 +227,23 @@ def vector_plot(x, y, i0, fig, ax, *args, **kwargs):
     ax[i][j].grid(color="gray", linestyle="--", linewidth=0.5)
 
 
-def audio(x, y, i0, fig, ax):
-    try:
-        SOUND = 1
-        import sounddevice as sd
-    except ImportError:
-        SOUND = 0
-        string = (
-            "Module 'sounddevice' is not installed. All audio data files will "
-            "not be played. To enable audio files, install 'sounddevice' using"
-            " 'pip install sounddevice'."
-        )
-        warn(string)
+# def audio(x, y, i0, fig, ax):
+#     try:
+#         SOUND = 1
+#         import sounddevice as sd
+#     except ImportError:
+#         SOUND = 0
+#         string = (
+#             "Module 'sounddevice' is not installed. All audio data files will "
+#             "not be played. To enable audio files, install 'sounddevice' using"
+#             " 'pip install sounddevice'."
+#         )
+#         warn(string)
 
-    plot1D(x, y, i0, ax)
-    if SOUND == 1:
-        data_max = y[i0].components.max()
-        sd.play(0.9 * y[i0].components.T / data_max, 1 / x[0].increment.to("s").value)
+#     plot1D(x, y, i0, ax)
+#     if SOUND == 1:
+#         data_max = y[i0].components.max()
+#         sd.play(0.9 * y[i0].components.T / data_max, 1 / x[0].increment.to("s").value)
 
 
 # =========================================================================== #
@@ -366,18 +366,6 @@ try:
             layout = QtWidgets.QVBoxLayout(self._main)
             layout.setSpacing(0)
             layout.setContentsMargins(0, 0, 0, 0)
-
-            # def display(event_location):
-            #     print('x={0}, y={1}, xdata={2}, ydata={3}'.format( \
-            #         event_location.x, event_location.y,
-            #         event_location.xdata, event_location.ydata))
-
-            def key_event(event):
-                pass
-                # print("you pressed", event.button, event.xdata, event.ydata)
-                # im = ax.get_images()[0]
-                # limits = im.get_clim()
-                # im.set_clim(limits/2)
 
             def set_gui():
                 tab_ = QtWidgets.QWidget()

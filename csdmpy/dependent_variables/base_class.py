@@ -315,5 +315,4 @@ def reduced_display(_components):
         temp = _components[i].ravel()
         lst = [str(temp[0]), str(temp[1]), str(temp[-2]), str(temp[-1])]
         _string.append([("{0}, {1}, ..., {2}, {3}").format(*lst)])
-    temp = None
     return _string

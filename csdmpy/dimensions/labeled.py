@@ -48,7 +48,7 @@ class LabeledDimension:
             self._labels = np.asarray(labels)
             self._count = len(labels)
         else:
-            i = np.where(items == False)[0][0]
+            i = np.where(items is False)[0][0]
             raise ValueError(
                 f"A list of string labels are required, found {type(labels[i])} at index {i}."
             )

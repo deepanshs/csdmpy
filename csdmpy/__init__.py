@@ -4,12 +4,7 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-from os import listdir
-from os.path import isdir
-from os.path import join
 from urllib.parse import urlparse
-
-from numpy.fft import fftshift
 
 from csdmpy.csdm import CSDM
 from csdmpy.dependent_variables import DependentVariable

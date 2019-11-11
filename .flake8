@@ -1,5 +1,8 @@
 [flake8]
-ignore = E203, E266, E501, W503, F403, F401, E712
+ignore = E501
 max-line-length = 88
+exclude = .eggs,*.egg,build, csdmpy/__init__.py
 max-complexity = 18
 select = B,C,E,F,W,T4,B9
+
+# ignore = E203, E266, E501, W503, F403, F401, E712
