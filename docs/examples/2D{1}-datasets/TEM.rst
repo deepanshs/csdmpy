@@ -66,17 +66,16 @@ Let's import the CSD model data-file and look at its data structure.
       }
     }
 
-This dataset contains two uniformly spaced linear dimensions and one
-single-component dependent variable.
-The tuples of the dimension and the dependent variable instances from this
-example are
+This dataset consists of two linear dimensions and one single-component
+dependent variable. The tuples of the dimension and the dependent variable
+instances from this example are
 
 .. doctest::
 
     >>> x = TEM.dimensions
     >>> y = TEM.dependent_variables
 
-with the respective coordinates (viewed only for the first ten coordinates),
+and the respective coordinates (viewed only for the first ten coordinates),
 
 .. doctest::
 

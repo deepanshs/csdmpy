@@ -62,6 +62,7 @@ class BaseQuantitativeDimension:
 
         self.label = label
         self._unit = unit
+        self._equivalencies = None
 
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
@@ -185,7 +186,10 @@ class BaseQuantitativeDimension:
     def _to(self, unit="", equivalencies=None):
         r"""Convert the unit to given value `unit`."""
         unit = validate(unit, "unit", str)
-        self._unit = ScalarQuantity(unit, self._unit).quantity.unit
+        if equivalencies is None:
+            self._unit = ScalarQuantity(unit, self._unit).quantity.unit
+        else:
+            self._unit = ScalarQuantity(unit).quantity.unit
         self._equivalencies = equivalencies
 
 

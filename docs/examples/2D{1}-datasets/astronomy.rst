@@ -14,7 +14,7 @@ Astronomy dataset
 The following dataset is a new observation of the Bubble Nebula
 acquired by
 `The Hubble Heritage Team <https://archive.stsci.edu/prepds/heritage/bubble/introduction.html>`_,
-on February 2016. The original dataset was obtained in the FITS format
+in February 2016. The original dataset was obtained in the FITS format
 and subsequently converted to the CSD model file-format. For the convenience of
 illustration, we have downsampled the original dataset.
 
@@ -67,8 +67,8 @@ Let's load the `.csdfe` file and look at its data structure.
 
 Here, the variable ``bubble_nebula`` is an instance of the :ref:`csdm_api`
 class. From the data structure, one finds two dimensions, labeled as
-*Right Ascension* and *Declination*, and a single one-component dependent
-variable named as *Bubble Nebula, 656nm*.
+*Right Ascension* and *Declination*, and one single-component dependent
+variable named *Bubble Nebula, 656nm*.
 
 
 Let's get the tuples of the dimension and dependent variable instances from
@@ -79,8 +79,8 @@ the ``bubble_nebula`` instance following,
     >>> x = bubble_nebula.dimensions
     >>> y = bubble_nebula.dependent_variables
 
-Because there are two dimension instances in ``x``, let's look
-at the coordinates along each dimensions, using the
+There are two dimension instances in ``x``. Let's look
+at the coordinates along each dimension, using the
 :attr:`~csdmpy.dimensions.Dimension.coordinates` attribute of the
 respective instances.
 
@@ -94,7 +94,7 @@ respective instances.
     [61.12851495 61.12863695 61.12875894 61.12888094 61.12900293 61.12912493
      61.12924692 61.12936892 61.12949092 61.12961291] deg
 
-Here, we only print the first 10 coordinates along the respective dimensions.
+Here, we only print the first ten coordinates along the respective dimensions.
 
 The component of the dependent variable is accessed through the
 :attr:`~csdmpy.dependent_variables.DependentVariable.components` attribute.
@@ -107,7 +107,7 @@ The component of the dependent variable is accessed through the
 
 Now, to plot the dataset.
 
-.. tip:: **Plotting an intensity data**
+.. tip:: **Intensity plot.**
 
   .. doctest::
 
@@ -120,6 +120,7 @@ Now, to plot the dataset.
       ...     fig, ax = plt.subplots(1,1, figsize=(4,3))
       ...     ax.set_facecolor('w')
       ...
+      ...     # the coordinates along the two dimensions
       ...     x0 = x[0].coordinates
       ...     x1 = x[1].coordinates
       ...

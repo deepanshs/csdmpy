@@ -152,6 +152,14 @@ class DependentVariable:
             self._type = "external"
             self.subtype = ExternalDataset(**dictionary)
 
+    def __repr__(self):
+        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
+        return f"DependentVariable({properties})"
+
+    def __str__(self):
+        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
+        return f"DependentVariable({properties})"
+
     # ======================================================================= #
     #                      DependentVariable  Attributes                      #
     # ======================================================================= #

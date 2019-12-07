@@ -15,7 +15,7 @@ The dataset consists of two spatial dimensions describing the geographical
 coordinates of the earth surface and five dependent variables with
 1) surface temperature, 2) air temperature at 2 m, 3) relative humidity,
 4) air pressure at sea level as the four `scalar` quantity_type dependent
-variable, and 5) wind velocity as the two-component `vector`, quantity type
+variable, and 5) wind velocity as the two-component `vector`, quantity_type
 dependent variable.
 
 Let's import the `csdmpy` module and load this dataset.
@@ -27,8 +27,8 @@ Let's import the `csdmpy` module and load this dataset.
     >>> filename = 'Test Files/correlatedDataset/forecast/NCEI.csdfe'
     >>> multi_dataset = cp.load(filename)
 
-Let's get the tuple of dimension and dependent variable objects from
-``multi_dataset`` instance.
+The tuple of dimension and dependent variable objects from
+``multi_dataset`` instance are
 
 .. doctest::
 
@@ -194,8 +194,9 @@ dependent variable is
     }
 
 If you have followed all previous examples, the above data structure should
-be self-explanatory. The following snippet plots a dependent variable
-of scalar `quantity_type`.
+be self-explanatory.
+
+The following snippet plots a dependent variable of scalar `quantity_type`.
 
 .. tip:: **Plotting a scalar intensity plot**
 
@@ -322,9 +323,8 @@ Similarly, other dependent variables with their respective plots are
 .. figure:: ../../_images/NCEI.csdfeAirpressureatsealevel.*
     :figclass: figure-polaroid
 
-Notice, we didn't plot the dependent variable at index 2. This is because this
-particular dependent variable is a vector dataset representing the wind
-velocity.
+Notice, we skipped the dependent variable at index two. The reason is that
+this particular dependent variable is a vector dataset,
 
 .. doctest::
 
@@ -333,9 +333,10 @@ velocity.
     >>> y[2].name
     'Wind velocity'
 
-To visualize the vector data, we use matplotlib streamline plot.
+which represents the wind velocity, and requires a vector visualization
+routine. To visualize the vector data, we use the matplotlib quiver plot.
 
-.. tip:: **Plotting a vector quiver plot**
+.. tip:: **Vector quiver plot**
 
   .. doctest::
 

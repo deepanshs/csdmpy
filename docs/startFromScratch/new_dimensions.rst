@@ -3,14 +3,14 @@
 How to add instances of Dimension class
 ---------------------------------------
 
-In the previous section, we create a new dataset using,
+In the previous section, we created a new dataset using
 
 .. doctest::
 
     >>> import csdmpy as cp
     >>> new_data = cp.new(description='A new test dimension dataset')
 
-In this section, we will add dimension objects to this dataset.
+In this section, we illustrate, adding dimension objects to a csdm instance.
 An instance of the Dimension class is added using the
 :meth:`~csdmpy.csdm.CSDM.add_dimension` method of the :ref:`csdm_api`
 instance.
@@ -28,8 +28,8 @@ LinearDimension
 ^^^^^^^^^^^^^^^
 
 A linear dimension is where the coordinates along the dimension are uniformly
-spaced. Let's add a LinearDimension instance to the ``new_data`` instance.
-For this, we make use of the Python dictionary object which follows
+spaced. Let's add a LinearDimension instance to the ``new_data`` instance,
+using Python's dictionary object as follows
 
 .. doctest::
 
@@ -80,7 +80,7 @@ MonotonicDimension
 
 Try adding another :ref:`dim_api` object to this dataset.
 This time add a monotonic dimension. A monotonic dimension is where the
-coordinates along the dimension are spaced either strictly increasing or
+coordinates along the dimension, are spaced either strictly increasing or
 strictly decreasing. In the following example, we use a different approach for
 adding the dimension object, that is, using the keyword arguments as follows,
 
@@ -138,7 +138,7 @@ appropriately added, if applicable.
 LabeledDimension
 ^^^^^^^^^^^^^^^^
 
-The third type of dimensions are the labeled dimensions. As the name suggests,
+The third type of dimension is the labeled dimension. As the name suggests,
 this dimension consists of labels. This type of dimension is useful for
 datasets describing, for example, the ionization energy as a function of atomic
 symbols or the population of different countries.

@@ -9,12 +9,12 @@
 Nuclear Magnetic Resonance (NMR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The following example is a :math:`^{29}\mathrm{Si}` NMR time domain
+The following example is a :math:`^{29}\mathrm{Si}` NMR time-domain
 saturation recovery measurement of a highly siliceous zeolite ZSM-12.
 Usually, the spin recovery measurements are acquired over a rectilinear grid
-where measurements along one of the dimensions are non-uniform or span several
-orders of magnitude. In this example, we show the use of `monotonic` dimensions
-for describing such datasets.
+where measurements along one of the dimensions are non-uniform and span several
+orders of magnitude. In this example, we illustrate the use of `monotonic`
+dimensions for describing such datasets.
 
 Let's load the file.
 
@@ -146,7 +146,7 @@ and
     }
 
 respectively. The first dimension is uniformly spaced, as indicated by the
-`linear` subtype, while the second dimension is non-linear and monotonic
+`linear` subtype, while the second dimension is non-linear and monotonically
 sampled. The coordinates along the respective dimensions are
 
 .. doctest::
@@ -162,7 +162,7 @@ sampled. The coordinates along the respective dimensions are
 Notice, the unit of ``x0`` is in microseconds. It might be convenient to
 convert the unit to milliseconds. To do so, use the
 :meth:`~csdmpy.dimensions.Dimension.to` method of the respective
-:ref:`dim_api` instance as follows
+:ref:`dim_api` instance as follows,
 
 .. doctest::
 
@@ -200,7 +200,7 @@ As before, the components of the dependent variable are accessed using the
 
 **Visualizing the dataset**
 
-.. tip:: **Plotting an intensity data with cross-sections**
+.. tip:: **Intensity plot with cross-sections**
 
   More often than not, the code required to plot the data become
   exhaustive. Here is one such example.

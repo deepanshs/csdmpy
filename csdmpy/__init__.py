@@ -16,7 +16,7 @@ from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 
 __all__ = ["load", "new", "plot"]
@@ -239,5 +239,6 @@ def new(description=""):
     return CSDM(description=description)
 
 
-def plot(data_object, *args, **kwargs):
-    _preview(data_object, *args, **kwargs)
+def plot(data_object, **kwargs):
+    """Helper function for plotting basic 1D and 2D datasets."""
+    _preview(data_object, **kwargs)

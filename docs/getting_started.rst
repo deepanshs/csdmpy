@@ -5,7 +5,7 @@ Getting Started With `csdmpy` package
 
 We have put together a set of guidelines for importing the `csdmpy`
 package and related methods and attributes. We encourage the users
-to follow these guidelines to promote consistency amongst others.
+to follow these guidelines to promote consistency, amongst others.
 Import the package using
 
 .. doctest::
@@ -25,7 +25,7 @@ Here, ``testdata1`` is an instance of the CSDM class.
 
 At the root level, the :ref:`csdm_api` object includes various useful optional
 attributes that may contain additional information about the dataset. One such
-useful attribute is the :attr:`~csdmpy.csdm.CSDM.description` key which briefs
+useful attribute is the :attr:`~csdmpy.csdm.CSDM.description` key, which briefs
 the end-users on the contents of the dataset. To access the value of this
 attribute use,
 
@@ -44,8 +44,8 @@ system, and the dependent variables populate this grid.
 In `csdmpy`,
 dimensions and dependent variables are structured as python's tuple object.
 To access these tuples, use the :attr:`~csdmpy.csdm.CSDM.dimensions` and
-:attr:`~csdmpy.csdm.CSDM.dependent_variables` attributes, respectively.
-For example,
+:attr:`~csdmpy.csdm.CSDM.dependent_variables` attribute of the CSDM object,
+respectively. For example,
 
 .. doctest::
 
@@ -126,9 +126,8 @@ Every dependent variable object has at least one component. The number of
 components of the dependent variable is determined from the
 :attr:`~csdmpy.dependent_variables.DependentVariable.quantity_type` attribute
 of the dependent variable object. For example, a scalar quantity has
-one-component while a
-vector quantity may have multiple components. To access the components of
-the dependent variable, use the
+one-component, while a vector quantity may have multiple components. To access
+the components of the dependent variable, use the
 :attr:`~csdmpy.dependent_variables.DependentVariable.components`
 attribute of the respective :ref:`dv_api` instance. For example,
 
@@ -140,7 +139,7 @@ attribute of the respective :ref:`dv_api` instance. For example,
             -9.5105654e-01, -5.8778524e-01]], dtype=float32)
 
 The :attr:`~csdmpy.dependent_variables.DependentVariable.components` attribute
-is a Numpy array. Note, the number of dimensions of this array is :math:`d+1`
+is a Numpy array. Note, the number of dimensions of this array is :math:`d+1`,
 where :math:`d` is the number of :ref:`dim_api` objects from the
 :attr:`~csdmpy.csdm.CSDM.dimensions` attribute. The additional dimension in the
 Numpy array corresponds to the number of components of the dependent variable.
@@ -172,12 +171,12 @@ plotting library.
 
 .. Attention::
 
-    Although we show code for visualzing the dataset, this documentation is not
+    Although we show code for visualizing the dataset, this documentation is not
     a guide for data visualization.
 
 The following snippet plots the dataset from this example. Here, the
 `axis_label` is an attribute of both Dimension and DependentVariable
-instances and `name` is an attribute of the DependentVariable instance.
+instances, and the `name` is an attribute of the DependentVariable instance.
 
 .. doctest::
 

@@ -1,3 +1,7 @@
+v0.1.5
+ - Added method to convert the frequency dimension to nmr dimensionless frequency ratio.
+ - csdmpy.plot method also displays the dimension index on the axis label.
+
 v0.1.4
  - Added to_dict method to the CSDM, Dimension, and DependentVariable objects. Return the said object as python dictionary.
 

@@ -86,7 +86,7 @@ are
     >>> x = vector_data.dimensions
     >>> y = vector_data.dependent_variables
 
-with the respective coordinates (viewed only up to five values),
+with the respective coordinates (viewed only up to five values), as
 
 .. doctest::
 
@@ -106,7 +106,7 @@ attribute of the corresponding dependent variable instance.
     >>> print(y[0].quantity_type)
     vector_2
 
-From the value `vector_2`, `vector` indicates a vector dataset while `2`
+From the value `vector_2`, `vector` indicates a vector dataset, while `2`
 indicates the number of vector components.
 
 **Visualizing the dataset**
@@ -125,15 +125,14 @@ is an initial processing step. We use the Numpy library for processing.
     >>> R/=R.min()
     >>> Rlog=np.log10(R)
 
-In the above processing, we calculate the X-Y grid points along with a
+In the above steps, we calculate the X-Y grid points along with a
 scaled magnitude of the vector dataset. The magnitude is scaled such that the
-minimum value is one. This scaled magnitude is stored in ``R``.
-Next, we calculate the log of ``R`` to visualize the intensity of the plot on
-a logarithmic scale.
+minimum value is one. Next, calculate the log of the scaled magnitude to
+visualize the intensity on a logarithmic scale.
 
 And now, the plot.
 
-.. tip:: **Plotting a streamplot vector data**
+.. tip:: **Streamplot vector visualization**
 
   .. doctest::
 

@@ -3,7 +3,7 @@
 An emoji 😁 example
 -------------------
 
-Let's make use of what we learnt so far and create a simple 1D{1} dataset.
+Let's make use of what we learned so far and create a simple 1D{1} dataset.
 To make it interesting, let's create an emoji dataset.
 
 Start by importing the `csdmpy` package.
@@ -42,7 +42,7 @@ python dictionary.
 
 The above python dictionary contains two keys. The `type` key identifies the
 dimension as a labeled dimension while the `labels` key holds an
-array of labels. In this example, the labels are emoji. Add this dictionary
+array of labels. In this example, the labels are emojis. Add this dictionary
 as an argument of the :meth:`~csdmpy.csdm.CSDM.add_dimension` method
 of the `fundata` instance.
 
@@ -85,8 +85,8 @@ instance.
     ...     components=[[0.5, 0.25, 1, 2, 1, 0.25]])
     >>> fundata.add_dependent_variable(y)
 
-Here, the python dictionary contains `type`, `numeric_type` and
-`components` key. The value of the `components` holds an array of data values
+Here, the python dictionary contains `type`, `numeric_type`, and `components`
+key. The value of the `components` key holds an array of data values
 corresponding to the labels from the labeled dimension.
 
 Now, we have a 😂 dataset...
@@ -139,13 +139,14 @@ To serialize this file, use the :meth:`~csdmpy.csdm.CSDM.save` method of the
     import os
     os.remove('csdmpy/my_file.csdf')
 
-In the above code, the data values from the
-:attr:`~csdmpy.csdm.CSDM.dependent_variables` attribute are encoded as
-a `base64` string prior to serializing to `my_file.csdf` file.
+In the above code, the components from the
+:attr:`~csdmpy.csdm.CSDM.dependent_variables` attribute at index zero, are
+encoded as `base64` strings before serializing to the `my_file.csdf` file.
 
-You may also save a binary file in which case the file should be serialized
-with a `.csdfe` file extension.
+You may also save the components as a binary file, in which case, the file is
+serialized with a `.csdfe` file extension.
 
 .. doctest::
 
-  >>> fundata.dependent_variables[0].encoding = 'base64'
+  >>> fundata.dependent_variables[0].encoding = 'raw'
+  >>> fundata.save('my_file_raw.csdfe')

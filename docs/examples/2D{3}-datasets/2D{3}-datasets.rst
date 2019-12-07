@@ -18,7 +18,7 @@ Image datasets
 ^^^^^^^^^^^^^^
 
 A common example from this subset is perhaps the RGB image dataset.
-A RGB image dataset has two spatial dimensions and one dependent
+An RGB image dataset has two spatial dimensions and one dependent
 variable with three components corresponding to the red, green, and blue color
 intensities.
 
@@ -91,8 +91,8 @@ The tuples of the dimension and dependent variable instances from
     >>> x = ImageData.dimensions
     >>> y = ImageData.dependent_variables
 
-respectively.
-Since there are two dimensions, the coordinates along each dimension are
+respectively. There are two dimensions, and the coordinates along each
+dimension are
 
 .. doctest::
 
@@ -102,11 +102,10 @@ Since there are two dimensions, the coordinates along each dimension are
     >>> print('x1 =', x[1].coordinates[:10])
     x1 = [0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]
 
-respectively, where coordinates along both dimensions are spaced uniformly.
-In the above example, only the first ten coordinates along each dimension
-are displayed.
+respectively. In the above example, only the first ten coordinates along
+each dimension are displayed.
 
-The dependent variable is an image data as also seen from the
+The dependent variable is the image data, as also seen from the
 :attr:`~csdmpy.dependent_variables.DependentVariable.quantity_type` attribute
 of the corresponding :ref:`dv_api` instance.
 
@@ -115,12 +114,12 @@ of the corresponding :ref:`dv_api` instance.
     >>> print(y[0].quantity_type)
     pixel_3
 
-From the value `pixel_3`, `pixel` indicates a pixel data point while `3`
-indicate the number of pixels.
+From the value `pixel_3`, `pixel` indicates a pixel data point, while `3`
+indicates the number of pixel components.
 
 As usual, the components of the dependent variable are accessed through
 the :attr:`~csdmpy.dependent_variables.DependentVariable.components` attribute.
-To access the individual components use the appropriate array indexing.
+To access the individual components, use the appropriate array indexing.
 For example,
 
 .. doctest::
@@ -134,8 +133,8 @@ For example,
      [ 85  95 112 ... 121 120 120]
      [ 85  97 111 ... 120 119 118]]
 
-will return an array with the first component of all data values. Here, these
-components correspond to the red color intensity, indicated by the
+will return an array with the first component of all data values. In this case,
+the components correspond to the red color intensity, also indicated by the
 corresponding component label. The label corresponding to
 this component array is accessed through the
 :attr:`~csdmpy.dependent_variables.DependentVariable.component_labels`
@@ -166,17 +165,15 @@ dimension instances.
 
 .. note::
         In this example, since there is only one dependent variable, the index
-        of `y` is set to zero, that is ``y[0]``. We do not increase the index
-        of `y`.  The indices for the
+        of `y` is set to zero, which is ``y[0]``. The indices for the
         :attr:`~csdmpy.dependent_variables.DependentVariable.components` and the
         :attr:`~csdmpy.dependent_variables.DependentVariable.component_labels`,
-        on the other hand, span through the number of components and are
-        incremented.
+        on the other hand, spans through the number of components.
 
-Now, to visualize the dataset as an RGB image we use the matplotlib `imshow`
+Now, to visualize the dataset as an RGB image, we use the matplotlib `imshow`
 method.
 
-.. tip:: **Plotting an RGB image dataset**
+.. tip:: **RGB image plot**
 
   .. doctest::
 

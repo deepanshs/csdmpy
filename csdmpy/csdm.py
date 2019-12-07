@@ -30,7 +30,7 @@ class CSDM:
     :ref:`dim_api` instances, where an instance of the :ref:`dv_api` class
     describes a :math:`p`-component dependent variable, and an instance of the
     :ref:`dim_api` class describes a dimension of a :math:`d`-dimensional
-    space. Additional attributes of this class is listed below.
+    space. Additional attributes of this class are listed below.
     """
 
     __latest_CSDM_version__ = "1.0"  # __version__
@@ -90,6 +90,25 @@ class CSDM:
                 )
             for item in kwargs["dependent_variables"]:
                 self.add_dependent_variable(item)
+
+    def __repr__(self):
+        keys = (
+            "dimensions",
+            "dependent_variables",
+            "tags",
+            "read_only",
+            "version",
+            "timestamp",
+            "geographic_coordinate",
+            "description",
+            "application",
+        )
+        prop = ", ".join([f"{key}={getattr(self, key).__repr__()}" for key in keys])
+        # properties = ", ".join([f"{k}={str(v)}" for k, v in self.to_dict().items()])
+        return f"CSDM({prop})"
+
+    def __str__(self):
+        return self.__repr__()
 
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #

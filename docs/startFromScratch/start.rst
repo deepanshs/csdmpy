@@ -4,7 +4,8 @@ Using csdmpy's objects
 
 The `csdmpy` module is not just designed for deserializing and serializing
 the `.csdf` or `.csdfe` files. It can also be used to create new datasets,
-a feature that is most useful when converting dataset to csdm compliant format.
+a feature that is most useful when converting datasets to CSDM compliant
+files.
 
 .. toctree::
     :maxdepth: 2

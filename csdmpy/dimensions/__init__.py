@@ -6,6 +6,7 @@ import warnings
 from csdmpy.dimensions.labeled import LabeledDimension
 from csdmpy.dimensions.linear import LinearDimension
 from csdmpy.dimensions.monotonic import MonotonicDimension
+from csdmpy.units import frequency_ratio
 from csdmpy.utils import _axis_label
 from csdmpy.utils import _get_dictionary
 from csdmpy.utils import attribute_error
@@ -155,6 +156,14 @@ class Dimension:
         validate(default["count"], "count", int)
 
         return LinearDimension(**default)
+
+    def __repr__(self):
+        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
+        return f"Dimension({properties})"
+
+    def __str__(self):
+        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
+        return f"Dimension({properties})"
 
     # ======================================================================= #
     #                          Dimension Attributes                           #
@@ -327,9 +336,15 @@ class Dimension:
         n = self.subtype._count
         if self.type == "monotonic":
             return self.subtype._coordinates[:n]
+
         if self.type == "linear":
-            coordinates = self.subtype._coordinates[:n]
-            return (coordinates + self.coordinates_offset).to(self.subtype._unit)
+            unit = self.subtype._unit
+            equivalent_fn = self.subtype._equivalencies
+            coordinates = self.subtype._coordinates[:n] + self.coordinates_offset
+            if equivalent_fn is None:
+                return coordinates.to(self.subtype._unit)
+            return coordinates.to(unit, equivalent_fn(self.origin_offset))
+
         if self.type == "labeled":
             return self.subtype.labels[:n]
 
@@ -804,4 +819,7 @@ class Dimension:
         Raises:
             AttributeError: For `labeled` dimensions.
         """
-        self.subtype._to(unit, equivalencies)
+        if equivalencies == "nmr_frequency_ratio":
+            self.subtype._to(unit, frequency_ratio)
+        else:
+            self.subtype._to(unit, equivalencies)

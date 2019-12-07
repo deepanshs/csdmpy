@@ -88,7 +88,7 @@ def preview(data_object):
         _preview(data)
 
 
-def _preview(data, *args, **kwargs):
+def _preview(data, **kwargs):
     """Quick display of the data."""
     x = data.dimensions
     y = data.dependent_variables
@@ -122,11 +122,11 @@ def _preview(data, *args, **kwargs):
     if len(x) == 1:
         for i in range(y_len):
             if y[i].quantity_type in scalar:
-                plot1D(x, y, i, ax, *args, **kwargs)
+                plot1D(x, y, i, ax, **kwargs)
             if "vector" in y[i].quantity_type:
-                vector_plot(x, y, i, fig, ax, *args, **kwargs)
+                vector_plot(x, y, i, fig, ax, **kwargs)
             # if "audio" in y[i].quantity_type:
-            #     audio(x, y, i, fig, ax, *args, **kwargs)
+            #     audio(x, y, i, fig, ax, **kwargs)
 
         plt.tight_layout(w_pad=0.0, h_pad=0.0)
         plt.show()
@@ -134,11 +134,11 @@ def _preview(data, *args, **kwargs):
     if len(x) == 2:
         for i in range(y_len):
             # if y[i].quantity_type in ["RGB", "RGBA"]:
-            #     RGB(x, y, i, fig, ax, *args, **kwargs)
+            #     RGB(x, y, i, fig, ax, **kwargs)
             if y[i].quantity_type in scalar:
-                twoD_scalar(x, y, i, fig, ax, *args, **kwargs)
+                twoD_scalar(x, y, i, fig, ax, **kwargs)
             if "vector" in y[i].quantity_type:
-                vector_plot(x, y, i, fig, ax, *args, **kwargs)
+                vector_plot(x, y, i, fig, ax, **kwargs)
 
         plt.tight_layout(w_pad=0.0, h_pad=0.0)
         plt.show()
@@ -147,49 +147,72 @@ def _preview(data, *args, **kwargs):
 # =========================================================================== #
 
 
-def plot1D(x, y, i0, ax, *args, **kwargs):
+def plot1D(x, y, i0, ax, **kwargs):
+    reverse = [False, False]
+    if "reverse_axis" in kwargs.keys():
+        reverse = kwargs["reverse_axis"]
+    kwargs.pop("reverse_axis")
+
     i = int(i0 / 2)
     j = int(i0 % 2)
     components = y[i0].components.shape[0]
     for k in range(components):
-        ax[i][j].plot(x[0].coordinates, y[i0].components[k].real, *args, **kwargs)
+        ax[i][j].plot(x[0].coordinates, y[i0].components[k].real, **kwargs)
         if "complex" in y[i0].numeric_type:
-            ax[i][j].plot(x[0].coordinates, y[i0].components[k].imag, *args, **kwargs)
+            ax[i][j].plot(x[0].coordinates, y[i0].components[k].imag, **kwargs)
 
         ax[i][j].set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
-        ax[i][j].set_xlabel(x[0].axis_label)
+        ax[i][j].set_xlabel(f"{x[0].axis_label} - 0")
         ax[i][j].set_ylabel(y[i0].axis_label[0])
         ax[i][j].set_title("{0}".format(y[i0].name))
         ax[i][j].grid(color="gray", linestyle="--", linewidth=0.5)
 
+    if reverse[0]:
+        ax[i][j].invert_xaxis()
+    if reverse[1]:
+        ax[i][j].invert_yaxis()
 
-def RGB(x, y, i0, fig, ax, *args, **kwargs):
+
+def RGB(x, y, i0, fig, ax, **kwargs):
+    reverse = [False, False]
+    if "reverse_axis" in kwargs.keys():
+        reverse = kwargs["reverse_axis"]
+    kwargs.pop("reverse_axis")
+
     i = int(i0 / 2)
     j = i0 % 2
     y0 = y[i0].components
-    ax[i][j].imshow(np.moveaxis(y0 / y0.max(), 0, -1), *args, **kwargs)
+    ax[i][j].imshow(np.moveaxis(y0 / y0.max(), 0, -1), **kwargs)
     ax[i][j].set_title("{0}".format(y[i0].name))
 
+    if reverse[0]:
+        ax[i][j].invert_xaxis()
+    if reverse[1]:
+        ax[i][j].invert_yaxis()
 
-def twoD_scalar(x, y, i0, fig, ax, *args, **kwargs):
+
+def twoD_scalar(x, y, i0, fig, ax, **kwargs):
+    reverse = [False, False]
+    if "reverse_axis" in kwargs.keys():
+        reverse = kwargs["reverse_axis"]
+    kwargs.pop("reverse_axis")
+
     i = int(i0 / 2)
     j = i0 % 2
 
     x0 = x[0].coordinates.value
     x1 = x[1].coordinates.value
-    y00 = y[i0].components[0].astype(np.float64)
-    extent = [x0.min(), x0.max(), x1.min(), x1.max()]
+    y00 = y[i0].components[0].real.astype(np.float64)
+    extent = [x0[0], x0[-1], x1[0], x1[-1]]
     if x[0].type == "linear" and x[1].type == "linear":
         # print('uniform')
         cs = ax[i][j].imshow(
-            y00.real, extent=extent, origin="lower", aspect="auto", *args, **kwargs
+            y00, extent=extent, origin="lower", aspect="auto", **kwargs
         )
     else:
         # print('non-uniform')
-        cs = NonUniformImage(
-            ax[i][j], interpolation="none", extent=extent, *args, **kwargs
-        )
-        cs.set_data(x0, x1, y00.real / y00.real.max())
+        cs = NonUniformImage(ax[i][j], interpolation="none", extent=extent, **kwargs)
+        cs.set_data(x0, x1, y00 / y00.max())
         ax[i][j].images.append(cs)
 
     cbar = fig.colorbar(cs, ax=ax[i][j])
@@ -197,13 +220,23 @@ def twoD_scalar(x, y, i0, fig, ax, *args, **kwargs):
     cbar.set_label(y[i0].axis_label[0])
     ax[i][j].set_xlim([extent[0], extent[1]])
     ax[i][j].set_ylim([extent[2], extent[3]])
-    ax[i][j].set_xlabel(x[0].axis_label)
-    ax[i][j].set_ylabel(x[1].axis_label)
+    ax[i][j].set_xlabel(f"{x[0].axis_label} - 0")
+    ax[i][j].set_ylabel(f"{x[1].axis_label} - 1")
     ax[i][j].set_title("{0}".format(y[i0].name))
     ax[i][j].grid(color="gray", linestyle="--", linewidth=0.5)
 
+    if reverse[0]:
+        ax[i][j].invert_xaxis()
+    if reverse[1]:
+        ax[i][j].invert_yaxis()
 
-def vector_plot(x, y, i0, fig, ax, *args, **kwargs):
+
+def vector_plot(x, y, i0, fig, ax, **kwargs):
+    reverse = [False, False]
+    if "reverse_axis" in kwargs.keys():
+        reverse = kwargs["reverse_axis"]
+    kwargs.pop("reverse_axis")
+
     i = int(i0 / 2)
     j = i0 % 2
     x0 = x[0].coordinates.value
@@ -215,16 +248,21 @@ def vector_plot(x, y, i0, fig, ax, *args, **kwargs):
     x0, x1 = np.meshgrid(x0, x1)
     u1 = y[i0].components[0]
     v1 = y[i0].components[1]
-    ax[i][j].quiver(x0, x1, u1, v1, pivot="middle", *args, **kwargs)
-    ax[i][j].set_xlabel(x[0].axis_label)
+    ax[i][j].quiver(x0, x1, u1, v1, pivot="middle", **kwargs)
+    ax[i][j].set_xlabel(f"{x[0].axis_label} - 0")
     ax[i][j].set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
     if len(x) == 2:
         ax[i][j].set_ylim(x[1].coordinates.value.min(), x[1].coordinates.value.max())
-        ax[i][j].set_ylabel(x[1].axis_label)
+        ax[i][j].set_ylabel(f"{x[1].axis_label} - 1")
     else:
         ax[i][j].set_ylim([-y[i0].components.max(), y[i0].components.max()])
     ax[i][j].set_title("{0}".format(y[i0].name))
     ax[i][j].grid(color="gray", linestyle="--", linewidth=0.5)
+
+    if reverse[0]:
+        ax[i][j].invert_xaxis()
+    if reverse[1]:
+        ax[i][j].invert_yaxis()
 
 
 # def audio(x, y, i0, fig, ax):
@@ -259,7 +297,7 @@ def plot_line(x, y, ax):
         if x[0].type != "labeled":
             ax.set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
 
-        ax.set_xlabel(x[0].axis_label)
+        ax.set_xlabel(f"{x[0].axis_label} - 0")
         ax.set_ylabel(y.axis_label[0])
         ax.set_title("{0}".format(y.name))
         ax.grid(color="gray", linestyle="-", linewidth=0.5)
@@ -272,8 +310,8 @@ def plot_image(x, y, fig, ax):
 
     x0 = x[0].coordinates.value
     x1 = x[1].coordinates.value
-    y00 = y.components[0].real.astype(np.float64)
-    extent = [x0.min(), x0.max(), x1.min(), x1.max()]
+    y00 = y.components[0].real.astype(np.float64).real
+    extent = [x0[0], x0[-1], x1[1], x1[-1]]
     if x[0].type == "linear" and x[1].type == "linear":
         # print('uniform')
         cs = ax.imshow(y00, extent=extent, origin="lower", aspect="auto", cmap="Blues")
@@ -298,8 +336,8 @@ def plot_image(x, y, fig, ax):
     ax.set_xlim([extent[0], extent[1]])
     ax.set_ylim([extent[2], extent[3]])
 
-    ax.set_xlabel(x[0].axis_label)
-    ax.set_ylabel(x[1].axis_label)
+    ax.set_xlabel(f"{x[0].axis_label} - 0")
+    ax.set_ylabel(f"{x[1].axis_label} - 1")
     ax.set_title("{0}".format(y.name))
     ax.grid(color="gray", linestyle="--", linewidth=0.1)
 
@@ -317,11 +355,11 @@ def plot_vector(x, y, ax):
     u1 = y.components[0]
     v1 = y.components[1]
     ax.quiver(x0, x1, u1, v1, pivot="middle")
-    ax.set_xlabel(x[0].axis_label)
+    ax.set_xlabel(f"{x[0].axis_label} - 0")
     ax.set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
     if len(x) == 2:
         ax.set_ylim(x[1].coordinates.value.min(), x[1].coordinates.value.max())
-        ax.set_ylabel(x[1].axis_label)
+        ax.set_ylabel(f"{x[1].axis_label} - 1")
     else:
         ax.set_ylim([-y.components.max(), y.components.max()])
     ax.set_title("{0}".format(y.name))

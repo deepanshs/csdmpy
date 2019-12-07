@@ -40,7 +40,7 @@ Attributes
 
   * - tags
     - [String, ...]
-    - An `optional` set of keywords associated with the dataset.
+    - An `optional` list of keywords associated with the dataset.
 
   * - read_only
     - Boolean
@@ -49,13 +49,13 @@ Attributes
 
   * - timestamp
     - String
-    - An `optional` UTC ISO-8601 standard formatted timestamp from when the
+    - An `optional` UTC ISO-8601 format timestamp from when the
       CSDM-compliant file was last serialized.
 
   * - geographic_coordinate
     - geographic_coordinate
-    - An `optional` object with attributes required to record the location
-      where the CSDM-compliant file was last serialized.
+    - An `optional` object with attributes required to describe the location
+      from where the CSDM-compliant file was last serialized.
 
   * - description
     - String

@@ -35,20 +35,22 @@ and the absolute coordinates as,
 .. math::
     \mathbf{X}_k^\mathrm{abs} = \mathbf{X}_k + o_k \mathbf{1}.
 
-Here, :math:`\mathbf{1}` is an array of ones and :math:`\mathbf{J}_k` is the
+Here, :math:`\mathbf{1}` is an array of ones, and :math:`\mathbf{J}_k` is the
 array of indexes along the :math:`k^\mathrm{th}` dimension given as
 
 .. math::
-    \mathbf{J}_k = [0, 1, 2, 3, ..., N_k-1]
+    \mathbf{J}_k = [0, 1, 2, 3, ..., N_k-1].
 
-The term, :math:`Z_k`, is an integer with a value of :math:`Z_k=0` and
-:math:`\frac{T_k}{2}` when the value of `complex_fft` is false and true,
-respectively. Here, :math:`T_k=N_k` and :math:`N_k-1` for even and odd
+The term, :math:`Z_k`, is an integer with a value of :math:`Z_k=0` or
+:math:`\frac{T_k}{2}` when the value of `complex_fft` attribute of the
+corresponding dimension object is false or true, respectively.
+Here, :math:`T_k=N_k` and :math:`N_k-1` for even and odd
 value of :math:`N_k`, respectively.
 
 .. note::
-    When `complex_fft` is true and :math:`N_k` is even, the dependent variable
-    value corresponding to the index :math:`\pm N_k/2` is alias.
+    When the value of the `complex_fft` attribute is true, and :math:`N_k`
+    is even, the dependent variable value corresponding to the index
+    :math:`\pm N_k/2` is an alias.
 
 
 Attributes
@@ -119,7 +121,7 @@ The following LinearDimension object,
         "coordinates_offset": "0.1 µA"
     }
 
-will generate a dimension where coordinates :math:`\mathbf{X}_k` are
+will generate a dimension, where the coordinates :math:`\mathbf{X}_k` are
 
 .. code::
 

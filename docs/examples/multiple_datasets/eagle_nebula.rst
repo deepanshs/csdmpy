@@ -9,9 +9,13 @@
 Astronomy, 2D{1,1,1} dataset (Creating image composition)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-More often the image in astronomy is a composition of datasets measured
-at a different wavelength over an area of the sky. Here, we show an example
-of an image composition using the data from the `Eagle Nebula`.
+More often, the images in astronomy are a composition of datasets measured
+at different wavelengths over an area of the sky. In this example, we
+illustrate the use of the CSDM file-format, and `csdmpy` module, beyond just
+reading a CSDM-compliant file. We'll use these datasets, and compose an image,
+using Numpy arrays.
+The following example is the data from the `Eagle Nebula` acquired at three
+different wavelengths and serialized as a CSDM compliant file.
 Import the `csdmpy` model and load the dataset.
 
 .. doctest::
@@ -23,14 +27,14 @@ Import the `csdmpy` model and load the dataset.
     >>> eagle_nebula = cp.load(filename)
 
 Let's get the tuple of dimension and dependent variable objects from
-``eagle_nebula`` instance.
+the ``eagle_nebula`` instance.
 
 .. doctest::
 
     >>> x = eagle_nebula.dimensions
     >>> y = eagle_nebula.dependent_variables
 
-Before we create an image composition, let's take a look at the individual
+Before we compose an image, let's take a look at the individual
 dependent variables from the dataset. The three dependent variables correspond
 to signal acquisition at 502 nm, 656 nm, and 673 nm, respectively. This
 information is also listed in the
@@ -48,7 +52,7 @@ respective dependent variable instances,
 
 .. tip::
 
-    A script to plot an intensity plot.
+    A script for an intensity plot.
 
     .. doctest::
 
@@ -165,20 +169,23 @@ the third dependent variable.
 .. figure:: ../../_images/eagleNebula.csdfeEagleNebulaacquired@673nm.*
     :figclass: figure-polaroid
 
+
+
 Image composition
 *****************
 
-In our image composition, we will assign the dependent variable at index 0 as
-the blue channel, at index 1 as the green channel, and index 2 as the red
-channel of an RGB image. First, create an empty array to hold the RGB dataset.
+For the image composition, we assign the dependent variable at index zero as
+the blue channel, index one as the green channel, and index two as the red
+channel of an RGB image. Start with creating an empty array to hold the RGB
+dataset.
 
 .. doctest::
 
     >>> shape = y[0].components[0].shape + (3,)
     >>> image = np.empty(shape, dtype=np.float64)
 
-Here, ``image`` is a variable we use for storing the composition. Let's add the
-respective dependent variables to the designated color channel in the
+Here, ``image`` is the variable we use for storing the composition. Add
+the respective dependent variables to the designated color channel in the
 ``image`` array,
 
 .. doctest::
@@ -187,8 +194,9 @@ respective dependent variables to the designated color channel in the
     >>> image[...,1] = y[1].components[0]/y[1].components[0].max() # green channel
     >>> image[...,2] = y[0].components[0]/y[0].components[0].max() # blue channel
 
-If you follow the above figures, the component intensity from
-``y[1]`` and, therefore, the green channel dominates the other two. If we
+Following the intensity plot of the individual dependent variables, see the
+above figures, it is evident that the component intensity from ``y[1]`` and,
+therefore, the green channel dominates the other two. If we
 plot the ``image`` data, the image will be saturated with green intensity. To
 attain a color-balanced image, we arbitrarily scale the intensities from the
 three channels. You may choose any scaling factor. Each scaling factor will

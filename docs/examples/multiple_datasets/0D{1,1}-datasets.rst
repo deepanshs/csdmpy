@@ -9,12 +9,12 @@
 Scatter, 0D{1,1} dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-We start with a correlated dataset without a coordinate grid such as
-a 0D{1,1} dataset which has no dimensions, d = 0, and two
-single-component dependent variables.
+We start with a 0D{1,1} correlated dataset, that is, a dataset
+without a coordinate grid. A 0D{1,1} dataset has no dimensions, d = 0, and
+two single-component dependent variables.
 In the following example, the two `correlated` dependent variables are
 the :math:`^{29}\text{Si}` - :math:`^{29}\text{Si}` nuclear spin couplings,
-:math:`^2J`, across a Si-O-Si linkage and the `s`-character product on the
+:math:`^2J`, across a Si-O-Si linkage, and the `s`-character product on the
 O and two Si along the Si-O bond across the Si-O-Si linkage.
 
 Let's import the dataset.
@@ -36,7 +36,7 @@ class is an empty tuple,
 
 The :attr:`~csdmpy.csdm.CSDM.dependent_variables` attribute, however, holds
 two dependent-variable objects. The data structure from the two dependent
-variables is,
+variables is
 
 .. doctest::
 

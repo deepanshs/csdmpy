@@ -25,10 +25,9 @@ a red, green, and blue (RGB) light intensity components as a function of two
 independent spatial dimensions, or the six components of the symmetric
 second-rank diffusion tensor MRI as a function of three independent spatial
 dimensions. Additionally, the model supports multiple dependent variables
-sharing the same :math:`d`-dimensional coordinate space. For instance,
-the simultaneous measurement of current and voltage as a function of time.
-Another example would be the simultaneous acquisition of air temperature,
-pressure, wind velocity, and
+sharing the same :math:`d`-dimensional coordinate space. For example, a
+simultaneous measurement of current and voltage as a function of time,
+simultaneous acquisition of air temperature, pressure, wind velocity, and
 solar-flux as a function of Earth’s latitude and longitude coordinates. We
 refer to these dependent variables as `correlated-datasets`.
 
@@ -36,8 +35,8 @@ The CSD model is independent of the hardware,
 operating system, application software, programming language, and the
 object-oriented file-serialization format utilized in serializing the CSD model
 to the file. Out of numerous file serialization formats, XML, JSON, property
-list, the data-exchange oriented JSON (JavaScript Object Notation)
-file-serialization format is chosen because it is `human-readable`, and
+list, we chose the data-exchange oriented JSON (JavaScript Object Notation)
+file-serialization format because it is `human-readable` and
 `easily integrable` with any number of programming languages
 and field related application-software.
 

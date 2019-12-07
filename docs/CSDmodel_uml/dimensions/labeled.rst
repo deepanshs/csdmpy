@@ -25,8 +25,8 @@ the dimension are explicitly defined as labels. Let :math:`\mathbf{A}_k` be an
 ordered set of unique labels along the :math:`k^{th}` dimension, then the
 coordinates, :math:`\mathbf{X}_k`, along a labeled dimension are
 
-.. math ::
-    \mathbf{X}_k = \mathbf{A}_k
+.. math::
+    \mathbf{X}_k = \mathbf{A}_k.
 
 
 Attributes
@@ -59,7 +59,7 @@ The following LabeledDimension object,
         "labels": ["Cu", "Fe", "Si", "H", "Li"]
     }
 
-will generate a dimension where coordinates :math:`\mathbf{X}_k` are
+will generate a dimension, where the coordinates :math:`\mathbf{X}_k` are
 
 .. code::
 

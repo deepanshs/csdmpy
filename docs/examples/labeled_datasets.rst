@@ -27,8 +27,8 @@ Import the `csdmpy` model and load the dataset.
     >>> filename = 'Test Files/labeled/population.csdf'
     >>> labeled_data = cp.load(filename)
 
-Let's get the tuple of dimension and dependent variable objects from
-``labeled_data`` instance.
+The tuple of dimension and dependent variable objects from
+``labeled_data`` instance are
 
 .. doctest::
 
@@ -145,7 +145,7 @@ the ``x[1]`` dimension.
 
 .. rubric:: Footnotes
 
-.. [#f1] In CSD model, the attribute count is only valid for the
+.. [#f1] In the CSD model, the attribute count is only valid for the
          :ref:`linearDimension_uml`. In `csdmpy`, however, the
          :attr:`~csdmpy.dimensions.Dimension.count` attribute is valid for all
          dimension objects and returns an integer with the number of grid

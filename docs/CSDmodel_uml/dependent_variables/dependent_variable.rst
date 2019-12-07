@@ -9,13 +9,11 @@ DependentVariable
 Description
 -----------
 
-A generalized object describing a dependent variable of the dataset.
-A DependentVariable holds an ordered set of `p`-components indexed as `q=0`
-to `p-1`
+A generalized object describing a dependent variable of the dataset, which
+holds an ordered list of `p` components, indexed as `q=0` to `p-1`, as
 
 .. math::
-
-    [\mathbf{U}_0, ... \mathbf{U}_q, ... \mathbf{U}_{p-1}]
+    [\mathbf{U}_0, ... \mathbf{U}_q, ... \mathbf{U}_{p-1}].
 
 .. only:: html
 

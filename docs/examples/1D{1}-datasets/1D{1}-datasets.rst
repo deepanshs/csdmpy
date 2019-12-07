@@ -190,7 +190,7 @@ respectively.
   For additional information, refer to `Matplotlib <https://matplotlib.org>`_
   documentation.
 
-The ``plot1D`` method is only for illustrative purpose. The users may use any
+The ``plot1D`` method is only for illustrative purposes. The users may use any
 plotting library to visualize their datasets.
 
 Now to plot the `sea_level` dataset.
@@ -209,9 +209,9 @@ Now to plot the `sea_level` dataset.
 Nuclear Magnetic Resonance (NMR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The following dataset is a :math:`^{13}\mathrm{C}` time domain NMR Bloch decay
+The following dataset is a :math:`^{13}\mathrm{C}` time-domain NMR Bloch decay
 signal of ethanol. Let's load this data file and take a quick look at its data
-structure. We follow the same steps are previous described.
+structure. We follow the previously described steps.
 
 .. doctest::
 
@@ -265,26 +265,26 @@ structure. We follow the same steps are previous described.
       }
     }
 
-This particular example show two additional feature of the CSD model, namely,
-the :attr:`~csdmpy.csdm.CSDM.geographic_coordinate` and
+This particular example illustrates two additional attributes of the CSD model,
+namely, the :attr:`~csdmpy.csdm.CSDM.geographic_coordinate` and
 :attr:`~csdmpy.csdm.CSDM.tags`. The `geographic_coordinate` described the
 location where the CSDM file was last serialized. You may access this
-attribute through
+attribute through,
 
 .. doctest::
 
     >>> NMR_data.geographic_coordinate
     {'altitude': '238.9719543457031 m', 'longitude': '-83.05154573892345 °', 'latitude': '39.97968794964322 °'}
 
-Similarly, the `tags` attribute can be accessed through
+Similarly, the `tags` attribute can be accessed through,
 
 .. doctest::
 
     >>> NMR_data.tags
     ['13C', 'NMR', 'spectrum', 'ethanol']
 
-You may add additional tags to this list using `append` method of python list
-as
+You may add additional tags, if so desired, to this list using the `append`
+method of python's list class, such as
 
 .. doctest::
 
@@ -292,8 +292,8 @@ as
     >>> NMR_data.tags
     ['13C', 'NMR', 'spectrum', 'ethanol', 'Bloch decay']
 
-Unlike the previous example, the data structure of the NMR measurement shows
-a complex valued dependent variable where the values are
+Unlike the previous example, the data structure of the NMR measurement is
+a complex-valued dependent variable where the values are
 
 .. doctest::
 
@@ -303,7 +303,7 @@ a complex valued dependent variable where the values are
       9486.43847656 -770.0413208j  ...   -70.95385742  -28.32843018j
         37.54849243  +20.15689087j  -193.92285156  -67.06524658j]
 
-Similarly, the coordinates along the dimension are
+The coordinates along the dimension are
 
 .. doctest::
 
@@ -332,7 +332,7 @@ Electron Paramagnetic Resonance (EPR) dataset
 The following simulation of the
 `EPR dataset <http://wwwchem.uwimona.edu.jm/spectra/index.html>`_
 is formerly obtained as a JCAMP-DX file and subsequently converted to the
-CSD model file-format. The data structure of the dataset and the corresponding
+CSD model file-format. The data structure of this dataset and the corresponding
 plot follows,
 
 .. doctest::
@@ -389,7 +389,7 @@ Gas Chromatography dataset
 The following
 `Gas Chromatography dataset  <http://wwwchem.uwimona.edu.jm/spectra/index.html>`_
 is also obtained as a JCAMP-DX file and subsequently converted to the CSD model
-file format. The data structure and the plot of the gas chromatography dataset
+file-format. The data structure and the plot of the gas chromatography dataset
 follows,
 
 .. doctest::
@@ -447,8 +447,8 @@ Fourier Transform Infrared Spectroscopy (FTIR) dataset
 
 For the following
 `FTIR dataset  <http://wwwchem.uwimona.edu.jm/spectra/index.html>`_,
-we again convert the original JCAMP-DX file to the CSD model format. The data
-structure and the plot of the FTIR dataset follows
+we again convert the original JCAMP-DX file to the CSD model file-format. The
+data structure and the plot of the FTIR dataset follows,
 
 .. doctest::
 
@@ -507,7 +507,8 @@ Ultraviolet–visible (UV-vis) dataset
 The following
 `UV-vis dataset <http://wwwchem.uwimona.edu.jm/spectra/index.html>`_
 is originally downloaded as a JCAMP-DX file and consequently turned to the CSD
-model format. The data structure and the plot of the UV-vis dataset follows,
+model file-format. The data structure and the plot of the UV-vis dataset
+follows,
 
 .. doctest::
 
@@ -617,7 +618,7 @@ Here, the coordinates along the dimension are
      28. 29. 30. 31. 32. 33. 34. 35. 36. 37. 38. 39. 40. 41. 42. 43. 44. 45.
      46. 47. 48. 49. 50. 51. 52. 53. 54. 55. 56. 57. 58. 59. 60.]
 
-and the components of the dependent variable
+and the components of the dependent variable follow
 
 .. doctest::
 
