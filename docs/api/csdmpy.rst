@@ -35,6 +35,7 @@ Methods
     ~new
     ~parse_dict
     ~loads
+    ~plot
 
 .. rubric:: Method Documentation
 .. autofunction:: load

@@ -78,24 +78,6 @@ def load(filename=None, application=False):
     dictionary["filename"] = filename
     csdm_object = parse_dict(dictionary)
 
-    # if sort_fft_order:
-    #     axes = []
-    #     for i, dim in enumerate(csdm_object.dimensions):
-    #         if dim.type == "linear":
-    #             if dim.complex_fft:
-    #                 n_points = dim.count
-    #                 if n_points % 2 == 0:
-    #                     temp = n_points * dim.increment / 2.0
-    #                 else:
-    #                     temp = (n_points - 1) * dim.increment / 2.0
-    #                 dim.coordinates_offset = dim.coordinates_offset - temp
-
-    #                 axes.append(-i - 1)
-    #                 # dim.complex_fft = False
-
-    #     for var in csdm_object.dependent_variables:
-    #         var.components = fftshift(var.components, axes=axes)
-
     if application is False:
         csdm_object.application = {}
         for dim in csdm_object.dimensions:
@@ -240,5 +222,17 @@ def new(description=""):
 
 
 def plot(data_object, **kwargs):
-    """Helper function for plotting basic 1D and 2D datasets."""
+    """
+    Helper function for plotting basic 1D and 2D datasets.
+
+    Args:
+        data_object: The csdm object
+        reverse_axis: An array of boolean specifying which dimensions will be
+                displayed in reverse.
+        kwargs: Additional kwargs which are passed to the matplotlib plot or
+                imshow functions.
+
+    Example:
+        >>> cp.plot(data_object) # doctest: +SKIP
+    """
     _preview(data_object, **kwargs)

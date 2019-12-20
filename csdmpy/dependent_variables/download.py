@@ -14,7 +14,7 @@ __all__ = ["parse_url", "download_file_from_url"]
 
 
 def parse_url(url):
-    res = urlparse(quote(url, safe=":/"))
+    res = urlparse(quote(url, safe="/?#@:"))
     return res
 
 

@@ -280,7 +280,7 @@ def frequency_ratio(origin_offset):
         (
             u.Hz,
             u.cds.ppm,
-            lambda x: (x / origin_offset) * 1e6,
+            lambda x: (x / origin_offset.to("Hz")) * 1e6,
             lambda x: x * origin_offset,
         )
     ]

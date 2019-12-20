@@ -4,6 +4,7 @@ from __future__ import division
 from __future__ import print_function
 
 import json
+from copy import deepcopy
 
 from csdmpy.dependent_variables.external import ExternalDataset
 from csdmpy.dependent_variables.internal import InternalDataset
@@ -738,6 +739,10 @@ class DependentVariable:
     ):
         """Return DependentVariable object as a python dictionary."""
         return self.subtype.to_dict(filename, dataset_index, for_display, version)
+
+    def copy(self):
+        """Return a copy of the DependentVariable object."""
+        return deepcopy(self)
 
 
 def check_sparse_sampling_key_value(input_dict):

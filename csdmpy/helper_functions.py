@@ -151,7 +151,7 @@ def plot1D(x, y, i0, ax, **kwargs):
     reverse = [False, False]
     if "reverse_axis" in kwargs.keys():
         reverse = kwargs["reverse_axis"]
-    kwargs.pop("reverse_axis")
+        kwargs.pop("reverse_axis")
 
     i = int(i0 / 2)
     j = int(i0 % 2)
@@ -177,7 +177,7 @@ def RGB(x, y, i0, fig, ax, **kwargs):
     reverse = [False, False]
     if "reverse_axis" in kwargs.keys():
         reverse = kwargs["reverse_axis"]
-    kwargs.pop("reverse_axis")
+        kwargs.pop("reverse_axis")
 
     i = int(i0 / 2)
     j = i0 % 2
@@ -195,7 +195,7 @@ def twoD_scalar(x, y, i0, fig, ax, **kwargs):
     reverse = [False, False]
     if "reverse_axis" in kwargs.keys():
         reverse = kwargs["reverse_axis"]
-    kwargs.pop("reverse_axis")
+        kwargs.pop("reverse_axis")
 
     i = int(i0 / 2)
     j = i0 % 2
@@ -235,7 +235,7 @@ def vector_plot(x, y, i0, fig, ax, **kwargs):
     reverse = [False, False]
     if "reverse_axis" in kwargs.keys():
         reverse = kwargs["reverse_axis"]
-    kwargs.pop("reverse_axis")
+        kwargs.pop("reverse_axis")
 
     i = int(i0 / 2)
     j = i0 % 2

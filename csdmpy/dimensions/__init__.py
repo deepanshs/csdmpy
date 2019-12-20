@@ -2,6 +2,7 @@
 """The Dimension object: attributes and methods."""
 import json
 import warnings
+from copy import deepcopy
 
 from csdmpy.dimensions.labeled import LabeledDimension
 from csdmpy.dimensions.linear import LinearDimension
@@ -823,3 +824,7 @@ class Dimension:
             self.subtype._to(unit, frequency_ratio)
         else:
             self.subtype._to(unit, equivalencies)
+
+    def copy(self):
+        """Return a copy of the Dimension object."""
+        return deepcopy(self)
