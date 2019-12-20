@@ -3,27 +3,27 @@ language: python
 python:
   - "3.6"
   - "3.7"
+  - "3.8"
 
 sudo: false
 cache: pip
 
-
 # safelist
 branches:
   only:
-  - master
+    - master
 
 before_install:
   - "pip install --upgrade pip"
   - "pip install -r requirements-dev.txt"
 
 install:
-  - "python setup.py sdist"
+  - "python setup.py develop"
   - "pip install ."
 
 # command to run tests
 script:
-  - pytest -v --cov --cov-report term-missing
+  - pytest -v --cov --cov-report
 
 after_success:
   - coveralls
