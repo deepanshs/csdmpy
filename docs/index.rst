@@ -35,7 +35,7 @@ Welcome to csdmpy's documentation!
 ----
 
 The `csdmpy` package is the Python support for the core scientific
-dataset (CSD) model file exchange-format.
+dataset (CSD) model file exchange-format [#f10]_.
 The package is based on the core scientific dataset (CSD) model, which is
 designed as a building block in the development of a more sophisticated
 portable scientific dataset file standard.
@@ -59,8 +59,15 @@ compatible with Numpy.
 
     **The sample CSDM compliant files used in this documentation are available online.**
 
-    .. image:: https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet
+    .. image:: https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet?size=large
         :target: https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u
+
+----
+
+.. only:: html
+
+    .. image:: https://img.shields.io/badge/View-Example%20Gallery-Purple?size=large
+        :target: auto_examples/index.html
 
 ----
 
@@ -76,6 +83,12 @@ compatible with Numpy.
     referenceAPI
 
 .. examples/examples
+
+----
+
+.. rubric:: Please cite the following if you use the CSD model or csdmpy library.
+.. [#f10] Srivastava DJ, Vosegaard T, Massiot D, Grandinetti PJ (2020) Core Scientific Dataset Model: A lightweight and portable model and file format for multi-dimensional scientific data. PLOS ONE 15(1): e0225953. https://doi.org/10.1371/journal.pone.0225953
+
 
 .. only:: html
 

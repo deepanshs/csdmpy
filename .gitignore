@@ -10,7 +10,7 @@ archive/**
 .vscode
 .pytest_cache/**
 htmlcov/**
-*/Test_files/**
+Test_files/**
 */Test Files-CSDM-v1.0/**
 docs/_build/**
 docs/auto_examples/**
@@ -60,7 +60,7 @@ files.txt
 info.txt
 *.ipynb
 *schema
-
+*.csdf
 
 # files #
 #########

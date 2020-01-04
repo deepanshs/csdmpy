@@ -12,8 +12,6 @@ import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/c9wg59hya5ohc083qi2jgd7wk5emmlmu.csdf"
 UV_data = cp.load(filename)
-
-#%%
 print(UV_data.data_structure)
 
 #%%

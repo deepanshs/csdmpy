@@ -88,8 +88,11 @@ def preview(data_object):
         _preview(data)
 
 
-def _preview(data, **kwargs):
+def _preview(data, reverse_axis=None, **kwargs):
     """Quick display of the data."""
+    if reverse_axis is not None:
+        kwargs["reverse_axis"] = reverse_axis
+
     x = data.dimensions
     y = data.dependent_variables
     y_len = len(y)
@@ -169,8 +172,6 @@ def plot1D(x, y, i0, ax, **kwargs):
 
     if reverse[0]:
         ax[i][j].invert_xaxis()
-    if reverse[1]:
-        ax[i][j].invert_yaxis()
 
 
 def RGB(x, y, i0, fig, ax, **kwargs):
@@ -254,6 +255,8 @@ def vector_plot(x, y, i0, fig, ax, **kwargs):
     if len(x) == 2:
         ax[i][j].set_ylim(x[1].coordinates.value.min(), x[1].coordinates.value.max())
         ax[i][j].set_ylabel(f"{x[1].axis_label} - 1")
+        if reverse[1]:
+            ax[i][j].invert_yaxis()
     else:
         ax[i][j].set_ylim([-y[i0].components.max(), y[i0].components.max()])
     ax[i][j].set_title("{0}".format(y[i0].name))
@@ -261,8 +264,6 @@ def vector_plot(x, y, i0, fig, ax, **kwargs):
 
     if reverse[0]:
         ax[i][j].invert_xaxis()
-    if reverse[1]:
-        ax[i][j].invert_yaxis()
 
 
 # def audio(x, y, i0, fig, ax):

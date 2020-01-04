@@ -22,16 +22,16 @@ __version__ = "0.1.6"
 __all__ = ["load", "new", "plot"]
 
 
-def _import_json(filename):
+def _import_json(filename, verbose=False):
     res = urlparse(filename)
     if res[0] not in ["file", ""]:
-        filename = download_file_from_url(filename)
+        filename = download_file_from_url(filename, verbose)
     with open(filename, "rb") as f:
         content = f.read()
         return json.loads(str(content, encoding="UTF-8"))
 
 
-def load(filename=None, application=False):
+def load(filename=None, application=False, verbose=False):
     r"""
     Load a .csdf/.csdfe file and return an instance of :ref:`csdm_api` class.
 
@@ -45,10 +45,8 @@ def load(filename=None, application=False):
         filename (str): A local or remote address to the `.csdf or `.csdfe` file.
         application (bool): If true, the application metadata from application that
                 last serialized the file will be imported. Default is False.
-        sort_fft_order (bool): If true, the coordinates and the components
-                corresponding to the dimension with `complex_fft` as True will be
-                sorted upon import and the corresponding `complex_fft` key-value
-                will be set to False. Default is True.
+        verbose (bool): If the filename is a URL, this option will show the progress
+                bar for the file download when true.
 
     Returns:
         A CSDM instance.
@@ -71,7 +69,7 @@ def load(filename=None, application=False):
     #     csd_file = filename
 
     try:
-        dictionary = _import_json(filename)
+        dictionary = _import_json(filename, verbose)
     except Exception as e:
         raise Exception(e)
 
@@ -221,7 +219,7 @@ def new(description=""):
     return CSDM(description=description)
 
 
-def plot(data_object, **kwargs):
+def plot(data_object, reverse_axis=None, **kwargs):
     """
     Helper function for plotting basic 1D and 2D datasets.
 
@@ -235,4 +233,4 @@ def plot(data_object, **kwargs):
     Example:
         >>> cp.plot(data_object) # doctest: +SKIP
     """
-    _preview(data_object, **kwargs)
+    _preview(data_object, reverse_axis, **kwargs)

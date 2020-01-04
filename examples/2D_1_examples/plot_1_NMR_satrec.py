@@ -7,7 +7,7 @@ Nuclear Magnetic Resonance (NMR) dataset
 # The following example is a :math:`^{29}\mathrm{Si}` NMR time-domain
 # saturation recovery measurement of a highly siliceous zeolite ZSM-12.
 # Usually, the spin recovery measurements are acquired over a rectilinear grid
-# where measurements along one of the dimensions are non-uniform and span several
+# where the measurements along one of the dimensions are non-uniform and span several
 # orders of magnitude. In this example, we illustrate the use of `monotonic`
 # dimensions for describing such datasets.
 
@@ -17,9 +17,7 @@ import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/27yrgdaubtb4wqj5adbavp2u16c2h7k8.csdf"
 NMR_2D_data = cp.load(filename)
-
-#%%
-print(NMR_2D_data.data_structure)
+print(NMR_2D_data.description)
 
 #%%
 # The tuples of the dimension and dependent variable instances from the
@@ -69,7 +67,13 @@ y00 = y[0].components[0]
 
 #%%
 # **Visualize the dataset**
+#
+# The :meth:`~csdmpy.plot` method is a very basic supplementary function for
+# quick visualization of 1D and 2D datasets. You may use this function to plot
+# the data from this example, however, we use the following script to
+# visualize the data with projections onto the respective dimensions.
 
+#%%
 import matplotlib.pyplot as plt
 from matplotlib.image import NonUniformImage
 import numpy as np

@@ -6,8 +6,9 @@ Meteorological, 2D{1,1,2,1,1} dataset
 # sphinx_gallery_thumbnail_number = 5
 
 #%%
+#
 # The following dataset is obtained from `NOAA/NCEP Global Forecast System (GFS) Atmospheric Model
-# <https://coastwatch.pfeg.noaa.gov/erddap/griddap/NCEP_Global_Best.graph?ugrd10m[(2017-09-17T12:00:00Z)][(-4.5):(52.0)][(275.0):(331.5)]&.draw=surface&.vars=longitude%7Clatitude%7Cugrd10m&.colorBar=%7C%7C%7C%7C%7C&.bgColor=0xffccccff>`_,
+# <https://coastwatch.pfeg.noaa.gov/erddap/griddap/NCEP_Global_Best.graph?ugrd10m[(2017-09-17T12:00:00Z)][(-4.5):(52.0)][(275.0):(331.5)]&.draw=surface&.vars=longitude%7Clatitude%7Cugrd10m&.colorBar=%7C%7C%7C%7C%7C&.bgColor=0xffccccff>`_
 # and subsequently converted to the CSD model file-format.
 # The dataset consists of two spatial dimensions describing the geographical
 # coordinates of the earth surface and five dependent variables with

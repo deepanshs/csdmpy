@@ -743,35 +743,32 @@ class CSDM:
         func = np.prod
         return self._get_new_csdmodel_object(func, dimensions)
 
-    def fft(self, dimensions=0):
+    def fft(self, dimension=0):
         """
         Perform a FFT along the along the given dimension `dimensions`.
 
         Needs debugging.
         """
-        indexes = self._check_dimension_indices(dimensions)
+        index = self._check_dimension_indices(dimension)[0]
 
-        for index in indexes:
-            if self.dimensions[index].type != "linear":
-                raise NotImplementedError(
-                    "FFT is available for dimensions with type 'linear'."
-                )
-
-            dimension_object = self.dimensions[index].subtype
-            unit_in = dimension_object._unit
-            # swap the values of object with the respective reciprocal object.
-            dimension_object._swap()
-
-            # compute the reciprocal increment using Nyquist-shannan theorem.
-            _reciprocal_increment = 1.0 / (
-                dimension_object._count * dimension_object._increment
+        # for index in indexes:
+        if self.dimensions[index].type != "linear":
+            raise NotImplementedError(
+                "FFT is available for dimensions with type 'linear'."
             )
 
-            unit = dimension_object._unit
-            dimension_object._increment = _reciprocal_increment.to(unit)
+        dimension_object = self.dimensions[index].subtype
+        unit_in = dimension_object._unit
 
-            # get the coordinates of the reciprocal dimension.
-            dimension_object._get_coordinates()
+        # compute the reciprocal increment using Nyquist-shannan theorem.
+        _reciprocal_increment = 1.0 / (
+            dimension_object._count * dimension_object._increment
+        )
+
+        # swap the values of object with the respective reciprocal object.
+        dimension_object._swap()
+        unit = dimension_object._unit
+        dimension_object._increment = _reciprocal_increment.to(unit)
 
         ndim = len(self.dimensions)
 
@@ -782,6 +779,7 @@ class CSDM:
         coordinates = dimension_object._coordinates.to(unit).value
         phase = np.exp(2j * np.pi * reciprocal_coordinates * coordinates)
         phase_grid = get_broadcase_shape(phase, ndim, axis=index)
+        # phase_grid = 1
         # toggle the value of the complex_fft attribute
         if dimension_object._complex_fft:
             for item in self.dependent_variables:
@@ -799,12 +797,14 @@ class CSDM:
                 item.subtype._components = signal_ft
             dimension_object._complex_fft = True
 
-        for item in self.dependent_variables:
-            signal_ft = fftshift(
-                fft(item.subtype._components, axis=index) * phase_grid, axes=-index - 1
-            )
-            item.subtype._components = signal_ft
+        # for item in self.dependent_variables:
+        #     signal_ft = fftshift(
+        #         fft(item.subtype._components, axis=index) * phase_grid, axes=-index - 1
+        #     )
+        #     item.subtype._components = signal_ft
 
+        # get the coordinates of the reciprocal dimension.
+        dimension_object._get_coordinates()
         # self.dimensions[index].gcv._reciprocal()
         # self._toggle_complex_fft(self.dimensions[index])
 

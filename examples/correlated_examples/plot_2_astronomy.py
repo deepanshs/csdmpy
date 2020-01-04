@@ -49,11 +49,9 @@ y[2].name
 # We use the following script to plot the dependent variables.
 
 import matplotlib.pyplot as plt
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
 def plot_scalar(yx):
-    plt.figure(figsize=(6, 4.5))
 
     # Set the extents of the image plot.
     extent = [
@@ -69,9 +67,7 @@ def plot_scalar(yx):
     im = plt.imshow(y0, origin="lower", extent=extent, cmap="bone", vmax=0.1)
 
     # Add a colorbar.
-    divider = make_axes_locatable(plt.gca())
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cbar = plt.gca().figure.colorbar(im, cax)
+    cbar = plt.gca().figure.colorbar(im)
     cbar.ax.set_ylabel(yx.axis_label[0])
 
     # Set up the axes label and figure title.
@@ -82,7 +78,7 @@ def plot_scalar(yx):
     # Set up the grid lines.
     plt.grid(color="k", linestyle="--", linewidth=0.5)
 
-    plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+    plt.tight_layout()
     plt.show()
 
 
@@ -149,12 +145,11 @@ extent = [
 ]
 
 # add figure
-plt.figure(figsize=(5, 4.5))
 plt.imshow(image, origin="lower", extent=extent)
 
 plt.xlabel(x[0].axis_label)
 plt.ylabel(x[1].axis_label)
 plt.title("composition")
 
-plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+plt.tight_layout()
 plt.show()

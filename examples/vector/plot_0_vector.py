@@ -6,21 +6,19 @@ Vector, 1D{2} dataset
 #%%
 # The 1D{2} datasets are one-dimensional, :math:`d=1`, with two-component
 # dependent variable, :math:`p=2`. Such datasets are more common with the
-# weather  forecast, such as the the wind velocity predicting at a location
+# weather forecast, such as the wind velocity predicting at a location
 # as a function of time.
 
 #%%
-# The following is an example of a simulated time fluctuating vector dataset.
+# The following is an example of a simulated 1D vector field dataset.
 import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/w63851uqruzhz6kx9rx5qgk3or2pot9l.csdf"
 vector_data = cp.load(filename)
-
-#%%
 print(vector_data.data_structure)
 
 #%%
-# The tuples of the dimension and dependent variable instances from this example
+# The tuple of the dimension and dependent variable instances from this example
 # are
 
 x = vector_data.dimensions

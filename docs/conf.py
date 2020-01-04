@@ -88,6 +88,7 @@ warnings.filterwarnings(
 # sphinx gallery config
 sphinx_gallery_conf = {
     "examples_dirs": "../examples",  # path to your example scripts
+    "remove_config_comments": True,
     "gallery_dirs": "auto_examples",  # path to where to save gallery generated output
     "within_subsection_order": FileNameSortKey,
     "subsection_order": ExplicitOrder(

@@ -1,6 +1,7 @@
+.. _getting_started:
 
 =====================================
-Getting Started With `csdmpy` package
+Getting started with `csdmpy` package
 =====================================
 
 We have put together a set of guidelines for importing the `csdmpy`

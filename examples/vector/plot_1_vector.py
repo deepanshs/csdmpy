@@ -12,12 +12,10 @@ import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/iobasl6fx1z7rds3ovamrwueek8ver5o.csdf"
 vector_data = cp.load(filename)
-
-#%%
 print(vector_data.data_structure)
 
 #%%
-# The tuples of the dimension and dependent variable instances from this example
+# The tuple of the dimension and dependent variable instances from this example
 # are
 
 x = vector_data.dimensions
@@ -32,16 +30,11 @@ print(x[0].coordinates[:5])
 print(x[1].coordinates[:5])
 
 #%%
-# In this example, the components of the dependent variable are
-# vectors as seen from the
-# :attr:`~csdmpy.dependent_variables.DependentVariable.quantity_type`
+# The components of the dependent variable are vector components as seen
+# from the :attr:`~csdmpy.dependent_variables.DependentVariable.quantity_type`
 # attribute of the corresponding dependent variable instance.
 
 print(y[0].quantity_type)
-
-#%%
-# From the value `vector_2`, `vector` indicates a vector dataset, while `2`
-# indicates the number of vector components.
 
 #%%
 # **Visualizing the dataset**
@@ -52,11 +45,11 @@ print(y[0].quantity_type)
 
 import numpy as np
 
-X, Y = np.meshgrid(x[0].coordinates, x[1].coordinates)
-U, V = y[0].components[0], y[0].components[1]
-R = np.sqrt(U ** 2 + V ** 2)
-R /= R.min()
-Rlog = np.log10(R)
+X, Y = np.meshgrid(x[0].coordinates, x[1].coordinates)  # (x, y) coordinate pairs
+U, V = y[0].components[0], y[0].components[1]  # U and V are the components
+R = np.sqrt(U ** 2 + V ** 2)  # The magnitude of the vector
+R /= R.min()  # Scaled magnitude of the vector
+Rlog = np.log10(R)  # Scaled magnitude of the vector on a log scale
 
 #%%
 # In the above steps, we calculate the X-Y grid points along with a

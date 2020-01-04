@@ -12,8 +12,6 @@ import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/zt452x7p3plbnjqt2898dy8px6hkhkd8.csdf"
 GCData = cp.load(filename)
-
-#%%
 print(GCData.data_structure)
 
 #%%

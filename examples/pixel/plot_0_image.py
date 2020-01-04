@@ -4,7 +4,7 @@ Image, 2D{3} datasets
 ^^^^^^^^^^^^^^^^^^^^^
 """
 #%%
-# The 2D{3} datasets is two dimensional, :math:`d=2`, with
+# The 2D{3} dataset is two dimensional, :math:`d=2`, with
 # a single three-component dependent variable, :math:`p=3`.
 # A common example from this subset is perhaps the RGB image dataset.
 # An RGB image dataset has two spatial dimensions and one dependent
@@ -12,17 +12,15 @@ Image, 2D{3} datasets
 # intensities.
 
 #%%
-# The following is an example of the RGB image dataset.
+# The following is an example of an RGB image dataset.
 import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/vdxdaitsa9dq45x8nk7l7h25qrw2baxt.csdf"
 ImageData = cp.load(filename)
-
-#%%
 print(ImageData.data_structure)
 
 #%%
-# The tuples of the dimension and dependent variable instances from
+# The tuple of the dimension and dependent variable instances from
 # ``ImageData`` instance are
 
 x = ImageData.dimensions
@@ -38,8 +36,7 @@ print("x0 =", x[0].coordinates[:10])
 print("x1 =", x[1].coordinates[:10])
 
 #%%
-# respectively. In the above example, only the first ten coordinates along
-# each dimension are displayed.
+# respectively, where only first ten coordinates along each dimension is displayed.
 
 #%%
 # The dependent variable is the image data, as also seen from the
@@ -49,7 +46,7 @@ print("x1 =", x[1].coordinates[:10])
 print(y[0].quantity_type)
 
 #%%
-# From the value `pixel_3`, `pixel` indicates a pixel data point, while `3`
+# From the value `pixel_3`, `pixel` indicates a pixel data, while `3`
 # indicates the number of pixel components.
 
 #%%
@@ -64,7 +61,7 @@ print(y[0].components[0])
 # will return an array with the first component of all data values. In this case,
 # the components correspond to the red color intensity, also indicated by the
 # corresponding component label. The label corresponding to
-# this component array is accessed through the
+# the component array is accessed through the
 # :attr:`~csdmpy.dependent_variables.DependentVariable.component_labels`
 # attribute with appropriate indexing, that is
 

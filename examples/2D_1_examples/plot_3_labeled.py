@@ -6,7 +6,7 @@ Labeled Dataset
 #%%
 # The CSD model also supports labeled dimensions. In the following example, we
 # present a mixed `linear` and `labeled` two-dimensional dataset representing
-# the population of the country as a function of year. The dataset is
+# the population of the country as a function of time. The dataset is
 # obtained from `The World Bank <https://data.worldbank.org/indicator/SP.POP.TOTL?view=chart>`_.
 
 #%%
@@ -35,7 +35,7 @@ x[0].type
 x[1].type
 
 #%%
-# Look like the second dimension is a `labeled` dimension with [#f1]_
+# Here, the second dimension is the `labeled` dimension with [#f1]_
 
 #%%
 x[1].count
@@ -50,13 +50,12 @@ print(x[1].labels[:5])
 # .. note::
 #     For labeled dimensions, the :attr:`~csdmpy.dimensions.Dimension.coordinates`
 #     attribute is an alias of the :attr:`~csdmpy.dimensions.Dimension.labels`
-#     attribute. Therefore,
-
+#     attribute.
 print(x[1].coordinates[:5])
 
 #%%
-# The coordinates along the first dimension viewed up to the first ten
-# points are
+# The coordinates along the first dimension, viewed up to the first ten
+# points, are
 
 print(x[0].coordinates[:10])
 # [1960. 1961. 1962. 1963. 1964. 1965. 1966. 1967. 1968. 1969.] yr

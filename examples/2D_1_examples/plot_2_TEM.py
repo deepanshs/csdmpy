@@ -16,13 +16,11 @@ import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/3w5iqkx15fayan1u6g6sn5woc2ublkyh.csdf"
 TEM = cp.load(filename)
-
-#%%
 print(TEM.data_structure)
 
 #%%
 # This dataset consists of two linear dimensions and one single-component
-# dependent variable. The tuples of the dimension and the dependent variable
+# dependent variable. The tuple of the dimension and the dependent variable
 # instances from this example are
 
 x = TEM.dimensions

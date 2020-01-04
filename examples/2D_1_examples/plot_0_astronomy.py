@@ -17,8 +17,6 @@ import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/0p3o1ga1kqno4dk4sooi1rbk29pbs3mm.csdf"
 bubble_nebula = cp.load(filename)
-
-#%%
 print(bubble_nebula.data_structure)
 
 #%%
@@ -28,7 +26,7 @@ print(bubble_nebula.data_structure)
 # variable named *Bubble Nebula, 656nm*.
 
 #%%
-# Let's get the tuples of the dimension and dependent variable instances from
+# Let's get the tuple of the dimension and dependent variable instances from
 # the ``bubble_nebula`` instance following,
 
 x = bubble_nebula.dimensions

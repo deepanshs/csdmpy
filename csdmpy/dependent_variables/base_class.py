@@ -9,7 +9,7 @@ from copy import deepcopy
 
 import numpy as np
 
-from csdmpy.dependent_variables.download import get_relative_uri_path
+from csdmpy.dependent_variables.download import get_relative_url_path
 from csdmpy.units import check_quantity_name
 from csdmpy.units import ScalarQuantity
 from csdmpy.utils import check_encoding
@@ -260,7 +260,7 @@ class BaseDependentVariable:
             obj["components"] = [base64.b64encode(item).decode("utf-8") for item in c]
 
         if self.encoding == "raw":
-            url_relative_path, absolute_path = get_relative_uri_path(
+            url_relative_path, absolute_path = get_relative_url_path(
                 dataset_index, filename
             )
 

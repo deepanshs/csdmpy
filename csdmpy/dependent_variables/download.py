@@ -18,15 +18,20 @@ def parse_url(url):
     return res
 
 
-def download_file_from_url(url):
+def download_file_from_url(url, verbose=False):
     res = parse_url(url)
     filename = path.split(res[2])[1]
-    name, extension = path.splitext(filename)
-    original_name = name
-    i = 0
-    while path.isfile(filename):
-        filename = "{0}_{1}{2}".format(original_name, str(i), extension)
-        i += 1
+    # name, extension = path.splitext(filename)
+    # original_name = name
+    # i = 0
+    if path.isfile(filename):
+        if verbose:
+            sys.stdout.write(
+                f"Found a local file with the filename, {0}. Skipping download."
+            )
+        return filename
+        # filename = "{0}_{1}{2}".format(original_name, str(i), extension)
+        # i += 1
 
     with open(filename, "wb") as f:
         response = requests.get(url, stream=True)
@@ -37,21 +42,23 @@ def download_file_from_url(url):
         else:
             downloaded = 0
             total = int(total)
-            sys.stdout.write(
-                "Downloading '{0}' from '{1}' to file '{2}'.\n".format(
-                    res[2], res[1], filename
+            if verbose:
+                sys.stdout.write(
+                    "Downloading '{0}' from '{1}' to file '{2}'.\n".format(
+                        res[2], res[1], filename
+                    )
                 )
-            )
             for data in response.iter_content(
                 chunk_size=max(int(total / 1000), 1024 * 1024)
             ):
                 downloaded += len(data)
                 f.write(data)
-                done = int(20 * downloaded / total)
-                sys.stdout.write("\r[{}{}]".format("█" * done, "." * (20 - done)))
-                sys.stdout.flush()
-
-    sys.stdout.write("\n")
+                if verbose:
+                    done = int(20 * downloaded / total)
+                    sys.stdout.write("\r[{}{}]".format("█" * done, "." * (20 - done)))
+                    sys.stdout.flush()
+    if verbose:
+        sys.stdout.write("\n")
 
     return filename
 
@@ -78,7 +85,7 @@ def get_absolute_url_path(url, file):
     return path
 
 
-def get_relative_uri_path(dataset_index, filename):
+def get_relative_url_path(dataset_index, filename):
     index = str(dataset_index)
     absolute_path = get_absolute_url_path("", filename)
 
