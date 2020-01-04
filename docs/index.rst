@@ -71,9 +71,11 @@ compatible with Numpy.
     CSD_model
     installation
     getting_started
-    examples/examples
+    auto_examples/index
     startFromScratch/start
     referenceAPI
+
+.. examples/examples
 
 .. only:: html
 

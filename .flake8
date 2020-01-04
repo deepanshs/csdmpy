@@ -1,5 +1,5 @@
 [flake8]
-ignore = E501
+ignore = E501 E265 E402
 max-line-length = 88
 exclude = .eggs,*.egg,build, csdmpy/__init__.py
 max-complexity = 18

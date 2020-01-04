@@ -10,8 +10,10 @@ archive/**
 .vscode
 .pytest_cache/**
 htmlcov/**
-Test Files/**
+*/Test_files/**
+*/Test Files-CSDM-v1.0/**
 docs/_build/**
+docs/auto_examples/**
 
 # Compiled source #
 ###################

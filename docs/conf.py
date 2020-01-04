@@ -12,12 +12,16 @@
 #
 import os
 import sys
+import warnings
+
+from sphinx_gallery.sorting import ExplicitOrder
+from sphinx_gallery.sorting import FileNameSortKey
 
 sys.path.insert(0, os.path.abspath("../.."))
 
 # -- Project information -----------------------------------------------------
 project = "csdmpy"
-copyright = "2019, Deepansh J. Srivastava"
+copyright = "2019-2020, Deepansh J. Srivastava"
 author = "Deepansh J. Srivastava"
 
 path = os.path.split(__file__)[0]
@@ -50,7 +54,53 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
     "sphinxjp.themes.basicstrap",
+    "sphinx_gallery.gen_gallery",
 ]
+
+# filter sphinx matplotlib warning
+warnings.filterwarnings(
+    "ignore",
+    category=UserWarning,
+    message="Matplotlib is currently using agg, which is a"
+    " non-GUI backend, so cannot show the figure.",
+)
+warnings.filterwarnings(
+    "ignore",
+    category=UserWarning,
+    message=(
+        "The physical quantity name, 'plane angle', is not "
+        "defined in the astropy.units package. Continuing "
+        "with 'plane angle' as the physical quantity name "
+        "for unit deg."
+    ),
+)
+warnings.filterwarnings(
+    "ignore",
+    category=UserWarning,
+    message=(
+        "The physical quantity name, 'electric field strength', is not "
+        "defined in the astropy.units package. Continuing "
+        "with 'electric field strength' as the physical quantity name "
+        "for unit N / C."
+    ),
+)
+
+# sphinx gallery config
+sphinx_gallery_conf = {
+    "examples_dirs": "../examples",  # path to your example scripts
+    "gallery_dirs": "auto_examples",  # path to where to save gallery generated output
+    "within_subsection_order": FileNameSortKey,
+    "subsection_order": ExplicitOrder(
+        [
+            "../examples/1D_1_examples",
+            "../examples/2D_1_examples",
+            "../examples/vector",
+            "../examples/pixel",
+            "../examples/correlated_examples",
+            "../examples/sparse",
+        ]
+    ),
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

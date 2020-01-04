@@ -1,3 +1,6 @@
+v0.1.6
+ - Fixed a bug in cp.plot method.
+
 v0.1.5
  - Added method to convert the frequency dimension to nmr dimensionless frequency ratio.
  - csdmpy.plot method also displays the dimension index on the axis label.

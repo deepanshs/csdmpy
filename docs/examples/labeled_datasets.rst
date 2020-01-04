@@ -155,4 +155,4 @@ the ``x[1]`` dimension.
 .. ---------
 
 .. Another example is the weather prediction as a function of datetime stamp,
-.. datetime stamp is the labled dimension.
+.. datetime stamp is the labeled dimension.

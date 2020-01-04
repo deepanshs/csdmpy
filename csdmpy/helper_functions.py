@@ -211,7 +211,7 @@ def twoD_scalar(x, y, i0, fig, ax, **kwargs):
         )
     else:
         # print('non-uniform')
-        cs = NonUniformImage(ax[i][j], interpolation="none", extent=extent, **kwargs)
+        cs = NonUniformImage(ax[i][j], interpolation="nearest", extent=extent, **kwargs)
         cs.set_data(x0, x1, y00 / y00.max())
         ax[i][j].images.append(cs)
 

@@ -16,7 +16,7 @@ from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 
 __all__ = ["load", "new", "plot"]
