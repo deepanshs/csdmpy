@@ -55,7 +55,10 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinxjp.themes.basicstrap",
     "sphinx_gallery.gen_gallery",
+    "sphinx.ext.intersphinx",
 ]
+
+autosummary_generate = True
 
 # filter sphinx matplotlib warning
 warnings.filterwarnings(
@@ -101,6 +104,17 @@ sphinx_gallery_conf = {
             "../examples/sparse",
         ]
     ),
+    "reference_url": {
+        # The module you locally document uses None
+        "csdmpy": None,
+        # "matplotlib": "https://matplotlib.org",
+        # "numpy": "https://numpy.org",
+    },
+}
+
+intersphinx_mapping = {
+    "matplotlib": ("https://matplotlib.org", None),
+    "numpy": ("https://numpy.org", None),
 }
 
 # Add any paths that contain templates here, relative to this directory.

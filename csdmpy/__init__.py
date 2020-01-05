@@ -219,18 +219,25 @@ def new(description=""):
     return CSDM(description=description)
 
 
-def plot(data_object, reverse_axis=None, **kwargs):
+def plot(csdm_object, reverse_axis=None, **kwargs):
     """
-    Helper function for plotting basic 1D and 2D datasets.
+    A supplementary function for plotting basic 1D and 2D datasets only.
 
     Args:
-        data_object: The csdm object
-        reverse_axis: An array of boolean specifying which dimensions will be
-                displayed in reverse.
-        kwargs: Additional kwargs which are passed to the matplotlib plot or
-                imshow functions.
+        csdm_object: The csdm object.
+        reverse_axis: An ordered array of boolean specifying which dimensions will be
+                displayed in reverse axis.
+        kwargs: Additional keyword arguments are used in matplotlib plotting functions.
+                The following matplotlib methods are implemented from the one and
+                two-dimensional datasets.
+
+                - The 1D{1} scalar dataset uses the plt.plot() method.
+                - The 1D{2} vector dataset uses the plt.quiver() method.
+                - The 2D{1} scalar dataset uses the plt.imshow() method if the two dimensions have a `linear` subtype. If any one of the dimension is `monotonic`, plt.NonUniformImage() method is used instead.
+                - The 2D{2} vector dataset uses the plt.quiver() method.
+                - The 2D{3} pixel dataset uses the plt.imshow() assuming the pixel dataset as an RGB image.
 
     Example:
         >>> cp.plot(data_object) # doctest: +SKIP
     """
-    _preview(data_object, reverse_axis, **kwargs)
+    _preview(csdm_object, reverse_axis, **kwargs)

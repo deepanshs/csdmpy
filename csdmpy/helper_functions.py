@@ -45,23 +45,9 @@ def preview(data_object):
     """Quick preview od the dataset."""
     axes = []
     data = deepcopy(data_object)
-    # for i, dim in enumerate(data.dimensions):
-    #     if hasattr(dim, "complex_fft"):
-    #         if dim.complex_fft:
-    #             npts = dim.count
-    #             if npts % 2 == 0:
-    #                 temp = npts * dim.increment / 2.0
-    #             else:
-    #                 temp = (npts - 1) * dim.increment / 2.0
-    #             dim.coordinates_offset = dim.coordinates_offset - temp
-
-    #             axes.append(-i - 1)
-    #             dim.complex_fft = False
 
     for var in data.dependent_variables:
         var.components = fftshift(var.components, axes=axes)
-
-    # print(matplotlib.get_backend())
 
     if matplotlib.get_backend() in ["Qt5Agg", "Qt4Agg"]:
         x = data.dimensions
@@ -99,16 +85,17 @@ def _preview(data, reverse_axis=None, **kwargs):
     y_grid = int(y_len / 2) + 1
 
     if len(x) == 0:
-        print("Preview of zero dimensional datasets is not implemented.")
-        return
+        raise NotImplementedError(
+            "Preview of zero dimensional datasets is not implemented."
+        )
 
     if len(x) > 2:
-        print("Preview of three or higher dimensional datasets " "is not implemented.")
-        return
+        raise NotImplementedError(
+            "Preview of three or higher dimensional datasets " "is not implemented."
+        )
 
     if np.any([x[i].type == "labeled" for i in range(len(x))]):
-        print("Preview of labeled plots is not implemented.")
-        return
+        raise NotImplementedError("Preview of labeled plots is not implemented.")
 
     if len(x) <= 2:
         if y_len <= 2:
@@ -124,10 +111,14 @@ def _preview(data, reverse_axis=None, **kwargs):
 
     if len(x) == 1:
         for i in range(y_len):
+            i0 = int(i / 2)
+            j0 = int(i % 2)
+            ax_ = ax[i0][j0]
+
             if y[i].quantity_type in scalar:
-                plot1D(x, y, i, ax, **kwargs)
+                oneD_scalar(x, y[i], ax_, **kwargs)
             if "vector" in y[i].quantity_type:
-                vector_plot(x, y, i, fig, ax, **kwargs)
+                vector_plot(x, y[i], ax_, **kwargs)
             # if "audio" in y[i].quantity_type:
             #     audio(x, y, i, fig, ax, **kwargs)
 
@@ -136,110 +127,85 @@ def _preview(data, reverse_axis=None, **kwargs):
 
     if len(x) == 2:
         for i in range(y_len):
-            # if y[i].quantity_type in ["RGB", "RGBA"]:
-            #     RGB(x, y, i, fig, ax, **kwargs)
+            i0 = int(i / 2)
+            j0 = int(i % 2)
+            ax_ = ax[i0][j0]
+
+            if y[i].quantity_type == "pixel_3":
+                warn("This method interprets the `pixel_3` dataset as an RGB image.")
+                RGB_image(x, y[i], ax_, **kwargs)
+
             if y[i].quantity_type in scalar:
-                twoD_scalar(x, y, i, fig, ax, **kwargs)
+                twoD_scalar(x, y[i], ax_, **kwargs)
+
             if "vector" in y[i].quantity_type:
-                vector_plot(x, y, i, fig, ax, **kwargs)
+                vector_plot(x, y[i], ax_, **kwargs)
 
         plt.tight_layout(w_pad=0.0, h_pad=0.0)
         plt.show()
 
 
-# =========================================================================== #
-
-
-def plot1D(x, y, i0, ax, **kwargs):
-    reverse = [False, False]
+def oneD_scalar(x, y, ax, **kwargs):
+    reverse = [False]
     if "reverse_axis" in kwargs.keys():
         reverse = kwargs["reverse_axis"]
         kwargs.pop("reverse_axis")
 
-    i = int(i0 / 2)
-    j = int(i0 % 2)
-    components = y[i0].components.shape[0]
+    components = y.components.shape[0]
     for k in range(components):
-        ax[i][j].plot(x[0].coordinates, y[i0].components[k].real, **kwargs)
-        if "complex" in y[i0].numeric_type:
-            ax[i][j].plot(x[0].coordinates, y[i0].components[k].imag, **kwargs)
+        ax.plot(x[0].coordinates, y.components[k].real, **kwargs)
+        if "complex" in y.numeric_type:
+            ax.plot(x[0].coordinates, y.components[k].imag, **kwargs)
 
-        ax[i][j].set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
-        ax[i][j].set_xlabel(f"{x[0].axis_label} - 0")
-        ax[i][j].set_ylabel(y[i0].axis_label[0])
-        ax[i][j].set_title("{0}".format(y[i0].name))
-        ax[i][j].grid(color="gray", linestyle="--", linewidth=0.5)
+        ax.set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
+        ax.set_xlabel(f"{x[0].axis_label} - 0")
+        ax.set_ylabel(y.axis_label[0])
+        ax.set_title("{0}".format(y.name))
+        ax.grid(color="gray", linestyle="--", linewidth=0.5)
 
     if reverse[0]:
-        ax[i][j].invert_xaxis()
+        ax.invert_xaxis()
 
 
-def RGB(x, y, i0, fig, ax, **kwargs):
+def twoD_scalar(x, y, ax, **kwargs):
     reverse = [False, False]
     if "reverse_axis" in kwargs.keys():
         reverse = kwargs["reverse_axis"]
         kwargs.pop("reverse_axis")
-
-    i = int(i0 / 2)
-    j = i0 % 2
-    y0 = y[i0].components
-    ax[i][j].imshow(np.moveaxis(y0 / y0.max(), 0, -1), **kwargs)
-    ax[i][j].set_title("{0}".format(y[i0].name))
-
-    if reverse[0]:
-        ax[i][j].invert_xaxis()
-    if reverse[1]:
-        ax[i][j].invert_yaxis()
-
-
-def twoD_scalar(x, y, i0, fig, ax, **kwargs):
-    reverse = [False, False]
-    if "reverse_axis" in kwargs.keys():
-        reverse = kwargs["reverse_axis"]
-        kwargs.pop("reverse_axis")
-
-    i = int(i0 / 2)
-    j = i0 % 2
 
     x0 = x[0].coordinates.value
     x1 = x[1].coordinates.value
-    y00 = y[i0].components[0].real.astype(np.float64)
+    y00 = y.components[0].real.astype(np.float64)
     extent = [x0[0], x0[-1], x1[0], x1[-1]]
     if x[0].type == "linear" and x[1].type == "linear":
-        # print('uniform')
-        cs = ax[i][j].imshow(
-            y00, extent=extent, origin="lower", aspect="auto", **kwargs
-        )
+        cs = ax.imshow(y00, extent=extent, origin="lower", aspect="auto", **kwargs)
     else:
-        # print('non-uniform')
-        cs = NonUniformImage(ax[i][j], interpolation="nearest", extent=extent, **kwargs)
+        cs = NonUniformImage(ax, interpolation="nearest", extent=extent, **kwargs)
         cs.set_data(x0, x1, y00 / y00.max())
-        ax[i][j].images.append(cs)
+        ax.images.append(cs)
 
-    cbar = fig.colorbar(cs, ax=ax[i][j])
+    cbar = ax.figure.colorbar(cs, ax=ax)
     cbar.ax.minorticks_off()
-    cbar.set_label(y[i0].axis_label[0])
-    ax[i][j].set_xlim([extent[0], extent[1]])
-    ax[i][j].set_ylim([extent[2], extent[3]])
-    ax[i][j].set_xlabel(f"{x[0].axis_label} - 0")
-    ax[i][j].set_ylabel(f"{x[1].axis_label} - 1")
-    ax[i][j].set_title("{0}".format(y[i0].name))
-    ax[i][j].grid(color="gray", linestyle="--", linewidth=0.5)
+    cbar.set_label(y.axis_label[0])
+    ax.set_xlim([extent[0], extent[1]])
+    ax.set_ylim([extent[2], extent[3]])
+    ax.set_xlabel(f"{x[0].axis_label} - 0")
+    ax.set_ylabel(f"{x[1].axis_label} - 1")
+    ax.set_title("{0}".format(y.name))
+    ax.grid(color="gray", linestyle="--", linewidth=0.5)
 
     if reverse[0]:
-        ax[i][j].invert_xaxis()
+        ax.invert_xaxis()
     if reverse[1]:
-        ax[i][j].invert_yaxis()
+        ax.invert_yaxis()
 
 
-def vector_plot(x, y, i0, fig, ax, **kwargs):
+def vector_plot(x, y, ax, **kwargs):
     reverse = [False, False]
     if "reverse_axis" in kwargs.keys():
         reverse = kwargs["reverse_axis"]
         kwargs.pop("reverse_axis")
 
-    i = int(i0 / 2)
-    j = i0 % 2
     x0 = x[0].coordinates.value
     if len(x) == 2:
         x1 = x[1].coordinates.value
@@ -247,23 +213,39 @@ def vector_plot(x, y, i0, fig, ax, **kwargs):
         x1 = np.zeros(1)
 
     x0, x1 = np.meshgrid(x0, x1)
-    u1 = y[i0].components[0]
-    v1 = y[i0].components[1]
-    ax[i][j].quiver(x0, x1, u1, v1, pivot="middle", **kwargs)
-    ax[i][j].set_xlabel(f"{x[0].axis_label} - 0")
-    ax[i][j].set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
+    u1 = y.components[0]
+    v1 = y.components[1]
+    ax.quiver(x0, x1, u1, v1, pivot="middle", **kwargs)
+    ax.set_xlabel(f"{x[0].axis_label} - 0")
+    ax.set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
     if len(x) == 2:
-        ax[i][j].set_ylim(x[1].coordinates.value.min(), x[1].coordinates.value.max())
-        ax[i][j].set_ylabel(f"{x[1].axis_label} - 1")
+        ax.set_ylim(x[1].coordinates.value.min(), x[1].coordinates.value.max())
+        ax.set_ylabel(f"{x[1].axis_label} - 1")
         if reverse[1]:
-            ax[i][j].invert_yaxis()
+            ax.invert_yaxis()
     else:
-        ax[i][j].set_ylim([-y[i0].components.max(), y[i0].components.max()])
-    ax[i][j].set_title("{0}".format(y[i0].name))
-    ax[i][j].grid(color="gray", linestyle="--", linewidth=0.5)
+        ax.set_ylim([-y.components.max(), y.components.max()])
+    ax.set_title("{0}".format(y.name))
+    ax.grid(color="gray", linestyle="--", linewidth=0.5)
 
     if reverse[0]:
-        ax[i][j].invert_xaxis()
+        ax.invert_xaxis()
+
+
+def RGB_image(x, y, ax, **kwargs):
+    reverse = [False, False]
+    if "reverse_axis" in kwargs.keys():
+        reverse = kwargs["reverse_axis"]
+        kwargs.pop("reverse_axis")
+
+    y0 = y.components
+    ax.imshow(np.moveaxis(y0 / y0.max(), 0, -1), **kwargs)
+    ax.set_title("{0}".format(y.name))
+
+    if reverse[0]:
+        ax.invert_xaxis()
+    if reverse[1]:
+        ax.invert_yaxis()
 
 
 # def audio(x, y, i0, fig, ax):

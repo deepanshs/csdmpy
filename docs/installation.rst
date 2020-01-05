@@ -18,6 +18,8 @@ Installing `csdmpy` package
 PIP is a package manager for Python packages and is included with
 python version 3.4 and higher.
 
+.. code-block::
+
     $ pip install csdmpy
 
 .. include:: requirement.rst

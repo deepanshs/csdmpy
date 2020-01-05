@@ -1,5 +1,5 @@
-Correlated dataset
-==================
+Correlated datasets
+===================
 
 The Core Scientific Dataset Model (CSDM) supports multiple dependent
 variables that share the same `d`-dimensional coordinate grid, where
