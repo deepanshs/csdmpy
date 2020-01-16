@@ -13,7 +13,7 @@ def test_load_test_files():
 
 
 def test00():
-    error = "Missing a required data file address."
+    error = "Missing the value for the required `filename` attribute."
     with pytest.raises(Exception, match=".*{0}.*".format(error)):
         cp.load()
 

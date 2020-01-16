@@ -164,7 +164,7 @@ def test_monotonic_new():
 
     # count
     assert data.dimensions[0].count == 5
-    error = "Cannot set count,"
+    error = "Cannot set the count,"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.dimensions[0].count = 12
 

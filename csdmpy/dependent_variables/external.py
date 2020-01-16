@@ -28,7 +28,7 @@ class ExternalDataset(BaseDependentVariable):
 
         if kwargs["numeric_type"] is None:
             raise KeyError(
-                "Missing a required `numeric_type` key from the dependent variable."
+                "Missing a required `numeric_type` key from the DependentVariable object."
             )
 
         super(ExternalDataset, self).__init__(**kwargs)

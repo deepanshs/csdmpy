@@ -129,7 +129,7 @@ class BaseDependentVariable:
 
     @quantity_name.setter
     def quantity_name(self, value=""):
-        raise NotImplementedError("`quantity_name` attribute cannot be modified.")
+        raise NotImplementedError("The `quantity_name` attribute cannot be modified.")
 
     @property
     def encoding(self):
@@ -203,10 +203,9 @@ class BaseDependentVariable:
             self.set_components(value)
             return
         raise ValueError(
-            (
-                "The shape of `{0}`, `{1}`, is inconsistent\nwith the "
-                "shape of the components array, `{2}`."
-            ).format(value.__class__.__name__, value.shape, self.components.shape)
+            f"The shape of the `{value.__class__.__name__}`, `{value.shape}`, is "
+            f"inconsistent with the shape of the components array, "
+            f"`{self.components.shape}`."
         )
 
     # ----------------------------------------------------------------------- #

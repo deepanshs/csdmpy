@@ -103,7 +103,7 @@ class Dimension:
         input_keys = input_dict.keys()
 
         if "type" not in input_keys:
-            raise KeyError("Missing a required 'type' key from the dimension object.")
+            raise KeyError("Missing a required 'type' key from the Dimension object.")
 
         if "reciprocal" in input_keys:
             input_subkeys = input_dict["reciprocal"].keys()
@@ -119,15 +119,18 @@ class Dimension:
 
         type_ = default["type"]
         message = (
-            f"'{type_}' is an invalid value for the dimension type. "
-            "The allowed values are 'monotonic', 'linear' and 'labeled'."
+            f"The value, '{type_}', is invalid for the `type` attribute of the "
+            "Dimension object. The allowed values are 'monotonic', 'linear' and "
+            "'labeled'."
         )
 
         if default["type"] not in _valid_types:
             raise ValueError(message)
 
         if default["type"] == "labeled" and default["labels"] is None:
-            raise KeyError("LabeledDimension is missing a required `labels` key.")
+            raise KeyError(
+                "Missing a required `labels` key from the LabeledDimension object."
+            )
 
         if default["type"] == "labeled":
             self.subtype = LabeledDimension(**default)
@@ -150,8 +153,7 @@ class Dimension:
         for item in missing_key:
             if default[item] is None:
                 raise KeyError(
-                    f"Missing a required `{item}` key from the "
-                    "LinearDimension object."
+                    f"Missing a required `{item}` key from the LinearDimension object."
                 )
 
         validate(default["count"], "count", int)
@@ -357,11 +359,9 @@ class Dimension:
             self.subtype.labels = value
         if self.type == "linear":
             raise AttributeError(
-                (
-                    "The attribute cannot be modifed for dimensions with subtype `linear`. "
-                    "Use `count`, `increment` or `coordinates_offset` attributes to update "
-                    "the coordinate along a linear dimension."
-                )
+                "The attribute cannot be modifed for Dimension objects with `linear` "
+                "type. Use the `count`, `increment` or `coordinates_offset` attributes"
+                " to update the coordinate along the linear dimension."
             )
 
     @property
@@ -580,17 +580,13 @@ class Dimension:
 
         if value > self.count:
             raise ValueError(
-                (
-                    f"Cannot set count, {value}, more than the number of "
-                    f"coordinates, {self.count}, for monotonic and labeled"
-                    " dimensions."
-                )
+                f"Cannot set the count, {value}, more than the number of coordinates, "
+                f"{self.count}, for the monotonic and labeled dimensions."
             )
 
         if value < self.count:
             warnings.warn(
-                f"The number of coordinates, {self.count}, are truncated "
-                f"to {value}."
+                f"The number of coordinates, {self.count}, are truncated to {value}."
             )
             self.subtype._count = value
 

@@ -56,10 +56,8 @@ class CSDM:
             version = self.__latest_CSDM_version__
         elif version in self._old_incompatible_versions:
             raise Exception(
-                (
-                    "Files created with version {0} of the CSD Model "
-                    "are no longer supported."
-                ).format(version)
+                f"Files created with the version {version} of the CSD Model "
+                "are no longer supported."
             )
 
         self._tags = []
@@ -76,17 +74,22 @@ class CSDM:
         self._dimensions = ()
         if "dimensions" in kwargs_keys:
             if not isinstance(kwargs["dimensions"], list):
+                t_ = type(kwargs["dimensions"])
                 raise ValueError(
-                    "A list of valid Dimension dictionary objects is required."
+                    f"A list of valid Dimension objects or equivalent dictionary "
+                    f"objects is required, found {t_}"
                 )
+
             for item in kwargs["dimensions"]:
                 self.add_dimension(item)
 
         self._dependent_variables = ()
         if "dependent_variables" in kwargs_keys:
+            t_ = type(kwargs["dependent_variables"])
             if not isinstance(kwargs["dependent_variables"], list):
                 raise ValueError(
-                    "A list of valid DependentVariable dictionary objects is required."
+                    f"A list of valid DependentVariable objects or equivalent "
+                    f"dictionary objects is required, found {t_}"
                 )
             for item in kwargs["dependent_variables"]:
                 self.add_dependent_variable(item)
@@ -104,7 +107,6 @@ class CSDM:
             "application",
         )
         prop = ", ".join([f"{key}={getattr(self, key).__repr__()}" for key in keys])
-        # properties = ", ".join([f"{k}={str(v)}" for k, v in self.to_dict().items()])
         return f"CSDM({prop})"
 
     def __str__(self):
@@ -115,12 +117,12 @@ class CSDM:
     # ----------------------------------------------------------------------- #
     @property
     def dependent_variables(self):
-        """Tuple of :ref:`dv_api` instances."""
+        """Tuple of the :ref:`dv_api` instances."""
         return self._dependent_variables
 
     @property
     def dimensions(self):
-        """Tuple of :ref:`dim_api` instances."""
+        """Tuple of the :ref:`dim_api` instances."""
         return self._dimensions
 
     @property
@@ -669,10 +671,8 @@ class CSDM:
                 i += d
             if i > d - 1:
                 raise ValueError(
-                    (
-                        "`index` {0} cannot be greater than the number of "
-                        "independent variables, {1}."
-                    ).format(index, d)
+                    f"The `index` {index} cannot be greater than the number of the "
+                    f"independent variables, {d}."
                 )
             return -1 - i
 
@@ -754,7 +754,8 @@ class CSDM:
         # for index in indexes:
         if self.dimensions[index].type != "linear":
             raise NotImplementedError(
-                "FFT is available for dimensions with type 'linear'."
+                f"The FFT method is not available for Dimension objects with "
+                f"subtype, {self.dimensions[index].type}."
             )
 
         dimension_object = self.dimensions[index].subtype

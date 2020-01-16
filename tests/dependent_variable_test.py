@@ -22,7 +22,7 @@ def test_internal_new():
     assert data.dependent_variables[0].type == "internal"
     data.dependent_variables[0].type = "external"
     assert data.dependent_variables[0].type == "external"
-    error = "is not a valid value. The allowed values are"
+    error = "is invalid for the `type` attribute of the DependentVariable object."
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.dependent_variables[0].type = "celestial"
 
@@ -76,7 +76,7 @@ def test_internal_new():
     assert data.dependent_variables[0].encoding == "base64"
     data.dependent_variables[0].encoding = "none"
     assert data.dependent_variables[0].encoding == "none"
-    error = "not a valid `encoding` enumeration literal. The allowed values are"
+    error = "is an invalid `encoding` enumeration literal. The allowed values are"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.dependent_variables[0].encoding = "base16"
     data.dependent_variables[0].encoding = "raw"
@@ -87,7 +87,7 @@ def test_internal_new():
     data.dependent_variables[0].numeric_type = "complex64"
     assert data.dependent_variables[0].numeric_type == "complex64"
     assert np.all(data.dependent_variables[0].components == test_array + 100.0)
-    error = "not a valid `numeric_type` enumeration literal. The allowed values are"
+    error = "is an invalid `numeric_type` enumeration literal. The allowed values are"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.dependent_variables[0].numeric_type = "complex32"
 
@@ -240,7 +240,7 @@ def test_missing_type():
         "quantity_type": "scalar",
         "components": [np.arange(10)],
     }
-    error = "Missing a required `type` key from the dependent variable."
+    error = "Missing a required `type` key from the DependentVariable object."
     with pytest.raises(KeyError, match=".*{0}.*".format(error)):
         data.add_dependent_variable(dim)
 
@@ -253,7 +253,7 @@ def test_wrong_type():
         "quantity_type": "scalar",
         "components": [np.arange(10)],
     }
-    error = "is an invalid DependentVariable 'type'"
+    error = "is an invalid `type` for the DependentVariable"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         data.add_dependent_variable(dim)
 

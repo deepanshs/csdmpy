@@ -98,30 +98,31 @@ class DependentVariable:
         input_keys = input_dict.keys()
 
         if "type" not in input_keys:
-            raise KeyError("Missing a required `type` key from the dependent variable.")
+            raise KeyError(
+                "Missing a required `type` key from the DependentVariable object."
+            )
 
         if input_dict["type"] not in ["internal", "external"]:
+            t_ = input_dict["type"]
             raise ValueError(
-                (
-                    "'{0}' is an invalid DependentVariable 'type'. The "
-                    "allowed values are 'internal', 'external'."
-                ).format(input_dict["type"])
+                f"The value, '{t_}', is an invalid `type` for the DependentVariable "
+                "objects. The allowed values are 'internal', 'external'."
             )
 
         if "quantity_type" not in input_keys:
             raise KeyError(
-                "Missing a required `quantity_type` key from the dependent variable."
+                "Missing a required `quantity_type` key from the DependentVariable object."
             )
 
         if input_dict["type"] == "external" and "encoding" in input_dict:
-            raise ValueError(
-                "The `encoding` key is invalid for dependent variables of subtype `external`."
+            raise KeyError(
+                "The `encoding` key is invalid for DependentVariable objects with `external` type."
             )
 
         def message(item, subtype):
             return (
-                f"Missing a required `{item}` key from the dependent "
-                "variable of type `{subtype}`."
+                f"Missing a required `{item}` key from the DependentVariable "
+                "object of type, `{subtype}`."
             )
 
         if input_dict["type"] == "internal" and "components" not in input_keys:
@@ -319,14 +320,11 @@ class DependentVariable:
         *float32* to *uint8*.
         In this other example,
 
-        .. doctest::
-
             >>> try:
             ...     y.components = np.random.rand(1,10).astype('u1')
             ... except ValueError as e:
             ...     print(e)
-            The shape of `ndarray`, `(1, 10)`, is inconsistent
-            with the shape of the components array, `(3, 10)`.
+            The shape of the `ndarray`, `(1, 10)`, is inconsistent with the shape of the components array, `(3, 10)`.
 
         a `ValueError` is raised because the shape of the input array (1, 10)
         is not consistent with the shape of the components array, (3, 10).
@@ -647,8 +645,9 @@ class DependentVariable:
             return
         raise ValueError(
             (
-                "{0} is not a valid value. The allowed values are "
-                "'internal' and 'external'.".format(value)
+                f"The value, `{value}`, is invalid for the `type` attribute of the "
+                "DependentVariable object. The allowed values are 'internal' and "
+                "'external'."
             )
         )
 
@@ -678,8 +677,8 @@ class DependentVariable:
     @unit.setter
     def unit(self, value):
         raise AttributeError(
-            "`unit` attribute cannot be modified. Use the ``to`` method of "
-            "the instance for the unit conversion."
+            "The `unit` attribute cannot be modified. Use the ``to`` method "
+            "of the instance for the unit conversion."
         )
 
     # ======================================================================= #
@@ -748,8 +747,8 @@ class DependentVariable:
 def check_sparse_sampling_key_value(input_dict):
     def message2(item):
         return (
-            f"Missing a required `{item}` key from the sparse "
-            "sampling object of the dependent variable."
+            f"Missing a required `{item}` key from the SparseSampling object of the "
+            "DependentVariable object."
         )
 
     sparse_keys = input_dict["sparse_sampling"].keys()
@@ -763,7 +762,7 @@ def check_sparse_sampling_key_value(input_dict):
     uint_value = input_dict["sparse_sampling"]["unsigned_integer_type"]
     if uint_value not in ["uint8", "uint16", "uint32", "uint64"]:
         raise ValueError(
-            f"{uint_value} is not a valid `unsigned_integer_type` "
-            "enumeration literal. "
-            f"The allowed values are `uint8`, `uint16`, `uint32`, `uint64`."
+            f"{uint_value} is an invalid `unsigned_integer_type` enumeration ",
+            "literal. The allowed values are `uint8`, `uint16`, `uint32`, ",
+            "and `uint64`.",
         )

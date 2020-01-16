@@ -255,21 +255,17 @@ def check_quantity_name(element, unit):
 
     if unit.physical_type == "unknown":
         warnings.warn(
-            (
-                "The physical quantity name associated with the unit, {0}, "
-                "is not defined in astropy.units package. Continuing with "
-                "'{1}' as the physical quantity name."
-            ).format(str(unit), element)
+            f"The physical quantity name associated with the unit, {str(unit)}, is not"
+            f" defined in astropy.units package. Continuing with '{element}' as the "
+            f"physical quantity name."
         )
         return element
 
     if element.lower() != unit.physical_type:
         warnings.warn(
-            (
-                "The physical quantity name, '{0}', is not defined in the "
-                "astropy.units package. Continuing with '{0}' as the physical "
-                "quantity name for unit {1}."
-            ).format(element, str(unit))
+            f"The physical quantity name, '{element}', is not defined in the "
+            f"astropy.units package. Continuing with '{element}' as the physical "
+            f"quantity name for unit {str(unit)}."
         )
 
     return element.lower()

@@ -57,10 +57,6 @@ def attribute_error(a, b):
 def _axis_label(
     label, unit, made_dimensionless=False, dimensionless_unit=None, label_type=""
 ):
-    # if made_dimensionless:
-    #     if dimensionless_unit != "":
-    #         return "{0} / {1}".format(label, dimensionless_unit)
-    #     return label
 
     if unit != "":
         if label_type == "":
@@ -77,11 +73,8 @@ def _get_dictionary(*arg, **kwargs):
             return input_dict
 
         raise Exception(
-            (
-                "The argument is either a dictionary with allowed keywords "
-                "or a collection of valid arguments. Use the keys attribute "
-                "of the object to list the set of allowed keys."
-            )
+            "The argument is either a dictionary with the allowed keywords or a "
+            "collection of valid arguments."
         )
     else:
         input_dict = kwargs
@@ -101,7 +94,7 @@ def check_encoding(element):
         return element
 
     message = (
-        "`{0}` is not a valid `encoding` enumeration literal. "
+        "The value, `{0}`, is an invalid `encoding` enumeration literal. "
         "The allowed values are '{1}', '{2}' and '{3}'."
     )
     raise ValueError(message.format(element, *literals_encoding))
@@ -144,7 +137,7 @@ class QuantityType:
         lst = literals_quantity_type
         if keyword not in lst:
             message = (
-                "`{0}` is not a valid `quantity_type` enumeration literal. "
+                "The value, `{0}`, is an invalid `quantity_type` enumeration literal. "
                 "The allowed values are {1}."
             )
 
@@ -288,15 +281,14 @@ class NumericType:
 
     def _check_numeric_type(self, element):
         lst = self.__class__._lst
-        text = (
-            "is not a valid `numeric_type` enumeration literal. The allowed values are"
-        )
         if element not in lst.keys():
+            message = (
+                "The value, `{0}`, is an invalid `numeric_type` enumeration literal. "
+                "The allowed values are {1}."
+            )
             raise ValueError(
-                (
-                    "`{0}`, {1} {2}".format(
-                        element, text, "'" + "', '".join(self.__class__.literals) + "'"
-                    )
+                message.format(
+                    element, "'" + "', '".join(literals_quantity_type_) + "'"
                 )
             )
 

@@ -95,7 +95,7 @@ def _preview(data, reverse_axis=None, **kwargs):
         )
 
     if np.any([x[i].type == "labeled" for i in range(len(x))]):
-        raise NotImplementedError("Preview of labeled plots is not implemented.")
+        raise NotImplementedError("Preview of labeled dimensions is not implemented.")
 
     if len(x) <= 2:
         if y_len <= 2:

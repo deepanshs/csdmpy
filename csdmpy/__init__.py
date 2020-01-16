@@ -33,7 +33,7 @@ def _import_json(filename, verbose=False):
 
 def load(filename=None, application=False, verbose=False):
     r"""
-    Load a .csdf/.csdfe file and return an instance of :ref:`csdm_api` class.
+    Loads a .csdf/.csdfe file and returns an instance of the :ref:`csdm_api` class.
 
     The file must be a JSON serialization of the CSD Model.
 
@@ -42,37 +42,19 @@ def load(filename=None, application=False, verbose=False):
         >>> data2 = cp.load('url_address/file.csdf') # doctest: +SKIP
 
     Args:
-        filename (str): A local or remote address to the `.csdf or `.csdfe` file.
+        filename (str): A local or a remote address to the `.csdf or `.csdfe` file.
         application (bool): If true, the application metadata from application that
                 last serialized the file will be imported. Default is False.
         verbose (bool): If the filename is a URL, this option will show the progress
-                bar for the file download when true.
+                bar for the file download status, when True.
 
     Returns:
         A CSDM instance.
     """
     if filename is None:
-        raise Exception("Missing a required data file address.")
+        raise Exception("Missing the value for the required `filename` attribute.")
 
-    # if isdir(filename):
-    #     csdm_files = [f for f in listdir(filename) if f.endswith((".csdf", ".csdfe"))]
-    #     if len(csdm_files) > 1:
-    #         raise Exception(
-    #             ("The given path is a folder. More that one csdf(e) files found in this folder")
-    #         )
-    #     if len(csdm_files) == 0:
-    #         raise Exception(
-    #             ("The given path is a folder. No csdf(e) file found in the folder.")
-    #         )
-    #     csd_file = join(filename, csdm_files[0])
-    # else:
-    #     csd_file = filename
-
-    try:
-        dictionary = _import_json(filename, verbose)
-    except Exception as e:
-        raise Exception(e)
-
+    dictionary = _import_json(filename, verbose)
     dictionary["filename"] = filename
     csdm_object = parse_dict(dictionary)
 
@@ -100,10 +82,12 @@ def parse_dict(dictionary):
     """
     key_list_root = dictionary.keys()
     if "CSDM" in key_list_root:
-        raise KeyError("'CSDM' is not a valid keyword. Did you mean 'csdm'?")
+        raise KeyError(
+            "'CSDM' is not a valid keyword for the CSD model. Did you mean 'csdm'?"
+        )
 
     if "csdm" not in key_list_root:
-        raise KeyError("Missing a required `csdm` key.")
+        raise KeyError("Missing a required `csdm` key from the data model.")
 
     # inside csdm object
     optional_keys = [
@@ -123,15 +107,13 @@ def parse_dict(dictionary):
     for i in range(len(key_list_csdm)):
         if key_list_csdm[i] not in all_keys and key_list_csdm_lower_case[i] in all_keys:
             raise KeyError(
-                (
-                    f"{key_list_csdm[i]} is not a valid keyword. "
-                    f"Did you mean '{key_list_csdm_lower_case[i]}'?"
-                )
+                f"{key_list_csdm[i]} is an invalid key for the CSDM object. "
+                f"Did you mean '{key_list_csdm_lower_case[i]}'?"
             )
 
     for item in required_keys:
         if item not in key_list_csdm:
-            raise KeyError(f"Missing a required `{item}` key.")
+            raise KeyError(f"Missing a required `{item}` key from the CSDM object.")
 
     _version = dictionary["csdm"]["version"]
     validate(_version, "version", str)
@@ -173,7 +155,7 @@ def loads(string):
         Args:
             string: A JSON serialized CSDM string.
         Returns:
-            A CSDM object
+            A CSDM object.
 
         Example:
             >>> object_from_string = cp.loads(cp.new('A test dump').dumps())
@@ -195,10 +177,10 @@ def loads(string):
 
 def new(description=""):
     r"""
-    Create a new instance of the :ref:`csdm_api` class containing a 0D{0} dataset.
+    Creates a new instance of the :ref:`csdm_api` class containing a 0D{0} dataset.
 
     Args:
-        description (str): A string describing the the csdm object. This is optional.
+        description (str): A string describing the csdm object. This is optional.
 
     Example:
         >>> import csdmpy as cp
@@ -224,18 +206,18 @@ def plot(csdm_object, reverse_axis=None, **kwargs):
     A supplementary function for plotting basic 1D and 2D datasets only.
 
     Args:
-        csdm_object: The csdm object.
+        csdm_object: The CSDM object.
         reverse_axis: An ordered array of boolean specifying which dimensions will be
-                displayed in reverse axis.
+                displayed on a reverse axis.
         kwargs: Additional keyword arguments are used in matplotlib plotting functions.
-                The following matplotlib methods are implemented from the one and
+                We implement the following matplotlib methods for the one and
                 two-dimensional datasets.
 
-                - The 1D{1} scalar dataset uses the plt.plot() method.
-                - The 1D{2} vector dataset uses the plt.quiver() method.
-                - The 2D{1} scalar dataset uses the plt.imshow() method if the two dimensions have a `linear` subtype. If any one of the dimension is `monotonic`, plt.NonUniformImage() method is used instead.
-                - The 2D{2} vector dataset uses the plt.quiver() method.
-                - The 2D{3} pixel dataset uses the plt.imshow() assuming the pixel dataset as an RGB image.
+                - The 1D{1} scalar dataset use the plt.plot() method.
+                - The 1D{2} vector dataset use the plt.quiver() method.
+                - The 2D{1} scalar dataset use the plt.imshow() method if the two dimensions have a `linear` subtype. If any one of the dimension is `monotonic`, plt.NonUniformImage() method is used instead.
+                - The 2D{2} vector dataset use the plt.quiver() method.
+                - The 2D{3} pixel dataset use the plt.imshow(), assuming the pixel dataset as an RGB image.
 
     Example:
         >>> cp.plot(data_object) # doctest: +SKIP

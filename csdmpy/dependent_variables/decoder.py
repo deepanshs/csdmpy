@@ -58,7 +58,6 @@ def check_number_of_components_and_encoding_type(length, quantity_type):
     """Verify the consistency of encoding wrt the number of components."""
     if length != quantity_type.p:
         raise Exception(
-            (
-                "quantity_type '{0}' requires exactly {1} component(s), " "found {2}."
-            ).format(quantity_type.value, quantity_type.p, length)
+            f"The quantity_type, '{quantity_type.value}', requires exactly "
+            f"{quantity_type.p} component(s), found {length} components."
         )
