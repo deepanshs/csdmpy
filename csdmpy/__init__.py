@@ -12,11 +12,13 @@ from csdmpy.dependent_variables.download import download_file_from_url
 from csdmpy.dimensions import Dimension
 from csdmpy.helper_functions import _preview
 from csdmpy.utils import validate
-
+from csdmpy.numpy_wrapper.dimension_reduction import *
+from csdmpy.numpy_wrapper.element_wise_operation import *
+from csdmpy.numpy_wrapper import apodize
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-__version__ = "0.1.6"
+__version__ = "0.2.0"
 
 
 __all__ = ["load", "new", "plot"]
@@ -201,7 +203,7 @@ def new(description=""):
     return CSDM(description=description)
 
 
-def plot(csdm_object, reverse_axis=None, **kwargs):
+def plot(csdm_object, reverse_axis=None, range=None, **kwargs):
     """
     A supplementary function for plotting basic 1D and 2D datasets only.
 
@@ -222,4 +224,4 @@ def plot(csdm_object, reverse_axis=None, **kwargs):
     Example:
         >>> cp.plot(data_object) # doctest: +SKIP
     """
-    _preview(csdm_object, reverse_axis, **kwargs)
+    _preview(csdm_object, reverse_axis, range, **kwargs)

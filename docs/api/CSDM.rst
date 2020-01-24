@@ -2,11 +2,11 @@
 
 .. _csdm_api:
 
---------
+----
 CSDM
---------
+----
 
-.. currentmodule:: csdmpy.csdm
+.. currentmodule:: csdmpy
 .. autoclass:: CSDM
    :show-inheritance:
 

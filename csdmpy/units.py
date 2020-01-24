@@ -271,12 +271,7 @@ def check_quantity_name(element, unit):
     return element.lower()
 
 
-def frequency_ratio(origin_offset):
+def frequency_ratio(offset):
     return [
-        (
-            u.Hz,
-            u.cds.ppm,
-            lambda x: (x / origin_offset.to("Hz")) * 1e6,
-            lambda x: x * origin_offset,
-        )
+        (u.Hz, u.cds.ppm, lambda x: (x / offset.to("Hz")) * 1e6, lambda x: x * offset)
     ]

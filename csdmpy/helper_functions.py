@@ -74,10 +74,13 @@ def preview(data_object):
         _preview(data)
 
 
-def _preview(data, reverse_axis=None, **kwargs):
+def _preview(data, reverse_axis=None, range_=None, **kwargs):
     """Quick display of the data."""
     if reverse_axis is not None:
         kwargs["reverse_axis"] = reverse_axis
+
+    if range_ is None:
+        range_ = [[None, None], [None, None]]
 
     x = data.dimensions
     y = data.dependent_variables
@@ -116,9 +119,9 @@ def _preview(data, reverse_axis=None, **kwargs):
             ax_ = ax[i0][j0]
 
             if y[i].quantity_type in scalar:
-                oneD_scalar(x, y[i], ax_, **kwargs)
+                oneD_scalar(x, y[i], ax_, range_, **kwargs)
             if "vector" in y[i].quantity_type:
-                vector_plot(x, y[i], ax_, **kwargs)
+                vector_plot(x, y[i], ax_, range_, **kwargs)
             # if "audio" in y[i].quantity_type:
             #     audio(x, y, i, fig, ax, **kwargs)
 
@@ -133,19 +136,19 @@ def _preview(data, reverse_axis=None, **kwargs):
 
             if y[i].quantity_type == "pixel_3":
                 warn("This method interprets the `pixel_3` dataset as an RGB image.")
-                RGB_image(x, y[i], ax_, **kwargs)
+                RGB_image(x, y[i], ax_, range_, **kwargs)
 
             if y[i].quantity_type in scalar:
-                twoD_scalar(x, y[i], ax_, **kwargs)
+                twoD_scalar(x, y[i], ax_, range_, **kwargs)
 
             if "vector" in y[i].quantity_type:
-                vector_plot(x, y[i], ax_, **kwargs)
+                vector_plot(x, y[i], ax_, range_, **kwargs)
 
         plt.tight_layout(w_pad=0.0, h_pad=0.0)
         plt.show()
 
 
-def oneD_scalar(x, y, ax, **kwargs):
+def oneD_scalar(x, y, ax, range_, **kwargs):
     reverse = [False]
     if "reverse_axis" in kwargs.keys():
         reverse = kwargs["reverse_axis"]
@@ -163,11 +166,14 @@ def oneD_scalar(x, y, ax, **kwargs):
         ax.set_title("{0}".format(y.name))
         ax.grid(color="gray", linestyle="--", linewidth=0.5)
 
+    ax.set_xlim(range_[0])
+    ax.set_ylim(range_[1])
+
     if reverse[0]:
         ax.invert_xaxis()
 
 
-def twoD_scalar(x, y, ax, **kwargs):
+def twoD_scalar(x, y, ax, range_, **kwargs):
     reverse = [False, False]
     if "reverse_axis" in kwargs.keys():
         reverse = kwargs["reverse_axis"]
@@ -194,13 +200,16 @@ def twoD_scalar(x, y, ax, **kwargs):
     ax.set_title("{0}".format(y.name))
     ax.grid(color="gray", linestyle="--", linewidth=0.5)
 
+    ax.set_xlim(range_[0])
+    ax.set_ylim(range_[1])
+
     if reverse[0]:
         ax.invert_xaxis()
     if reverse[1]:
         ax.invert_yaxis()
 
 
-def vector_plot(x, y, ax, **kwargs):
+def vector_plot(x, y, ax, range_, **kwargs):
     reverse = [False, False]
     if "reverse_axis" in kwargs.keys():
         reverse = kwargs["reverse_axis"]
@@ -228,11 +237,14 @@ def vector_plot(x, y, ax, **kwargs):
     ax.set_title("{0}".format(y.name))
     ax.grid(color="gray", linestyle="--", linewidth=0.5)
 
+    ax.set_xlim(range_[0])
+    ax.set_ylim(range_[1])
+
     if reverse[0]:
         ax.invert_xaxis()
 
 
-def RGB_image(x, y, ax, **kwargs):
+def RGB_image(x, y, ax, range_, **kwargs):
     reverse = [False, False]
     if "reverse_axis" in kwargs.keys():
         reverse = kwargs["reverse_axis"]
@@ -241,6 +253,9 @@ def RGB_image(x, y, ax, **kwargs):
     y0 = y.components
     ax.imshow(np.moveaxis(y0 / y0.max(), 0, -1), **kwargs)
     ax.set_title("{0}".format(y.name))
+
+    ax.set_xlim(range_[0])
+    ax.set_ylim(range_[1])
 
     if reverse[0]:
         ax.invert_xaxis()

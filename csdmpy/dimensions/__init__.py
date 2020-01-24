@@ -346,7 +346,9 @@ class Dimension:
             coordinates = self.subtype._coordinates[:n] + self.coordinates_offset
             if equivalent_fn is None:
                 return coordinates.to(self.subtype._unit)
-            return coordinates.to(unit, equivalent_fn(self.origin_offset))
+            return coordinates.to(
+                unit, equivalent_fn(self.origin_offset - self.coordinates_offset)
+            )
 
         if self.type == "labeled":
             return self.subtype.labels[:n]

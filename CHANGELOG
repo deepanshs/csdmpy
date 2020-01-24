@@ -1,5 +1,7 @@
-v0.1.6
+v0.2.0
  - Fixed a bug in cp.plot method.
+ - Wrapped numpy functions.
+ - Added apodization functions.
 
 v0.1.5
  - Added method to convert the frequency dimension to nmr dimensionless frequency ratio.
@@ -18,16 +20,13 @@ version 0.1.2
  - Fixed minor bugs.
 
 version0.0.12
-
  - Added a tags attribute to the CSDmodel object.
  - Changed 'sampling_interval' key to 'count'.
  - Changed 'quantity' key to 'quantity_name'.
  - Changed 'index_zero_value' key to 'coordinates_offset'.
  - Changed 'fft_output_order' key to 'complex_fft'.
 
-
 version0.0.11
-
 - Renamed IndependentVariable class to Dimension.
 - Renamed LinearlySpacedDimension class to LinearDimension.
 - Renamed ArbitrarilySpacedDimension class to MonotonicDimension.

@@ -6,7 +6,7 @@
 Dimension
 ----------
 
-.. currentmodule:: csdmpy.dimensions
+.. currentmodule:: csdmpy
 
 
 .. autoclass:: Dimension

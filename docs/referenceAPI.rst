@@ -9,6 +9,7 @@ API-Reference
     api/CSDM
     api/Dimensions
     api/DependentVariable
+    api/numpy_wrappers
 
 
 .. api/Archive/DimensionWithLinearSpacing
