@@ -6,8 +6,8 @@ The list of supported functions are:
     - cos
     - ...
 """
-
 import numpy as np
+
 from csdmpy.numpy_wrapper import _get_new_csdm_object_after_applying_func
 
 

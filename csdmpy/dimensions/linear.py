@@ -70,8 +70,19 @@ class LinearDimension(BaseQuantitativeDimension):
         self._increment = ScalarQuantity(increment).quantity
         self._complex_fft = check_and_assign_bool(complex_fft)
         self._unit = self._increment.unit
+        if "reciprocal" not in kwargs.keys():
+            kwargs["reciprocal"] = {
+                "increment": None,
+                "coordinates_offset": None,
+                "origin_offset": None,
+                "period": None,
+                "quantity_name": None,
+                "label": "",
+                "description": "",
+                "application": {},
+            }
 
-        super(LinearDimension, self).__init__(unit=self._unit, **kwargs)
+        super().__init__(unit=self._unit, **kwargs)
 
         # create a reciprocal dimension
         _reciprocal_unit = self._unit ** -1
@@ -83,6 +94,15 @@ class LinearDimension(BaseQuantitativeDimension):
     # ----------------------------------------------------------------------- #
     #                                  Methods                                #
     # ----------------------------------------------------------------------- #
+
+    def __repr__(self):
+        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
+        return f"LinearDimension({properties})"
+
+    def __str__(self):
+        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
+        return f"LinearDimension({properties})"
+
     def _swap(self):
         self._description, self.reciprocal._description = (
             self.reciprocal._description,
@@ -123,10 +143,7 @@ class LinearDimension(BaseQuantitativeDimension):
         _index = np.arange(_count, dtype=np.float64)
 
         if self._complex_fft:
-            if _count % 2 == 0:
-                _index -= _count / 2
-            else:
-                _index -= (_count - 1) / 2
+            _index -= int(_count / 2)
 
         self._coordinates = _index * _increment
 
@@ -160,10 +177,17 @@ class LinearDimension(BaseQuantitativeDimension):
     # ----------------------------------------------------------------------- #
     #                                  Attributes                             #
     # ----------------------------------------------------------------------- #
-    # @property
-    # def count(self):
-    #     r"""Total number of points along the linear dimension."""
-    #     return deepcopy(self._count)
+    @property
+    def count(self):
+        r"""Total number of points along the linear dimension."""
+        return deepcopy(self._count)
+
+    @count.setter
+    def count(self, value):
+        value = validate(value, "count", int)
+        self._count = value
+        self._get_coordinates()
+        return
 
     @property
     def increment(self):
@@ -186,3 +210,30 @@ class LinearDimension(BaseQuantitativeDimension):
     def complex_fft(self, value):
         self._complex_fft = validate(value, "complex_fft", bool)
         self._get_coordinates()
+
+    @property
+    def coordinates(self):
+        """Return the coordinates along the dimensions."""
+        n = self._count
+
+        unit = self._unit
+        equivalent_fn = self._equivalencies
+        coordinates = self._coordinates[:n] + self.coordinates_offset
+        if equivalent_fn is None:
+            return coordinates.to(self._unit)
+        return coordinates.to(
+            unit, equivalent_fn(self.origin_offset - self.coordinates_offset)
+        )
+
+    @coordinates.setter
+    def coordinates(self, value):
+        raise AttributeError(
+            "The attribute cannot be modifed for Dimension objects with `linear` "
+            "type. Use the `count`, `increment` or `coordinates_offset` attributes"
+            " to update the coordinate along the linear dimension."
+        )
+
+    @property
+    def absolute_coordinates(self):
+        """Return the absolute coordinates along the dimensions."""
+        return (self.coordinates + self.origin_offset).to(self._unit)

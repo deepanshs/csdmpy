@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """The Dimension object: attributes and methods."""
 import json
-import warnings
 from copy import deepcopy
 
 from csdmpy.dimensions.labeled import LabeledDimension
@@ -10,7 +9,6 @@ from csdmpy.dimensions.monotonic import MonotonicDimension
 from csdmpy.units import frequency_ratio
 from csdmpy.utils import _axis_label
 from csdmpy.utils import _get_dictionary
-from csdmpy.utils import attribute_error
 from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
@@ -224,9 +222,7 @@ class Dimension:
         Raises:
             AttributeError: For labeled dimensions.
         """
-        if self.subtype != "labeled":
-            return (self.coordinates + self.origin_offset).to(self.subtype._unit)
-        raise AttributeError(attribute_error(self.subtype, "absolute_coordinates"))
+        return self.subtype.absolute_coordinates
 
     @property
     def application(self):
@@ -336,35 +332,11 @@ class Dimension:
         Raises:
             AttributeError: For dimensions with subtype `linear`.
         """
-        n = self.subtype._count
-        if self.type == "monotonic":
-            return self.subtype._coordinates[:n]
-
-        if self.type == "linear":
-            unit = self.subtype._unit
-            equivalent_fn = self.subtype._equivalencies
-            coordinates = self.subtype._coordinates[:n] + self.coordinates_offset
-            if equivalent_fn is None:
-                return coordinates.to(self.subtype._unit)
-            return coordinates.to(
-                unit, equivalent_fn(self.origin_offset - self.coordinates_offset)
-            )
-
-        if self.type == "labeled":
-            return self.subtype.labels[:n]
+        return self.subtype.coordinates
 
     @coordinates.setter
     def coordinates(self, value):
-        if self.type == "monotonic":
-            self.subtype.values = value
-        if self.type == "labeled":
-            self.subtype.labels = value
-        if self.type == "linear":
-            raise AttributeError(
-                "The attribute cannot be modifed for Dimension objects with `linear` "
-                "type. Use the `count`, `increment` or `coordinates_offset` attributes"
-                " to update the coordinate along the linear dimension."
-            )
+        self.subtype.coordinates = value
 
     @property
     def data_structure(self):
@@ -524,9 +496,7 @@ class Dimension:
             TypeError: When the assigned value is not a string containing a quantity
                        or a Quantity object.
         """
-        if self.type == "linear":
-            return self.subtype.coordinates_offset
-        raise AttributeError(attribute_error(self.subtype, "coordinates_offset"))
+        return self.subtype.coordinates_offset
 
     @coordinates_offset.setter
     def coordinates_offset(self, value):
@@ -573,24 +543,25 @@ class Dimension:
 
     @count.setter
     def count(self, value):
-        value = validate(value, "count", int)
+        self.subtype.count = value
+        # value = validate(value, "count", int)
 
-        if self.type in functional_dimension:
-            self.subtype._count = value
-            self.subtype._get_coordinates()
-            return
+        # if self.type in functional_dimension:
+        #     self.subtype._count = value
+        #     self.subtype._get_coordinates()
+        #     return
 
-        if value > self.count:
-            raise ValueError(
-                f"Cannot set the count, {value}, more than the number of coordinates, "
-                f"{self.count}, for the monotonic and labeled dimensions."
-            )
+        # if value > self.count:
+        #     raise ValueError(
+        #         f"Cannot set the count, {value}, more than the number of coordinates, "
+        #         f"{self.count}, for the monotonic and labeled dimensions."
+        #     )
 
-        if value < self.count:
-            warnings.warn(
-                f"The number of coordinates, {self.count}, are truncated to {value}."
-            )
-            self.subtype._count = value
+        # if value < self.count:
+        #     warnings.warn(
+        #         f"The number of coordinates, {self.count}, are truncated to {value}."
+        #     )
+        #     self.subtype._count = value
 
     @property
     def origin_offset(self):
@@ -753,7 +724,6 @@ class Dimension:
     @labels.setter
     def labels(self, array):
         self.subtype.labels = array
-        self.subtype._get_coordinates(array)
 
     @property
     def reciprocal(self):

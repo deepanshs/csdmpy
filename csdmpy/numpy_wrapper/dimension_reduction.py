@@ -6,8 +6,8 @@ The list of supported functions are:
     - prod
     - ...
 """
-
 import numpy as np
+
 from csdmpy.numpy_wrapper import _get_new_csdm_object_after_applying_func
 
 
@@ -22,8 +22,8 @@ def sum(csdm, dimension=0):
                    dependent variable components is performed.
 
     Return:
-        A CSDM object with `d-m` dimensions where `d` is the total
-        number of dimensions from the original csdm data.
+        A CSDM object with `d-m` dimensions, where `d` is the total
+        number of dimensions from the original `csdm` object.
     """
     func = np.sum
     return _get_new_csdm_object_after_applying_func(csdm, func, dimension)
@@ -40,8 +40,8 @@ def prod(csdm, dimension=0):
                    dependent variable components is performed.
 
     Return:
-        A CSDM object with `d-m` dimensions where `d` is the total number of
-        dimensions from the original csdm dataset.
+        A CSDM object with `d-m` dimensions, where `d` is the total number of
+        dimensions from the original `csdm` object.
     """
     func = np.prod
     return _get_new_csdm_object_after_applying_func(csdm, func, dimension)

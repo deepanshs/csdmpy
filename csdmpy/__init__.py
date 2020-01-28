@@ -11,10 +11,10 @@ from csdmpy.dependent_variables import DependentVariable
 from csdmpy.dependent_variables.download import download_file_from_url
 from csdmpy.dimensions import Dimension
 from csdmpy.helper_functions import _preview
-from csdmpy.utils import validate
+from csdmpy.numpy_wrapper import apodize
 from csdmpy.numpy_wrapper.dimension_reduction import *
 from csdmpy.numpy_wrapper.element_wise_operation import *
-from csdmpy.numpy_wrapper import apodize
+from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"

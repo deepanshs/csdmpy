@@ -152,6 +152,18 @@ def test_internal_new():
     }
     assert data.dependent_variables[0].to_dict() == dependent_variables_dict_2
 
+    # data = cp.new()
+    # test_array = np.arange(20).reshape(2, 10)
+    # dim = {
+    #     "type": "internal",
+    #     "numeric_type": "float32",
+    #     "quantity_type": "vector_1",
+    #     "components": test_array,
+    # }
+    # error = "The quantity_type, 'vector_1', requires exactly 1 component"
+    # with pytest.raises(Exception, match=".*{0}.*".format(error)):
+    #     data.add_dependent_variable(dim)
+
 
 def test_external_new():
     data = cp.new()

@@ -93,6 +93,12 @@ def test_linear_new():
     test_with = (np.arange(12) - 6) * 20.0 + 5.0 + 1000.0
     assert np.all(data.dimensions[0].absolute_coordinates.value == test_with)
 
+    error = "The attribute cannot be modifed for Dimension objects with"
+    with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
+        data.dimensions[0].coordinates = [1, 3]
+
+    data.dimensions[0].reciprocal.description = "blah blah"
+
     dict1 = {
         "csdm": {
             "version": "1.0",
@@ -106,6 +112,7 @@ def test_linear_new():
                     "quantity_name": "speed",
                     "application": {"my_application": {}},
                     "complex_fft": True,
+                    "reciprocal": {"description": "blah blah"},
                 }
             ],
             "dependent_variables": [],
@@ -177,6 +184,10 @@ def test_monotonic_new():
     with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
         data.dimensions[0].coordinates_offset
 
+    error = "can't set attribute"
+    with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
+        data.dimensions[0].coordinates_offset = "1"
+
     # origin offset
     assert str(data.dimensions[0].origin_offset) == "0.0 m"
 
@@ -205,6 +216,12 @@ def test_monotonic_new():
     assert str(data.dimensions[0].period) == "20.0 m"
     data.dimensions[0].period = "(1/0) m^5/m^4"
     assert str(data.dimensions[0].period) == "inf m"
+    data.dimensions[0].period = 1 * u.Unit("m^5/m^4")
+    assert str(data.dimensions[0].period) == "1.0 m"
+
+    error = "Expecting an instance of type `str` for period, got `int`."
+    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+        data.dimensions[0].period = 1
 
     # fft output order
     error = "'MonotonicDimension' object has no attribute 'complex_fft'"
@@ -227,6 +244,8 @@ def test_monotonic_new():
         ),
     )
 
+    data.dimensions[0].application = {"go": "in"}
+
     dict1 = {
         "csdm": {
             "version": "1.0",
@@ -237,7 +256,9 @@ def test_monotonic_new():
                     "coordinates": ["1 m", "100 m", "1 km", "1 Gm", "0.25 lyr"],
                     "origin_offset": "1.0 lyr",
                     "quantity_name": "length",
+                    "period": "1.0 m",
                     "label": "some string",
+                    "application": {"go": "in"},
                     "reciprocal": {"quantity_name": "wavenumber"},
                 }
             ],
@@ -249,12 +270,69 @@ def test_monotonic_new():
     )
     assert data.dimensions[0].to_dict() == dict1["csdm"]["dimensions"][0]
 
+    error = r"The unit 's' \(time\) is inconsistent with the unit 'm' \(length\)"
+    with pytest.raises(Exception, match=".*{0}.*".format(error)):
+        data.dimensions[0].coordinates = ["1s", "2s"]
+
+    data.dimensions[0].coordinates = ["1m", "2m"]
+    assert np.allclose(data.dimensions[0].coordinates.value, np.asarray([1, 2]))
+
 
 # labeled dimension
 def test_labeled_new():
-    pass
+    data = cp.new()
+    dim = {
+        "type": "labeled",
+        "description": "Far far away.",
+        "labels": ["m", "s", "t", "a"],
+    }
+    data.add_dimension(dim)
 
+    # description
+    assert data.dimensions[0].description == "Far far away."
+    data.dimensions[0].description = "A galaxy far far away."
+    assert data.dimensions[0].description == "A galaxy far far away."
 
-# if __name__ == "__main__":
-#     test_linear_new()
-#     test_monotonic_new()
+    error = "Expecting an instance of type"
+    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+        data.dimensions[0].description = 12
+
+    assert data.dimensions[0].labels[0] == "m"
+    assert data.dimensions[0].coordinates[-1] == "a"
+
+    error = "A list of labels is required"
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        data.dimensions[0].labels = 12
+
+    error = "A list of string labels are required"
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        data.dimensions[0].labels = ["12", "1", 4]
+
+    data.dimensions[0].label = "labeled dimension"
+    assert data.dimensions[0].label == "labeled dimension"
+
+    data.dimensions[0].application = {"this is it": "period"}
+    assert data.dimensions[0].application == {"this is it": "period"}
+
+    data.dimensions[0].coordinates = ["a", "b", "c"]
+    assert data.dimensions[0].coordinates[-1] == "c"
+
+    dict1 = {
+        "csdm": {
+            "version": "1.0",
+            "dimensions": [
+                {
+                    "type": "labeled",
+                    "description": "A galaxy far far away.",
+                    "labels": ["a", "b", "c"],
+                    "label": "labeled dimension",
+                    "application": {"this is it": "period"},
+                }
+            ],
+            "dependent_variables": [],
+        }
+    }
+    assert data.data_structure == json.dumps(
+        dict1, ensure_ascii=False, sort_keys=False, indent=2
+    )
+    assert data.dimensions[0].to_dict() == dict1["csdm"]["dimensions"][0]

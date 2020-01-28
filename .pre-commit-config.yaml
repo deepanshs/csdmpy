@@ -64,13 +64,13 @@ repos:
   #     rev: master
   #     hooks:
   #     - id: pydocstyle
-  # - repo: https://github.com/asottile/reorder_python_imports
-  #   rev: v1.4.0
-  #   hooks:
-  #     - id: reorder-python-imports
-  #       name: Reorder python imports
-  #       description: This hook reorders imports in python files.
-  #       entry: reorder-python-imports
-  #       language: python
-  #       types: [python]
-  #       minimum_pre_commit_version: "0.15.0"
+  - repo: https://github.com/asottile/reorder_python_imports
+    rev: v1.4.0
+    hooks:
+      - id: reorder-python-imports
+        name: Reorder python imports
+        description: This hook reorders imports in python files.
+        entry: reorder-python-imports
+        language: python
+        types: [python]
+        minimum_pre_commit_version: "0.15.0"

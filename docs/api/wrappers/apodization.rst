@@ -20,7 +20,9 @@ object.
 .. autosummary::
     ~sin
     ~cos
+    ~exp
 
 .. rubric:: Method Documentation
 .. autofunction:: sin
 .. autofunction:: cos
+.. autofunction:: exp

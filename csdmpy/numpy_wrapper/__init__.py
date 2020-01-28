@@ -1,7 +1,9 @@
+from copy import deepcopy
+
+import numpy as np
+
 from csdmpy.csdm import CSDM
 from csdmpy.units import string_to_quantity
-import numpy as np
-from copy import deepcopy
 
 
 def _check_dimension_indices(d, index=-1):

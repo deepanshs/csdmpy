@@ -14,8 +14,8 @@ The list of supported functions are:
     - cos
     - ...
 """
-
 import numpy as np
+
 from csdmpy.numpy_wrapper import _get_new_csdm_object_after_apodization
 
 
@@ -30,8 +30,8 @@ def sin(csdm, arg, dimension=0):
                    index/indices of dimensions along which the sin of the
                    dependent variable components is performed.
     Return:
-        A CSDM object with `d-m` dimensions where `d` is the total
-        number of dimensions from the original csdm data.
+        A CSDM object with `d-m` dimensions, where `d` is the total
+        number of dimensions from the original `csdm` object.
     """
     func = np.sin
     return _get_new_csdm_object_after_apodization(csdm, func, arg, dimension)
@@ -48,8 +48,26 @@ def cos(csdm, arg, dimension=0):
                    index/indices of dimensions along which the cosine of the
                    dependent variable components is performed.
     Return:
-        A CSDM object with `d-m` dimensions where `d` is the total
-        number of dimensions from the original csdm data.
+        A CSDM object with `d-m` dimensions, where `d` is the total
+        number of dimensions from the original `csdm` object.
     """
     func = np.cos
+    return _get_new_csdm_object_after_apodization(csdm, func, arg, dimension)
+
+
+def exp(csdm, arg, dimension=0):
+    r"""
+    Apodize the components along the `dimension` by :math:`\exp(a x)`.
+
+    Args:
+        csdm: A CSDM object.
+        arg: The function argument :math:`a`.
+        dimension: An integer or tuple of `m` integers cooresponding to the
+                   index/indices of dimensions along which the cosine of the
+                   dependent variable components is performed.
+    Return:
+        A CSDM object with `d-m` dimensions, where `d` is the total
+        number of dimensions from the original `csdm` object.
+    """
+    func = np.exp
     return _get_new_csdm_object_after_apodization(csdm, func, arg, dimension)

@@ -1,5 +1,6 @@
-import csdmpy as cp
 import numpy as np
+
+import csdmpy as cp
 
 a = cp.new()
 data = np.ones(5 * 10).reshape(10, 5)
@@ -29,4 +30,14 @@ def test_cos():
 
     b = cp.apodize.cos(a, "(2*3.1415*0.1) m^-1", dimension=1)
     s = np.cos(2 * 3.1415 * 0.1 * np.arange(10)) * data[:, 0]
+    assert np.allclose(s, b.dependent_variables[0].components[0][:, 0])
+
+
+def test_exp():
+    b = cp.apodize.exp(a, "-0.1 s^-1", dimension=(0))
+    s = np.exp(-0.1 * np.arange(5)) * data[0, :]
+    assert np.allclose(s, b.dependent_variables[0].components[0][0, :])
+
+    b = cp.apodize.exp(a, "-0.1 m^-1", dimension=1)
+    s = np.exp(-0.1 * np.arange(10)) * data[:, 0]
     assert np.allclose(s, b.dependent_variables[0].components[0][:, 0])

@@ -3,6 +3,7 @@
 from __future__ import division
 from __future__ import print_function
 
+import warnings
 from copy import deepcopy
 
 import numpy as np
@@ -34,6 +35,26 @@ class LabeledDimension:
     # ----------------------------------------------------------------------- #
 
     @property
+    def count(self):
+        r"""Total number of points along the linear dimension."""
+        return deepcopy(self._count)
+
+    @count.setter
+    def count(self, value):
+        value = validate(value, "count", int)
+        if value > self.count:
+            raise ValueError(
+                f"Cannot set the count, {value}, more than the number of coordinates, "
+                f"{self.count}, for the monotonic and labeled dimensions."
+            )
+
+        if value < self.count:
+            warnings.warn(
+                f"The number of coordinates, {self.count}, are truncated to {value}."
+            )
+            self._count = value
+
+    @property
     def labels(self):
         r"""Return a list of labels along the dimension."""
         return deepcopy(self._labels)
@@ -48,9 +69,10 @@ class LabeledDimension:
             self._labels = np.asarray(labels)
             self._count = len(labels)
         else:
-            i = np.where(items is False)[0][0]
+            i = np.where(items == 0)[0][0]
             raise ValueError(
-                f"A list of string labels are required, found {type(labels[i])} at index {i}."
+                "A list of string labels are required, found "
+                f"{labels[i].__class__.__name__} at index {i}."
             )
 
     @property
@@ -80,6 +102,16 @@ class LabeledDimension:
     def description(self, value):
         self._description = validate(value, "description", str)
 
+    @property
+    def coordinates(self):
+        """Return the coordinates along the dimensions."""
+        n = self._count
+        return self.labels[:n]
+
+    @coordinates.setter
+    def coordinates(self, value):
+        self.labels = value
+
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
     # ----------------------------------------------------------------------- #
@@ -97,4 +129,10 @@ class LabeledDimension:
         if self._description.strip() != "":
             dictionary["description"] = self._description.strip()
         dictionary["labels"] = self._labels.tolist()
+
+        if self._label.strip() != "":
+            dictionary["label"] = self._label.strip()
+
+        if self._application != {}:
+            dictionary["application"] = self._application
         return dictionary

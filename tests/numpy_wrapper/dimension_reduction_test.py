@@ -1,5 +1,6 @@
-import csdmpy as cp
 import numpy as np
+
+import csdmpy as cp
 
 data = np.random.rand(50 * 15).reshape(15, 5, 10)
 a = cp.new()
