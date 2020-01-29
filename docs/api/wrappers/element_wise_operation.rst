@@ -11,3 +11,7 @@ dependent variables from the given `csdm` object.
 .. autosummary::
     ~sin
     ~cos
+    ~tan
+    ~arcsin
+    ~arccos
+    ~arctan

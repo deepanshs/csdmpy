@@ -10,6 +10,9 @@ from csdmpy.csdm import CSDM
 from csdmpy.dependent_variables import DependentVariable
 from csdmpy.dependent_variables.download import download_file_from_url
 from csdmpy.dimensions import Dimension
+from csdmpy.dimensions import LabeledDimension
+from csdmpy.dimensions import LinearDimension
+from csdmpy.dimensions import MonotonicDimension
 from csdmpy.helper_functions import _preview
 from csdmpy.numpy_wrapper import apodize
 from csdmpy.numpy_wrapper.dimension_reduction import *

@@ -37,9 +37,9 @@ repos:
       - id: check-yaml
         language: python
       - id: check-added-large-files
+        #   language: python
+        # - id: fix-encoding-pragma
         language: python
-      # - id: fix-encoding-pragma
-      #   language: python
       - id: check-docstring-first
         language: python
       - id: flake8
@@ -56,9 +56,9 @@ repos:
         entry: debug-statement-hook
         language: python
         types: [python]
-  # -   repo: https://github.com/PyCQA/bandit
-  #     rev: master
-  #     hooks:
+  # - repo: https://github.com/PyCQA/bandit
+  #   rev: master
+  #   hooks:
   #     - id: bandit
   # -   repo: https://github.com/PyCQA/pydocstyle
   #     rev: master

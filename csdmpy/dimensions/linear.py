@@ -52,15 +52,7 @@ class LinearDimension(BaseQuantitativeDimension):
     is an array of ones.
     """
 
-    __slots__ = (
-        "_count",
-        "_increment",
-        "_complex_fft",
-        "reciprocal",
-        "_reciprocal_count",
-        "_reciprocal_increment",
-        "_coordinates",
-    )
+    __slots__ = ("_count", "_increment", "_complex_fft", "reciprocal", "_coordinates")
 
     _type = "linear"
 
@@ -69,7 +61,7 @@ class LinearDimension(BaseQuantitativeDimension):
         self._count = count
         self._increment = ScalarQuantity(increment).quantity
         self._complex_fft = check_and_assign_bool(complex_fft)
-        self._unit = self._increment.unit
+        _unit = self._increment.unit
         if "reciprocal" not in kwargs.keys():
             kwargs["reciprocal"] = {
                 "increment": None,
@@ -82,7 +74,7 @@ class LinearDimension(BaseQuantitativeDimension):
                 "application": {},
             }
 
-        super().__init__(unit=self._unit, **kwargs)
+        super().__init__(unit=_unit, **kwargs)
 
         # create a reciprocal dimension
         _reciprocal_unit = self._unit ** -1
@@ -102,6 +94,29 @@ class LinearDimension(BaseQuantitativeDimension):
     def __str__(self):
         properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
         return f"LinearDimension({properties})"
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, LinearDimension):
+            check = [
+                self._count == other._count,
+                self._increment == other._increment,
+                self._complex_fft == other._complex_fft,
+                self.reciprocal == other.reciprocal,
+                # super class
+                self._coordinates_offset == other._coordinates_offset,
+                self._origin_offset == other._origin_offset,
+                self._quantity_name == other._quantity_name,
+                self._period == other._period,
+                self._label == other._label,
+                self._description == other._description,
+                self._application == other._application,
+                self._unit == other._unit,
+                self._equivalencies == other._equivalencies,
+            ]
+            if False in check:
+                return False
+        return True
 
     def _swap(self):
         self._description, self.reciprocal._description = (
@@ -177,6 +192,11 @@ class LinearDimension(BaseQuantitativeDimension):
     # ----------------------------------------------------------------------- #
     #                                  Attributes                             #
     # ----------------------------------------------------------------------- #
+    @property
+    def type(self):
+        """Return the type of the dimension."""
+        return deepcopy(self._type)
+
     @property
     def count(self):
         r"""Total number of points along the linear dimension."""

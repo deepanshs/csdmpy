@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 A wrapper to the Numpy functions which result in a dimension collapse.
 
@@ -9,6 +10,8 @@ The list of supported functions are:
 import numpy as np
 
 from csdmpy.numpy_wrapper import _get_new_csdm_object_after_applying_func
+
+__all__ = ("sum", "prod")
 
 
 def sum(csdm, dimension=0):

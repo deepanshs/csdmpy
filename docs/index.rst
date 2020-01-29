@@ -32,6 +32,9 @@ Welcome to csdmpy's documentation!
         :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/context:python
         :alt: Language grade: Python
 
+    .. image:: https://codecov.io/gh/DeepanshS/csdmpy/branch/master/graph/badge.svg
+        :target: https://codecov.io/gh/DeepanshS/csdmpy
+
 ----
 
 The `csdmpy` package is the Python support for the core scientific

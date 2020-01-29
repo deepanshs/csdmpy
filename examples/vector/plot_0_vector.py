@@ -8,8 +8,7 @@ Vector, 1D{2} dataset
 # dependent variable, :math:`p=2`. Such datasets are more common with the
 # weather forecast, such as the wind velocity predicting at a location
 # as a function of time.
-
-#%%
+#
 # The following is an example of a simulated 1D vector field dataset.
 import csdmpy as cp
 

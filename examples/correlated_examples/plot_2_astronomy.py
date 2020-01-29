@@ -4,7 +4,6 @@ Astronomy, 2D{1,1,1} dataset (Creating image composition)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
 # sphinx_gallery_thumbnail_number = 4
-
 #%%
 # More often, the images in astronomy are a composition of datasets measured
 # at different wavelengths over an area of the sky. In this example, we
@@ -13,8 +12,7 @@ Astronomy, 2D{1,1,1} dataset (Creating image composition)
 # using Numpy arrays.
 # The following example is the data from the `Eagle Nebula` acquired at three
 # different wavelengths and serialized as a CSDM compliant file.
-
-#%%
+#
 # Import the `csdmpy` model and load the dataset.
 import csdmpy as cp
 

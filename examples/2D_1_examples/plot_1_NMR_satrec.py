@@ -10,8 +10,7 @@ Nuclear Magnetic Resonance (NMR) dataset
 # where the measurements along one of the dimensions are non-uniform and span several
 # orders of magnitude. In this example, we illustrate the use of `monotonic`
 # dimensions for describing such datasets.
-
-#%%
+#
 # Let's load the file.
 import csdmpy as cp
 

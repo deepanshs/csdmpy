@@ -4,7 +4,6 @@ Meteorological, 2D{1,1,2,1,1} dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
 # sphinx_gallery_thumbnail_number = 5
-
 #%%
 #
 # The following dataset is obtained from `NOAA/NCEP Global Forecast System (GFS) Atmospheric Model
@@ -16,8 +15,7 @@ Meteorological, 2D{1,1,2,1,1} dataset
 # 4) air pressure at sea level as the four `scalar` quantity_type dependent
 # variables, and 5) wind velocity as the two-component `vector`, quantity_type
 # dependent variable.
-
-#%%
+#
 # Let's import the `csdmpy` module and load this dataset.
 import csdmpy as cp
 

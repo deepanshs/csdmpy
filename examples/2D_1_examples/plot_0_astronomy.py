@@ -10,8 +10,7 @@ Astronomy dataset
 # in February 2016. The original dataset was obtained in the FITS format
 # and subsequently converted to the CSD model file-format. For the convenience of
 # illustration, we have downsampled the original dataset.
-
-#%%
+#
 # Let's load the `.csdfe` file and look at its data structure.
 import csdmpy as cp
 

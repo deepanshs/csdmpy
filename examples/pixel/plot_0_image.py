@@ -10,8 +10,7 @@ Image, 2D{3} datasets
 # An RGB image dataset has two spatial dimensions and one dependent
 # variable with three components corresponding to the red, green, and blue color
 # intensities.
-
-#%%
+#
 # The following is an example of an RGB image dataset.
 import csdmpy as cp
 

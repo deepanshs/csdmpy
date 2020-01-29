@@ -12,6 +12,9 @@ import numpy as np
 
 from csdmpy.dependent_variables import DependentVariable
 from csdmpy.dimensions import Dimension
+from csdmpy.dimensions import LabeledDimension
+from csdmpy.dimensions import LinearDimension
+from csdmpy.dimensions import MonotonicDimension
 from csdmpy.utils import validate
 
 __all__ = ["CSDM"]
@@ -388,10 +391,13 @@ class CSDM:
         the later alternative for it is useful for copying an :ref:`dim_api`
         instance from one :ref:`csdm_api` instance to another.
         """
-        if args != () and isinstance(args[0], Dimension):
+        if args != () and isinstance(
+            args[0], (Dimension, LinearDimension, MonotonicDimension, LabeledDimension)
+        ):
             self._dimensions += (args[0],)
-        else:
-            self._dimensions += (Dimension(*args, **kwargs),)
+            return
+
+        self._dimensions += (Dimension(*args, **kwargs),)
 
     def add_dependent_variable(self, *args, **kwargs):
         """
@@ -627,13 +633,33 @@ class CSDM:
         """
         Create a copy of the current CSDM instance.
 
-        Example:
-            >>> data.copy()  #doctest: +SKIP
-
         Returns:
             A CSDM instance.
+
+        Example:
+            >>> data.copy()  #doctest: +SKIP
         """
         return deepcopy(self)
+
+    def split(self):
+        """Split the dependent-variables into individual csdm objects.
+
+        Return:
+            A list of CSDM objects.
+
+        Example:
+            >>> # data contains two dependent variables
+            >>> d1, d2 = data.split()  #doctest: +SKIP
+        """
+        copy = self.copy()
+        copy._dependent_variables = ()
+
+        dv = []
+        for variable in self.dependent_variables:
+            copy_ = self.copy()
+            copy_._dependent_variables = (variable,)
+            dv.append(copy_)
+        return dv
 
     # def replace(self,
     #             controlled_variable=None,

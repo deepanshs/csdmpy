@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import numpy as np
 
 import csdmpy as cp
@@ -30,6 +31,46 @@ def test_cos():
 
     b = cp.apodize.cos(a, "(2*3.1415*0.1) m^-1", dimension=1)
     s = np.cos(2 * 3.1415 * 0.1 * np.arange(10)) * data[:, 0]
+    assert np.allclose(s, b.dependent_variables[0].components[0][:, 0])
+
+
+def test_tan():
+    b = cp.apodize.tan(a, "(2*3.1415*0.1) s^-1", dimension=(0))
+    s = np.tan(2 * 3.1415 * 0.1 * np.arange(5)) * data[0, :]
+    assert np.allclose(s, b.dependent_variables[0].components[0][0, :])
+
+    b = cp.apodize.tan(a, "(2*3.1415*0.1) m^-1", dimension=1)
+    s = np.tan(2 * 3.1415 * 0.1 * np.arange(10)) * data[:, 0]
+    assert np.allclose(s, b.dependent_variables[0].components[0][:, 0])
+
+
+def test_arcsin():
+    b = cp.apodize.arcsin(a, "(1/(2*3.1415*10)) s^-1", dimension=(0))
+    s = np.arcsin(1 / (2 * 3.1415 * 10) * np.arange(5)) * data[0, :]
+    assert np.allclose(s, b.dependent_variables[0].components[0][0, :])
+
+    b = cp.apodize.arcsin(a, "(1/(2*3.1415*10)) m^-1", dimension=1)
+    s = np.arcsin(1 / (2 * 3.1415 * 10) * np.arange(10)) * data[:, 0]
+    assert np.allclose(s, b.dependent_variables[0].components[0][:, 0])
+
+
+def test_arccos():
+    b = cp.apodize.arccos(a, "(1/(2*3.1415*10)) s^-1", dimension=(0))
+    s = np.arccos(1 / (2 * 3.1415 * 10) * np.arange(5)) * data[0, :]
+    assert np.allclose(s, b.dependent_variables[0].components[0][0, :])
+
+    b = cp.apodize.arccos(a, "(1/(2*3.1415*10)) m^-1", dimension=1)
+    s = np.arccos(1 / (2 * 3.1415 * 10) * np.arange(10)) * data[:, 0]
+    assert np.allclose(s, b.dependent_variables[0].components[0][:, 0])
+
+
+def test_arctan():
+    b = cp.apodize.arctan(a, "(2*3.1415*10) s^-1", dimension=(0))
+    s = np.arctan(2 * 3.1415 * 10 * np.arange(5)) * data[0, :]
+    assert np.allclose(s, b.dependent_variables[0].components[0][0, :])
+
+    b = cp.apodize.arctan(a, "(2*3.1415*10) m^-1", dimension=1)
+    s = np.arctan(2 * 3.1415 * 10 * np.arange(10)) * data[:, 0]
     assert np.allclose(s, b.dependent_variables[0].components[0][:, 0])
 
 

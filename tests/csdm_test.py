@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 
+import numpy as np
 import pytest
 
 import csdmpy as cp
@@ -69,3 +70,47 @@ def test_csdm():
     )
 
     assert data.to_dict() == structure
+
+
+def test_split():
+    a = cp.new()
+    a.add_dimension(cp.LinearDimension(count=10, increment="1m"))
+    a.add_dependent_variable(
+        {
+            "type": "internal",
+            "components": [np.arange(10) + 1],
+            "quantity_type": "scalar",
+        }
+    )
+
+    b = cp.new()
+    b.add_dimension(cp.LinearDimension(count=10, increment="1m"))
+    b.add_dependent_variable(
+        {
+            "type": "internal",
+            "components": [np.arange(10) + 2],
+            "quantity_type": "scalar",
+        }
+    )
+
+    c = cp.new()
+    c.add_dimension(cp.LinearDimension(count=10, increment="1m"))
+    c.add_dependent_variable(
+        {
+            "type": "internal",
+            "components": [np.arange(10) + 1],
+            "quantity_type": "scalar",
+        }
+    )
+    c.add_dependent_variable(
+        {
+            "type": "internal",
+            "components": [np.arange(10) + 2],
+            "quantity_type": "scalar",
+        }
+    )
+
+    a_, b_ = c.split()
+
+    assert a_.dimensions[0] == a.dimensions[0]
+    assert b_.dimensions[0] == b.dimensions[0]

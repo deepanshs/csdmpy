@@ -11,8 +11,7 @@ Scatter, 0D{1,1} dataset
 # the :math:`^{29}\text{Si}` - :math:`^{29}\text{Si}` nuclear spin couplings,
 # :math:`^2J`, across a Si-O-Si linkage, and the `s`-character product on the
 # O and two Si along the Si-O bond across the Si-O-Si linkage.
-
-#%%
+#
 # Let's import the dataset.
 import csdmpy as cp
 

@@ -123,6 +123,13 @@ def test_linear_new():
     )
     assert data.dimensions[0].to_dict() == dict1["csdm"]["dimensions"][0]
 
+    # check equality
+    dim1 = data.dimensions[0].copy()
+    assert data.dimensions[0] == dim1
+
+    dim1.coordinates_offset = "0 m * s^-1"
+    assert data.dimensions[0] != dim1
+
 
 # monotonic dimension
 def test_monotonic_new():
@@ -277,6 +284,17 @@ def test_monotonic_new():
     data.dimensions[0].coordinates = ["1m", "2m"]
     assert np.allclose(data.dimensions[0].coordinates.value, np.asarray([1, 2]))
 
+    # check equality
+    dim1 = data.dimensions[0].copy()
+    assert data.dimensions[0] == dim1
+
+    dim1.origin_offset = "1 m"
+    assert data.dimensions[0] != dim1
+
+    dim2 = dim1.copy()
+    dim2.origin_offset = "100 cm"
+    assert dim1 == dim2
+
 
 # labeled dimension
 def test_labeled_new():
@@ -336,3 +354,10 @@ def test_labeled_new():
         dict1, ensure_ascii=False, sort_keys=False, indent=2
     )
     assert data.dimensions[0].to_dict() == dict1["csdm"]["dimensions"][0]
+
+    # check equality
+    dim1 = data.dimensions[0].copy()
+    assert data.dimensions[0] == dim1
+
+    dim1.labels[1] = "Skywalker"
+    assert data.dimensions[0] != dim1

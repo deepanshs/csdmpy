@@ -30,9 +30,36 @@ class LabeledDimension:
         self._label = label
         self.labels = labels
 
+    def __repr__(self):
+        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
+        return f"Dimension({properties})"
+
+    def __str__(self):
+        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
+        return f"Dimension({properties})"
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, LabeledDimension):
+            check = [
+                self._count == other._count,
+                np.all(self._labels == other._labels),
+                self._label == other._label,
+                self._description == other._description,
+                self._application == other._application,
+            ]
+            if False in check:
+                return False
+        return True
+
     # ----------------------------------------------------------------------- #
     #                                 Attributes                              #
     # ----------------------------------------------------------------------- #
+
+    @property
+    def type(self):
+        """Return the type of the dimension."""
+        return deepcopy(self._type)
 
     @property
     def count(self):
@@ -57,7 +84,7 @@ class LabeledDimension:
     @property
     def labels(self):
         r"""Return a list of labels along the dimension."""
-        return deepcopy(self._labels)
+        return self._labels
 
     @labels.setter
     def labels(self, labels):

@@ -3,14 +3,12 @@
 Global Mean Sea Level rise dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
-
 #%%
 # The following dataset is the Global Mean Sea Level (GMSL) rise from the late
 # 19th to the Early 21st Century [#f0]_. The
 # `original dataset <http://www.cmar.csiro.au/sealevel/sl_data_cmar.html>`_ was
 # downloaded as a CSV file and subsequently converted to the CSD model format.
-
-#%%
+#
 # Let's import this file.
 import csdmpy as cp
 

@@ -64,6 +64,24 @@ class BaseQuantitativeDimension:
         self._unit = unit
         self._equivalencies = None
 
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        check = [
+            # super class
+            self._coordinates_offset == other._coordinates_offset,
+            self._origin_offset == other._origin_offset,
+            self._quantity_name == other._quantity_name,
+            self._period == other._period,
+            self._label == other._label,
+            self._description == other._description,
+            self._application == other._application,
+            self._unit == other._unit,
+            self._equivalencies == other._equivalencies,
+        ]
+        if False in check:
+            return False
+        return True
+
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
     # ----------------------------------------------------------------------- #

@@ -166,6 +166,18 @@ class Dimension:
         properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
         return f"Dimension({properties})"
 
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, Dimension):
+            if self.subtype == other.subtype:
+                return True
+            return False
+        if isinstance(other, (LinearDimension, LabeledDimension, MonotonicDimension)):
+            if self.subtype == other:
+                return True
+            return False
+        return False
+
     # ======================================================================= #
     #                          Dimension Attributes                           #
     # ======================================================================= #
@@ -677,7 +689,7 @@ class Dimension:
         Raises:
             AttributeError: When the attribute is modified.
         """
-        return self.subtype.__class__._type
+        return self.subtype.type
 
     @property
     def labels(self):

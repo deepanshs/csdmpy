@@ -52,13 +52,13 @@ class MonotonicDimension(BaseQuantitativeDimension):
     :math:`\mathbf{1}` is an array of ones.
     """
 
-    __slots__ = ("_unit", "reciprocal", "_count", "_values", "_coordinates")
+    __slots__ = ("reciprocal", "_count", "_values", "_coordinates")
 
     _type = "monotonic"
 
-    def __init__(self, values, **kwargs):
+    def __init__(self, coordinates, **kwargs):
         """Instantiate a MonotonicDimension class."""
-        self._unit = ScalarQuantity(values[0]).quantity.unit
+        _unit = ScalarQuantity(coordinates[0]).quantity.unit
         if "reciprocal" not in kwargs.keys():
             kwargs["reciprocal"] = {
                 "increment": None,
@@ -70,14 +70,36 @@ class MonotonicDimension(BaseQuantitativeDimension):
                 "description": "",
                 "application": {},
             }
-        super(MonotonicDimension, self).__init__(unit=self._unit, **kwargs)
+        super(MonotonicDimension, self).__init__(unit=_unit, **kwargs)
 
         _reciprocal_unit = self._unit ** -1
         self.reciprocal = ReciprocalVariable(
             unit=_reciprocal_unit, **kwargs["reciprocal"]
         )
 
-        self._get_coordinates(values)
+        self._get_coordinates(coordinates)
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, MonotonicDimension):
+            check = [
+                self._count == other._count,
+                np.all(self._coordinates == other._coordinates),
+                self.reciprocal == other.reciprocal,
+                # super class
+                self._coordinates_offset == other._coordinates_offset,
+                self._origin_offset == other._origin_offset,
+                self._quantity_name == other._quantity_name,
+                self._period == other._period,
+                self._label == other._label,
+                self._description == other._description,
+                self._application == other._application,
+                self._unit == other._unit,
+                self._equivalencies == other._equivalencies,
+            ]
+            if False in check:
+                return False
+        return True
 
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
@@ -119,6 +141,11 @@ class MonotonicDimension(BaseQuantitativeDimension):
     # ----------------------------------------------------------------------- #
     #                                 Attributes                              #
     # ----------------------------------------------------------------------- #
+    @property
+    def type(self):
+        """Return the type of the dimension."""
+        return deepcopy(self._type)
+
     @property
     def count(self):
         r"""Total number of points along the linear dimension."""
