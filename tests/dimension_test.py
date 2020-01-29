@@ -130,6 +130,8 @@ def test_linear_new():
     dim1.coordinates_offset = "0 m * s^-1"
     assert data.dimensions[0] != dim1
 
+    assert dim1 != 21
+
 
 # monotonic dimension
 def test_monotonic_new():
@@ -295,6 +297,8 @@ def test_monotonic_new():
     dim2.origin_offset = "100 cm"
     assert dim1 == dim2
 
+    assert dim1 != 21
+
 
 # labeled dimension
 def test_labeled_new():
@@ -361,3 +365,5 @@ def test_labeled_new():
 
     dim1.labels[1] = "Skywalker"
     assert data.dimensions[0] != dim1
+
+    assert dim1 != 21

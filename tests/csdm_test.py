@@ -71,6 +71,15 @@ def test_csdm():
 
     assert data.to_dict() == structure
 
+    # equality check
+    dm = data.copy()
+
+    assert dm == data
+
+    dm.add_dimension(cp.LinearDimension(count=10, increment="1s"))
+
+    assert dm != data
+
 
 def test_split():
     a = cp.new()
@@ -112,5 +121,5 @@ def test_split():
 
     a_, b_ = c.split()
 
-    assert a_.dimensions[0] == a.dimensions[0]
-    assert b_.dimensions[0] == b.dimensions[0]
+    assert a_ == a
+    assert b_ == b

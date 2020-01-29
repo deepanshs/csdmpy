@@ -66,6 +66,23 @@ class BaseDependentVariable:
         self.application = application
         self._components = components
 
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        check = [
+            self.name == other.name.self._unit == other._unit,
+            self._quantity_name == other._quantity_name,
+            self._encoding == other._encoding,
+            self._numeric_type == other._numeric_type,
+            self._quantity_type == other._quantity_type,
+            self._component_labels == other._component_labels,
+            self._description == other._description,
+            self._application == other._application,
+            np.allclose(self._components, other._components),
+        ]
+        if False in check:
+            return False
+        return True
+
     def set_component_labels(self, component_labels):
         """
         Assign an array of strings, based on the number of components.

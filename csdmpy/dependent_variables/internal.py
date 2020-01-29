@@ -19,7 +19,7 @@ __all__ = ["InternalDataset"]
 class InternalDataset(BaseDependentVariable):
     """InternalDataset class."""
 
-    __slots__ = ("_components", "_sparse_sampling")
+    __slots__ = "_sparse_sampling"
 
     def __init__(self, **kwargs):
         """Initialize."""
@@ -46,7 +46,7 @@ class InternalDataset(BaseDependentVariable):
 
         # super base class must be initialized before retrieving
         # the components array.
-        super(InternalDataset, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         if not isinstance(components, np.ndarray):
             components = Decoder(
@@ -59,6 +59,26 @@ class InternalDataset(BaseDependentVariable):
 
         if kwargs["sparse_sampling"] != {}:
             self._sparse_sampling = SparseSampling(**kwargs["sparse_sampling"])
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        check = [
+            self.name == other.name,
+            self._unit == other._unit,
+            self._quantity_name == other._quantity_name,
+            self._encoding == other._encoding,
+            self._numeric_type == other._numeric_type,
+            self._quantity_type == other._quantity_type,
+            self._component_labels == other._component_labels,
+            self._description == other._description,
+            self._application == other._application,
+            np.allclose(self._components, other._components),
+            self._sparse_sampling == other._sparse_sampling,
+        ]
+        print(check)
+        if False in check:
+            return False
+        return True
 
     def to_dict(
         self, filename=None, dataset_index=None, for_display=False, version=None

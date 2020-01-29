@@ -99,7 +99,8 @@ class MonotonicDimension(BaseQuantitativeDimension):
             ]
             if False in check:
                 return False
-        return True
+            return True
+        return False
 
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #

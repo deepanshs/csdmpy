@@ -164,6 +164,15 @@ def test_internal_new():
     # with pytest.raises(Exception, match=".*{0}.*".format(error)):
     #     data.add_dependent_variable(dim)
 
+    # check equality
+    dim1 = data.dependent_variables[0].copy()
+    assert data.dependent_variables[0] == dim1
+
+    dim1.quantity_type = "pixel_2"
+    assert data.dependent_variables[0] != dim1
+
+    assert dim1 != 21
+
 
 def test_external_new():
     data = cp.new()
@@ -243,6 +252,15 @@ def test_external_new():
     assert data.data_structure == json.dumps(
         dict1, ensure_ascii=False, sort_keys=False, indent=2
     )
+
+    # check equality
+    dim1 = data.dependent_variables[0].copy()
+    assert data.dependent_variables[0] == dim1
+
+    dim1.numeric_type = "int64"
+    assert data.dependent_variables[0] != dim1
+
+    assert dim1 != 21
 
 
 def test_missing_type():

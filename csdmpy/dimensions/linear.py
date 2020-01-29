@@ -116,7 +116,8 @@ class LinearDimension(BaseQuantitativeDimension):
             ]
             if False in check:
                 return False
-        return True
+            return True
+        return False
 
     def _swap(self):
         self._description, self.reciprocal._description = (

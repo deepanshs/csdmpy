@@ -50,7 +50,8 @@ class LabeledDimension:
             ]
             if False in check:
                 return False
-        return True
+            return True
+        return False
 
     # ----------------------------------------------------------------------- #
     #                                 Attributes                              #

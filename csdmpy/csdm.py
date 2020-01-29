@@ -111,6 +111,25 @@ class CSDM:
     def __str__(self):
         return self.__repr__()
 
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, CSDM):
+            check = [
+                self.dimensions == other.dimensions,
+                self.dependent_variables == other.dependent_variables,
+                self.tags == other.tags,
+                self.read_only == other.read_only,
+                self.version == other.version,
+                self.timestamp == other.timestamp,
+                self.geographic_coordinate == other.geographic_coordinate,
+                self.description == other.description,
+                self.application == other.application,
+            ]
+            if False in check:
+                return False
+            return True
+        return False
+
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
     # ----------------------------------------------------------------------- #

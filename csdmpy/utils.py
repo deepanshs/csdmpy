@@ -121,6 +121,13 @@ class QuantityType:
         r"""Return a string with the quantity type."""
         return self.value
 
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        check = [self.value == other.value, self.p == other.p]
+        if False in check:
+            return False
+        return True
+
     def update(self, element):
         """Update the quantity type."""
         validate(element, "quantity_type", str, self._check_quantity_type)
@@ -278,6 +285,13 @@ class NumericType:
     def __str__(self):
         """Return a string with the numeric type."""
         return self.value
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        check = [self.value == other.value, self.dtype == other.dtype]
+        if False in check:
+            return False
+        return True
 
     def _check_numeric_type(self, element):
         lst = self.__class__._lst

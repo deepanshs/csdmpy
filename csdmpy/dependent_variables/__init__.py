@@ -161,6 +161,18 @@ class DependentVariable:
         properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
         return f"DependentVariable({properties})"
 
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, DependentVariable):
+            if self.subtype == other.subtype:
+                return True
+            return False
+        # if isinstance(other, (LinearDimension, LabeledDimension, MonotonicDimension)):
+        #     if self.subtype == other:
+        #         return True
+        #     return False
+        return False
+
     # ======================================================================= #
     #                      DependentVariable  Attributes                      #
     # ======================================================================= #
