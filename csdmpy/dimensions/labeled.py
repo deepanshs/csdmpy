@@ -8,6 +8,7 @@ from copy import deepcopy
 
 import numpy as np
 
+from csdmpy.dimensions.base import BaseDimension
 from csdmpy.utils import validate
 
 
@@ -16,18 +17,16 @@ __email__ = "srivastava.89@osu.edu"
 __all__ = ["LabeledDimension"]
 
 
-class LabeledDimension:
+class LabeledDimension(BaseDimension):
     """A labeled dimension."""
 
-    __slots__ = ("_count", "_labels", "_label", "_description", "_application")
+    __slots__ = ("_count", "_labels")
 
     _type = "labeled"
 
     def __init__(self, labels, label="", description="", application={}, **kwargs):
         r"""Instantiate a LabeledDimension class."""
-        self._description = description
-        self._application = application
-        self._label = label
+        super().__init__(label, application, description)
         self.labels = labels
 
     def __repr__(self):
@@ -51,6 +50,12 @@ class LabeledDimension:
             if False in check:
                 return False
             return True
+        return False
+
+    def _is_quantitative(self):
+        r"""Return `True`, if the dimension is quantitative, otherwise `False`.
+        :returns: A Boolean.
+        """
         return False
 
     # ----------------------------------------------------------------------- #
@@ -104,33 +109,6 @@ class LabeledDimension:
             )
 
     @property
-    def label(self):
-        r"""Label associated with the dimension."""
-        return deepcopy(self._label)
-
-    @label.setter
-    def label(self, label=""):
-        self._label = validate(label, "label", str)
-
-    @property
-    def application(self):
-        r"""Return an application dimension associated with the dimensions."""
-        return deepcopy(self._application)
-
-    @application.setter
-    def application(self, value):
-        self._application = value
-
-    @property
-    def description(self):
-        r"""Return a description of the dimension."""
-        return deepcopy(self._description)
-
-    @description.setter
-    def description(self, value):
-        self._description = validate(value, "description", str)
-
-    @property
     def coordinates(self):
         """Return the coordinates along the dimensions."""
         n = self._count
@@ -143,12 +121,6 @@ class LabeledDimension:
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
     # ----------------------------------------------------------------------- #
-
-    def _is_quantitative(self):
-        r"""Return `True`, if the dimension is quantitative, otherwise `False`.
-        :returns: A Boolean.
-        """
-        return False
 
     def to_dict(self):
         """Return LabeledDimension as a python dictionary."""
@@ -164,3 +136,7 @@ class LabeledDimension:
         if self._application != {}:
             dictionary["application"] = self._application
         return dictionary
+
+    def copy(self):
+        """Return a copy of the object."""
+        return deepcopy(self)

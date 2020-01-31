@@ -36,6 +36,17 @@ CSDM
       ~CSDM.dumps
       ~CSDM.save
       ~CSDM.copy
+      ~CSDM.split
+      ~CSDM.max
+      ~CSDM.min
+      ~CSDM.clip
+      ~CSDM.conj
+      ~CSDM.round
+      ~CSDM.sum
+      ~CSDM.mean
+      ~CSDM.var
+      ~CSDM.std
+      ~CSDM.prod
 
    .. rubric:: Attributes Documentation
 
@@ -59,3 +70,14 @@ CSDM
    .. automethod:: dumps
    .. automethod:: save
    .. automethod:: copy
+   .. automethod:: split
+   .. automethod:: max
+   .. automethod:: min
+   .. automethod:: clip
+   .. automethod:: conj
+   .. automethod:: round
+   .. automethod:: sum
+   .. automethod:: mean
+   .. automethod:: var
+   .. automethod:: std
+   .. automethod:: prod

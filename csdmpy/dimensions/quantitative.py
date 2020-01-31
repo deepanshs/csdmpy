@@ -5,6 +5,7 @@ from copy import deepcopy
 from astropy.units import Quantity
 from numpy import inf
 
+from csdmpy.dimensions.base import BaseDimension
 from csdmpy.units import check_quantity_name
 from csdmpy.units import ScalarQuantity
 from csdmpy.utils import type_error
@@ -20,7 +21,7 @@ __all__ = ["BaseQuantitativeDimension", "ReciprocalVariable"]
 # =========================================================================== #
 
 
-class BaseQuantitativeDimension:
+class BaseQuantitativeDimension(BaseDimension):
     r"""A BaseQuantitativeDimension class."""
 
     __slots__ = (
@@ -28,9 +29,6 @@ class BaseQuantitativeDimension:
         "_origin_offset",
         "_quantity_name",
         "_period",
-        "_label",
-        "_description",
-        "_application",
         "_unit",
         "_equivalencies",
     )
@@ -49,8 +47,8 @@ class BaseQuantitativeDimension:
     ):
         r"""Instantiate a BaseIndependentVariable class."""
 
-        self._description = description
-        self._application = application
+        super().__init__(label, application, description)
+
         self._coordinates_offset = ScalarQuantity(coordinates_offset, unit).quantity
         self._origin_offset = ScalarQuantity(origin_offset, unit).quantity
         self._quantity_name = check_quantity_name(quantity_name, unit)
@@ -60,7 +58,6 @@ class BaseQuantitativeDimension:
             value = inf * value.unit
         self._period = value
 
-        self.label = label
         self._unit = unit
         self._equivalencies = None
 
@@ -85,15 +82,6 @@ class BaseQuantitativeDimension:
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
     # ----------------------------------------------------------------------- #
-
-    @property
-    def application(self):
-        """Return application metadata, if available."""
-        return self._application
-
-    @application.setter
-    def application(self, value):
-        self._application = validate(value, "application", dict)
 
     @property
     def coordinates_offset(self):
@@ -146,29 +134,11 @@ class BaseQuantitativeDimension:
     def quantity_name(self, value):
         raise NotImplementedError("This attribute is not yet implemented.")
 
-    @property
-    def label(self):
-        r"""Label associated with this dimension."""
-        return deepcopy(self._label)
-
-    @label.setter
-    def label(self, label=""):
-        self._label = validate(label, "label", str)
-
-    @property
-    def description(self):
-        r"""Brief description of the dimension object."""
-        return deepcopy(self._description)
-
-    @description.setter
-    def description(self, value):
-        self._description = validate(value, "description", str)
-
     # ----------------------------------------------------------------------- #
     #                                  Methods                                #
     # ----------------------------------------------------------------------- #
 
-    def _get_quantitative_dictionary(self):
+    def _to_dict(self):
         r"""Return the object as a python dictionary."""
         obj = {}
 

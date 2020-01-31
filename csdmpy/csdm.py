@@ -9,15 +9,57 @@ import warnings
 from copy import deepcopy
 
 import numpy as np
+from astropy.units.quantity import Quantity
 
 from csdmpy.dependent_variables import DependentVariable
 from csdmpy.dimensions import Dimension
 from csdmpy.dimensions import LabeledDimension
 from csdmpy.dimensions import LinearDimension
 from csdmpy.dimensions import MonotonicDimension
+from csdmpy.units import ScalarQuantity
+from csdmpy.units import string_to_quantity
 from csdmpy.utils import validate
 
+
 __all__ = ["CSDM"]
+__ufunc_list_dimensionless_unit__ = [
+    np.sin,
+    np.cos,
+    np.tan,
+    np.arcsin,
+    np.arccos,
+    np.arctan,
+    np.sinh,
+    np.cosh,
+    np.tanh,
+    np.arcsinh,
+    np.arccosh,
+    np.arctanh,
+    np.exp,
+    np.exp2,
+    np.log,
+    np.log2,
+    np.log10,
+    np.expm1,
+    np.log1p,
+]
+
+__ufunc_list_unit_independent__ = [
+    np.negative,
+    np.positive,
+    np.absolute,
+    np.fabs,
+    np.rint,
+    np.sign,
+    np.conj,
+    np.conjugate,
+]
+
+__ufunc_list_applies_to_unit__ = [np.sqrt, np.square, np.cbrt, np.reciprocal, np.power]
+
+__function_reduction_list__ = [np.max, np.min, np.sum, np.mean, np.var, np.std, np.prod]
+
+__other_functions__ = [np.round, np.real, np.imag, np.clip]
 
 
 class CSDM:
@@ -129,6 +171,221 @@ class CSDM:
                 return False
             return True
         return False
+
+    def __check_csdm_object(self, other):
+        """Check if the two objects are csdm objects"""
+        if not isinstance(other, CSDM):
+            raise TypeError(
+                "unsupported operand type(s): 'CSDM' and "
+                f"'{other.__class__.__name__}'."
+            )
+
+    def __check_dimension_equality(self, other):
+        """Check if the dimensions of the two csdm objects are identical."""
+        if self.dimensions != other.dimensions:
+            raise Exception(
+                f"Cannot operate on CSDM objects with different dimensions."
+            )
+
+    def __check_dependent_variable_len_equality(self, other):
+        """Check if the length of dependent variables from the two csdm objects is same."""
+        if len(self.dependent_variables) != len(other.dependent_variables):
+            raise Exception(
+                "Cannot operate on CSDM objects with differnet lengths of "
+                "dependent variables."
+            )
+
+    def __check_dependent_variable_dimensionality(self, other):
+        """Check if the dependent variables from the two csdm objects have the same dimensionality."""
+        for v1, v2 in zip(self.dependent_variables, other.dependent_variables):
+            if v1.unit.physical_type != v2.unit.physical_type:
+                raise Exception(
+                    "Cannot operate on dependent variables with of physical types: "
+                    f"{v1.unit.physical_type} and {v2.unit.physical_type}."
+                )
+
+    def __check_csdm_object_additive_compatibility(self, other):
+        """
+            Check if the two objects are compatible for additive operations
+                1) csdm objects,
+                2) with identical dimension objects,
+                3) same number of dependent-variables, and
+                4) each dependent variables with identical dimensionality.
+        """
+        self.__check_csdm_object(other)
+        self.__check_dimension_equality(other)
+        self.__check_dependent_variable_len_equality(other)
+        self.__check_dependent_variable_dimensionality(other)
+
+    def __check_scalar_object(self, other):
+        """Check if the object is scalar:
+            int, float, complex, np.ndarray, Quantity, or ScalarQuantity.
+            Returns: The other object.
+        """
+        if not isinstance(
+            other, (int, float, complex, np.ndarray, Quantity, ScalarQuantity)
+        ):
+            raise TypeError(
+                f"unsupported operand type(s): 'CSDM' and "
+                f"'{other.__class__.__name__}'."
+            )
+        if isinstance(other, np.ndarray):
+            if other.ndim != 0:
+                raise ValueError("Only scalar multiplication or division is allowed.")
+
+        if isinstance(other, ScalarQuantity):
+            return other.quantity
+
+        return other
+
+    def __add__(self, other):
+        """
+        Add two objects (z=x+y), if they are
+            1) csdm objects,
+            2) with identical dimension objects,
+            3) same number of dependent-variables, and
+            4) each dependent variables with identical dimensionality.
+
+        Args:
+            other: A CSDM object
+
+        Return:
+            A CSDM object as the sum of two CSDM objects.
+        """
+        self.__check_csdm_object_additive_compatibility(other)
+
+        d1 = self.copy()
+        for i, item in enumerate(self.dependent_variables):
+            factor = other.dependent_variables[i].unit.to(item.unit)
+            y = d1.dependent_variables[i].components
+            y = y + factor * other.dependent_variables[i].components
+            d1.dependent_variables[i].components = y
+        return d1
+
+    def __iadd__(self, other):
+        """
+        Add two objects in-place (y+=x), if they are
+            1) csdm objects,
+            2) with identical dimension objects,
+            3) same number of dependent-variables, and
+            4) each dependent variables with identical dimensionality.
+
+        Args:
+            other: A CSDM object
+
+        Return:
+            A CSDM object as the sum of two CSDM objects.
+        """
+        self.__check_csdm_object_additive_compatibility(other)
+
+        for i, item in enumerate(self.dependent_variables):
+            factor = other.dependent_variables[i].unit.to(item.unit)
+            item.components.__iadd__(factor * other.dependent_variables[i].components)
+        return self
+
+    def __sub__(self, other):
+        """
+        Subtract two objects (z=x-y), if they are
+            1) csdm objects,
+            2) with identical dimension objects,
+            3) same number of dependent-variables, and
+            4) each dependent variables with identical dimensionality.
+
+        Args:
+            other: A CSDM object
+
+        Return:
+            A CSDM object as the difference of two CSDM objects.
+        """
+        self.__check_csdm_object_additive_compatibility(other)
+
+        d1 = self.copy()
+        for i, item in enumerate(self.dependent_variables):
+            factor = other.dependent_variables[i].unit.to(item.unit)
+            y = d1.dependent_variables[i].components
+            y = y - factor * other.dependent_variables[i].components
+            d1.dependent_variables[i].components = y
+        return d1
+
+    def __isub__(self, other):
+        """
+        Subtract two objects in-lace (y-=x), if they are
+            1) csdm objects,
+            2) with identical dimension objects,
+            3) same number of dependent-variables, and
+            4) each dependent variables with identical dimensionality.
+        Args:
+            other: A CSDM object.
+
+        Return:
+            A CSDM object as the difference of two CSDM objects.
+        """
+        self.__check_csdm_object_additive_compatibility(other)
+
+        for i, item in enumerate(self.dependent_variables):
+            factor = other.dependent_variables[i].unit.to(item.unit)
+            item.components.__isub__(factor * other.dependent_variables[i].components)
+        return self
+
+    def __mul__(self, other):
+        """Multiply the components of the CSDM object by a scalar."""
+        other = self.__check_scalar_object(other)
+
+        d1 = self.copy()
+        for item in d1.dependent_variables:
+            if not isinstance(other, Quantity):
+                item.components = item.components * other
+            else:
+                value = 1 * item.subtype._unit * other
+                item.subtype._unit = value.unit
+                item.components = item.components * value.value
+        return d1
+
+    def __imul__(self, other):
+        """
+        In place multiplication of the components of the CSDM object
+        by a scalar.
+        """
+        other = self.__check_scalar_object(other)
+
+        for item in self.dependent_variables:
+            if not isinstance(other, Quantity):
+                item.components *= other
+            else:
+                value = 1 * item.subtype._unit * other
+                item.subtype._unit = value.unit
+                item.components.__imul__(value.value)
+        return self
+
+    def __truediv__(self, other):
+        """Divide the components of the CSDM object by a scalar."""
+        other = self.__check_scalar_object(other)
+
+        d1 = self.copy()
+        for item in d1.dependent_variables:
+            if not isinstance(other, Quantity):
+                item.components = item.components / other
+            else:
+                value = (1 * item.subtype._unit) / other
+                item.subtype._unit = value.unit
+                item.components = item.components * value.value
+        return d1
+
+    def __itruediv__(self, other):
+        """
+        In place division of the components of the CSDM object
+        by a scalar.
+        """
+        other = self.__check_scalar_object(other)
+
+        for item in self.dependent_variables:
+            if not isinstance(other, Quantity):
+                item.components *= 1 / other
+            else:
+                value = (1 * item.subtype._unit) / other
+                item.subtype._unit = value.unit
+                item.components.__imul__(value.value)
+        return self
 
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
@@ -288,6 +545,18 @@ class CSDM:
         dictionary = self._to_dict(filename=self.filename, for_display=True)
 
         return json.dumps(dictionary, ensure_ascii=False, sort_keys=False, indent=2)
+
+    # Numpy - like property
+
+    @property
+    def real(self):
+        """Return the real part of the components."""
+        return np.real(self)
+
+    @property
+    def imag(self):
+        """Return the real part of the components."""
+        return np.imag(self)
 
     # ----------------------------------------------------------------------- #
     #                                  Methods                                #
@@ -664,7 +933,7 @@ class CSDM:
         """Split the dependent-variables into individual csdm objects.
 
         Return:
-            A list of CSDM objects.
+            A list of CSDM objects, each with one dependent variable.
 
         Example:
             >>> # data contains two dependent variables
@@ -680,26 +949,429 @@ class CSDM:
             dv.append(copy_)
         return dv
 
-    # def replace(self,
-    #             controlled_variable=None,
-    #             cv_index=-1,
-    #             uncontrolled_variable=None,
-    #             uv_index=-1):
-    #     """
-    #     Replace the controlled or the uncontrolled variable at the index.
+    # ----------------------------------------------------------------------- #
+    #                            NumPy-like functions                         #
+    # ----------------------------------------------------------------------- #
+    def max(self, axis=None):
+        """
+        Return the maximum component value along a given axis.
 
-    #     :params: controlled_variable: A new ControlledVariable object or a
-    #         python dictionary corresponding to a new ControlledVariable
-    #         object.
-    #     :params: cv_index: An integer corresponding to the
-    #         UncontrolledVariable object to the updated.
-    #     :params: uncontrolled_variable: A new UncontrolledVariable object or
-    #         a python dictionary corresponding to a new UncontrolledVariable
-    #         object.
-    #     :params: uv_index: An integer corresponding to the
-    #         UncontrolledVariable object to the updated.
+        Args:
+            dimension: An integer or None or a tuple of `m` integers cooresponding to
+                    the index/indices of dimensions along which the sum of the
+                    dependent variable components is performed. If None, the output is
+                    the sum over all dimensions per dependent variable.
+        Return:
+            A CSDM object with `m` dimensions removed, or a numpy array when dimension
+            is None.
 
-    #     .. todo::
-    #         Well, write the method.
-    #     """
-    #     pass
+        Example:
+            >>> data2 = data.max()  #doctest: +SKIP
+        """
+        return np.max(self, axis=axis)
+
+    def argmax(self, axis=None):
+        raise NotImplementedError("")
+
+    def min(self, axis=None):
+        """
+        Return the minimum component value along a given axis.
+
+        Args:
+            axis: An integer or None or a tuple of `m` integers cooresponding to
+                    the index/indices of dimensions along which the sum of the
+                    dependent variable components is performed. If None, the output is
+                    over all dimensions per dependent variable.
+        Return:
+            A CSDM object with `m` dimensions removed, or a list when `axis` is None.
+        """
+        return np.min(self, axis=axis)
+
+    def argmin(self, axis=None):
+        raise NotImplementedError("")
+
+    def ptp(self, axis=None):
+        raise NotImplementedError("")
+
+    def clip(self, min=None, max=None):
+        """
+        Clip the component value between min and max.
+
+        Args:
+            dimension: An integer or None or a tuple of `m` integers cooresponding to
+                    the index/indices of dimensions along which the sum of the
+                    dependent variable components is performed. If None, the output is
+                    over all dimensions per dependent variable.
+        Return:
+            A CSDM object with `m` dimensions removed, or a list when `axis` is None.
+        """
+        a_max = max
+        if max is None:
+            a_max = np.max(self.max())
+        a_min = min
+        if min is None:
+            a_min = np.min(self.min())
+        return np.clip(self, a_min, a_max)
+
+    def conj(self):
+        """Complex conjugate of all dependent variable components."""
+        return np.conj(self)
+
+    def round(self, decimals=0):
+        """Round the components of the dependent variables to given `decimals`."""
+        return np.round(self, decimals)
+
+    def trace(self, offset=0, axis1=0, axis2=-1):
+        raise NotImplementedError("")
+
+    def sum(self, axis=None):
+        """Sum of the dependent variable components over a given `axis`.
+
+        Args:
+            axis: An integer or None or a tuple of `m` integers cooresponding to
+                    the index/indices of dimensions along which the sum of the
+                    dependent variable components is performed. If None, the output is
+                    over all dimensions per dependent variable.
+        Return:
+            A CSDM object with `m` dimensions removed, or a list when `axis` is None.
+        """
+        return np.sum(self, axis=axis)
+
+    def cumsum(self, axis=None):
+        raise NotImplementedError("")
+
+    def mean(self, axis=None):
+        """Mean of the dependent variable components over a given `axis`.
+
+        Args:
+            axis: An integer or None or a tuple of `m` integers cooresponding to
+                    the index/indices of dimensions along which the sum of the
+                    dependent variable components is performed. If None, the output is
+                    over all dimensions per dependent variable.
+        Return:
+            A CSDM object with `m` dimensions removed, or a list when `axis` is None.
+        """
+        return np.mean(self, axis=axis)
+
+    def var(self, axis=None):
+        """Variance of the dependent variable components over a given `axis`.
+
+        Args:
+            axis: An integer or None or a tuple of `m` integers cooresponding to
+                    the index/indices of dimensions along which the sum of the
+                    dependent variable components is performed. If None, the output is
+                    over all dimensions per dependent variable.
+        Return:
+            A CSDM object with `m` dimensions removed, or a list when `axis` is None.
+        """
+        return np.var(self, axis=axis)
+
+    def std(self, axis=None):
+        """Standard deviation of the dependent variable components over a given `axis`.
+
+        Args:
+            axis: An integer or None or a tuple of `m` integers cooresponding to
+                    the index/indices of dimensions along which the sum of the
+                    dependent variable components is performed. If None, the output is
+                    over all dimensions per dependent variable.
+        Return:
+            A CSDM object with `m` dimensions removed, or a list when `axis` is None.
+        """
+        return np.std(self, axis=axis)
+
+    def prod(self, axis=None):
+        """Product of dependent variable  the components over a given `axis`.
+
+        Args:
+            axis: An integer or None or a tuple of `m` integers cooresponding to
+                    the index/indices of dimensions along which the product of the
+                    dependent variable components is performed. If None, the output is
+                    over all dimensions per dependent variable.
+        Return:
+            A CSDM object with `m` dimensions removed, or a list when `axis` is None.
+        """
+        return np.prod(self, axis=axis)
+
+    def cumprod(self, axis=None):
+        raise NotImplementedError("")
+
+    def __array_ufunc__(self, function, method, *inputs, **kwargs):
+        csdm = inputs[0]
+        print(method)
+        if function in __ufunc_list_dimensionless_unit__:
+            factor = np.ones(len(csdm.dependent_variables))
+            for i, variable in enumerate(csdm.dependent_variables):
+                if variable.unit.physical_type != "dimensionless":
+                    raise ValueError(
+                        f"Cannot apply `{function.__name__}` to quantity with physical "
+                        f"type `{variable.unit.physical_type}`."
+                    )
+                factor[i] = variable.unit.to("")
+            return _get_new_csdm_object_after_applying_ufunc(
+                inputs[0], function, method, factor, **kwargs
+            )
+
+        if function in __ufunc_list_unit_independent__:
+            return _get_new_csdm_object_after_applying_ufunc(
+                inputs[0], function, method, **kwargs
+            )
+
+        if function in __ufunc_list_applies_to_unit__:
+            obj = _get_new_csdm_object_after_applying_ufunc(
+                inputs[0], function, method, **kwargs
+            )
+            for i, variable in enumerate(obj.dependent_variables):
+                scalar = function(1 * variable.unit)
+                variable.components *= scalar.value
+                variable.subtype._unit = scalar.unit
+            return obj
+
+        raise NotImplementedError(f"Function {function} is not implemented.")
+
+    def __array_function__(self, function, types, *args, **kwargs):
+        # print(types,)
+        # print(kwargs)
+        # print(function)
+        # print(args)
+        if function in __function_reduction_list__:
+            return _get_new_csdm_object_after_dimension_reduction_func(
+                function, *args[0], **args[1], **kwargs
+            )
+        if function in __other_functions__:
+            return _get_new_csdm_object_after_applying_function(
+                function, *args[0], **args[1], **kwargs
+            )
+        raise NotImplementedError(f"Function {function.__name__} is not implemented.")
+
+
+def _get_broadcast_shape(array, ndim, axis):
+    """Return the broadcast array for numpy ndarray operations."""
+    s = [None for i in range(ndim)]
+    s[axis] = slice(None, None, None)
+    return array[tuple(s)]
+
+
+def _check_dimension_indices(d, index=-1):
+    """
+        Check the list of indexes to ensure that each index is an integer
+        and within the counts of dimensions.
+    """
+
+    index = deepcopy(index)
+
+    def _correct_index(i, d):
+        if not isinstance(i, int):
+            raise TypeError(f"{message}, found {type(i)}")
+        if i < 0:
+            i += d
+        if i > d:
+            raise IndexError(
+                f"The `index` {index} cannot be greater than the total number of "
+                f"dimensions - 1, {d}."
+            )
+        return -1 - i
+
+    message = "Index/Indices are expected as integer(s)"
+
+    if isinstance(index, tuple):
+        index = list(index)
+
+    if isinstance(index, (list, np.ndarray)):
+        for i, item in enumerate(index):
+            index[i] = _correct_index(item, d)
+        return tuple(index)
+
+    elif isinstance(index, int):
+        return tuple([_correct_index(index, d)])
+
+    else:
+        raise TypeError(f"{message}, found {type(index)}")
+
+
+def _get_new_csdm_object_after_applying_ufunc(
+    csdm, func, method=None, factor=None, **kwargs
+):
+    """
+    Perform the operation, func, on the components of the dependent variables, and
+    return the corresponding CSDM object.
+    """
+    if factor is None:
+        factor = np.ones(len(csdm.dependent_variables))
+    axis = kwargs.get("axis", None)
+    if axis is not None:
+        kwargs["axis"] = _check_dimension_indices(len(csdm.dimensions), axis)
+    new = CSDM()
+
+    print(kwargs)
+    for i, variable in enumerate(csdm.dependent_variables):
+        y = func(variable.components * factor[i], **kwargs)
+
+        new_dependent_variable = {
+            "type": variable.type,
+            "description": variable.description,
+            "name": variable.name,
+            "unit": variable.unit,
+            "quantity_name": variable.quantity_name,
+            "component_labels": variable.component_labels,
+            "encoding": variable.encoding,
+            "numeric_type": str(y.dtype),
+            "quantity_type": variable.quantity_type,
+            "components": y,
+            "application": variable.application,
+        }
+        new.add_dependent_variable(new_dependent_variable)
+
+    # if method == "reduce":
+    #     for i, variable in enumerate(csdm.dimensions):
+    #         if -1 - i not in kwargs["axis"]:
+    #             new.add_dimension(variable.copy())
+    # else:
+    new._dimensions = deepcopy(csdm.dimensions)
+    # for i, variable in enumerate(csdm.dimensions):
+    #     new.add_dimension(variable.copy())
+    return new
+
+
+def _get_new_csdm_object_after_applying_function(func, *args, **kwargs):
+    """
+    Perform the operation, func, on the components of the dependent variables, and
+    return the corresponding CSDM object.
+    """
+    args_ = []
+    if args is not ():
+        csdm = args[0]
+        if len(args) > 1:
+            args_ = args[1:]
+    if "a" in kwargs.keys():
+        csdm = kwargs["a"]
+        kwargs.pop("a")
+
+    new = CSDM()
+    for variable in csdm.dependent_variables:
+        y = func(variable.components, *args_, **kwargs)
+
+        new_dependent_variable = {
+            "type": variable.type,
+            "description": variable.description,
+            "name": variable.name,
+            "unit": variable.unit,
+            "quantity_name": variable.quantity_name,
+            "component_labels": variable.component_labels,
+            "encoding": variable.encoding,
+            "numeric_type": str(y.dtype),
+            "quantity_type": variable.quantity_type,
+            "components": y,
+            "application": variable.application,
+        }
+        new.add_dependent_variable(new_dependent_variable)
+
+    new._dimensions = deepcopy(csdm.dimensions)
+    # for variable in csdm.dimensions:
+    #     new.add_dimension(variable.copy())
+    return new
+
+
+def _get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
+    """
+    Perform the operation, func, on the components of the dependent variables, and
+    return the corresponding CSDM object.
+    """
+    index = _check_dimension_indices(len(csdm.dimensions), index)
+
+    quantity = string_to_quantity(arg)
+
+    apodization_vector_nd = 1
+    for i in index:
+        dimension_coordinates = csdm.dimensions[-i - 1].coordinates
+        function_arguments = quantity * dimension_coordinates
+
+        if function_arguments.unit.physical_type != "dimensionless":
+            raise ValueError(
+                f"The value of the argument, `arg`, must have the dimensionality "
+                f"`1/{dimension_coordinates.unit.physical_type}`, instead found "
+                f"`{quantity.unit.physical_type}`."
+            )
+        apodization_vector = func(function_arguments.to("").value)
+
+        apodization_vector_1d = _get_broadcast_shape(
+            apodization_vector, len(csdm.dimensions), i
+        )
+        apodization_vector_nd = apodization_vector_nd * apodization_vector_1d
+
+    new = CSDM()
+
+    for variable in csdm.dependent_variables:
+        y = variable.components * apodization_vector_nd
+        new_dependent_variable = {
+            "type": variable.type,
+            "description": variable.description,
+            "name": variable.name,
+            "unit": variable.unit,
+            "quantity_name": variable.quantity_name,
+            "component_labels": variable.component_labels,
+            "encoding": variable.encoding,
+            "numeric_type": str(y.dtype),
+            "quantity_type": variable.quantity_type,
+            "components": y,
+            "application": variable.application,
+        }
+        new.add_dependent_variable(new_dependent_variable)
+
+    new._dimensions = deepcopy(csdm.dimensions)
+    # for i, variable in enumerate(self.dimensions):
+    #     new.add_dimension(variable.copy())
+    return new
+
+
+def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
+    """
+    Perform the operation, func, on the components of the dependent variables, and
+    return the corresponding CSDM object.
+    """
+    axis = None
+    args_ = []
+    if args is not ():
+        csdm = args[0]
+        args_ = list(args[1:])
+        if len(args) > 1:
+            args_[0] = _check_dimension_indices(len(csdm.dimensions), args[1])
+            axis = args_[0]
+    if "a" in kwargs.keys():
+        csdm = kwargs["a"]
+        kwargs.pop("a")
+    if "axis" in kwargs.keys():
+        if kwargs["axis"] is not None:
+            axis = _check_dimension_indices(len(csdm.dimensions), kwargs["axis"])
+            kwargs["axis"] = axis
+
+    new = CSDM()
+    lst = []
+    for variable in csdm.dependent_variables:
+        y = func(variable.components, *args_, **kwargs)
+
+        if axis is not None:
+            new_dependent_variable = {
+                "type": variable.type,
+                "description": variable.description,
+                "name": variable.name,
+                "unit": variable.unit,
+                "quantity_name": variable.quantity_name,
+                "component_labels": variable.component_labels,
+                "encoding": variable.encoding,
+                "numeric_type": str(y.dtype),
+                "quantity_type": variable.quantity_type,
+                "components": y,
+                "application": variable.application,
+            }
+            new.add_dependent_variable(new_dependent_variable)
+        else:
+            lst.append(y)
+
+    if axis is None:
+        del new
+        return lst
+
+    for i, variable in enumerate(csdm.dimensions):
+        if -1 - i not in axis:
+            new.add_dimension(variable.copy())
+    return new

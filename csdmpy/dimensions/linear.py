@@ -83,10 +83,6 @@ class LinearDimension(BaseQuantitativeDimension):
         )
         self._get_coordinates()
 
-    # ----------------------------------------------------------------------- #
-    #                                  Methods                                #
-    # ----------------------------------------------------------------------- #
-
     def __repr__(self):
         properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
         return f"LinearDimension({properties})"
@@ -163,33 +159,6 @@ class LinearDimension(BaseQuantitativeDimension):
 
         self._coordinates = _index * _increment
 
-    def to_dict(self):
-        """Return LinearDimension as a python dictionary."""
-        obj = {}
-        obj["type"] = self.__class__._type
-
-        if self._description.strip() != "":
-            obj["description"] = self._description.strip()
-
-        obj["count"] = self._count
-        obj["increment"] = ScalarQuantity(self.increment).format()
-        obj.update(self._get_quantitative_dictionary())
-
-        if self.complex_fft:
-            obj["complex_fft"] = True
-
-        # reciprocal dictionary
-        reciprocal_obj = {}
-        if self.reciprocal._description.strip() != "":
-            reciprocal_obj["description"] = self.reciprocal._description
-        reciprocal_obj.update(self.reciprocal._get_quantitative_dictionary())
-        if reciprocal_obj == {}:
-            del reciprocal_obj
-        else:
-            obj["reciprocal"] = reciprocal_obj
-
-        return obj
-
     # ----------------------------------------------------------------------- #
     #                                  Attributes                             #
     # ----------------------------------------------------------------------- #
@@ -258,3 +227,37 @@ class LinearDimension(BaseQuantitativeDimension):
     def absolute_coordinates(self):
         """Return the absolute coordinates along the dimensions."""
         return (self.coordinates + self.origin_offset).to(self._unit)
+
+    # ----------------------------------------------------------------------- #
+    #                                 Methods                                 #
+    # ----------------------------------------------------------------------- #
+    def to_dict(self):
+        """Return LinearDimension as a python dictionary."""
+        obj = {}
+        obj["type"] = self.__class__._type
+
+        if self._description.strip() != "":
+            obj["description"] = self._description.strip()
+
+        obj["count"] = self._count
+        obj["increment"] = ScalarQuantity(self.increment).format()
+        obj.update(self._to_dict())
+
+        if self.complex_fft:
+            obj["complex_fft"] = True
+
+        # reciprocal dictionary
+        reciprocal_obj = {}
+        if self.reciprocal._description.strip() != "":
+            reciprocal_obj["description"] = self.reciprocal._description
+        reciprocal_obj.update(self.reciprocal._to_dict())
+        if reciprocal_obj == {}:
+            del reciprocal_obj
+        else:
+            obj["reciprocal"] = reciprocal_obj
+
+        return obj
+
+    def copy(self):
+        """Return a copy of the object."""
+        return deepcopy(self)

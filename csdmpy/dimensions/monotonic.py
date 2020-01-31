@@ -19,7 +19,7 @@ __email__ = "srivastava.89@osu.edu"
 __all__ = ["MonotonicDimension"]
 
 # =========================================================================== #
-#                     ArbitrarilySampledDimension Class                       #
+#                     MonotonicDimension Class                       #
 # =========================================================================== #
 
 
@@ -70,7 +70,7 @@ class MonotonicDimension(BaseQuantitativeDimension):
                 "description": "",
                 "application": {},
             }
-        super(MonotonicDimension, self).__init__(unit=_unit, **kwargs)
+        super().__init__(unit=_unit, **kwargs)
 
         _reciprocal_unit = self._unit ** -1
         self.reciprocal = ReciprocalVariable(
@@ -102,10 +102,6 @@ class MonotonicDimension(BaseQuantitativeDimension):
             return True
         return False
 
-    # ----------------------------------------------------------------------- #
-    #                                 Methods                                 #
-    # ----------------------------------------------------------------------- #
-
     def _get_coordinates(self, values):
         _unit = self._unit
         _value = [
@@ -115,29 +111,6 @@ class MonotonicDimension(BaseQuantitativeDimension):
         self._count = _value.size
         self._values = values
         self._coordinates = _value
-
-    def to_dict(self):
-        """Return MonotonicDimension as a python dictionary."""
-        dictionary = {}
-
-        dictionary["type"] = self.__class__._type
-
-        if self._description.strip() != "":
-            dictionary["description"] = self._description.strip()
-
-        dictionary["coordinates"] = self._values
-        dictionary.update(self._get_quantitative_dictionary())
-
-        reciprocal_dictionary = {}
-        if self.reciprocal._description.strip() != "":
-            reciprocal_dictionary["description"] = self.reciprocal._description.strip()
-        reciprocal_dictionary.update(self.reciprocal._get_quantitative_dictionary())
-        if reciprocal_dictionary == {}:
-            del reciprocal_dictionary
-        else:
-            dictionary["reciprocal"] = reciprocal_dictionary
-
-        return dictionary
 
     # ----------------------------------------------------------------------- #
     #                                 Attributes                              #
@@ -185,3 +158,34 @@ class MonotonicDimension(BaseQuantitativeDimension):
     def absolute_coordinates(self):
         """Return the absolute coordinates along the dimensions."""
         return (self.coordinates + self.origin_offset).to(self._unit)
+
+    # ----------------------------------------------------------------------- #
+    #                                 Methods                                 #
+    # ----------------------------------------------------------------------- #
+
+    def to_dict(self):
+        """Return MonotonicDimension as a python dictionary."""
+        dictionary = {}
+
+        dictionary["type"] = self.__class__._type
+
+        if self._description.strip() != "":
+            dictionary["description"] = self._description.strip()
+
+        dictionary["coordinates"] = self._values
+        dictionary.update(self._to_dict())
+
+        reciprocal_dictionary = {}
+        if self.reciprocal._description.strip() != "":
+            reciprocal_dictionary["description"] = self.reciprocal._description.strip()
+        reciprocal_dictionary.update(self.reciprocal._to_dict())
+        if reciprocal_dictionary == {}:
+            del reciprocal_dictionary
+        else:
+            dictionary["reciprocal"] = reciprocal_dictionary
+
+        return dictionary
+
+    def copy(self):
+        """Return a copy of the object."""
+        return deepcopy(self)

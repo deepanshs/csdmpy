@@ -15,8 +15,8 @@ from csdmpy.dimensions import LinearDimension
 from csdmpy.dimensions import MonotonicDimension
 from csdmpy.helper_functions import _preview
 from csdmpy.numpy_wrapper import apodize
-from csdmpy.numpy_wrapper.dimension_reduction import *
-from csdmpy.numpy_wrapper.element_wise_operation import *
+from csdmpy.units import ScalarQuantity
+from csdmpy.units import string_to_quantity
 from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"

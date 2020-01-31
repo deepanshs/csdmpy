@@ -69,7 +69,8 @@ class BaseDependentVariable:
     def __eq__(self, other):
         """Overrides the default implementation"""
         check = [
-            self.name == other.name.self._unit == other._unit,
+            self.name == other.name,
+            self._unit == other._unit,
             self._quantity_name == other._quantity_name,
             self._encoding == other._encoding,
             self._numeric_type == other._numeric_type,

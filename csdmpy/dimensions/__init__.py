@@ -264,7 +264,7 @@ class Dimension:
         Returns:
             A python dictionary containing dimension application metadata.
         """
-        return self.subtype._application
+        return self.subtype.application
 
     @application.setter
     def application(self, value):
@@ -556,24 +556,6 @@ class Dimension:
     @count.setter
     def count(self, value):
         self.subtype.count = value
-        # value = validate(value, "count", int)
-
-        # if self.type in functional_dimension:
-        #     self.subtype._count = value
-        #     self.subtype._get_coordinates()
-        #     return
-
-        # if value > self.count:
-        #     raise ValueError(
-        #         f"Cannot set the count, {value}, more than the number of coordinates, "
-        #         f"{self.count}, for the monotonic and labeled dimensions."
-        #     )
-
-        # if value < self.count:
-        #     warnings.warn(
-        #         f"The number of coordinates, {self.count}, are truncated to {value}."
-        #     )
-        #     self.subtype._count = value
 
     @property
     def origin_offset(self):

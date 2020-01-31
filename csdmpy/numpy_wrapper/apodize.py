@@ -17,9 +17,10 @@ The list of supported functions are:
 """
 import numpy as np
 
-from csdmpy.numpy_wrapper import _get_new_csdm_object_after_apodization
+from csdmpy.csdm import _get_new_csdm_object_after_apodization
 
 __all__ = ("sin", "cos", "tan", "arcsin", "arccos", "arctan", "exp")
+
 
 # Trigonometric functions
 
