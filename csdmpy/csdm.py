@@ -188,7 +188,9 @@ class CSDM:
             )
 
     def __check_dependent_variable_len_equality(self, other):
-        """Check if the length of dependent variables from the two csdm objects is same."""
+        """
+        Check if the length of dependent variables from the two csdm objects is equal.
+        """
         if len(self.dependent_variables) != len(other.dependent_variables):
             raise Exception(
                 "Cannot operate on CSDM objects with differnet lengths of "
@@ -196,7 +198,10 @@ class CSDM:
             )
 
     def __check_dependent_variable_dimensionality(self, other):
-        """Check if the dependent variables from the two csdm objects have the same dimensionality."""
+        """
+        Check if the dependent variables from the two csdm objects have the same
+        dimensionality.
+        """
         for v1, v2 in zip(self.dependent_variables, other.dependent_variables):
             if v1.unit.physical_type != v2.unit.physical_type:
                 raise Exception(
@@ -762,7 +767,17 @@ class CSDM:
 
         Example:
             >>> data.to_dict()
-            {'csdm': {'version': '1.0', 'timestamp': '1994-11-05T13:15:30Z', 'geographic_coordinate': {'latitude': '10 deg', 'longitude': '93.2 deg', 'altitude': '10 m'}, 'description': 'A simulated sine curve.', 'dimensions': [{'type': 'linear', 'description': 'A temporal dimension.', 'count': 10, 'increment': '0.1 s', 'quantity_name': 'time', 'label': 'time', 'reciprocal': {'quantity_name': 'frequency'}}], 'dependent_variables': [{'type': 'internal', 'description': 'A response dependent variable.', 'name': 'sine curve', 'encoding': 'base64', 'numeric_type': 'float32', 'quantity_type': 'scalar', 'component_labels': ['response'], 'components': ['AAAAABh5Fj9xeHM/cXhzPxh5Fj8yMQ0lGHkWv3F4c79xeHO/GHkWvw==']}]}}
+            {'csdm': {'version': '1.0', 'timestamp': '1994-11-05T13:15:30Z',
+            'geographic_coordinate': {'latitude': '10 deg', 'longitude': '93.2 deg',
+            'altitude': '10 m'}, 'description': 'A simulated sine curve.',
+            'dimensions': [{'type': 'linear', 'description': 'A temporal dimension.',
+            'count': 10, 'increment': '0.1 s', 'quantity_name': 'time',
+            'label': 'time', 'reciprocal': {'quantity_name': 'frequency'}}],
+            'dependent_variables': [{'type': 'internal',
+            'description': 'A response dependent variable.', 'name': 'sine curve',
+            'encoding': 'base64', 'numeric_type': 'float32', 'quantity_type': 'scalar',
+            'component_labels': ['response'],
+            'components': ['AAAAABh5Fj9xeHM/cXhzPxh5Fj8yMQ0lGHkWv3F4c79xeHO/GHkWvw==']}]}}
         """
         return self._to_dict()
 

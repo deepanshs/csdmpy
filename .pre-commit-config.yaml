@@ -21,9 +21,9 @@ repos:
         language: python
         language_version: python3.7
 
-  # -   repo: https://github.com/pre-commit/pygrep-hooks
-  #     rev: v1.4.0
-  #     hooks:
+  # - repo: https://github.com/pre-commit/pygrep-hooks
+  #   rev: v1.4.0
+  #   hooks:
   #     - id: python-no-log-warn
   #       language: python
   #     - id: python-no-eval
@@ -37,8 +37,8 @@ repos:
       - id: check-yaml
         language: python
       - id: check-added-large-files
-        #   language: python
-        # - id: fix-encoding-pragma
+        language: python
+      - id: fix-encoding-pragma
         language: python
       - id: check-docstring-first
         language: python

@@ -159,15 +159,17 @@ class Dimension:
         return LinearDimension(**default)
 
     def __repr__(self):
+        """String representation of object."""
         properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
         return f"Dimension({properties})"
 
     def __str__(self):
+        """String representation of object."""
         properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
         return f"Dimension({properties})"
 
     def __eq__(self, other):
-        """Overrides the default implementation"""
+        """Overrides the default implementation."""
         if isinstance(other, Dimension):
             if self.subtype == other.subtype:
                 return True
@@ -745,7 +747,10 @@ class Dimension:
 
         Example:
             >>> x.to_dict()
-            {'type': 'linear', 'description': 'This is a test', 'count': 10, 'increment': '5.0 G', 'coordinates_offset': '10.0 mT', 'origin_offset': '10.0 T', 'quantity_name': 'magnetic flux density', 'label': 'field strength'}
+            {'type': 'linear', 'description': 'This is a test', 'count': 10,
+            'increment': '5.0 G', 'coordinates_offset': '10.0 mT',
+            'origin_offset': '10.0 T', 'quantity_name': 'magnetic flux density',
+            'label': 'field strength'}
         """
         return self.subtype.to_dict()
 

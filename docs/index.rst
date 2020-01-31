@@ -7,6 +7,7 @@ Welcome to csdmpy's documentation!
 
     .. image:: https://travis-ci.org/DeepanshS/csdmpy.svg?branch=master
         :target: https://travis-ci.org/DeepanshS/csdmpy
+        :alt: Build Status
 
     .. image:: https://readthedocs.org/projects/csdmpy/badge/?version=stable
         :target: https://csdmpy.readthedocs.io/en/stable/?badge=stable
@@ -14,15 +15,18 @@ Welcome to csdmpy's documentation!
 
     .. image:: https://img.shields.io/badge/License-BSD%203--Clause-blue.svg
         :target: https://opensource.org/licenses/BSD-3-Clause
+        :alt: License
 
     .. image:: https://img.shields.io/github/issues-raw/deepanshs/csdmpy
+        :target: https://github.com/DeepanshS/csdmpy/issues
         :alt: GitHub issues
-
-    .. image:: https://img.shields.io/github/release-pre/deepanshs/csdmpy
-        :alt: GitHub release
 
     .. image:: https://badge.fury.io/py/csdmpy.svg
         :target: https://badge.fury.io/py/csdmpy
+
+    .. image:: https://img.shields.io/pypi/dm/csdmpy.svg
+        :target: https://img.shields.io/pypi/dm/csdmpy
+        :alt: PyPI - Downloads
 
     .. image:: https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18
         :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/
@@ -34,6 +38,9 @@ Welcome to csdmpy's documentation!
 
     .. image:: https://codecov.io/gh/DeepanshS/csdmpy/branch/master/graph/badge.svg
         :target: https://codecov.io/gh/DeepanshS/csdmpy
+
+.. .. image:: https://img.shields.io/github/release-pre/deepanshs/csdmpy
+..     :alt: GitHub release
 
 ----
 
@@ -53,24 +60,26 @@ compatible with Numpy.
 
 ----
 
-.. only:: latex
+    .. only:: latex
 
-    **The sample CSDM compliant files used in this documentation are available**
-    `online <https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u>`_.
+        **The sample CSDM compliant files used in this documentation are available**
+        `online <https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u>`_.
 
-.. only:: html
+    .. only:: html
 
-    **The sample CSDM compliant files used in this documentation are available online.**
+        **The sample CSDM compliant files used in this documentation are available online.**
 
-    .. image:: https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet?size=large
-        :target: https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u
+        .. image:: https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet?size=large
+            :target: https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u
 
 ----
 
-.. only:: html
+    .. only:: html
 
-    .. image:: https://img.shields.io/badge/View-Example%20Gallery-Purple?size=large
-        :target: auto_examples/index.html
+        **View the examples gallery**
+
+        .. image:: https://img.shields.io/badge/View-Example%20Gallery-Purple?size=large
+            :target: auto_examples/index.html
 
 ----
 

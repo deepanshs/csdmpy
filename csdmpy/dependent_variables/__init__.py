@@ -335,7 +335,8 @@ class DependentVariable:
             ...     y.components = np.random.rand(1,10).astype('u1')
             ... except ValueError as e:
             ...     print(e)
-            The shape of the `ndarray`, `(1, 10)`, is inconsistent with the shape of the components array, `(3, 10)`.
+            The shape of the `ndarray`, `(1, 10)`, is inconsistent with the
+            shape of the components array, `(3, 10)`.
 
         a `ValueError` is raised because the shape of the input array (1, 10)
         is not consistent with the shape of the components array, (3, 10).
@@ -740,7 +741,12 @@ class DependentVariable:
 
         Example:
             >>> y.to_dict()
-            {'type': 'internal', 'description': 'A test image', 'name': 'star', 'unit': 's * W', 'quantity_name': 'energy', 'encoding': 'none', 'numeric_type': 'float32', 'quantity_type': 'pixel_3', 'components': [[0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0], [10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0], [20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0]]}
+            {'type': 'internal', 'description': 'A test image', 'name': 'star',
+            'unit': 's * W', 'quantity_name': 'energy', 'encoding': 'none',
+            'numeric_type': 'float32', 'quantity_type': 'pixel_3',
+            'components': [[0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0],
+            [10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0],
+            [20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0]]}
         """
         return self.subtype.to_dict()
 

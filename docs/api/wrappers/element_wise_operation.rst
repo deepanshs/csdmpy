@@ -13,35 +13,92 @@ variables from a given `csdm` object, `x`.
 .. rubric:: Trigonometric functions
 
 The trigonometric functions apply to the components of the dependent
-variables from a csdm object, where the components are dimensionless quantity.
+variables from a csdm object.
 
-- `sin <https://docs.scipy.org/doc/numpy/reference/generated/numpy.sin.html#numpy.sin>`_
-- `cos <https://docs.scipy.org/doc/numpy/reference/generated/numpy.cos.html#numpy.cos>`_
-- `tan <https://docs.scipy.org/doc/numpy/reference/generated/numpy.tan.html#numpy.tan>`_
-- `arcsin <https://docs.scipy.org/doc/numpy/reference/generated/numpy.arcsin.html#numpy.arcsin>`_
-- `arccos <https://docs.scipy.org/doc/numpy/reference/generated/numpy.arccos.html#numpy.arccos>`_
-- `arctan <https://docs.scipy.org/doc/numpy/reference/generated/numpy.arctan.html#numpy.arctan>`_
+.. note:: The components must be dimensionless quantities.
 
-- `sinh <https://docs.scipy.org/doc/numpy/reference/generated/numpy.sinh.html#numpy.sinh>`_
-- `cosh <https://docs.scipy.org/doc/numpy/reference/generated/numpy.cosh.html#numpy.cosh>`_
-- `tanh <https://docs.scipy.org/doc/numpy/reference/generated/numpy.tanh.html#numpy.tanh>`_
-- `arcsinh <https://docs.scipy.org/doc/numpy/reference/generated/numpy.arcsinh.html#numpy.arcsinh>`_
-- `arccosh <https://docs.scipy.org/doc/numpy/reference/generated/numpy.arccosh.html#numpy.arccosh>`_
-- `arctanh <https://docs.scipy.org/doc/numpy/reference/generated/numpy.arctanh.html#numpy.arctanh>`_
+.. cssclass:: table-bordered table-striped centered
+
+.. list-table:: A list of supported trigonometric functions.
+  :widths: 25 75
+  :header-rows: 1
+
+  * - Functions
+    - Description
+
+  * - `sin <https://docs.scipy.org/doc/numpy/reference/generated/numpy.sin.html#numpy.sin>`_
+    - Apply sine to the components of the dependent variables
+
+  * - `cos <https://docs.scipy.org/doc/numpy/reference/generated/numpy.cos.html#numpy.cos>`_
+    - Apply cosine to the components of the dependent variables
+
+  * - `tan <https://docs.scipy.org/doc/numpy/reference/generated/numpy.tan.html#numpy.tan>`_
+    - Apply tangent to the components of the dependent variables
+
+  * - `arcsin <https://docs.scipy.org/doc/numpy/reference/generated/numpy.arcsin.html#numpy.arcsin>`_
+    - Apply inverse sine to the components of the dependent variables
+
+  * - `arccos <https://docs.scipy.org/doc/numpy/reference/generated/numpy.arccos.html#numpy.arccos>`_
+    - Apply inverse cosine to the components of the dependent variables
+
+  * - `arctan <https://docs.scipy.org/doc/numpy/reference/generated/numpy.arctan.html#numpy.arctan>`_
+    - Apply inverse tangent to the components of the dependent variables
+
+
+  * - `sinh <https://docs.scipy.org/doc/numpy/reference/generated/numpy.sinh.html#numpy.sinh>`_
+    - Apply hyperbolic sine to the components of the dependent variables
+
+  * - `cosh <https://docs.scipy.org/doc/numpy/reference/generated/numpy.cosh.html#numpy.cosh>`_
+    - Apply hyperbolic cosine to the components of the dependent variables
+
+  * - `tanh <https://docs.scipy.org/doc/numpy/reference/generated/numpy.tanh.html#numpy.tanh>`_
+    - Apply hyperbolic tangent to the components of the dependent variables
+
+  * - `arcsinh <https://docs.scipy.org/doc/numpy/reference/generated/numpy.arcsinh.html#numpy.arcsinh>`_
+    - Apply inverse hyperbolic sine to the components of the dependent variables
+
+  * - `arccosh <https://docs.scipy.org/doc/numpy/reference/generated/numpy.arccosh.html#numpy.arccosh>`_
+    - Apply inverse hyperbolic cosine to the components of the dependent variables
+
+  * - `arctanh <https://docs.scipy.org/doc/numpy/reference/generated/numpy.arctanh.html#numpy.arctanh>`_
+    - Apply inverse hyperbolic tangent to the components of the dependent variables
 
 
 .. rubric:: Mathematical operations
 
 The following mathematical functions apply to the components of the dependent
-variables from a csdm object, where the components are dimensionless quantity.
+variables from a csdm object.
 
-- `exp <https://docs.scipy.org/doc/numpy/reference/generated/numpy.exp.html#numpy.exp>`_
-- `exp2 <https://docs.scipy.org/doc/numpy/reference/generated/numpy.exp2.html#numpy.exp2>`_
-- `log <https://docs.scipy.org/doc/numpy/reference/generated/numpy.log.html#numpy.log>`_
-- `log2 <https://docs.scipy.org/doc/numpy/reference/generated/numpy.log2.html#numpy.log2>`_
-- `log10 <https://docs.scipy.org/doc/numpy/reference/generated/numpy.log10.html#numpy.log10>`_
-- `expm1 <https://docs.scipy.org/doc/numpy/reference/generated/numpy.expm1.html#numpy.expm1>`_
-- `log1p <https://docs.scipy.org/doc/numpy/reference/generated/numpy.log1p.html#numpy.log1p>`_
+.. note:: The components must be dimensionless quantities.
+.. cssclass:: table-bordered table-striped centered
+.. list-table:: A list of supported mathematical functions.
+  :widths: 25 75
+  :header-rows: 1
+
+  * - Functions
+    - Description
+  * - `exp <https://docs.scipy.org/doc/numpy/reference/generated/numpy.exp.html#numpy.exp>`_
+    - Calculate the exponential of the components of the dependent variables.
+
+  * - `expm1 <https://docs.scipy.org/doc/numpy/reference/generated/numpy.expm1.html#numpy.expm1>`_
+    - Apply :math:`e^x - 1`, where `x` are the components of the dependent variables.
+
+  * - `exp2 <https://docs.scipy.org/doc/numpy/reference/generated/numpy.exp2.html#numpy.exp2>`_
+    - Calculate :math:`2^x`, where `x` are the components of the dependent variables.
+
+  * - `log <https://docs.scipy.org/doc/numpy/reference/generated/numpy.log.html#numpy.log>`_
+    - Calculate natural logarithm of the components of the dependent variables.
+
+  * - `log1p <https://docs.scipy.org/doc/numpy/reference/generated/numpy.log1p.html#numpy.log1p>`_
+    - Calculate natural logarithm plus one on the components of the dependent variables.
+
+  * - `log2 <https://docs.scipy.org/doc/numpy/reference/generated/numpy.log2.html#numpy.log2>`_
+    - Calculate base-2 logarithm of the components of the dependent variables.
+
+  * - `log10 <https://docs.scipy.org/doc/numpy/reference/generated/numpy.log10.html#numpy.log10>`_
+    - Calculate base-10 logarithm of the components of the dependent variables.
+
+
 
 The following mathematical functions apply to the components of the dependent
 variables from a csdm object irrespective of the components' dimensionality.
