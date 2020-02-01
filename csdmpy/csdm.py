@@ -766,7 +766,7 @@ class CSDM:
             version (str): Serialize the dict with the given csdm version.
 
         Example:
-            >>> data.to_dict()
+            >>> data.to_dict() # doctest: +SKIP
             {'csdm': {'version': '1.0', 'timestamp': '1994-11-05T13:15:30Z',
             'geographic_coordinate': {'latitude': '10 deg', 'longitude': '93.2 deg',
             'altitude': '10 m'}, 'description': 'A simulated sine curve.',
@@ -1111,6 +1111,7 @@ class CSDM:
         raise NotImplementedError("")
 
     def __array_ufunc__(self, function, method, *inputs, **kwargs):
+        # print("__array_ufunc__")
         csdm = inputs[0]
         print(method)
         if function in __ufunc_list_dimensionless_unit__:
@@ -1144,6 +1145,7 @@ class CSDM:
         raise NotImplementedError(f"Function {function} is not implemented.")
 
     def __array_function__(self, function, types, *args, **kwargs):
+        # print("__array_function__")
         # print(types,)
         # print(kwargs)
         # print(function)

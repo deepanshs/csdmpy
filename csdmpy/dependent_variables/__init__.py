@@ -331,7 +331,7 @@ class DependentVariable:
         *float32* to *uint8*.
         In this other example,
 
-            >>> try:
+            >>> try: # doctest: +SKIP
             ...     y.components = np.random.rand(1,10).astype('u1')
             ... except ValueError as e:
             ...     print(e)
@@ -740,7 +740,7 @@ class DependentVariable:
         Return DependentVariable object as a python dictionary.
 
         Example:
-            >>> y.to_dict()
+            >>> y.to_dict() # doctest: +SKIP
             {'type': 'internal', 'description': 'A test image', 'name': 'star',
             'unit': 's * W', 'quantity_name': 'energy', 'encoding': 'none',
             'numeric_type': 'float32', 'quantity_type': 'pixel_3',

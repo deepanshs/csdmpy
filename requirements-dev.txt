@@ -1,6 +1,6 @@
 
 # required
-numpy>=1.16
+numpy>=1.17
 setuptools>=27.3
 
 # for units

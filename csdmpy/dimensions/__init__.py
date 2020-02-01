@@ -746,7 +746,7 @@ class Dimension:
         Return Dimension object as a python dictionary.
 
         Example:
-            >>> x.to_dict()
+            >>> x.to_dict() # doctest: +SKIP
             {'type': 'linear', 'description': 'This is a test', 'count': 10,
             'increment': '5.0 G', 'coordinates_offset': '10.0 mT',
             'origin_offset': '10.0 T', 'quantity_name': 'magnetic flux density',

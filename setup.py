@@ -15,7 +15,7 @@ with open("csdmpy/__init__.py", "r") as f:
 
 # What packages are required for this module to be executed?
 required = [
-    "numpy>=1.16",
+    "numpy>=1.17",
     "setuptools>=27.3",
     "astropy>=3.0",
     "requests>=2.21.0",

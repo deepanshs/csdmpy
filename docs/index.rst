@@ -5,44 +5,63 @@ Welcome to csdmpy's documentation!
 
 .. only:: html
 
-    .. image:: https://travis-ci.org/DeepanshS/csdmpy.svg?branch=master
-        :target: https://travis-ci.org/DeepanshS/csdmpy
-        :alt: Build Status
+    .. cssclass:: table-bordered table-striped centered
 
-    .. image:: https://readthedocs.org/projects/csdmpy/badge/?version=stable
-        :target: https://csdmpy.readthedocs.io/en/stable/?badge=stable
-        :alt: Documentation Status
+    .. list-table::
+      :widths: 25 75
+      :header-rows: 0
 
-    .. image:: https://img.shields.io/badge/License-BSD%203--Clause-blue.svg
-        :target: https://opensource.org/licenses/BSD-3-Clause
-        :alt: License
+      * - Deployment
+        - .. image:: https://img.shields.io/pypi/v/csdmpy.svg?style=flat&logo=pypi&logoColor=white
+            :target: https://pypi.python.org/pypi/csdmpy
+            :alt: PyPI version
 
-    .. image:: https://img.shields.io/github/issues-raw/deepanshs/csdmpy
-        :target: https://github.com/DeepanshS/csdmpy/issues
-        :alt: GitHub issues
+      * - Build Status
+        - .. image:: https://travis-ci.org/DeepanshS/csdmpy.svg?style=flat&logo=travis&color=white
+              :target: https://travis-ci.org/DeepanshS/csdmpy
+              :alt: Build Status
 
-    .. image:: https://badge.fury.io/py/csdmpy.svg
-        :target: https://badge.fury.io/py/csdmpy
+          .. image:: https://readthedocs.org/projects/csdmpy/badge/?version=stable
+              :target: https://csdmpy.readthedocs.io/en/stable/?badge=stable
+              :alt: Documentation Status
 
-    .. image:: https://img.shields.io/pypi/dm/csdmpy.svg
-        :target: https://img.shields.io/pypi/dm/csdmpy
-        :alt: PyPI - Downloads
+      * - License
+        - .. image:: https://img.shields.io/badge/License-BSD%203--Clause-blue.svg
+              :target: https://opensource.org/licenses/BSD-3-Clause
+              :alt: License
 
-    .. image:: https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18
-        :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/
-        :alt: Total alerts
+      * - Metrics
+        - .. image:: https://img.shields.io/pypi/dm/csdmpy.svg
+              :target: https://img.shields.io/pypi/dm/csdmpy
+              :alt: PyPI - Downloads
 
-    .. image:: https://img.shields.io/lgtm/grade/python/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18
-        :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/context:python
-        :alt: Language grade: Python
+          .. image:: https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18
+              :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/
+              :alt: Total alerts
 
-    .. image:: https://codecov.io/gh/DeepanshS/csdmpy/branch/master/graph/badge.svg
-        :target: https://codecov.io/gh/DeepanshS/csdmpy
+          .. image:: https://img.shields.io/lgtm/grade/python/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18
+              :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/context:python
+              :alt: Language grade: Python
+
+          .. image:: https://codecov.io/gh/DeepanshS/csdmpy/branch/master/graph/badge.svg
+              :target: https://codecov.io/gh/DeepanshS/csdmpy
+
+      * - GitHub
+        - .. image:: https://img.shields.io/github/issues-raw/deepanshs/csdmpy
+              :target: https://github.com/DeepanshS/csdmpy/issues
+              :alt: GitHub issues
+
+.. .. image:: https://img.shields.io/github/contributors/DeepanshS/csdmpy.svg?style=flat&logo=github
+..     :target: https://github.com/DeepanshS/csdmpy/graphs/contributors
+..     :alt: GitHub contributors
 
 .. .. image:: https://img.shields.io/github/release-pre/deepanshs/csdmpy
 ..     :alt: GitHub release
 
 ----
+
+About
+^^^^^
 
 The `csdmpy` package is the Python support for the core scientific
 dataset (CSD) model file exchange-format [#f10]_.

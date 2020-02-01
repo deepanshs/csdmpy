@@ -15,6 +15,7 @@ from csdmpy.dimensions import LinearDimension
 from csdmpy.dimensions import MonotonicDimension
 from csdmpy.helper_functions import _preview
 from csdmpy.numpy_wrapper import apodize
+from csdmpy.tests import *
 from csdmpy.units import ScalarQuantity
 from csdmpy.units import string_to_quantity
 from csdmpy.utils import validate
