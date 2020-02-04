@@ -1,23 +1,23 @@
 
 
-.. _linear_dimension_api:
+.. .. _linear_dimension_api:
 
----------------
-LinearDimension
----------------
+.. ---------------
+.. LinearDimension
+.. ---------------
 
-.. currentmodule:: csdmpy.dimensions.linear
+.. .. currentmodule:: csdmpy.dimensions.linear
 
-.. autoclass:: LinearDimension
-    :show-inheritance:
+.. .. autoclass:: LinearDimension
+..     :show-inheritance:
 
-    .. rubric:: Attributes Summary
+..     .. rubric:: Attributes Summary
 
-    .. autosummary::
-        ~LinearDimension.increment
-        ~LinearDimension.complex_fft
+..     .. autosummary::
+..         ~LinearDimension.increment
+..         ~LinearDimension.complex_fft
 
-    .. rubric:: Attributes Documentation
+..     .. rubric:: Attributes Documentation
 
-    .. autoattribute:: increment
-    .. autoattribute:: complex_fft
+..     .. autoattribute:: increment
+..     .. autoattribute:: complex_fft

@@ -3,6 +3,7 @@
 from __future__ import print_function
 
 import numpy as np
+from astropy.units.quantity import Quantity
 
 from csdmpy.units import ScalarQuantity
 
@@ -314,3 +315,24 @@ def check_and_assign_bool(element):
     if element is None:
         return False
     return validate(element, "boolean", bool)
+
+
+def check_scalar_object(other):
+    """Check if the object is scalar:
+        int, float, complex, np.ndarray, Quantity, or ScalarQuantity.
+        Returns: The other object.
+    """
+    if not isinstance(
+        other, (int, float, complex, np.ndarray, Quantity, ScalarQuantity)
+    ):
+        raise TypeError(
+            f"unsupported operand type(s): 'CSDM' and " f"'{other.__class__.__name__}'."
+        )
+    if isinstance(other, np.ndarray):
+        if other.ndim != 0:
+            raise ValueError("Only scalar multiplication or division is allowed.")
+
+    if isinstance(other, ScalarQuantity):
+        return other.quantity
+
+    return other

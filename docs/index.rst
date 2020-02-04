@@ -111,6 +111,7 @@ compatible with Numpy.
     getting_started
     auto_examples/index
     startFromScratch/start
+    interacting_with_objects
     referenceAPI
 
 .. examples/examples

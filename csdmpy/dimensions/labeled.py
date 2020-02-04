@@ -18,7 +18,11 @@ __all__ = ["LabeledDimension"]
 
 
 class LabeledDimension(BaseDimension):
-    """A labeled dimension."""
+    """A labeled dimension.
+
+    Generates an object representing a non-physical dimension whose coordinates are
+    labels. See :ref:`labeledDimension_uml` for details.
+    """
 
     __slots__ = ("_count", "_labels")
 
@@ -31,11 +35,11 @@ class LabeledDimension(BaseDimension):
 
     def __repr__(self):
         properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
-        return f"Dimension({properties})"
+        return f"LabeledDimension({properties})"
 
     def __str__(self):
-        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
-        return f"Dimension({properties})"
+        # properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
+        return f"LabeledDimension({self.coordinates.__str__()})"
 
     def __eq__(self, other):
         """Overrides the default implementation"""
@@ -69,7 +73,7 @@ class LabeledDimension(BaseDimension):
 
     @property
     def count(self):
-        r"""Total number of points along the linear dimension."""
+        r"""Total number of labels along the dimension."""
         return deepcopy(self._count)
 
     @count.setter
@@ -78,12 +82,12 @@ class LabeledDimension(BaseDimension):
         if value > self.count:
             raise ValueError(
                 f"Cannot set the count, {value}, more than the number of coordinates, "
-                f"{self.count}, for the monotonic and labeled dimensions."
+                f"{self.count}, for the labeled dimensions."
             )
 
         if value < self.count:
             warnings.warn(
-                f"The number of coordinates, {self.count}, are truncated to {value}."
+                f"The number of labels, {self.count}, are truncated to {value}."
             )
             self._count = value
 
@@ -110,7 +114,7 @@ class LabeledDimension(BaseDimension):
 
     @property
     def coordinates(self):
-        """Return the coordinates along the dimensions."""
+        """Return the coordinates along the dimensions. This is an alias for labels."""
         n = self._count
         return self.labels[:n]
 
@@ -118,12 +122,17 @@ class LabeledDimension(BaseDimension):
     def coordinates(self, value):
         self.labels = value
 
+    @property
+    def axis_label(self):
+        """Return a formatted string for displaying label along the dimension axis."""
+        return self.label
+
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
     # ----------------------------------------------------------------------- #
 
     def to_dict(self):
-        """Return LabeledDimension as a python dictionary."""
+        """Return the LabeledDimension as a python dictionary."""
         dictionary = {}
         dictionary["type"] = self._type
         if self._description.strip() != "":

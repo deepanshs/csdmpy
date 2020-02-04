@@ -2,12 +2,20 @@
 
 .. _dim_api:
 
-----------
+---------
 Dimension
-----------
+---------
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Dimension subtypes
+
+    dimension/linear
+    dimension/monotonic
+    dimension/labeled
+
 
 .. currentmodule:: csdmpy
-
 
 .. autoclass:: Dimension
     :show-inheritance:

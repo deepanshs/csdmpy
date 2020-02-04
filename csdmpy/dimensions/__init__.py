@@ -788,9 +788,9 @@ class Dimension:
             AttributeError: For `labeled` dimensions.
         """
         if equivalencies == "nmr_frequency_ratio":
-            self.subtype._to(unit, frequency_ratio)
+            self.subtype.to(unit, frequency_ratio)
         else:
-            self.subtype._to(unit, equivalencies)
+            self.subtype.to(unit, equivalencies)
 
     def copy(self):
         """Return a copy of the Dimension object."""

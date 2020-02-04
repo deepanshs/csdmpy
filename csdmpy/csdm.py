@@ -16,8 +16,8 @@ from csdmpy.dimensions import Dimension
 from csdmpy.dimensions import LabeledDimension
 from csdmpy.dimensions import LinearDimension
 from csdmpy.dimensions import MonotonicDimension
-from csdmpy.units import ScalarQuantity
 from csdmpy.units import string_to_quantity
+from csdmpy.utils import check_scalar_object
 from csdmpy.utils import validate
 
 
@@ -222,27 +222,6 @@ class CSDM:
         self.__check_dependent_variable_len_equality(other)
         self.__check_dependent_variable_dimensionality(other)
 
-    def __check_scalar_object(self, other):
-        """Check if the object is scalar:
-            int, float, complex, np.ndarray, Quantity, or ScalarQuantity.
-            Returns: The other object.
-        """
-        if not isinstance(
-            other, (int, float, complex, np.ndarray, Quantity, ScalarQuantity)
-        ):
-            raise TypeError(
-                f"unsupported operand type(s): 'CSDM' and "
-                f"'{other.__class__.__name__}'."
-            )
-        if isinstance(other, np.ndarray):
-            if other.ndim != 0:
-                raise ValueError("Only scalar multiplication or division is allowed.")
-
-        if isinstance(other, ScalarQuantity):
-            return other.quantity
-
-        return other
-
     def __add__(self, other):
         """
         Add two objects (z=x+y), if they are
@@ -334,7 +313,7 @@ class CSDM:
 
     def __mul__(self, other):
         """Multiply the components of the CSDM object by a scalar."""
-        other = self.__check_scalar_object(other)
+        other = check_scalar_object(other)
 
         d1 = self.copy()
         for item in d1.dependent_variables:
@@ -351,7 +330,7 @@ class CSDM:
         In place multiplication of the components of the CSDM object
         by a scalar.
         """
-        other = self.__check_scalar_object(other)
+        other = check_scalar_object(other)
 
         for item in self.dependent_variables:
             if not isinstance(other, Quantity):
@@ -364,7 +343,7 @@ class CSDM:
 
     def __truediv__(self, other):
         """Divide the components of the CSDM object by a scalar."""
-        other = self.__check_scalar_object(other)
+        other = check_scalar_object(other)
 
         d1 = self.copy()
         for item in d1.dependent_variables:
@@ -381,7 +360,7 @@ class CSDM:
         In place division of the components of the CSDM object
         by a scalar.
         """
-        other = self.__check_scalar_object(other)
+        other = check_scalar_object(other)
 
         for item in self.dependent_variables:
             if not isinstance(other, Quantity):
@@ -1205,6 +1184,16 @@ def _check_dimension_indices(d, index=-1):
         raise TypeError(f"{message}, found {type(index)}")
 
 
+def _check_for_out(csdm, **kwargs):
+    out = kwargs.get("out", None)
+    if out is not None:
+        if len(csdm.dependent_variables) > 1:
+            raise NotImplementedError(
+                "Keyword `out` is not implemented for csdm objects with more that "
+                "one dependent variables."
+            )
+
+
 def _get_new_csdm_object_after_applying_ufunc(
     csdm, func, method=None, factor=None, **kwargs
 ):
@@ -1217,6 +1206,9 @@ def _get_new_csdm_object_after_applying_ufunc(
     axis = kwargs.get("axis", None)
     if axis is not None:
         kwargs["axis"] = _check_dimension_indices(len(csdm.dimensions), axis)
+
+    _check_for_out(csdm, **kwargs)
+
     new = CSDM()
 
     print(kwargs)
@@ -1262,6 +1254,8 @@ def _get_new_csdm_object_after_applying_function(func, *args, **kwargs):
     if "a" in kwargs.keys():
         csdm = kwargs["a"]
         kwargs.pop("a")
+
+    _check_for_out(csdm, **kwargs)
 
     new = CSDM()
     for variable in csdm.dependent_variables:
@@ -1360,6 +1354,8 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
         if kwargs["axis"] is not None:
             axis = _check_dimension_indices(len(csdm.dimensions), kwargs["axis"])
             kwargs["axis"] = axis
+
+    _check_for_out(csdm, **kwargs)
 
     new = CSDM()
     lst = []

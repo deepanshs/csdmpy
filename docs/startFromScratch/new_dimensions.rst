@@ -1,3 +1,4 @@
+.. _how_to_add_dimension:
 
 ---------------------------------------
 How to add instances of Dimension class

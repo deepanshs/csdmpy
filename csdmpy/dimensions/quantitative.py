@@ -171,7 +171,7 @@ class BaseQuantitativeDimension(BaseDimension):
         """
         return True
 
-    def _to(self, unit="", equivalencies=None):
+    def to(self, unit="", equivalencies=None):
         r"""Convert the unit to given value `unit`."""
         unit = validate(unit, "unit", str)
         if equivalencies is None:

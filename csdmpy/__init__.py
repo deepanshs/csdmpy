@@ -6,6 +6,8 @@ from __future__ import print_function
 import json
 from urllib.parse import urlparse
 
+import numpy as np
+
 from csdmpy.csdm import CSDM
 from csdmpy.dependent_variables import DependentVariable
 from csdmpy.dependent_variables.download import download_file_from_url
@@ -205,6 +207,47 @@ def new(description=""):
         A CSDM instance.
     """
     return CSDM(description=description)
+
+
+def as_dimension(array, type=None):
+    if not isinstance(array, (list, np.ndarray)):
+        raise ValueError(
+            f"Cannot convert {array.__class__.__name__} to a Dimension object."
+        )
+    if isinstance(array, list):
+        array = np.asarray(array)
+    if array.ndim != 1:
+        raise ValueError(
+            f"Cannot convert a {array.ndim} dimensional array to a Dimension object."
+        )
+
+    if type is None:
+        if array.dtype in [np.dtype(">U1"), np.dtype("<U1")]:
+            return LabeledDimension(labels=array.tolist())
+
+        increment = array[1] - array[0]
+        if np.allclose(np.diff(array, 1), increment):
+            return LinearDimension(
+                count=array.size,
+                increment=str(increment),
+                coordinates_offset=str(array[0]),
+            )
+        return MonotonicDimension(coordinates=array * string_to_quantity("1"))
+
+    if type == "linear":
+        increment = array[1] - array[0]
+        if np.all(np.diff(array, 1) == increment):
+            return LinearDimension(
+                count=array.size,
+                increment=str(increment),
+                coordinates_offset=str(array[0]),
+            )
+
+    if type == "monotonic":
+        return MonotonicDimension(coordinates=array * string_to_quantity("1"))
+
+    if type == "labeled":
+        return LabeledDimension(labels=array.tolist())
 
 
 def plot(csdm_object, reverse_axis=None, range=None, **kwargs):

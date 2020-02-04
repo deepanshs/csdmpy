@@ -11,8 +11,11 @@ from astropy.units import Quantity
 from csdmpy.dimensions.quantitative import BaseQuantitativeDimension
 from csdmpy.dimensions.quantitative import ReciprocalVariable
 from csdmpy.units import ScalarQuantity
+from csdmpy.utils import _axis_label
 from csdmpy.utils import check_and_assign_bool
+from csdmpy.utils import check_scalar_object
 from csdmpy.utils import validate
+
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -27,29 +30,9 @@ class LinearDimension(BaseQuantitativeDimension):
     r"""
     LinearDimension class.
 
-    .. warning ::
-        This class should not be used directly. Instead,
-        use the ``CSDM`` object to access the attributes
-        and methods of this class. See example, :ref:`lsgd`.
-
-    The class returns an object which represents a physical
-    dimension, sampled uniformly along a grid dimension.
-    Let :math:`m_k` be the increment, :math:`N_k \ge 1` be the
-    number of points, :math:`c_k` be the reference offset, and
-    :math:`o_k` be the origin offset along the :math:`k^{th}`
-    grid dimension, then the coordinates along the
-    grid dimension are given as
-
-    .. math ::
-        \mathbf{X}_k^\mathrm{ref} = [m_k j ]_{j=0}^{N_k-1} - c_k \mathbf{1},
-    .. math ::
-        \mathbf{X}_k^\mathrm{abs} = \mathbf{X}_k^\mathrm{ref} + o_k \mathbf{1},
-
-    where :math:`\mathbf{X}_k^\mathrm{ref}` is an ordered array of the
-    reference controlled variable coordinates,
-    :math:`\mathbf{X}_k^\mathrm{abs}` is an ordered array of the absolute
-    controlled variable coordinates, and :math:`\mathbf{1}`
-    is an array of ones.
+    Generates an object representing a physical dimension whose coordinates are
+    uniformly sampled along a grid dimension. See :ref:`linearDimension_uml` for
+    details.
     """
 
     __slots__ = ("_count", "_increment", "_complex_fft", "reciprocal", "_coordinates")
@@ -88,8 +71,8 @@ class LinearDimension(BaseQuantitativeDimension):
         return f"LinearDimension({properties})"
 
     def __str__(self):
-        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
-        return f"LinearDimension({properties})"
+        # properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
+        return f"LinearDimension({self.coordinates.__str__()})"
 
     def __eq__(self, other):
         """Overrides the default implementation"""
@@ -114,6 +97,14 @@ class LinearDimension(BaseQuantitativeDimension):
                 return False
             return True
         return False
+
+    def __mul__(self, other):
+        """Multiply the dimension object by a scalar."""
+        return _update_linear_dimension_object_by_scalar_(self.copy(), other)
+
+    def __imul__(self, other):
+        """Multiply the dimension object by a scalar, in-place."""
+        return _update_linear_dimension_object_by_scalar_(self, other)
 
     def _swap(self):
         self._description, self.reciprocal._description = (
@@ -181,7 +172,7 @@ class LinearDimension(BaseQuantitativeDimension):
 
     @property
     def increment(self):
-        r"""Increment of the grid points along the linear dimension."""
+        r"""Increment along the linear dimension."""
         return deepcopy(self._increment)
 
     @increment.setter
@@ -211,9 +202,10 @@ class LinearDimension(BaseQuantitativeDimension):
         coordinates = self._coordinates[:n] + self.coordinates_offset
         if equivalent_fn is None:
             return coordinates.to(self._unit)
-        return coordinates.to(
-            unit, equivalent_fn(self.origin_offset - self.coordinates_offset)
-        )
+        if equivalent_fn == "nmr_frequency_ratio":
+            return coordinates.to(
+                unit, equivalent_fn(self.origin_offset - self.coordinates_offset)
+            )
 
     @coordinates.setter
     def coordinates(self, value):
@@ -228,11 +220,20 @@ class LinearDimension(BaseQuantitativeDimension):
         """Return the absolute coordinates along the dimensions."""
         return (self.coordinates + self.origin_offset).to(self._unit)
 
+    @property
+    def axis_label(self):
+        """Return a formatted string for displaying label along the dimension axis."""
+        if self.label.strip() == "":
+            label = self.quantity_name
+        else:
+            label = self.label
+        return _axis_label(label, self._unit)
+
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
     # ----------------------------------------------------------------------- #
     def to_dict(self):
-        """Return LinearDimension as a python dictionary."""
+        """Return the LinearDimension as a python dictionary."""
         obj = {}
         obj["type"] = self.__class__._type
 
@@ -261,3 +262,20 @@ class LinearDimension(BaseQuantitativeDimension):
     def copy(self):
         """Return a copy of the object."""
         return deepcopy(self)
+
+
+def _update_linear_dimension_object_by_scalar_(object_, other):
+    """Update object by multiplying by a scalar."""
+    other = check_scalar_object(other)
+
+    object_._increment *= other
+    object_._coordinates *= other
+    object_._coordinates_offset *= other
+    object_._origin_offset *= other
+    object_._period *= other
+    object_._unit *= object_._increment.unit
+    object_._quantity_name = object_._unit.physical_type
+    object_._equivalencies = None
+    _reciprocal_unit = object_._unit ** -1
+    object_.reciprocal = ReciprocalVariable(unit=_reciprocal_unit)
+    return object_
