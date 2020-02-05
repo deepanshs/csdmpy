@@ -113,9 +113,6 @@ Other attributes
 :attr:`~csdmpy.Dimension.label`
     .. doctest::
 
-        >>> print('old label =', x.label)
-        old label =
-
         >>> x.label = 't1'
         >>> print('new label =', x.label)
         new label = t1
@@ -134,8 +131,8 @@ Other attributes
     Returns the quantity name. ::
     .. doctest::
 
-            >>> print ('quantity is', x.quantity_name)
-            quantity is length
+        >>> print ('quantity is', x.quantity_name)
+        quantity is length
 
 
 
