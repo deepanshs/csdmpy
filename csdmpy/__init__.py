@@ -8,23 +8,23 @@ from urllib.parse import urlparse
 
 import numpy as np
 
-from csdmpy.csdm import CSDM
-from csdmpy.dependent_variables import DependentVariable
-from csdmpy.dependent_variables.download import download_file_from_url
-from csdmpy.dimensions import Dimension
-from csdmpy.dimensions import LabeledDimension
-from csdmpy.dimensions import LinearDimension
-from csdmpy.dimensions import MonotonicDimension
-from csdmpy.helper_functions import _preview
-from csdmpy.numpy_wrapper import apodize
-from csdmpy.tests import *
-from csdmpy.units import ScalarQuantity
-from csdmpy.units import string_to_quantity
-from csdmpy.utils import validate
+from .csdm import CSDM
+from .dependent_variables import DependentVariable
+from .dependent_variables.download import download_file_from_url
+from .dimensions import Dimension
+from .dimensions import LabeledDimension
+from .dimensions import LinearDimension
+from .dimensions import MonotonicDimension
+from .helper_functions import _preview
+from .numpy_wrapper import apodize
+from .tests import *
+from .units import ScalarQuantity
+from .units import string_to_quantity
+from .utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-__version__ = "0.2.0"
+__version__ = "0.2.dev"
 
 
 __all__ = ["load", "new", "plot"]

@@ -10,12 +10,12 @@ from astropy.units import Quantity
 
 from csdmpy.dimensions.quantitative import BaseQuantitativeDimension
 from csdmpy.dimensions.quantitative import ReciprocalVariable
+from csdmpy.units import frequency_ratio
 from csdmpy.units import ScalarQuantity
 from csdmpy.utils import _axis_label
 from csdmpy.utils import check_and_assign_bool
 from csdmpy.utils import check_scalar_object
 from csdmpy.utils import validate
-
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -203,9 +203,11 @@ class LinearDimension(BaseQuantitativeDimension):
         if equivalent_fn is None:
             return coordinates.to(self._unit)
         if equivalent_fn == "nmr_frequency_ratio":
-            return coordinates.to(
-                unit, equivalent_fn(self.origin_offset - self.coordinates_offset)
-            )
+            denominator = self.origin_offset - self.coordinates_offset
+            if denominator.value == 0:
+                raise ZeroDivisionError("Cannot convert the coordinates to ppm.")
+            return coordinates.to(unit, frequency_ratio(denominator))
+        return coordinates.to(unit, equivalent_fn)
 
     @coordinates.setter
     def coordinates(self, value):

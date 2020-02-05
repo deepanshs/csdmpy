@@ -6,8 +6,8 @@ from __future__ import print_function
 import json
 from copy import deepcopy
 
-from csdmpy.dependent_variables.external import ExternalDataset
-from csdmpy.dependent_variables.internal import InternalDataset
+from .external import ExternalDataset
+from .internal import InternalDataset
 from csdmpy.utils import _axis_label
 from csdmpy.utils import _get_dictionary
 

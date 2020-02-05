@@ -176,8 +176,9 @@ class BaseQuantitativeDimension(BaseDimension):
         unit = validate(unit, "unit", str)
         if equivalencies is None:
             self._unit = ScalarQuantity(unit, self._unit).quantity.unit
-        else:
-            self._unit = ScalarQuantity(unit).quantity.unit
+            return
+
+        self._unit = ScalarQuantity(unit).quantity.unit
         self._equivalencies = equivalencies
 
 

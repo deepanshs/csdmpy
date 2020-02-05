@@ -50,7 +50,7 @@ The following are the attributes of the :class:`~csdmpy.MonotonicDimension`
 instance.
 
 
-* :attr:`~csdmpy.Dimension.type`
+:attr:`~csdmpy.Dimension.type`
     This attribute returns the type of the instance.
 
     .. doctest::
@@ -62,7 +62,7 @@ instance.
 **The attributes that modify the coordinates**
 
 
-* :attr:`~csdmpy.Dimension.count`
+:attr:`~csdmpy.Dimension.count`
     The number of points along the dimension
 
     .. doctest::
@@ -81,7 +81,7 @@ instance.
         [-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172 -0.10372635] cm
 
 
-* :attr:`~csdmpy.Dimension.origin_offset`
+:attr:`~csdmpy.Dimension.origin_offset`
     .. doctest::
 
         >>> print('old origin offset =', x.origin_offset)
@@ -110,7 +110,7 @@ instance.
 Other attributes
 """"""""""""""""
 
-* :attr:`~csdmpy.Dimension.label`
+:attr:`~csdmpy.Dimension.label`
     .. doctest::
 
         >>> print('old label =', x.label)
@@ -120,7 +120,7 @@ Other attributes
         >>> print('new label =', x.label)
         new label = t1
 
-* :attr:`~csdmpy.Dimension.period`
+:attr:`~csdmpy.Dimension.period`
     .. doctest::
 
         >>> print('old period =', x.period)
@@ -130,7 +130,7 @@ Other attributes
         >>> print('new period =', x.period)
         new period = 10.0 m
 
-* :attr:`~csdmpy.Dimension.quantity_name`
+:attr:`~csdmpy.Dimension.quantity_name`
     Returns the quantity name. ::
     .. doctest::
 

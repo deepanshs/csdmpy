@@ -3,10 +3,9 @@
 import json
 from copy import deepcopy
 
-from csdmpy.dimensions.labeled import LabeledDimension
-from csdmpy.dimensions.linear import LinearDimension
-from csdmpy.dimensions.monotonic import MonotonicDimension
-from csdmpy.units import frequency_ratio
+from .labeled import LabeledDimension
+from .linear import LinearDimension
+from .monotonic import MonotonicDimension
 from csdmpy.utils import _axis_label
 from csdmpy.utils import _get_dictionary
 from csdmpy.utils import validate
@@ -160,13 +159,11 @@ class Dimension:
 
     def __repr__(self):
         """String representation of object."""
-        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
-        return f"Dimension({properties})"
+        return self.subtype.__repr__()
 
     def __str__(self):
         """String representation of object."""
-        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
-        return f"Dimension({properties})"
+        return self.subtype.__str__()
 
     def __eq__(self, other):
         """Overrides the default implementation."""
@@ -787,10 +784,7 @@ class Dimension:
         Raises:
             AttributeError: For `labeled` dimensions.
         """
-        if equivalencies == "nmr_frequency_ratio":
-            self.subtype.to(unit, frequency_ratio)
-        else:
-            self.subtype.to(unit, equivalencies)
+        self.subtype.to(unit, equivalencies)
 
     def copy(self):
         """Return a copy of the Dimension object."""

@@ -10,12 +10,12 @@ import numpy as np
 
 from csdmpy.dimensions.quantitative import BaseQuantitativeDimension
 from csdmpy.dimensions.quantitative import ReciprocalVariable
+from csdmpy.units import frequency_ratio
 from csdmpy.units import ScalarQuantity
 from csdmpy.utils import _axis_label
 from csdmpy.utils import attribute_error
 from csdmpy.utils import check_scalar_object
 from csdmpy.utils import validate
-
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -161,9 +161,11 @@ class MonotonicDimension(BaseQuantitativeDimension):
         if equivalent_fn is None:
             return coordinates.to(self._unit)
         if equivalent_fn == "nmr_frequency_ratio":
-            return coordinates.to(
-                unit, equivalent_fn(self.origin_offset - coordinates[0])
-            )
+            denominator = self.origin_offset - coordinates[0]
+            if denominator.value == 0:
+                raise ZeroDivisionError("Cannot convert the coordinates to ppm.")
+            return coordinates.to(unit, frequency_ratio(denominator))
+        return coordinates.to(unit, equivalent_fn)
 
     @coordinates.setter
     def coordinates(self, value):
