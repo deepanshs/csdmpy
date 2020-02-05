@@ -24,7 +24,7 @@ Generating a MonotonicDimension
     >>> x = cp.MonotonicDimension(coordinates=array)*cp.ScalarQuantity('cm')
     >>> print(x)
     MonotonicDimension([-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172  -0.10372635
-    -0.01817061  0.05936719  0.18141424  0.34758913] cm)
+     -0.01817061  0.05936719  0.18141424  0.34758913] cm)
 
 
 **From numpy arrays.**
