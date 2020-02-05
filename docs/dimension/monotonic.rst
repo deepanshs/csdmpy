@@ -78,7 +78,7 @@ instance.
         >>> print('new number of points =', x.count)
         new number of points = 6
         >>> print(x.coordinates)
-        [-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172 -0.10372635] cm
+        [-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172  -0.10372635] cm
 
 
 :attr:`~csdmpy.Dimension.origin_offset`
@@ -92,7 +92,7 @@ instance.
         new origin offset = 1.0 km
 
         >>> print(x.coordinates)
-        [-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172 -0.10372635] cm
+        [-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172  -0.10372635] cm
 
     The last operation updates the value of the origin offset, however,
     the value of the ``coordinates`` attribute remains unchanged.
