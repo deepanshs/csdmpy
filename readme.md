@@ -1,14 +1,12 @@
 # The csdmpy package
 
-[![Build Status](https://travis-ci.org/DeepanshS/csdmpy.svg?branch=master)](https://travis-ci.org/DeepanshS/csdmpy)
-[![Documentation Status](https://readthedocs.org/projects/csdmpy/badge/?version=stable)](https://csdmpy.readthedocs.io/en/stable/?badge=stable)
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
-![GitHub issues](https://img.shields.io/github/issues-raw/deepanshs/csdmpy)
-![GitHub release](https://img.shields.io/github/release/deepanshs/csdmpy)
-[![PyPI version](https://badge.fury.io/py/csdmpy.svg)](https://badge.fury.io/py/csdmpy)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DeepanshS/csdmpy/context:python)
-[![codecov](https://codecov.io/gh/DeepanshS/csdmpy/branch/master/graph/badge.svg)](https://codecov.io/gh/DeepanshS/csdmpy)
+|              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Deployment   | [![PyPI version](https://img.shields.io/pypi/v/csdmpy.svg?style=flat&logo=pypi&logoColor=white)](https://pypi.python.org/pypi/csdmpy)                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Build Status | [![Build Status](https://travis-ci.org/DeepanshS/csdmpy.svg?branch=master)](https://travis-ci.org/DeepanshS/csdmpy) [![Documentation Status](https://readthedocs.org/projects/csdmpy/badge/?version=stable)](https://csdmpy.readthedocs.io/en/stable/?badge=stable)                                                                                                                                                                                                                                                                                                          |
+| License      | [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Metrics      | [![PyPI - Downloads](https://img.shields.io/pypi/dm/csdmpy.svg)](https://img.shields.io/pypi/dm/csdmpy)[![Total alerts](https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DeepanshS/csdmpy/context:python) [![codecov](https://codecov.io/gh/DeepanshS/csdmpy/branch/master/graph/badge.svg)](https://codecov.io/gh/DeepanshS/csdmpy) |
+| GitHub       | ![GitHub issues](https://img.shields.io/github/issues-raw/deepanshs/csdmpy)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 The _csdmpy_ package is a Python support for the core scientific
 dataset (CSD) model file exchange-format.
@@ -26,8 +24,8 @@ compatible with Numpy.
 
 For further reading, refer to the [documentation](https://csdmpy.readthedocs.io/en/latest/).
 
-You may [![](https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet)](https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u)
-used in the project.
+> **Download the examples files using in this package**
+> [![](https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet)](https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u)
 
 ## The core scientific dataset (CSD) model
 
