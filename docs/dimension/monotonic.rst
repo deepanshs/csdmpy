@@ -104,7 +104,7 @@ instance.
 
         >>> print('absolute coordinates =', x.absolute_coordinates)
         absolute coordinates = [99999.71241834 99999.77287767 99999.80086141 99999.82764894
-        99999.8298828  99999.89627365] cm
+         99999.8298828  99999.89627365] cm
 
 
 Other attributes
