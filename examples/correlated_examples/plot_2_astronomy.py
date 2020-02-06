@@ -31,7 +31,7 @@ y = eagle_nebula.dependent_variables
 # dependent variables from the dataset. The three dependent variables correspond
 # to signal acquisition at 502 nm, 656 nm, and 673 nm, respectively. This
 # information is also listed in the
-# :attr:`~csdmpy.dependent_variables.DependentVariable.name` attribute of the
+# :attr:`~csdmpy.DependentVariable.name` attribute of the
 # respective dependent variable instances,
 
 #%%

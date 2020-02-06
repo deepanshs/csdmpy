@@ -154,12 +154,32 @@ class DependentVariable:
             self.subtype = ExternalDataset(**dictionary)
 
     def __repr__(self):
-        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
-        return f"DependentVariable({properties})"
+        if self.unit.physical_type == "dimensionless":
+            return (
+                f"DependentVariable({self.components.__repr__()}, "
+                f"quantity_type={self.quantity_type})"
+            )
+
+        return (
+            f"DependentVariable({self.components.__repr__()} {self.unit}, "
+            f"quantity_type={self.quantity_type})"
+        )
+        # properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
+        # return f"DependentVariable({properties})"
 
     def __str__(self):
-        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
-        return f"DependentVariable({properties})"
+        if self.unit.physical_type == "dimensionless":
+            return (
+                f"DependentVariable({self.components.__str__()}, "
+                f"quantity_type={self.quantity_type})"
+            )
+
+        return (
+            f"DependentVariable({self.components.__str__()} {self.unit}, "
+            f"quantity_type={self.quantity_type})"
+        )
+        # properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
+        # return f"DependentVariable({properties})"
 
     def __eq__(self, other):
         """Overrides the default implementation"""
@@ -472,7 +492,7 @@ class DependentVariable:
             >>> y.encoding = 'base64'
 
         The value of this attribute will be used in serializing the data to the file,
-        when using the :meth:`~csdmpy.csdm.CSDM.save` method.
+        when using the :meth:`~csdmpy.CSDM.save` method.
 
         Returns:
             A string with a `valid` encoding type.
@@ -525,7 +545,7 @@ class DependentVariable:
 
         When assigning a valid value, this attribute updates the `dtype` of the
         Numpy array from the corresponding
-        :attr:`~csdmpy.dependent_variables.DependentVariable.components`
+        :attr:`~csdmpy.DependentVariable.components`
         attribute. We recommended the use of the numeric type attribute for
         updating the `dtype` of the Numpy array. For example,
 
@@ -670,7 +690,7 @@ class DependentVariable:
 
         .. note::
             The attribute cannot be modified. To convert the unit, use the
-            :meth:`~csdmpy.dependent_variables.DependentVariable.to` method of
+            :meth:`~csdmpy.DependentVariable.to` method of
             the class instance.
 
         .. doctest::

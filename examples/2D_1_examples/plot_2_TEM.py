@@ -35,7 +35,7 @@ print(x[1].coordinates[:10])
 
 #%%
 # For convenience, let's convert the coordinates from `nm` to `µm` using the
-# :meth:`~csdmpy.dimensions.Dimension.to` method of the respective :ref:`dim_api`
+# :meth:`~csdmpy.Dimension.to` method of the respective :ref:`dim_api`
 # instance,
 
 x[0].to("µm")

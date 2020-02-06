@@ -1,11 +1,9 @@
 
------------------------------------------------
-How to add instances of DependentVariable class
------------------------------------------------
+----------------------------------------------------------
+Adding instances of DependentVariable class to CSDM object
+----------------------------------------------------------
 
-In the previous two sections, we illustrated, creating a new dataset and adding
-dimensions to the dataset. In this example, we illustrate adding
-dependent variables to the dataset. Let's start by creating a new dataset,
+Create a new empty CSDM object following,
 
 .. doctest::
 
@@ -13,7 +11,7 @@ dependent variables to the dataset. Let's start by creating a new dataset,
     >>> new_data = cp.new(description='A new test dependent variables dataset')
 
 An instance of the DependentVariable class is added using the
-:meth:`~csdmpy.csdm.CSDM.add_dependent_variable` method of the :ref:`csdm_api`
+:meth:`~csdmpy.CSDM.add_dependent_variable` method of the :ref:`csdm_api`
 instance. There are two subtypes of DependentVariable class:
 
 - **InternalDependentVariable**:
@@ -56,7 +54,7 @@ dependent variable. Consider the following python dictionary
 
 Here, the components are scalar physical quantities with the unit `cm`. The
 components are listed as the value of the
-:attr:`~csdmpy.dependent_variables.DependentVariable.components` keyword, and
+:attr:`~csdmpy.DependentVariable.components` keyword, and
 therefore, the value of the `type` keyword is specified as `internal`.
 
 .. note::
@@ -68,7 +66,7 @@ therefore, the value of the `type` keyword is specified as `internal`.
     attribute.
 
 To add a dependent variable to the ``new_data`` instance, use the
-:meth:`~csdmpy.csdm.CSDM.add_dependent_variable` method as
+:meth:`~csdmpy.CSDM.add_dependent_variable` method as
 
 .. doctest::
 
@@ -110,7 +108,7 @@ Adding a multi-component dependent variables
 
 In this next example, we demonstrate how to add a dependent variable with
 multiple components. This time we use keywords as the argument of the
-:meth:`~csdmpy.csdm.CSDM.add_dependent_variable` method to add a new
+:meth:`~csdmpy.CSDM.add_dependent_variable` method to add a new
 dependent variable.
 
 .. doctest::

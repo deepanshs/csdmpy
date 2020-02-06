@@ -1,13 +1,13 @@
 
---------------------
-How to save datasets
---------------------
+--------------------------------
+Serializing CSDM object to files
+--------------------------------
 
 An instance of a :ref:`csdm_api` object is serialized as a csdf/csdfe
-JSON-format file with the :meth:`~csdmpy.csdm.CSDM.save` method.
+JSON-format file with the :meth:`~csdmpy.CSDM.save` method.
 When serializing the dependent-variable from the CSDM object to the data-file,
 the `csdmpy` module uses the value of the dependent variable's
-:attr:`~csdmpy.dependent_variables.DependentVariable.encoding` attribute to
+:attr:`~csdmpy.DependentVariable.encoding` attribute to
 determine the encoding type of the serialized data. There are three encoding
 types for the dependent variables:
 
@@ -16,12 +16,12 @@ types for the dependent variables:
 - raw
 
 .. note:: By default, all instances of
-    :attr:`~csdmpy.dependent_variables.DependentVariable` from a
-    :attr:`~csdmpy.csdm.CSDM` object are serialized as
+    :attr:`~csdmpy.DependentVariable` from a
+    :attr:`~csdmpy.CSDM` object are serialized as
     base64 strings.
 
 For the following examples, consider ``data`` as an instance of the
-:attr:`~csdmpy.csdm.CSDM` class.
+:attr:`~csdmpy.CSDM` class.
 
 Serializing dependent-variables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -76,7 +76,7 @@ each dependent variables with a different encoding, for example,
     >>> my_data.save('my_file.csdfe')
 
 In the above example, ``my_data`` is a CSDM object containing four
-:attr:`~csdmpy.dependent_variables.DependentVariable` objects. Here, we
+:attr:`~csdmpy.DependentVariable` objects. Here, we
 serialize the dependent variable at index two with ``none``,
 the dependent variables at index one and three with ``bae64``,
 and the dependent variables at index zero with ``raw`` encoding, respectively.

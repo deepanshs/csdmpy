@@ -1,47 +1,19 @@
-
-.. _dwas:
-
 ------------------
 MonotonicDimension
 ------------------
 
-A MonotonicDimension is one where the coordinates along the dimension is
-sampled monotonically.
+There are several attributes and methods associated with a MonotonicDimension,
+controlling the coordinates along the dimension. The following section
+demonstrates the effect of these attributes and methods on the coordinates.
 
-
-Generating a MonotonicDimension
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-**Using the** :class:`~csdmpy.MonotonicDimension` **class.**
 
 .. doctest::
 
-    >>> import csdmpy as cp
     >>> import numpy as np
     >>> array = np.asarray([-0.28758166, -0.22712233, -0.19913859, -0.17235106,
     ...                     -0.1701172, -0.10372635, -0.01817061, 0.05936719,
     ...                     0.18141424, 0.34758913])
     >>> x = cp.MonotonicDimension(coordinates=array)*cp.ScalarQuantity('cm')
-    >>> print(x)
-    MonotonicDimension([-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172  -0.10372635
-     -0.01817061  0.05936719  0.18141424  0.34758913] cm)
-
-
-**From numpy arrays.**
-
-Use the :meth:`~csdmpy.as_dimension` method to convert a numpy array as a
-Dimension object.
-
-.. doctest::
-
-    >>> import numpy as np
-    >>> import csdmpy as cp
-    >>> numpy_array = np.random.rand(10)
-    >>> x_dim = cp.as_dimension(numpy_array)*cp.ScalarQuantity('cm')
-    >>> print(x)
-    MonotonicDimension([-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172  -0.10372635
-     -0.01817061  0.05936719  0.18141424  0.34758913] cm)
-
 
 Attributes
 ^^^^^^^^^^
@@ -72,6 +44,7 @@ instance.
 
     You may update the number of points with this attribute, however, you can
     only lower the number of points.
+
     .. doctest::
 
         >>> x.count = 6
@@ -128,7 +101,8 @@ Other attributes
         new period = 10.0 m
 
 :attr:`~csdmpy.Dimension.quantity_name`
-    Returns the quantity name. ::
+    Returns the quantity name.
+
     .. doctest::
 
         >>> print ('quantity is', x.quantity_name)
@@ -140,6 +114,7 @@ Methods
 ^^^^^^^
 
 :meth:`~csdmpy.Dimension.to()`
+
 The method is used for unit conversions. It follows,
 
 .. doctest::
@@ -164,4 +139,21 @@ coordinates.  An exception will be raised otherwise,
     >>> x.to('km/s')  # doctest: +SKIP
     Exception("Validation Failed: The unit 'km / s' (speed) is inconsistent with the unit 'mm' (length).")
 
-Also see :ref:`dim_api`
+
+
+
+Object properties
+^^^^^^^^^^^^^^^^^
+
+**Changing the dimensionality of a physical dimension**
+
+You may scale the dimension object by multiplying the object with the
+appropriate ScalarQuantity, as follows,
+
+.. doctest::
+
+    >>> print(x)
+    MonotonicDimension([-2.8758166 -2.2712233 -1.9913859 -1.7235106 -1.701172  -1.0372635] mm)
+    >>> x *= cp.ScalarQuantity('2 s/mm')
+    >>> print(x)
+    MonotonicDimension([-0.57516332 -0.45424466 -0.39827718 -0.34470212 -0.3402344  -0.2074527 ] cm s / mm)

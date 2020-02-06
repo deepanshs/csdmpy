@@ -177,6 +177,16 @@ class Dimension:
             return False
         return False
 
+    def __mul__(self, other):
+        """Multiply the dimension object by a scalar."""
+        return self.subtype.__mul__(other)
+
+    def __imul__(self, other):
+        """Multiply the dimension object by a scalar, in-place."""
+        return self.subtype.__imul__(other)
+
+    # add __truediv__ and __itruediv__ methods
+
     # ======================================================================= #
     #                          Dimension Attributes                           #
     # ======================================================================= #
@@ -193,7 +203,7 @@ class Dimension:
             \mathbf{X}_k^\mathrm{abs} = \mathbf{X}_k + o_k \mathbf{1}
 
         where :math:`\mathbf{X}_k` are the coordinates along the dimension and
-        :math:`o_k` is the :attr:`~csdmpy.dimensions.Dimension.origin_offset`.
+        :math:`o_k` is the :attr:`~csdmpy.Dimension.origin_offset`.
         For example, consider
 
         .. doctest::
@@ -212,7 +222,7 @@ class Dimension:
 
         For `linear` dimensions, the order of the `absolute_coordinates`
         further depend on the value of the
-        :attr:`~csdmpy.dimensions.Dimension.complex_fft` attributes. For
+        :attr:`~csdmpy.Dimension.complex_fft` attributes. For
         examples, when the value of the `complex_fft` attribute is True,
         the absolute coordinates are
 
@@ -280,8 +290,8 @@ class Dimension:
         For quantitative dimensions, this attributes returns a string,
         `label / unit`,  if the `label` is a non-empty string, otherwise,
         `quantity_name / unit`. Here
-        :attr:`~csdmpy.dimensions.Dimension.quantity_name` and
-        :attr:`~csdmpy.dimensions.Dimension.label` are the attributes of the
+        :attr:`~csdmpy.Dimension.quantity_name` and
+        :attr:`~csdmpy.Dimension.label` are the attributes of the
         :ref:`dim_api` instances, and `unit` is the unit associated with the
         coordinates along the dimension. For examples,
 
@@ -319,7 +329,7 @@ class Dimension:
             [100. 105. 110. 115. 120. 125. 130. 135. 140. 145.] G
 
         For `linear` dimensions, the order of the `coordinates` also depend on the
-        value of the :attr:`~csdmpy.dimensions.Dimension.complex_fft` attributes.
+        value of the :attr:`~csdmpy.Dimension.complex_fft` attributes.
         For examples, when the value of the `complex_fft` attribute is True,
         the coordinates are
 
@@ -694,8 +704,8 @@ class Dimension:
             ['Cu' 'Ag' 'Au']
 
         .. note::
-            For Labeled dimension, the :attr:`~csdmpy.dimensions.Dimension.coordinates`
-            attribute is an alias of :attr:`~csdmpy.dimensions.Dimension.labels`
+            For Labeled dimension, the :attr:`~csdmpy.Dimension.coordinates`
+            attribute is an alias of :attr:`~csdmpy.Dimension.labels`
             attribute. For example,
 
             .. doctest::

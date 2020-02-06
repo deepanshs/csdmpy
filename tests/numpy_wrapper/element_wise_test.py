@@ -27,6 +27,7 @@ a1.add_dependent_variable(dv)
 
 # ---------------------------------------------------------------
 # test for ufunc that apply to dimensionless dependent variables.
+# __ufunc_list_dimensionless_unit__
 
 
 def test_sin():
@@ -89,6 +90,41 @@ def test_arctanh():
     assert np.allclose(b.dependent_variables[0].components[0], np.arctanh(data))
 
 
+def test_exp():
+    b = np.exp(a)
+    assert np.allclose(b.dependent_variables[0].components[0], np.exp(data))
+
+
+def test_exp2():
+    b = np.exp2(a)
+    assert np.allclose(b.dependent_variables[0].components[0], np.exp2(data))
+
+
+def test_expm1():
+    b = np.expm1(a)
+    assert np.allclose(b.dependent_variables[0].components[0], np.expm1(data))
+
+
+def test_log():
+    b = np.log(a)
+    assert np.allclose(b.dependent_variables[0].components[0], np.log(data))
+
+
+def test_log2():
+    b = np.log2(a)
+    assert np.allclose(b.dependent_variables[0].components[0], np.log2(data))
+
+
+def test_log10():
+    b = np.log10(a)
+    assert np.allclose(b.dependent_variables[0].components[0], np.log10(data))
+
+
+def test_log1p():
+    b = np.log1p(a)
+    assert np.allclose(b.dependent_variables[0].components[0], np.log1p(data))
+
+
 # test unit of components
 
 data2 = np.random.rand(15 * 5 * 10).reshape(15, 5, 10) - 0.5
@@ -109,6 +145,7 @@ def test_unsupported_unit():
 
 # ------------------------------------------------------------------------------
 # test for ufunc that are independent of the dependent variables dimensionality.
+# __ufunc_list_unit_independent__
 
 
 def test_negative():
@@ -153,6 +190,7 @@ def test_conjugate():
 
 # -----------------------------------------------------------------
 # test for ufunc that also apply to the unit of dependent variables.
+# __ufunc_list_applies_to_unit__
 
 
 def test_sqrt():
@@ -183,3 +221,11 @@ def test_reciprocal():
         b.dependent_variables[0].components[0], np.reciprocal(data2), equal_nan=True
     )
     assert str(b.dependent_variables[0].unit) == "1 / m"
+
+
+def test_power():
+    b = np.power(a2, 5.3)
+    assert np.allclose(
+        b.dependent_variables[0].components[0], np.power(data2, 5.3), equal_nan=True
+    )
+    assert str(b.dependent_variables[0].unit) == "m(53/10)"

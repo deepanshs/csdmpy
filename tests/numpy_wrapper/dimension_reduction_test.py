@@ -36,6 +36,15 @@ def test_exceptions():
 def test_sum():
     dimensions = [0, 1, 2]
     i = [[1, 2], [0, 2], [0, 1]]
+    assert np.allclose(
+        np.sum(a=a, axis=0).dependent_variables[0].components, data.sum(axis=-1)
+    )
+    assert np.allclose(
+        np.sum(a, 0).dependent_variables[0].components, data.sum(axis=-1)
+    )
+    assert np.allclose(
+        np.sum(a, 1).dependent_variables[0].components, data.sum(axis=-2)
+    )
     for i_, dimension in zip(i, dimensions):
         b = a.sum(axis=dimension)
         components = b.dependent_variables[0].components[0]

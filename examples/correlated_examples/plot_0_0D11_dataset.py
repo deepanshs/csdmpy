@@ -20,13 +20,13 @@ zero_d_dataset = cp.load(filename)
 
 #%%
 # Since the dataset has no dimensions, the value of the
-# :attr:`~csdmpy.csdm.CSDM.dimensions` attribute of the :attr:`~csdmpy.csdm.CSDM`
+# :attr:`~csdmpy.CSDM.dimensions` attribute of the :attr:`~csdmpy.CSDM`
 # class is an empty tuple,
 
 print(zero_d_dataset.dimensions)
 
 #%%
-# The :attr:`~csdmpy.csdm.CSDM.dependent_variables` attribute, however, holds
+# The :attr:`~csdmpy.CSDM.dependent_variables` attribute, however, holds
 # two dependent-variable objects. The data structure from the two dependent
 # variables is
 

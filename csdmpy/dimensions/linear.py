@@ -99,11 +99,11 @@ class LinearDimension(BaseQuantitativeDimension):
         return False
 
     def __mul__(self, other):
-        """Multiply the dimension object by a scalar."""
+        """Multiply the LinearDimension object by a scalar."""
         return _update_linear_dimension_object_by_scalar_(self.copy(), other)
 
     def __imul__(self, other):
-        """Multiply the dimension object by a scalar, in-place."""
+        """Multiply the LinearDimension object by a scalar, in-place."""
         return _update_linear_dimension_object_by_scalar_(self, other)
 
     def _swap(self):
@@ -202,7 +202,7 @@ class LinearDimension(BaseQuantitativeDimension):
         coordinates = self._coordinates[:n] + self.coordinates_offset
         if equivalent_fn is None:
             return coordinates.to(self._unit)
-        if equivalent_fn == "nmr_frequency_ratio":
+        if equivalent_fn == frequency_ratio:
             denominator = self.origin_offset - self.coordinates_offset
             if denominator.value == 0:
                 raise ZeroDivisionError("Cannot convert the coordinates to ppm.")
@@ -275,7 +275,7 @@ def _update_linear_dimension_object_by_scalar_(object_, other):
     object_._coordinates_offset *= other
     object_._origin_offset *= other
     object_._period *= other
-    object_._unit *= object_._increment.unit
+    object_._unit = object_._increment._unit
     object_._quantity_name = object_._unit.physical_type
     object_._equivalencies = None
     _reciprocal_unit = object_._unit ** -1

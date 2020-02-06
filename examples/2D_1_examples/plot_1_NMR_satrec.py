@@ -51,7 +51,7 @@ print(x1)
 #%%
 # Notice, the unit of ``x0`` is in microseconds. It might be convenient to
 # convert the unit to milliseconds. To do so, use the
-# :meth:`~csdmpy.dimensions.Dimension.to` method of the respective
+# :meth:`~csdmpy.Dimension.to` method of the respective
 # :ref:`dim_api` instance as follows,
 
 x[0].to("ms")
@@ -60,7 +60,7 @@ print(x0)
 
 #%%
 # As before, the components of the dependent variable are accessed using the
-# :attr:`~csdmpy.dependent_variables.DependentVariable.components` attribute.
+# :attr:`~csdmpy.DependentVariable.components` attribute.
 
 y00 = y[0].components[0]
 

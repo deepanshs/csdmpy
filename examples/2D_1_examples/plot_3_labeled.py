@@ -24,7 +24,7 @@ y = labeled_data.dependent_variables
 
 #%%
 # Since one of the dimensions is a `labeled` dimension, let's make use of the
-# :attr:`~csdmpy.dimensions.Dimension.type` attribute of the dimension instances
+# :attr:`~csdmpy.Dimension.type` attribute of the dimension instances
 # to find out which dimension is `labeled`.
 
 #%%
@@ -47,8 +47,8 @@ print(x[1].labels[:5])
 
 #%%
 # .. note::
-#     For labeled dimensions, the :attr:`~csdmpy.dimensions.Dimension.coordinates`
-#     attribute is an alias of the :attr:`~csdmpy.dimensions.Dimension.labels`
+#     For labeled dimensions, the :attr:`~csdmpy.Dimension.coordinates`
+#     attribute is an alias of the :attr:`~csdmpy.Dimension.labels`
 #     attribute.
 print(x[1].coordinates[:5])
 
@@ -95,6 +95,6 @@ plt.show()
 #
 # .. [#f1] In the CSD model, the attribute count is only valid for the
 #          :ref:`linearDimension_uml`. In `csdmpy`, however, the
-#          :attr:`~csdmpy.dimensions.Dimension.count` attribute is valid for all
+#          :attr:`~csdmpy.Dimension.count` attribute is valid for all
 #          dimension objects and returns an integer with the number of grid
 #          points along the dimension.

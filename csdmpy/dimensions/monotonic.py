@@ -226,7 +226,7 @@ def _update_monotonic_dimension_object_by_scalar_(object_, other):
     object_._coordinates_offset *= other
     object_._origin_offset *= other
     object_._period *= other
-    object_._unit *= object_._coordinates.unit
+    object_._unit = object_._coordinates.unit
     object_._quantity_name = object_._unit.physical_type
     object_._equivalencies = None
     _reciprocal_unit = object_._unit ** -1

@@ -20,6 +20,7 @@ from .numpy_wrapper import apodize
 from .tests import *
 from .units import ScalarQuantity
 from .units import string_to_quantity
+from .utils import QuantityType
 from .utils import validate
 
 __author__ = "Deepansh J. Srivastava"
@@ -37,49 +38,6 @@ def _import_json(filename, verbose=False):
     with open(filename, "rb") as f:
         content = f.read()
         return json.loads(str(content, encoding="UTF-8"))
-
-
-def load(filename=None, application=False, verbose=False):
-    r"""
-    Loads a .csdf/.csdfe file and returns an instance of the :ref:`csdm_api` class.
-
-    The file must be a JSON serialization of the CSD Model.
-
-    Example:
-        >>> data1 = cp.load('local_address/file.csdf') # doctest: +SKIP
-        >>> data2 = cp.load('url_address/file.csdf') # doctest: +SKIP
-
-    Args:
-        filename (str): A local or a remote address to the `.csdf or `.csdfe` file.
-        application (bool): If true, the application metadata from application that
-                last serialized the file will be imported. Default is False.
-        verbose (bool): If the filename is a URL, this option will show the progress
-                bar for the file download status, when True.
-
-    Returns:
-        A CSDM instance.
-    """
-    if filename is None:
-        raise Exception("Missing the value for the required `filename` attribute.")
-
-    dictionary = _import_json(filename, verbose)
-    dictionary["filename"] = filename
-    csdm_object = parse_dict(dictionary)
-
-    if application is False:
-        csdm_object.application = {}
-        for dim in csdm_object.dimensions:
-            dim.application = {}
-            if hasattr(dim, "reciprocal") and dim.type != "label":
-                dim.reciprocal.application = {}
-        for dim in csdm_object.dependent_variables:
-            dim.application = {}
-            # if hasattr(dim., 'dimension indexes'):
-            #     dim.reciprocal.application = {}
-    # csdm_objects = []
-    # for file_ in csdm_files:
-    #     csdm_objects.append(_load(file_, application=application))
-    return csdm_object
 
 
 def parse_dict(dictionary):
@@ -156,6 +114,49 @@ def parse_dict(dictionary):
     return csdm
 
 
+def load(filename=None, application=False, verbose=False):
+    r"""
+    Loads a .csdf/.csdfe file and returns an instance of the :ref:`csdm_api` class.
+
+    The file must be a JSON serialization of the CSD Model.
+
+    Example:
+        >>> data1 = cp.load('local_address/file.csdf') # doctest: +SKIP
+        >>> data2 = cp.load('url_address/file.csdf') # doctest: +SKIP
+
+    Args:
+        filename (str): A local or a remote address to the `.csdf or `.csdfe` file.
+        application (bool): If true, the application metadata from application that
+                last serialized the file will be imported. Default is False.
+        verbose (bool): If the filename is a URL, this option will show the progress
+                bar for the file download status, when True.
+
+    Returns:
+        A CSDM instance.
+    """
+    if filename is None:
+        raise Exception("Missing the value for the required `filename` attribute.")
+
+    dictionary = _import_json(filename, verbose)
+    dictionary["filename"] = filename
+    csdm_object = parse_dict(dictionary)
+
+    if application is False:
+        csdm_object.application = {}
+        for dim in csdm_object.dimensions:
+            dim.application = {}
+            if hasattr(dim, "reciprocal") and dim.type != "label":
+                dim.reciprocal.application = {}
+        for dim in csdm_object.dependent_variables:
+            dim.application = {}
+            # if hasattr(dim., 'dimension indexes'):
+            #     dim.reciprocal.application = {}
+    # csdm_objects = []
+    # for file_ in csdm_files:
+    #     csdm_objects.append(_load(file_, application=application))
+    return csdm_object
+
+
 def loads(string):
     """
         Loads a JSON serialized string as a CSDM object.
@@ -209,7 +210,73 @@ def new(description=""):
     return CSDM(description=description)
 
 
+def as_csdm_object(array, quantity_type="scalar"):
+    """Generate and return a csdm object from a nD numpy array.
+    The nD array becomes the dependent variable of the given quantity type. The shape
+    of the nD array is used to generate Dimension object of type `linear`.
+
+    Args:
+        array: The nD numpy array.
+        quantity_type: The quantity type of the dependent variable.
+
+    Example:
+        >>> array = np.arange(30).reshape(3, 10)
+        >>> csdm_obj = cp.as_csdm_object(array)
+        >>> print(csdm_obj)
+        CSDM(
+        DependentVariable([[[ 0  1  2  3  4  5  6  7  8  9]
+          [10 11 12 13 14 15 16 17 18 19]
+          [20 21 22 23 24 25 26 27 28 29]]], quantity_type=scalar),
+        LinearDimension([0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]),
+        LinearDimension([0. 1. 2.])
+        )
+    """
+    q_type = QuantityType(quantity_type)
+    if q_type.p == 1:
+        array = array[np.newaxis, :]
+
+    if q_type.p != array.shape[0]:
+        raise ValueError(
+            f"Expecting exactly {q_type.p} components for quantity type, "
+            f"`{quantity_type}`, found {array.shape[0]}. Make sure `array.shape[0]` "
+            f"is equal to the number of components supported by {quantity_type}."
+        )
+
+    csdm = new()
+    csdm.add_dependent_variable(
+        type="internal", components=array, quantity_type=quantity_type
+    )
+    shape = array.shape[::-1]
+    for i in shape[:-1]:
+        csdm.add_dimension(LinearDimension(count=i, increment="1"))
+
+    return csdm
+
+
 def as_dimension(array, type=None):
+    """Generate and return a Dimension object from a 1D numpy array.
+
+    Args:
+        array: A 1D numpy array.
+        type: The dimension type. Valid values are linear, monotonic, labeled, or
+                None. If the value is None, let us decide. The default value is None.
+
+    Example:
+        >>> array = np.arange(15)*0.5
+        >>> dim_object = cp.as_dimension(array)
+        >>> print(dim_object)
+        LinearDimension([0.  0.5 1.  1.5 2.  2.5 3.  3.5 4.  4.5 5.  5.5 6.  6.5 7. ])
+
+        >>> array = ['The', 'great', 'circle']
+        >>> dim_object = cp.as_dimension(array)
+        >>> print(dim_object)
+        LabeledDimension(['The' 'great' 'circle'])
+
+    """
+    options = [None, "linear", "monotonic", "labeled"]
+    if type not in options:
+        raise ValueError(f"Invalid value for `type`. Allowed values are {options}.")
+
     if not isinstance(array, (list, np.ndarray)):
         raise ValueError(
             f"Cannot convert {array.__class__.__name__} to a Dimension object."
@@ -222,20 +289,33 @@ def as_dimension(array, type=None):
         )
 
     if type is None:
-        if array.dtype in [np.dtype(">U1"), np.dtype("<U1")]:
+        # labeled
+        if str(array.dtype)[:2] in [">U", "<U"]:
             return LabeledDimension(labels=array.tolist())
 
+        # linear
         increment = array[1] - array[0]
+        if increment == 0:
+            raise ValueError("Invalid array for Dimension object.")
+
         if np.allclose(np.diff(array, 1), increment):
             return LinearDimension(
                 count=array.size,
                 increment=str(increment),
                 coordinates_offset=str(array[0]),
             )
-        return MonotonicDimension(coordinates=array * string_to_quantity("1"))
+
+        # monotonic
+        if np.all(np.diff(array, 1) > 0) or np.all(np.diff(array, 1) < 0):
+            return MonotonicDimension(coordinates=array * string_to_quantity("1"))
+
+        raise Exception("Invalid array for Dimension object.")
 
     if type == "linear":
         increment = array[1] - array[0]
+        if increment == 0:
+            raise ValueError("Invalid array for LinearDimension.")
+
         if np.all(np.diff(array, 1) == increment):
             return LinearDimension(
                 count=array.size,
@@ -244,7 +324,9 @@ def as_dimension(array, type=None):
             )
 
     if type == "monotonic":
-        return MonotonicDimension(coordinates=array * string_to_quantity("1"))
+        if np.all(np.diff(array, 1) > 0) or np.all(np.diff(array, 1) < 0):
+            return MonotonicDimension(coordinates=array * string_to_quantity("1"))
+        raise Exception("The array is not monotonic.")
 
     if type == "labeled":
         return LabeledDimension(labels=array.tolist())

@@ -224,9 +224,44 @@ def test_add_sub():
     out = np.arange(10) - 1 / 1000 * np.arange(10)
     assert np.allclose(c.dependent_variables[0].components, [out])
 
-    error = r"unsupported operand type\(s\): 'CSDM' and 'int'."
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
-        c = a_test + 1
+    # add scalar
+    c = a_test + cp.ScalarQuantity("2m")
+    out = np.arange(10) + 2
+    assert np.allclose(c.dependent_variables[0].components, [out])
+
+    a_t = cp.as_csdm_object(np.arange(10))
+    c = a_t + 5.12
+    out = np.arange(10) + 5.12
+    assert np.allclose(c.dependent_variables[0].components, [out])
+
+    c = a_t + 5.12 - 4j
+    out = np.arange(10) + 5.12 - 4j
+    assert np.allclose(c.dependent_variables[0].components, [out])
+
+    # add complex
+    c = a_test / cp.ScalarQuantity("m") + 3 + 4j
+    out = np.arange(10) + 3 + 4j
+    assert np.allclose(c.dependent_variables[0].components, [out])
+
+    c = a_test.astype("float32")
+    c += cp.ScalarQuantity("5.0cm")
+    out = np.arange(10) + 0.05
+    assert np.allclose(c.dependent_variables[0].components, [out])
+
+    # subtract scalar
+    c = a_test - cp.ScalarQuantity("2m")
+    out = np.arange(10) - 2
+    assert np.allclose(c.dependent_variables[0].components, [out])
+
+    c = a_test.astype("float32")
+    c -= cp.ScalarQuantity("5.0cm")
+    out = np.arange(10) - 0.05
+    assert np.allclose(c.dependent_variables[0].components, [out])
+
+    c = a_test.astype("float32") / cp.ScalarQuantity("cm")
+    c -= 0.05
+    out = np.arange(10) - 0.05
+    assert np.allclose(c.dependent_variables[0].components, [out])
 
     error = r"Cannot operate on CSDM objects with different dimensions."
     with pytest.raises(Exception, match=".*{0}.*".format(error)):
@@ -445,10 +480,16 @@ def test_max_min_clip():
     b = a_test.clip(min=0)
     assert np.allclose(out.clip(min=0), b.dependent_variables[0].components[0])
 
+    b = a_test.clip(max=0.5)
+    assert np.allclose(out.clip(max=0.5), b.dependent_variables[0].components[0])
+
 
 def test_real_imag_conj():
     out, a_test = get_test_2d(complex)
     b = a_test.real
+    assert np.allclose(out.real, b.dependent_variables[0].components[0])
+
+    b = np.real(a_test)
     assert np.allclose(out.real, b.dependent_variables[0].components[0])
 
     b = a_test.imag
@@ -462,3 +503,28 @@ def test_round():
     out, a_test = get_test_2d(float)
     b = a_test.round(1)
     assert np.allclose(out.round(1), b.dependent_variables[0].components[0])
+
+
+def test_not_implemented_error():
+    fn = [np.argmax, np.argmin, np.ptp, np.trace, np.cumsum, np.cumprod]
+    for fn_ in fn:
+        with pytest.raises(NotImplementedError, match=""):
+            fn_(a_test)
+
+    with pytest.raises(NotImplementedError, match=""):
+        a_test.argmax()
+
+    with pytest.raises(NotImplementedError, match=""):
+        a_test.argmin()
+
+    with pytest.raises(NotImplementedError, match=""):
+        a_test.ptp()
+
+    with pytest.raises(NotImplementedError, match=""):
+        a_test.trace()
+
+    with pytest.raises(NotImplementedError, match=""):
+        a_test.cumsum()
+
+    with pytest.raises(NotImplementedError, match=""):
+        a_test.cumprod()

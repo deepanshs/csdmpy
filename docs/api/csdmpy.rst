@@ -31,15 +31,20 @@ Methods
 .. rubric:: Methods Summary
 
 .. autosummary::
-    ~load
-    ~new
     ~parse_dict
+    ~load
     ~loads
+    ~new
+    ~as_csdm_object
+    ~as_dimension
     ~plot
 
 .. rubric:: Method Documentation
-.. autofunction:: load
-.. autofunction:: new
+
 .. autofunction:: parse_dict
+.. autofunction:: load
 .. autofunction:: loads
+.. autofunction:: new
+.. autofunction:: as_csdm_object
+.. autofunction:: as_dimension
 .. autofunction:: plot

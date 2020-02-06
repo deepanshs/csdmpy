@@ -10,6 +10,7 @@ CSDM
 .. autoclass:: CSDM
    :show-inheritance:
 
+
    .. rubric:: Attributes Summary
 
    .. autosummary::
@@ -26,7 +27,14 @@ CSDM
       ~CSDM.data_structure
       ~CSDM.filename
 
-   .. rubric:: Methods Summary
+   .. rubric:: Numpy compatible attributes summary
+
+   .. autosummary::
+
+      ~CSDM.real
+      ~CSDM.imag
+
+   .. rubric:: Methods summary
 
    .. autosummary::
 
@@ -34,9 +42,14 @@ CSDM
       ~CSDM.add_dependent_variable
       ~CSDM.to_dict
       ~CSDM.dumps
+      ~CSDM.astype
       ~CSDM.save
       ~CSDM.copy
       ~CSDM.split
+
+   .. rubric:: Numpy compatible method summary
+
+   .. autosummary::
       ~CSDM.max
       ~CSDM.min
       ~CSDM.clip
@@ -48,7 +61,7 @@ CSDM
       ~CSDM.std
       ~CSDM.prod
 
-   .. rubric:: Attributes Documentation
+   .. rubric:: Attributes documentation
 
    .. autoattribute:: version
    .. autoattribute:: description
@@ -62,15 +75,24 @@ CSDM
    .. autoattribute:: data_structure
    .. autoattribute:: filename
 
-   .. rubric:: Methods Documentation
+   .. rubric:: Numpy compatible attributes documentation
+
+   .. autoattribute:: real
+   .. autoattribute:: imag
+
+   .. rubric:: Methods documentation
 
    .. automethod:: add_dimension
    .. automethod:: add_dependent_variable
    .. automethod:: to_dict
    .. automethod:: dumps
    .. automethod:: save
+   .. automethod:: astype
    .. automethod:: copy
    .. automethod:: split
+
+   .. rubric:: Numpy compatible method documentation
+
    .. automethod:: max
    .. automethod:: min
    .. automethod:: clip

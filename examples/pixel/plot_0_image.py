@@ -39,7 +39,7 @@ print("x1 =", x[1].coordinates[:10])
 
 #%%
 # The dependent variable is the image data, as also seen from the
-# :attr:`~csdmpy.dependent_variables.DependentVariable.quantity_type` attribute
+# :attr:`~csdmpy.DependentVariable.quantity_type` attribute
 # of the corresponding :ref:`dv_api` instance.
 
 print(y[0].quantity_type)
@@ -50,7 +50,7 @@ print(y[0].quantity_type)
 
 #%%
 # As usual, the components of the dependent variable are accessed through
-# the :attr:`~csdmpy.dependent_variables.DependentVariable.components` attribute.
+# the :attr:`~csdmpy.DependentVariable.components` attribute.
 # To access the individual components, use the appropriate array indexing.
 # For example,
 
@@ -61,7 +61,7 @@ print(y[0].components[0])
 # the components correspond to the red color intensity, also indicated by the
 # corresponding component label. The label corresponding to
 # the component array is accessed through the
-# :attr:`~csdmpy.dependent_variables.DependentVariable.component_labels`
+# :attr:`~csdmpy.DependentVariable.component_labels`
 # attribute with appropriate indexing, that is
 
 print(y[0].component_labels[0])
@@ -88,8 +88,8 @@ print(y[0].component_labels[2], y[0].components[2].shape)
 # .. note::
 #         In this example, since there is only one dependent variable, the index
 #         of `y` is set to zero, which is ``y[0]``. The indices for the
-#         :attr:`~csdmpy.dependent_variables.DependentVariable.components` and the
-#         :attr:`~csdmpy.dependent_variables.DependentVariable.component_labels`,
+#         :attr:`~csdmpy.DependentVariable.components` and the
+#         :attr:`~csdmpy.DependentVariable.component_labels`,
 #         on the other hand, spans through the number of components.
 
 #%%

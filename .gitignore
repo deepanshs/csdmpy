@@ -68,3 +68,4 @@ my_file**
 .coverage
 csdm.code-workspace
 csdmpy.pdf
+*.temp

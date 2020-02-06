@@ -151,7 +151,13 @@ class CSDM:
         return f"CSDM({prop})"
 
     def __str__(self):
-        return self.__repr__()
+        prop_dv = ",\n".join([item.__str__() for item in self.dependent_variables])
+        prop_dim = ",\n".join([item.__str__() for item in self.dimensions])
+        if prop_dv == "":
+            return f"CSDM(\n{prop_dim}\n)"
+        if prop_dim == "":
+            return f"CSDM(\n{prop_dv}\n)"
+        return f"CSDM(\n{prop_dv},\n{prop_dim}\n)"
 
     def __eq__(self, other):
         """Overrides the default implementation"""
@@ -217,7 +223,7 @@ class CSDM:
                 3) same number of dependent-variables, and
                 4) each dependent variables with identical dimensionality.
         """
-        self.__check_csdm_object(other)
+        # self.__check_csdm_object(other)
         self.__check_dimension_equality(other)
         self.__check_dependent_variable_len_equality(other)
         self.__check_dependent_variable_dimensionality(other)
@@ -236,14 +242,26 @@ class CSDM:
         Return:
             A CSDM object as the sum of two CSDM objects.
         """
-        self.__check_csdm_object_additive_compatibility(other)
+        if isinstance(other, CSDM):
+            self.__check_csdm_object_additive_compatibility(other)
+
+            d1 = self.copy()
+            for i, item in enumerate(d1.dependent_variables):
+                factor = other.dependent_variables[i].unit.to(item.unit)
+                item.components = (
+                    item.components + factor * other.dependent_variables[i].components
+                )
+            return d1
+
+        other = check_scalar_object(other)
 
         d1 = self.copy()
-        for i, item in enumerate(self.dependent_variables):
-            factor = other.dependent_variables[i].unit.to(item.unit)
-            y = d1.dependent_variables[i].components
-            y = y + factor * other.dependent_variables[i].components
-            d1.dependent_variables[i].components = y
+        for i, item in enumerate(d1.dependent_variables):
+            if not isinstance(other, Quantity):
+                item.components = item.components + other
+            else:
+                factor = other.unit.to(item.unit)
+                item.components = item.components + factor * other.value
         return d1
 
     def __iadd__(self, other):
@@ -260,11 +278,24 @@ class CSDM:
         Return:
             A CSDM object as the sum of two CSDM objects.
         """
-        self.__check_csdm_object_additive_compatibility(other)
+        if isinstance(other, CSDM):
+            self.__check_csdm_object_additive_compatibility(other)
+
+            for i, item in enumerate(self.dependent_variables):
+                factor = other.dependent_variables[i].unit.to(item.unit)
+                item.components.__iadd__(
+                    factor * other.dependent_variables[i].components
+                )
+            return self
+
+        other = check_scalar_object(other)
 
         for i, item in enumerate(self.dependent_variables):
-            factor = other.dependent_variables[i].unit.to(item.unit)
-            item.components.__iadd__(factor * other.dependent_variables[i].components)
+            if not isinstance(other, Quantity):
+                item.components.__iadd__(other)
+            else:
+                factor = other.unit.to(item.unit)
+                item.components.__iadd__(factor * other.value)
         return self
 
     def __sub__(self, other):
@@ -281,14 +312,26 @@ class CSDM:
         Return:
             A CSDM object as the difference of two CSDM objects.
         """
-        self.__check_csdm_object_additive_compatibility(other)
+        if isinstance(other, CSDM):
+            self.__check_csdm_object_additive_compatibility(other)
+
+            d1 = self.copy()
+            for i, item in enumerate(d1.dependent_variables):
+                factor = other.dependent_variables[i].unit.to(item.unit)
+                item.components = (
+                    item.components - factor * other.dependent_variables[i].components
+                )
+            return d1
+
+        other = check_scalar_object(other)
 
         d1 = self.copy()
-        for i, item in enumerate(self.dependent_variables):
-            factor = other.dependent_variables[i].unit.to(item.unit)
-            y = d1.dependent_variables[i].components
-            y = y - factor * other.dependent_variables[i].components
-            d1.dependent_variables[i].components = y
+        for i, item in enumerate(d1.dependent_variables):
+            if not isinstance(other, Quantity):
+                item.components = item.components - other
+            else:
+                factor = other.unit.to(item.unit)
+                item.components = item.components - factor * other.value
         return d1
 
     def __isub__(self, other):
@@ -304,11 +347,24 @@ class CSDM:
         Return:
             A CSDM object as the difference of two CSDM objects.
         """
-        self.__check_csdm_object_additive_compatibility(other)
+        if isinstance(other, CSDM):
+            self.__check_csdm_object_additive_compatibility(other)
+
+            for i, item in enumerate(self.dependent_variables):
+                factor = other.dependent_variables[i].unit.to(item.unit)
+                item.components.__isub__(
+                    factor * other.dependent_variables[i].components
+                )
+            return self
+
+        other = check_scalar_object(other)
 
         for i, item in enumerate(self.dependent_variables):
-            factor = other.dependent_variables[i].unit.to(item.unit)
-            item.components.__isub__(factor * other.dependent_variables[i].components)
+            if not isinstance(other, Quantity):
+                item.components.__isub__(other)
+            else:
+                factor = other.unit.to(item.unit)
+                item.components.__isub__(factor * other.value)
         return self
 
     def __mul__(self, other):
@@ -368,7 +424,7 @@ class CSDM:
             else:
                 value = (1 * item.subtype._unit) / other
                 item.subtype._unit = value.unit
-                item.components.__imul__(value.value)
+                item.components *= value.value
         return self
 
     # ----------------------------------------------------------------------- #
@@ -534,12 +590,14 @@ class CSDM:
 
     @property
     def real(self):
-        """Return the real part of the components."""
+        """Return a csdm object with only the real part of the dependent variable
+        components."""
         return np.real(self)
 
     @property
     def imag(self):
-        """Return the real part of the components."""
+        """Return a csdm object with only the imaginary part of the dependent variable
+        components."""
         return np.imag(self)
 
     # ----------------------------------------------------------------------- #
@@ -598,9 +656,9 @@ class CSDM:
 
     def add_dimension(self, *args, **kwargs):
         """
-        Add a new :ref:`dim_api` instance to the :ref:`csdm_api` instance.
+        Add a new :ref:`dim_api` instance to the :ref:`csdm_api` object.
 
-        There are three ways to add a new independent variable.
+        There are several ways to add a new independent variable.
 
         *From a python dictionary containing valid keywords.*
 
@@ -616,7 +674,7 @@ class CSDM:
             ... }
             >>> datamodel.add_dimension(py_dictionary)
 
-        *From a list of valid keyword arguments.*
+        *Using keyword as the arguments.*
 
         .. doctest::
 
@@ -627,41 +685,38 @@ class CSDM:
             ...     coordinates_offset = '-10 mT'
             ... )
 
-        *From an* :ref:`dim_api` *instance.*
+        *Using a* :ref:`dim_api` *class.*
 
         .. doctest::
 
-            >>> from csdmpy import Dimension
-            >>> datamodel = cp.new()
             >>> var1 = Dimension(type = 'linear',
             ...                  increment = '5 G',
             ...                  count = 50,
             ...                  coordinates_offset = '-10 mT')
             >>> datamodel.add_dimension(var1)
-            >>> print(datamodel.data_structure)
-            {
-              "csdm": {
-                "version": "1.0",
-                "dimensions": [
-                  {
-                    "type": "linear",
-                    "count": 50,
-                    "increment": "5.0 G",
-                    "coordinates_offset": "-10.0 mT",
-                    "quantity_name": "magnetic flux density"
-                  }
-                ],
-                "dependent_variables": []
-              }
-            }
 
-        For the last method, the instance ``var1`` is added to the
-        ``datamodel`` as a reference, `i.e.`, if the instance ``var1`` is
-        destroyed, the ``datamodel`` instance will become corrupt. As a
-        recommendation always pass a copy of the :ref:`dim_api` instance to the
-        :meth:`~csdmpy.csdm.CSDM.add_dimension` method. We provide
-        the later alternative for it is useful for copying an :ref:`dim_api`
-        instance from one :ref:`csdm_api` instance to another.
+        *Using a subtype class.*
+
+        .. doctest::
+
+            >>> var2 = cp.LinearDimension(count = 50,
+            ...                  increment = '5 G',
+            ...                  coordinates_offset = '-10 mT')
+            >>> datamodel.add_dimension(var2)
+
+        *From a numpy array.*
+
+        .. doctest::
+
+            >>> array = np.arange(50)
+            >>> dim = cp.as_dimension(array)
+            >>> datamodel.add_dimension(dim)
+
+        In the third and fourth example, the instances, ``var1`` and ``var2`` are added
+        to the ``datamodel`` as a reference, `i.e.`, if the instance ``var1`` or
+        ``var2`` is destroyed, the ``datamodel`` instance will become corrupt. As a
+        recommendation, always pass a copy of the :ref:`dim_api` instance to the
+        :meth:`~csdmpy.CSDM.add_dimension` method.
         """
         if args != () and isinstance(
             args[0], (Dimension, LinearDimension, MonotonicDimension, LabeledDimension)
@@ -675,7 +730,7 @@ class CSDM:
         """
         Add a new :ref:`dv_api` instance to the :ref:`csdm_api` instance.
 
-        There are again three ways to add a new dependent variable instance.
+        There are again several ways to add a new dependent variable instance.
 
         *From a python dictionary containing valid keywords.*
 
@@ -720,9 +775,7 @@ class CSDM:
 
         If passing a :ref:`dv_api` instance, as a general recommendation,
         always pass a copy of the DependentVariable instance to the
-        :meth:`~csdmpy.csdm.CSDM.add_dependent_variable` method. We provide
-        the later alternative as it is useful for copying a DependentVariable
-        instance from one :ref:`csdm_api` instance to another.
+        :meth:`~csdmpy.add_dependent_variable` method.
         """
         if args != () and isinstance(args[0], DependentVariable):
             self._dependent_variables += (args[0],)
@@ -860,7 +913,7 @@ class CSDM:
         file.
 
         To store a file as a `.csdfe` file, the user much set the value of
-        the :attr:`~csdmpy.dependent_variables.DependentVariable.encoding`
+        the :attr:`~csdmpy.DependentVariable.encoding`
         attribute from the dependent variables to ``raw``.
         In which case, a binary file named `filename_i.dat` will be generated
         where :math:`i` is the :math:`i^\\text{th}` dependent variable.
@@ -911,6 +964,21 @@ class CSDM:
                 allow_nan=False,
             )
 
+    def astype(self, numeric_type):
+        """Return a copy of the CSDM object by converting the numeric type of each
+        dependent variables components to the given value.
+
+        Args:
+            numeric_type: A numpy dtype or a string with a valid numeric type
+
+        Example:
+            >>> data_32 = data_64.astype('float32')  # doctest: +SKIP
+        """
+        copy_ = self.copy()
+        for var in copy_.dependent_variables:
+            var.numeric_type = numeric_type
+        return copy_
+
     def copy(self):
         """
         Create a copy of the current CSDM instance.
@@ -919,7 +987,7 @@ class CSDM:
             A CSDM instance.
 
         Example:
-            >>> data.copy()  #doctest: +SKIP
+            >>> data.copy()  # doctest: +SKIP
         """
         return deepcopy(self)
 
@@ -948,7 +1016,8 @@ class CSDM:
     # ----------------------------------------------------------------------- #
     def max(self, axis=None):
         """
-        Return the maximum component value along a given axis.
+        Return a csdm object with the maximum dependent variable component along a
+        given axis.
 
         Args:
             dimension: An integer or None or a tuple of `m` integers cooresponding to
@@ -969,7 +1038,8 @@ class CSDM:
 
     def min(self, axis=None):
         """
-        Return the minimum component value along a given axis.
+        Return a csdm object with the minimum dependent variable component along a
+        given axis.
 
         Args:
             axis: An integer or None or a tuple of `m` integers cooresponding to
@@ -989,7 +1059,7 @@ class CSDM:
 
     def clip(self, min=None, max=None):
         """
-        Clip the component value between min and max.
+        Clip the dependent variable components between the `min` and `max` values.
 
         Args:
             dimension: An integer or None or a tuple of `m` integers cooresponding to
@@ -1008,18 +1078,21 @@ class CSDM:
         return np.clip(self, a_min, a_max)
 
     def conj(self):
-        """Complex conjugate of all dependent variable components."""
+        """Return a csdm object with the complex conjugate of all dependent variable
+        components."""
         return np.conj(self)
 
     def round(self, decimals=0):
-        """Round the components of the dependent variables to given `decimals`."""
+        """Return a csdm object by rounding the dependent variable components to the
+        given `decimals`."""
         return np.round(self, decimals)
 
     def trace(self, offset=0, axis1=0, axis2=-1):
         raise NotImplementedError("")
 
     def sum(self, axis=None):
-        """Sum of the dependent variable components over a given `axis`.
+        """Return a csdm object with the sum of the dependent variable components over
+        a given `dimension=axis`.
 
         Args:
             axis: An integer or None or a tuple of `m` integers cooresponding to
@@ -1035,7 +1108,8 @@ class CSDM:
         raise NotImplementedError("")
 
     def mean(self, axis=None):
-        """Mean of the dependent variable components over a given `axis`.
+        """Return a csdm object with the mean of the dependent variable components over
+        a given `dimension=axis`.
 
         Args:
             axis: An integer or None or a tuple of `m` integers cooresponding to
@@ -1048,7 +1122,8 @@ class CSDM:
         return np.mean(self, axis=axis)
 
     def var(self, axis=None):
-        """Variance of the dependent variable components over a given `axis`.
+        """Return a csdm object with the variance of the dependent variable components
+        over a given `dimension=axis`.
 
         Args:
             axis: An integer or None or a tuple of `m` integers cooresponding to
@@ -1061,7 +1136,8 @@ class CSDM:
         return np.var(self, axis=axis)
 
     def std(self, axis=None):
-        """Standard deviation of the dependent variable components over a given `axis`.
+        """Return a csdm object with the standard deviation of the dependent variable
+        components over a given `dimension=axis`.
 
         Args:
             axis: An integer or None or a tuple of `m` integers cooresponding to
@@ -1074,7 +1150,8 @@ class CSDM:
         return np.std(self, axis=axis)
 
     def prod(self, axis=None):
-        """Product of dependent variable  the components over a given `axis`.
+        """Return a csdm object with the product of the dependent variable components
+        over a given `dimension=axis`.
 
         Args:
             axis: An integer or None or a tuple of `m` integers cooresponding to
@@ -1090,9 +1167,15 @@ class CSDM:
         raise NotImplementedError("")
 
     def __array_ufunc__(self, function, method, *inputs, **kwargs):
-        # print("__array_ufunc__")
+        print("__array_ufunc__")
+        # print(inputs)
+        # print(kwargs)
+
         csdm = inputs[0]
-        print(method)
+        input_ = []
+        if len(inputs) > 1:
+            input_ = inputs[1:]
+
         if function in __ufunc_list_dimensionless_unit__:
             factor = np.ones(len(csdm.dependent_variables))
             for i, variable in enumerate(csdm.dependent_variables):
@@ -1103,20 +1186,20 @@ class CSDM:
                     )
                 factor[i] = variable.unit.to("")
             return _get_new_csdm_object_after_applying_ufunc(
-                inputs[0], function, method, factor, **kwargs
+                inputs[0], function, method, factor, *input_, **kwargs
             )
 
         if function in __ufunc_list_unit_independent__:
             return _get_new_csdm_object_after_applying_ufunc(
-                inputs[0], function, method, **kwargs
+                inputs[0], function, method, None, *input_, **kwargs
             )
 
         if function in __ufunc_list_applies_to_unit__:
             obj = _get_new_csdm_object_after_applying_ufunc(
-                inputs[0], function, method, **kwargs
+                inputs[0], function, method, None, *input_, **kwargs
             )
             for i, variable in enumerate(obj.dependent_variables):
-                scalar = function(1 * variable.unit)
+                scalar = function(1 * variable.unit, *input_)
                 variable.components *= scalar.value
                 variable.subtype._unit = scalar.unit
             return obj
@@ -1138,6 +1221,10 @@ class CSDM:
                 function, *args[0], **args[1], **kwargs
             )
         raise NotImplementedError(f"Function {function.__name__} is not implemented.")
+
+    def atleast_1d(self, *args, **kwargs):
+        print(args)
+        print(kwargs)
 
 
 def _get_broadcast_shape(array, ndim, axis):
@@ -1195,7 +1282,7 @@ def _check_for_out(csdm, **kwargs):
 
 
 def _get_new_csdm_object_after_applying_ufunc(
-    csdm, func, method=None, factor=None, **kwargs
+    csdm, func, method=None, factor=None, *inputs, **kwargs
 ):
     """
     Perform the operation, func, on the components of the dependent variables, and
@@ -1213,7 +1300,7 @@ def _get_new_csdm_object_after_applying_ufunc(
 
     print(kwargs)
     for i, variable in enumerate(csdm.dependent_variables):
-        y = func(variable.components * factor[i], **kwargs)
+        y = func(variable.components * factor[i], *inputs, **kwargs)
 
         new_dependent_variable = {
             "type": variable.type,
@@ -1247,13 +1334,13 @@ def _get_new_csdm_object_after_applying_function(func, *args, **kwargs):
     return the corresponding CSDM object.
     """
     args_ = []
-    if args is not ():
-        csdm = args[0]
-        if len(args) > 1:
-            args_ = args[1:]
-    if "a" in kwargs.keys():
-        csdm = kwargs["a"]
-        kwargs.pop("a")
+    # if args is not ():
+    csdm = args[0]
+    if len(args) > 1:
+        args_ = args[1:]
+    # if "a" in kwargs.keys():
+    #     csdm = kwargs["a"]
+    #     kwargs.pop("a")
 
     _check_for_out(csdm, **kwargs)
 
