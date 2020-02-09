@@ -281,7 +281,7 @@ class NumericType:
 
     def update(self, element):
         """Update the numeric type."""
-        validate(element, "numeric_type", str, self._check_numeric_type)
+        validate(element, "numeric_type", (str, type), self._check_numeric_type)
 
     def __str__(self):
         """Return a string with the numeric type."""
@@ -295,17 +295,19 @@ class NumericType:
         return True
 
     def _check_numeric_type(self, element):
+        if isinstance(element, type):
+            self.value = element
+            self.dtype = np.dtype(element)
+            return
+
         lst = self.__class__._lst
         if element not in lst.keys():
             message = (
                 "The value, `{0}`, is an invalid `numeric_type` enumeration literal. "
                 "The allowed values are {1}."
             )
-            raise ValueError(
-                message.format(
-                    element, "'" + "', '".join(literals_quantity_type_) + "'"
-                )
-            )
+            literals = self.__class__.literals
+            raise ValueError(message.format(element, "'" + "', '".join(literals) + "'"))
 
         self.value = element
         self.dtype = np.dtype(lst[element])

@@ -14,7 +14,7 @@ from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-__all__ = ["BaseQuantitativeDimension", "ReciprocalVariable"]
+__all__ = ["BaseQuantitativeDimension", "ReciprocalDimension"]
 
 # =========================================================================== #
 #                          Base Quantitative Class                            #
@@ -30,6 +30,7 @@ class BaseQuantitativeDimension(BaseDimension):
         "_quantity_name",
         "_period",
         "_unit",
+        "_equivalent_unit",
         "_equivalencies",
     )
 
@@ -59,6 +60,7 @@ class BaseQuantitativeDimension(BaseDimension):
         self._period = value
 
         self._unit = unit
+        self._equivalent_unit = None
         self._equivalencies = None
 
     def __eq__(self, other):
@@ -165,7 +167,7 @@ class BaseQuantitativeDimension(BaseDimension):
 
         return obj
 
-    def _is_quantitative(self):
+    def is_quantitative(self):
         r"""Return `True`, if the dimension is quantitative, otherwise `False`.
         :returns: A Boolean.
         """
@@ -178,16 +180,18 @@ class BaseQuantitativeDimension(BaseDimension):
             self._unit = ScalarQuantity(unit, self._unit).quantity.unit
             return
 
-        self._unit = ScalarQuantity(unit).quantity.unit
+        # self._unit = ScalarQuantity(unit).quantity.unit
+        self._equivalent_unit = ScalarQuantity(unit).quantity.unit
         self._equivalencies = equivalencies
 
 
 # =========================================================================== #
-#                      ReciprocalVariable Dimension Class                     #
+#                           ReciprocalDimension Class                         #
 # =========================================================================== #
 
 
-class ReciprocalVariable(BaseQuantitativeDimension):
-    r"""Declare a ReciprocalVariable class."""
+class ReciprocalDimension(BaseQuantitativeDimension):
+    r"""Declare a ReciprocalDimension class."""
 
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)

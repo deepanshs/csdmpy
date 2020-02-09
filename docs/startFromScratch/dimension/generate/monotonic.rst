@@ -31,6 +31,10 @@ a MonotonicDimension.
     MonotonicDimension([-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172  -0.10372635
      -0.01817061  0.05936719  0.18141424  0.34758913] cm)
 
+In the above example, we generate a dimensionless MonotonicDimension from
+the NumPy array and scale its dimensionality by multiplying the object with an
+appropriate :class:`~csdmpy.ScalarQuantity`.
+
 **From numpy arrays.**
 
 Use the :meth:`~csdmpy.as_dimension` method to convert a numpy array as a
@@ -39,17 +43,15 @@ Dimension object.
 .. doctest::
 
     >>> numpy_array = 10 ** (np.arange(10)/10)
-    >>> x_dim = cp.as_dimension(numpy_array)*cp.ScalarQuantity('A')
+    >>> x_dim = cp.as_dimension(numpy_array, unit='A')
     >>> print(x_dim)
     MonotonicDimension([1.         1.25892541 1.58489319 1.99526231 2.51188643 3.16227766
      3.98107171 5.01187234 6.30957344 7.94328235] A)
 
-In the last two examples, we generate a dimensionless MonotonicDimension from
-the NumPy array and scale its dimensionality by multiplying the object with the
-appropriate :class:`~csdmpy.ScalarQuantity`.
 
-When using Numpy array, the array must be monotonic, that is, strictly
-increasing or decreasing. An exception will be raised otherwise.
+When generating MonotonicDimension object using the Numpy array, the array
+must be monotonic, that is, either strictly increasing or decreasing.
+An exception will be raised otherwise.
 
 .. doctest::
 

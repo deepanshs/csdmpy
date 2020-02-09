@@ -3,7 +3,7 @@ LabeledDimension
 ----------------
 
 A LabeledDimension is one where the coordinates along the dimension are
-string labels. You can similarly generate a LabeledDimension.
+string labels. You can similarly generate a labeled dimension.
 
 **Using the** :class:`~csdmpy.Dimension` **class.**
 

@@ -3,6 +3,7 @@
 from __future__ import division
 from __future__ import print_function
 
+import json
 import warnings
 from copy import deepcopy
 
@@ -56,7 +57,7 @@ class LabeledDimension(BaseDimension):
             return True
         return False
 
-    def _is_quantitative(self):
+    def is_quantitative(self):
         r"""Return `True`, if the dimension is quantitative, otherwise `False`.
         :returns: A Boolean.
         """
@@ -126,6 +127,11 @@ class LabeledDimension(BaseDimension):
     def axis_label(self):
         """Return a formatted string for displaying label along the dimension axis."""
         return self.label
+
+    @property
+    def data_structure(self):
+        """Json serialized string describing the LabeledDimension class instance."""
+        return json.dumps(self.to_dict(), ensure_ascii=False, sort_keys=False, indent=2)
 
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #

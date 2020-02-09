@@ -10,7 +10,7 @@ dim = []
 dim.append({"type": "linear", "count": 10, "increment": "1"})
 dim.append({"type": "linear", "count": 5, "increment": "1"})
 dim.append({"type": "linear", "count": 15, "increment": "1"})
-dv = {"type": "internal", "components": [data], "quantity_type": "scalar"}
+dv = {"type": "internal", "components": [data.ravel()], "quantity_type": "scalar"}
 
 
 a.add_dimension(dim[0])

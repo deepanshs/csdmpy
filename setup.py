@@ -37,7 +37,7 @@ except FileNotFoundError:
 setup(
     name="csdmpy",
     version=version,
-    description="A python module for importing and exporting CSD model file-format.",
+    description="A python module for the core scientific dataset model.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Deepansh Srivastava",

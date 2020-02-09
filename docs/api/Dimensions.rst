@@ -23,6 +23,8 @@ Dimension
     .. rubric:: Attributes Summary
 
     .. autosummary::
+       :nosignatures:
+
         ~Dimension.type
         ~Dimension.description
         ~Dimension.application
@@ -43,6 +45,8 @@ Dimension
     .. rubric:: Methods Summary
 
     .. autosummary::
+       :nosignatures:
+
         ~Dimension.to
         ~Dimension.to_dict
         ~Dimension.is_quantitative

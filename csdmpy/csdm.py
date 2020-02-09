@@ -5,7 +5,7 @@ from __future__ import print_function
 
 import datetime
 import json
-import warnings
+from collections import MutableSequence
 from copy import deepcopy
 
 import numpy as np
@@ -19,7 +19,6 @@ from csdmpy.dimensions import MonotonicDimension
 from csdmpy.units import string_to_quantity
 from csdmpy.utils import check_scalar_object
 from csdmpy.utils import validate
-
 
 __all__ = ["CSDM"]
 __ufunc_list_dimensionless_unit__ = [
@@ -60,6 +59,89 @@ __ufunc_list_applies_to_unit__ = [np.sqrt, np.square, np.cbrt, np.reciprocal, np
 __function_reduction_list__ = [np.max, np.min, np.sum, np.mean, np.var, np.std, np.prod]
 
 __other_functions__ = [np.round, np.real, np.imag, np.clip]
+
+__shape_manipulation_functions__ = [np.transpose]
+
+__valid_dimensions__ = (
+    Dimension,
+    LinearDimension,
+    MonotonicDimension,
+    LabeledDimension,
+)
+
+
+class AbstractList(MutableSequence):
+    def __init__(self, data=[]):
+        super().__init__()
+        self._list = list(data)
+
+    def __repr__(self):
+        return "<{0} {1}>".format(self.__class__.__name__, self._list)
+
+    def __len__(self):
+        """List length"""
+        return len(self._list)
+
+    def __getitem__(self, index):
+        """Get a list item"""
+        return self._list[index]
+
+    def __delitem__(self, index):
+        raise Exception("Deleting items is not allowed.")
+        # del self._list[index]
+
+    def __setitem__(self, index, item):
+        pass
+
+    def insert(self, index, item):
+        # raise Exception("Inserting items is not allowed.")
+        self._list.insert(index, item)
+
+    def append(self, item):
+        # raise Exception("Appending items is not allowed.")
+        self.insert(len(self._list), item)
+
+    def __str__(self):
+        return str(self._list)
+
+    def __eq__(self, other):
+        """Check equality of DependentVariableList."""
+        if not isinstance(other, self.__class__):
+            return False
+        if len(self._list) != len(other._list):
+            return False
+
+        check = []
+        for i in range(len(self._list)):
+            check.append(self._list[i] == other._list[i])
+
+        if np.all(check):
+            return True
+        return False
+
+
+class DimensionList(AbstractList):
+    def __init__(self, data=[]):
+        super().__init__(data)
+
+    def __setitem__(self, index, item):
+        if not isinstance(item, __valid_dimensions__):
+            raise ValueError(
+                f"Expecting a Dimension object, found {item.__class__.name__}"
+            )
+        self._list[index] = item
+
+
+class DependentVariableList(AbstractList):
+    def __init__(self, data=[]):
+        super().__init__(data)
+
+    def __setitem__(self, index, item):
+        if not isinstance(item, DependentVariable):
+            raise ValueError(
+                f"Expecting a DependentVariable object, found {item.__class__.name__}"
+            )
+        self._list[index] = item
 
 
 class CSDM:
@@ -112,7 +194,7 @@ class CSDM:
 
         kwargs_keys = kwargs.keys()
 
-        self._dimensions = ()
+        self._dimensions = DimensionList([])
         if "dimensions" in kwargs_keys:
             if not isinstance(kwargs["dimensions"], list):
                 t_ = type(kwargs["dimensions"])
@@ -124,7 +206,7 @@ class CSDM:
             for item in kwargs["dimensions"]:
                 self.add_dimension(item)
 
-        self._dependent_variables = ()
+        self._dependent_variables = DependentVariableList([])
         if "dependent_variables" in kwargs_keys:
             t_ = type(kwargs["dependent_variables"])
             if not isinstance(kwargs["dependent_variables"], list):
@@ -161,20 +243,20 @@ class CSDM:
 
     def __eq__(self, other):
         """Overrides the default implementation"""
-        if isinstance(other, CSDM):
-            check = [
-                self.dimensions == other.dimensions,
-                self.dependent_variables == other.dependent_variables,
-                self.tags == other.tags,
-                self.read_only == other.read_only,
-                self.version == other.version,
-                self.timestamp == other.timestamp,
-                self.geographic_coordinate == other.geographic_coordinate,
-                self.description == other.description,
-                self.application == other.application,
-            ]
-            if False in check:
-                return False
+        if not isinstance(other, CSDM):
+            return False
+        check = [
+            self.dimensions == other.dimensions,
+            self.dependent_variables == other.dependent_variables,
+            self.tags == other.tags,
+            self.read_only == other.read_only,
+            self.version == other.version,
+            self.timestamp == other.timestamp,
+            self.geographic_coordinate == other.geographic_coordinate,
+            self.description == other.description,
+            self.application == other.application,
+        ]
+        if np.all(check):
             return True
         return False
 
@@ -431,79 +513,13 @@ class CSDM:
     #                                Attributes                               #
     # ----------------------------------------------------------------------- #
     @property
-    def dependent_variables(self):
-        """Tuple of the :ref:`dv_api` instances."""
-        return self._dependent_variables
-
-    @property
-    def dimensions(self):
-        """Tuple of the :ref:`dim_api` instances."""
-        return self._dimensions
-
-    @property
-    def tags(self):
-        """List of tags attached to the dataset."""
-        return self._tags
-
-    @tags.setter
-    def tags(self, value):
-        self._tags = validate(value, "tags", list)
-
-    @property
-    def read_only(self):
-        """
-        If True, the data-file is serialized as read only, otherwise, False.
-
-        By default, the :ref:`csdm_api` object loads a copy of the .csdf(e)
-        file, irrespective of the value of the `read_only` attribute.
-        The value of this attribute may be toggled at any time after the file
-        import.
-        When serializing the `.csdf(e)` file, if the value of the `read_only`
-        attribute is found True, the file will be serialized as read only.
-        """
-        return deepcopy(self._read_only)
-
-    @read_only.setter
-    def read_only(self, value):
-        self._read_only = validate(value, "read_only", bool)
-
-    @property
     def version(self):
         """Version number of the CSD model on file."""
         return deepcopy(self._version)
 
     @property
-    def timestamp(self):
-        """
-        Timestamp from when the file was last serialized.
-
-        The timestamp stamp is a string representation of the Coordinated
-        Universal Time (UTC) formatted according to the iso-8601 standard.
-
-        Raises:
-            AttributeError: When the attribute is modified.
-        """
-        return deepcopy(self._timestamp)
-
-    @property
-    def geographic_coordinate(self):
-        """
-        Geographic coordinate, if present, from where the file was last serialized.
-
-        The geographic coordinates correspond to the location where the file was last
-        serialized. If present, the geographic coordinates are described with three
-        attributes, the required latitude and longitude, and an optional altitude.
-
-        Raises:
-            AttributeError: When the attribute is modified.
-        """
-        return deepcopy(self._geographic_coordinate)
-
-    @property
     def description(self):
-        """Description of the dataset.
-
-        The default value is an empty string, ''.
+        """Description of the dataset. The default value is an empty string.
 
         Example:
             >>> print(data.description)
@@ -520,6 +536,70 @@ class CSDM:
     @description.setter
     def description(self, value):
         self._description = validate(value, "description", str)
+
+    @property
+    def read_only(self):
+        """
+        If True, the data-file is serialized as read only, otherwise, False.
+
+        By default, the :ref:`csdm_api` object loads a copy of the .csdf(e) file,
+        irrespective of the value of the `read_only` attribute. The value of this
+        attribute may be toggled at any time after the file import.
+        When serializing the `.csdf(e)` file, if the value of the `read_only`
+        attribute is found True, the file will be serialized as read only.
+        """
+        return self._read_only
+
+    @read_only.setter
+    def read_only(self, value):
+        self._read_only = validate(value, "read_only", bool)
+
+    @property
+    def tags(self):
+        """List of tags attached to the dataset."""
+        return self._tags
+
+    @tags.setter
+    def tags(self, value):
+        self._tags = validate(value, "tags", list)
+
+    @property
+    def timestamp(self):
+        """
+        Timestamp from when the file was last serialized. This attribute is real only.
+
+        The timestamp stamp is a string representation of the Coordinated Universal
+        Time (UTC) formatted according to the iso-8601 standard.
+
+        Raises:
+            AttributeError: When the attribute is modified.
+        """
+        return self._timestamp
+
+    @property
+    def geographic_coordinate(self):
+        """
+        Geographic coordinate, if present, from where the file was last serialized.
+        This attribute is read-only.
+
+        The geographic coordinates correspond to the location where the file was last
+        serialized. If present, the geographic coordinates are described with three
+        attributes, the required latitude and longitude, and an optional altitude.
+
+        Raises:
+            AttributeError: When the attribute is modified.
+        """
+        return self._geographic_coordinate
+
+    @property
+    def dimensions(self):
+        """Tuple of the :ref:`dim_api` instances."""
+        return self._dimensions
+
+    @property
+    def dependent_variables(self):
+        """Tuple of the :ref:`dv_api` instances."""
+        return self._dependent_variables
 
     @property
     def application(self):
@@ -557,16 +637,11 @@ class CSDM:
         Returns:
             Python dictionary object with the application metadata.
         """
-        return deepcopy(self._application)
+        return self._application
 
     @application.setter
     def application(self, value):
         self._application = validate(value, "application", dict)
-
-    @property
-    def filename(self):
-        """Local file address of the current file. """
-        return self._filename
 
     @property
     def data_structure(self):
@@ -586,6 +661,11 @@ class CSDM:
 
         return json.dumps(dictionary, ensure_ascii=False, sort_keys=False, indent=2)
 
+    @property
+    def filename(self):
+        """Local file address of the current file. """
+        return self._filename
+
     # Numpy - like property
 
     @property
@@ -600,59 +680,21 @@ class CSDM:
         components."""
         return np.imag(self)
 
+    @property
+    def T(self):
+        """Return a csdm object with a transpose of the data."""
+        pass
+        # return np.imag(self)
+
+    @property
+    def shape(self):
+        """Return the count along each dimension of the csdm objects as a
+        tuple."""
+        return tuple([item.count for item in self.dimensions])
+
     # ----------------------------------------------------------------------- #
     #                                  Methods                                #
     # ----------------------------------------------------------------------- #
-
-    def _reshape(self, shape):
-        r"""
-        Reshapes the components array.
-
-        The array is reshaped to :math:`(p \times N_{d-1} \times ... N_1 \times N_0)`
-        where :math:`p` is the number of components and :math:`N_k` is the number of
-        points along the :math:`k^\mathrm{th}` dimension.
-        """
-        for item in self.dependent_variables:
-            item = item.subtype
-            sub_shape = (item.quantity_type.p,) + tuple(shape)
-            dtype = item.numeric_type.dtype
-
-            grid_points = np.asarray(sub_shape).prod()
-            components_size = item._components.size
-
-            if grid_points != components_size and item._sparse_sampling == {}:
-                warnings.warn(
-                    (
-                        f"The number of elements in the components array, "
-                        f"{components_size}, is not consistent with the total "
-                        f"number of grid points, {grid_points}."
-                    )
-                )
-            if item._sparse_sampling == {}:
-                item._components = np.asarray(
-                    item._components[:, :grid_points].reshape(sub_shape), dtype=dtype
-                )
-            else:
-                item._components = self.fill_sparse_space(item, sub_shape, dtype)
-
-    def fill_sparse_space(self, item, shape, dtype):
-        """Fill sparse grid using numpy broadcasting."""
-        components = np.zeros(shape, dtype=dtype)
-        sparse_dimensions_indexes = item._sparse_sampling._sparse_dimensions_indexes
-        sgs = item._sparse_sampling._sparse_grid_vertexes.size
-        grid_vertexes = item._sparse_sampling._sparse_grid_vertexes.reshape(
-            int(sgs / len(sparse_dimensions_indexes)), len(sparse_dimensions_indexes)
-        ).T
-
-        vertexes = [slice(None) for i in range(len(shape))]
-        for i, sparse_index in enumerate(sparse_dimensions_indexes):
-            vertexes[sparse_index] = grid_vertexes[i]
-
-        vertexes = tuple(vertexes[::-1])
-        _new_shape = components[vertexes].shape
-
-        components[vertexes] = item.components.reshape(_new_shape)
-        return components
 
     def add_dimension(self, *args, **kwargs):
         """
@@ -778,13 +820,40 @@ class CSDM:
         :meth:`~csdmpy.add_dependent_variable` method.
         """
         if args != () and isinstance(args[0], DependentVariable):
-            self._dependent_variables += (args[0],)
+            dv = args[0]
         else:
-            self._dependent_variables += (
-                DependentVariable(filename=self.filename, *args, **kwargs),
-            )
-        self._dependent_variables[-1].encoding = "base64"
-        self._dependent_variables[-1].type = "internal"
+            dv = DependentVariable(filename=self.filename, *args, **kwargs)
+            dv.encoding = "base64"
+            dv.type = "internal"
+
+        shape = self.shape
+        if shape != ():
+            dv._reshape(shape[::-1])
+
+        # if np.prod(shape) == 1:
+        #     self._dependent_variables += (dv,)
+        #     return
+
+        # size = np.prod(shape)
+        # if dv.components[0].size != np.prod(shape):
+        #     raise Exception(
+        #         f"Expecting a DependentVariable with {size} points per component, "
+        #         f"instead found {dv.components[0].size} points per component."
+        #     )
+        # if dv.components[0].shape != shape[::-1]:
+        #     raise Exception(
+        #         f"The components array from the Dependent variable of shape "
+        #         f"{dv.components[0].shape} is not aligned with the order of "
+        #         f"dimensions, {shape}."
+        #     )
+        self._dependent_variables += [dv]
+        return
+
+        # self._dependent_variables += (
+        #     DependentVariable(filename=self.filename, *args, **kwargs),
+        # )
+        # self._dependent_variables[-1].encoding = "base64"
+        # self._dependent_variables[-1].type = "internal"
 
     def to_dict(
         self, update_timestamp=False, read_only=False, version=__latest_CSDM_version__
@@ -803,13 +872,12 @@ class CSDM:
             'geographic_coordinate': {'latitude': '10 deg', 'longitude': '93.2 deg',
             'altitude': '10 m'}, 'description': 'A simulated sine curve.',
             'dimensions': [{'type': 'linear', 'description': 'A temporal dimension.',
-            'count': 10, 'increment': '0.1 s', 'quantity_name': 'time',
-            'label': 'time', 'reciprocal': {'quantity_name': 'frequency'}}],
-            'dependent_variables': [{'type': 'internal',
-            'description': 'A response dependent variable.', 'name': 'sine curve',
-            'encoding': 'base64', 'numeric_type': 'float32', 'quantity_type': 'scalar',
-            'component_labels': ['response'],
-            'components': ['AAAAABh5Fj9xeHM/cXhzPxh5Fj8yMQ0lGHkWv3F4c79xeHO/GHkWvw==']}]}}
+            'count': 10, 'increment': '0.1 s', 'quantity_name': 'time','label': 'time',
+            'reciprocal': {'quantity_name': 'frequency'}}], 'dependent_variables':
+            [{'type': 'internal', 'description': 'A response dependent variable.',
+            'name': 'sine curve', 'encoding': 'base64', 'numeric_type': 'float32',
+            'quantity_type': 'scalar', 'component_labels': ['response'],'components':
+            ['AAAAABh5Fj9xeHM/cXhzPxh5Fj8yMQ0lGHkWv3F4c79xeHO/GHkWvw==']}]}}
         """
         return self._to_dict()
 
@@ -992,23 +1060,39 @@ class CSDM:
         return deepcopy(self)
 
     def split(self):
-        """Split the dependent-variables into individual csdm objects.
+        """Split the dependent-variables into view of individual csdm objects.
 
         Return:
-            A list of CSDM objects, each with one dependent variable.
+            A list of CSDM objects, each with one dependent variable. The
+            objects are returned as a view.
 
         Example:
             >>> # data contains two dependent variables
             >>> d1, d2 = data.split()  #doctest: +SKIP
         """
-        copy = self.copy()
-        copy._dependent_variables = ()
+
+        def new_object():
+            a = CSDM()
+            a._dimensions = self._dimensions
+            a._dependent_variables = DependentVariableList([])
+            a._tags = self._tags
+            a._read_only = self._read_only
+            a._version = self._version
+            a._timestamp = self._timestamp
+            a._geographic_coordinate = self._geographic_coordinate
+            a._description = self._description
+            a._application = self._application
+            a._filename = self._filename
+            return a
+
+        # copy = self.copy()
+        # copy._dependent_variables = ()
 
         dv = []
         for variable in self.dependent_variables:
-            copy_ = self.copy()
-            copy_._dependent_variables = (variable,)
-            dv.append(copy_)
+            a = new_object()
+            a._dependent_variables += [variable]
+            dv.append(a)
         return dv
 
     # ----------------------------------------------------------------------- #
@@ -1166,6 +1250,10 @@ class CSDM:
     def cumprod(self, axis=None):
         raise NotImplementedError("")
 
+    # csdm dimension order manipulation
+    def transpose(self):
+        pass
+
     def __array_ufunc__(self, function, method, *inputs, **kwargs):
         print("__array_ufunc__")
         # print(inputs)
@@ -1207,8 +1295,8 @@ class CSDM:
         raise NotImplementedError(f"Function {function} is not implemented.")
 
     def __array_function__(self, function, types, *args, **kwargs):
-        # print("__array_function__")
-        # print(types,)
+        print("__array_function__")
+        # print(types)
         # print(kwargs)
         # print(function)
         # print(args)
@@ -1220,11 +1308,32 @@ class CSDM:
             return _get_new_csdm_object_after_applying_function(
                 function, *args[0], **args[1], **kwargs
             )
+        if function in __shape_manipulation_functions__:
+            if "axes" in args[1].keys():
+                args[1]["axes"] = (0,) + tuple(np.asarray(args[1]["axes"]) + 1)
+            else:
+                dim_len = len(args[0][0].dimensions)
+                args[1]["axes"] = (0,) + tuple([-i - 1 for i in range(dim_len)])
+
+            csdm = _get_new_csdm_object_after_applying_function(
+                function, *args[0], **args[1], **kwargs
+            )
+            csdm._dimensions = tuple(
+                [
+                    csdm.dimensions[args[1]["axes"][1:][i]]
+                    for i in range(len(csdm.dimensions))
+                ]
+            )
+
         raise NotImplementedError(f"Function {function.__name__} is not implemented.")
 
-    def atleast_1d(self, *args, **kwargs):
-        print(args)
-        print(kwargs)
+    # def __array_interface__(self, *args, **kwargs):
+    #     print("__array_interface__")
+    #     pass
+
+    # def atleast_1d(self, *args, **kwargs):
+    #     print(args)
+    #     print(kwargs)
 
 
 def _get_broadcast_shape(array, ndim, axis):
@@ -1298,10 +1407,21 @@ def _get_new_csdm_object_after_applying_ufunc(
 
     new = CSDM()
 
-    print(kwargs)
+    # dimension should be added first
+    # if method == "reduce":
+    #     for i, variable in enumerate(csdm.dimensions):
+    #         if -1 - i not in kwargs["axis"]:
+    #             new.add_dimension(variable.copy())
+    # else:
+    new._dimensions = deepcopy(csdm.dimensions)
+    # for i, variable in enumerate(csdm.dimensions):
+    #     new.add_dimension(variable.copy())
+
     for i, variable in enumerate(csdm.dependent_variables):
         y = func(variable.components * factor[i], *inputs, **kwargs)
 
+        shape0 = y.shape[0]
+        size = y[0].size
         new_dependent_variable = {
             "type": variable.type,
             "description": variable.description,
@@ -1312,19 +1432,11 @@ def _get_new_csdm_object_after_applying_ufunc(
             "encoding": variable.encoding,
             "numeric_type": str(y.dtype),
             "quantity_type": variable.quantity_type,
-            "components": y,
+            "components": y.reshape(shape0, size),
             "application": variable.application,
         }
         new.add_dependent_variable(new_dependent_variable)
 
-    # if method == "reduce":
-    #     for i, variable in enumerate(csdm.dimensions):
-    #         if -1 - i not in kwargs["axis"]:
-    #             new.add_dimension(variable.copy())
-    # else:
-    new._dimensions = deepcopy(csdm.dimensions)
-    # for i, variable in enumerate(csdm.dimensions):
-    #     new.add_dimension(variable.copy())
     return new
 
 
@@ -1334,20 +1446,24 @@ def _get_new_csdm_object_after_applying_function(func, *args, **kwargs):
     return the corresponding CSDM object.
     """
     args_ = []
-    # if args is not ():
     csdm = args[0]
     if len(args) > 1:
         args_ = args[1:]
-    # if "a" in kwargs.keys():
-    #     csdm = kwargs["a"]
-    #     kwargs.pop("a")
 
     _check_for_out(csdm, **kwargs)
 
     new = CSDM()
+
+    # dimension should be added first
+    new._dimensions = deepcopy(csdm.dimensions)
+    # for i, variable in csdm.dimensions:
+    #     new._dimensions[i] = csdm.dimensions[kwargs["axes"][1:][i]]
+
     for variable in csdm.dependent_variables:
         y = func(variable.components, *args_, **kwargs)
 
+        shape0 = y.shape[0]
+        size = y[0].size
         new_dependent_variable = {
             "type": variable.type,
             "description": variable.description,
@@ -1358,14 +1474,11 @@ def _get_new_csdm_object_after_applying_function(func, *args, **kwargs):
             "encoding": variable.encoding,
             "numeric_type": str(y.dtype),
             "quantity_type": variable.quantity_type,
-            "components": y,
+            "components": y.reshape(shape0, size),
             "application": variable.application,
         }
         new.add_dependent_variable(new_dependent_variable)
 
-    new._dimensions = deepcopy(csdm.dimensions)
-    # for variable in csdm.dimensions:
-    #     new.add_dimension(variable.copy())
     return new
 
 
@@ -1398,8 +1511,17 @@ def _get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
 
     new = CSDM()
 
+    # dimension should be added first
+    new._dimensions = deepcopy(csdm.dimensions)
+    # for i, variable in enumerate(self.dimensions):
+    #     new.add_dimension(variable.copy())
+
     for variable in csdm.dependent_variables:
         y = variable.components * apodization_vector_nd
+
+        shape0 = y.shape[0]
+        size = y[0].size
+        # print(shape0, size)
         new_dependent_variable = {
             "type": variable.type,
             "description": variable.description,
@@ -1410,14 +1532,11 @@ def _get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
             "encoding": variable.encoding,
             "numeric_type": str(y.dtype),
             "quantity_type": variable.quantity_type,
-            "components": y,
+            "components": y.reshape(shape0, size),
             "application": variable.application,
         }
         new.add_dependent_variable(new_dependent_variable)
 
-    new._dimensions = deepcopy(csdm.dimensions)
-    # for i, variable in enumerate(self.dimensions):
-    #     new.add_dimension(variable.copy())
     return new
 
 
@@ -1446,10 +1565,19 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
 
     new = CSDM()
     lst = []
+
+    # dimension should be added first
+    if axis is not None:
+        for i, variable in enumerate(csdm.dimensions):
+            if -1 - i not in axis:
+                new.add_dimension(variable.copy())
+
     for variable in csdm.dependent_variables:
         y = func(variable.components, *args_, **kwargs)
 
         if axis is not None:
+            shape0 = y.shape[0]
+            size = y[0].size
             new_dependent_variable = {
                 "type": variable.type,
                 "description": variable.description,
@@ -1460,7 +1588,7 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
                 "encoding": variable.encoding,
                 "numeric_type": str(y.dtype),
                 "quantity_type": variable.quantity_type,
-                "components": y,
+                "components": y.reshape(shape0, size),
                 "application": variable.application,
             }
             new.add_dependent_variable(new_dependent_variable)
@@ -1471,7 +1599,4 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
         del new
         return lst
 
-    for i, variable in enumerate(csdm.dimensions):
-        if -1 - i not in axis:
-            new.add_dimension(variable.copy())
     return new

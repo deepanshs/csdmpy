@@ -16,7 +16,7 @@ demonstrates the effect of these attributes and methods on the coordinates.
     >>> x = cp.MonotonicDimension(coordinates=array)*cp.ScalarQuantity('cm')
 
 Attributes
-^^^^^^^^^^
+""""""""""
 
 The following are the attributes of the :class:`~csdmpy.MonotonicDimension`
 instance.
@@ -32,7 +32,6 @@ instance.
 
 
 **The attributes that modify the coordinates**
-
 
 :attr:`~csdmpy.Dimension.count`
     The number of points along the dimension
@@ -80,8 +79,7 @@ instance.
          99999.8298828  99999.89627365] cm
 
 
-Other attributes
-""""""""""""""""
+**Other attributes**
 
 :attr:`~csdmpy.Dimension.label`
     .. doctest::
@@ -111,7 +109,7 @@ Other attributes
 
 
 Methods
-^^^^^^^
+"""""""
 
 :meth:`~csdmpy.Dimension.to()`
 
@@ -141,11 +139,8 @@ coordinates.  An exception will be raised otherwise,
 
 
 
-
-Object properties
-^^^^^^^^^^^^^^^^^
-
-**Changing the dimensionality of a physical dimension**
+Changing the dimensionality
+"""""""""""""""""""""""""""
 
 You may scale the dimension object by multiplying the object with the
 appropriate ScalarQuantity, as follows,

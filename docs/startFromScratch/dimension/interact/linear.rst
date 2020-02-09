@@ -197,10 +197,8 @@ coordinates. An exception will be raised otherwise.
     Exception: The unit 'km / s' (speed) is inconsistent with the unit 'min' (time).
 
 
-Object properties
-^^^^^^^^^^^^^^^^^
-
-**Changing the dimensionality of a physical dimension**
+Changing the dimensionality
+"""""""""""""""""""""""""""
 
 You may scale the dimension object by multiplying the object with the
 appropriate ScalarQuantity, as follows,

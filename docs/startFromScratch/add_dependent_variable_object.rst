@@ -10,9 +10,11 @@ Create a new empty CSDM object following,
     >>> import csdmpy as cp
     >>> new_data = cp.new(description='A new test dependent variables dataset')
 
-An instance of the DependentVariable class is added using the
+Add an instance of the DependentVariable class using the
 :meth:`~csdmpy.CSDM.add_dependent_variable` method of the :ref:`csdm_api`
-instance. There are two subtypes of DependentVariable class:
+instance.
+
+There are two subtypes of DependentVariable class:
 
 - **InternalDependentVariable**:
   We refer to an instance of the DependentVariable as *internal* when the
@@ -23,24 +25,29 @@ instance. There are two subtypes of DependentVariable class:
   components of the dependent variable are stored in an external file as
   binary data either locally or at a remote server.
 
-In version 1.0, the CSD model allows dependent variables with quantity types
-as
 
-- scalar
-- vector_n
-- pixel_n
-- matrix_n_m
-- symmetric_matrix_n
+**Using an instance of the DependentVariable class**
 
-.. seeAlso::
-    Read more about :ref:`DependentVariable API <dv_api>`.
+Please read the topic :ref:`generate_dependent_variable_objects` for details
+on how to generate an instance of the DependentVariable class. Once created,
+use the :meth:`~csdmpy.CSDM.add_dependent_variable` method of the CSDM object
+to add the dependent variable, for example,
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Adding a scalar dependent variables
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doctest::
 
-A dependent variable with quantity type `scalar` is a single-component
-dependent variable. Consider the following python dictionary
+    >>> dv = cp.as_dependent_variable(np.arange(10))
+    >>> new_data.add_dependent_variable(dv)
+    >>> print(new_data)
+    CSDM(
+    DependentVariable(
+    [[0 1 2 3 4 5 6 7 8 9]], quantity_type=scalar, numeric_type=int64)
+    )
+
+
+**Using Python's dictionary objects**
+
+When using python dictionaries, the key-value pairs of the dictionary must
+be a valid collection for the given DependentVariable subtype. For example,
 
 .. doctest::
 
@@ -49,130 +56,17 @@ dependent variable. Consider the following python dictionary
     ...     'quantity_type': 'scalar',
     ...     'description': 'This is an internal scalar dependent variable',
     ...     'unit': 'cm',
-    ...     'components': [np.arange(100)]
+    ...     'components': np.arange(100)
     ... }
-
-Here, the components are scalar physical quantities with the unit `cm`. The
-components are listed as the value of the
-:attr:`~csdmpy.DependentVariable.components` keyword, and
-therefore, the value of the `type` keyword is specified as `internal`.
-
-.. note::
-    The value of the components attribute is a list of numpy array.
-    In csdmpy, the first dimension is reserved for the components. Since this
-    example has only one component, we specify it as a list of numpy array.
-    Alternatively, one could also assign
-    ``np.arange(100).reshape(np.newaxis, 100)`` as the value of the components
-    attribute.
-
-To add a dependent variable to the ``new_data`` instance, use the
-:meth:`~csdmpy.CSDM.add_dependent_variable` method as
-
-.. doctest::
-
     >>> new_data.add_dependent_variable(d0)
-
-This will generate and add a :ref:`dv_api` object to the list of
-dependent variables, thereby creating a 0D{1} dataset. The data structure,
-after adding the dependent variable is,
-
-.. doctest::
-
-    >>> print(new_data.data_structure)
-    {
-      "csdm": {
-        "version": "1.0",
-        "description": "A new test dependent variables dataset",
-        "dimensions": [],
-        "dependent_variables": [
-          {
-            "type": "internal",
-            "description": "This is an internal scalar dependent variable",
-            "unit": "cm",
-            "quantity_name": "length",
-            "numeric_type": "int64",
-            "quantity_type": "scalar",
-            "components": [
-              [
-                "0, 1, ..., 98, 99"
-              ]
-            ]
-          }
-        ]
-      }
-    }
-
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Adding a multi-component dependent variables
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-In this next example, we demonstrate how to add a dependent variable with
-multiple components. This time we use keywords as the argument of the
-:meth:`~csdmpy.CSDM.add_dependent_variable` method to add a new
-dependent variable.
-
-.. doctest::
-
-    >>> new_data.add_dependent_variable(
-    ...     type='internal',
-    ...     description='This is an internal vector dependent variable',
-    ...     quantity_type='vector_3',
-    ...     unit='kg * m / s^2',
-    ...     components=np.arange(300, dtype='complex64').reshape(3,100)
-    ... )
-
-Notice, the value of the `components` keyword is a numpy array of shape
-3 x 100, where 3 is the number of components, and 100 is the number of points
-per component. Here we specify `vector_3` as the value of the
-`quantity_type`, indicating that the three components of the dependent variable
-should be interpreted as vector dataset. Users may, however, substitute this
-value with any valid `quantity_type` consistent with the number of components.
-For example, the above dataset may also be interpreted as image data
-if the quantity type is given as `pixel_3`.
-
-The data structure after adding the above dependent variable is
-
-.. doctest::
-
-    >>> print(new_data.data_structure)
-    {
-      "csdm": {
-        "version": "1.0",
-        "description": "A new test dependent variables dataset",
-        "dimensions": [],
-        "dependent_variables": [
-          {
-            "type": "internal",
-            "description": "This is an internal scalar dependent variable",
-            "unit": "cm",
-            "quantity_name": "length",
-            "numeric_type": "int64",
-            "quantity_type": "scalar",
-            "components": [
-              [
-                "0, 1, ..., 98, 99"
-              ]
-            ]
-          },
-          {
-            "type": "internal",
-            "description": "This is an internal vector dependent variable",
-            "unit": "kg * m * s^-2",
-            "quantity_name": "force",
-            "numeric_type": "complex64",
-            "quantity_type": "vector_3",
-            "components": [
-              [
-                "0j, (1+0j), ..., (98+0j), (99+0j)"
-              ],
-              [
-                "(100+0j), (101+0j), ..., (198+0j), (199+0j)"
-              ],
-              [
-                "(200+0j), (201+0j), ..., (298+0j), (299+0j)"
-              ]
-            ]
-          }
-        ]
-      }
-    }
+    >>> print(new_data)
+    CSDM(
+    DependentVariable(
+    [[0 1 2 3 4 5 6 7 8 9]], quantity_type=scalar, numeric_type=int64),
+    DependentVariable(
+    [[ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+      24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
+      48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71
+      72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95
+      96 97 98 99]] cm, quantity_type=scalar, numeric_type=int64)
+    )

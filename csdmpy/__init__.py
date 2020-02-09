@@ -4,37 +4,48 @@ from __future__ import division
 from __future__ import print_function
 
 import json
+import warnings
 from urllib.parse import urlparse
 
 import numpy as np
 
-from .csdm import CSDM
-from .dependent_variables import DependentVariable
-from .dependent_variables.download import download_file_from_url
-from .dimensions import Dimension
-from .dimensions import LabeledDimension
-from .dimensions import LinearDimension
-from .dimensions import MonotonicDimension
-from .helper_functions import _preview
-from .numpy_wrapper import apodize
-from .tests import *
-from .units import ScalarQuantity
-from .units import string_to_quantity
-from .utils import QuantityType
-from .utils import validate
+from csdmpy.csdm import CSDM  # lgtm [py/import-own-module]
+from csdmpy.dependent_variables import DependentVariable  # lgtm [py/import-own-module]
+from csdmpy.dependent_variables import download  # lgtm [py/import-own-module]
+from csdmpy.dimensions import Dimension  # lgtm [py/import-own-module]
+from csdmpy.dimensions import LabeledDimension  # lgtm [py/import-own-module]
+from csdmpy.dimensions import LinearDimension  # lgtm [py/import-own-module]
+from csdmpy.dimensions import MonotonicDimension  # lgtm [py/import-own-module]
+from csdmpy.helper_functions import _preview  # lgtm [py/import-own-module]
+from csdmpy.numpy_wrapper import apodize  # lgtm [py/import-own-module]
+from csdmpy.tests import *  # lgtm [py/import-own-module]
+from csdmpy.units import ScalarQuantity  # lgtm [py/import-own-module]
+from csdmpy.units import string_to_quantity  # lgtm [py/import-own-module]
+from csdmpy.utils import QuantityType  # lgtm [py/import-own-module]
+from csdmpy.utils import validate  # lgtm [py/import-own-module]
+
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 __version__ = "0.2.dev"
 
 
-__all__ = ["load", "new", "plot"]
+__all__ = [
+    "parse_dict",
+    "load",
+    "loads",
+    "new",
+    "as_csdm",
+    "as_dependent_variable",
+    "as_dimension",
+    "plot",
+]
 
 
 def _import_json(filename, verbose=False):
     res = urlparse(filename)
     if res[0] not in ["file", ""]:
-        filename = download_file_from_url(filename, verbose)
+        filename = download.download_file_from_url(filename, verbose)
     with open(filename, "rb") as f:
         content = f.read()
         return json.loads(str(content, encoding="UTF-8"))
@@ -102,10 +113,6 @@ def parse_dict(dictionary):
     if "dependent_variables" in key_list_csdm:
         for dat in dictionary["csdm"]["dependent_variables"]:
             csdm.add_dependent_variable(dat)
-
-    n_points = [item.count for item in csdm.dimensions]
-    if n_points != []:
-        csdm._reshape(n_points[::-1])
 
     for key in optional_keys:
         if key in key_list_csdm:
@@ -210,10 +217,11 @@ def new(description=""):
     return CSDM(description=description)
 
 
-def as_csdm_object(array, quantity_type="scalar"):
-    """Generate and return a csdm object from a nD numpy array.
-    The nD array becomes the dependent variable of the given quantity type. The shape
-    of the nD array is used to generate Dimension object of type `linear`.
+def as_csdm(array, quantity_type="scalar"):
+    """Generate and return a view of the nD numpy array as a csdm object.
+    The nD array is the dependent variable of the csdm object of the given quantity
+    type. The shape of the nD array is used to generate Dimension object of `linear`
+    subtype.
 
     Args:
         array: The nD numpy array.
@@ -221,12 +229,13 @@ def as_csdm_object(array, quantity_type="scalar"):
 
     Example:
         >>> array = np.arange(30).reshape(3, 10)
-        >>> csdm_obj = cp.as_csdm_object(array)
+        >>> csdm_obj = cp.as_csdm(array)
         >>> print(csdm_obj)
         CSDM(
-        DependentVariable([[[ 0  1  2  3  4  5  6  7  8  9]
+        DependentVariable(
+        [[[ 0  1  2  3  4  5  6  7  8  9]
           [10 11 12 13 14 15 16 17 18 19]
-          [20 21 22 23 24 25 26 27 28 29]]], quantity_type=scalar),
+          [20 21 22 23 24 25 26 27 28 29]]], quantity_type=scalar, numeric_type=int64),
         LinearDimension([0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]),
         LinearDimension([0. 1. 2.])
         )
@@ -243,23 +252,74 @@ def as_csdm_object(array, quantity_type="scalar"):
         )
 
     csdm = new()
-    csdm.add_dependent_variable(
-        type="internal", components=array, quantity_type=quantity_type
-    )
+
+    # dimensions should be added first
     shape = array.shape[::-1]
     for i in shape[:-1]:
         csdm.add_dimension(LinearDimension(count=i, increment="1"))
 
+    csdm.add_dependent_variable(
+        type="internal", components=array.ravel(), quantity_type=quantity_type
+    )
+
     return csdm
 
 
-def as_dimension(array, type=None):
+def as_dependent_variable(
+    array, quantity_type="scalar", unit="", description="", application={}
+):
+    """Generate and return a DependentVariable object from a 1D or 2D numpy array.
+
+    Args:
+        array: A 1D or 2D numpy array.
+        quantity_type: The quantity type of the dependent variable. See
+                :ref:`quantityType_uml` for valid quantity types.
+        unit: The unit of the dependent variable components.
+        label: The label along the dimension. The default value is an empty string.
+        description: A description of the dimension. The default value is an empty
+                string.
+        application: An application dictionary. The default is an empty dictionary.
+
+    Example:
+        >>> array = np.arange(1e4).astype(np.complex128)
+        >>> dim_object = cp.as_dependent_variable(array, )
+        >>> print(dim_object)
+        DependentVariable(
+        [[0.000e+00+0.j 1.000e+00+0.j 2.000e+00+0.j ... 9.997e+03+0.j 9.998e+03+0.j
+         9.999e+03+0.j]], quantity_type=scalar, numeric_type=complex128)
+    """
+    if not isinstance(array, (list, np.ndarray)):
+        raise ValueError(
+            f"Cannot convert {array.__class__.__name__} to a DependentVariable object."
+        )
+    if isinstance(array, list):
+        array = np.asarray(array)
+    if array.ndim < 1:
+        raise ValueError(
+            f"Cannot convert a {array.ndim} dimensional array to a DependentVariable "
+            "object."
+        )
+    kwargs = {
+        "quantity_type": quantity_type,
+        "unit": unit,
+        "description": description,
+        "application": application,
+    }
+    return DependentVariable(type="internal", components=array, **kwargs)
+
+
+def as_dimension(array, unit="", type=None, label="", description="", application={}):
     """Generate and return a Dimension object from a 1D numpy array.
 
     Args:
         array: A 1D numpy array.
+        unit: The unit of the coordinates along the dimension.
         type: The dimension type. Valid values are linear, monotonic, labeled, or
                 None. If the value is None, let us decide. The default value is None.
+        label: The label along the dimension. The default value is an empty string.
+        description: A description of the dimension. The default value is an empty
+                string.
+        application: An application dictionary. The default is an empty dictionary.
 
     Example:
         >>> array = np.arange(15)*0.5
@@ -268,10 +328,9 @@ def as_dimension(array, type=None):
         LinearDimension([0.  0.5 1.  1.5 2.  2.5 3.  3.5 4.  4.5 5.  5.5 6.  6.5 7. ])
 
         >>> array = ['The', 'great', 'circle']
-        >>> dim_object = cp.as_dimension(array)
+        >>> dim_object = cp.as_dimension(array, label='in the sky')
         >>> print(dim_object)
         LabeledDimension(['The' 'great' 'circle'])
-
     """
     options = [None, "linear", "monotonic", "labeled"]
     if type not in options:
@@ -288,10 +347,14 @@ def as_dimension(array, type=None):
             f"Cannot convert a {array.ndim} dimensional array to a Dimension object."
         )
 
+    kwargs = {"label": label, "description": description, "application": application}
+
     if type is None:
         # labeled
         if str(array.dtype)[:2] in [">U", "<U"]:
-            return LabeledDimension(labels=array.tolist())
+            if unit != "":
+                warnings.warn("Ignoring unit argument for LabeledDimension.")
+            return LabeledDimension(labels=array.tolist(), **kwargs)
 
         # linear
         increment = array[1] - array[0]
@@ -301,13 +364,16 @@ def as_dimension(array, type=None):
         if np.allclose(np.diff(array, 1), increment):
             return LinearDimension(
                 count=array.size,
-                increment=str(increment),
-                coordinates_offset=str(array[0]),
+                increment=f"{increment} {unit}",
+                coordinates_offset=f"{array[0]} {unit}",
+                **kwargs,
             )
 
         # monotonic
         if np.all(np.diff(array, 1) > 0) or np.all(np.diff(array, 1) < 0):
-            return MonotonicDimension(coordinates=array * string_to_quantity("1"))
+            return MonotonicDimension(
+                coordinates=array * string_to_quantity(unit), **kwargs
+            )
 
         raise Exception("Invalid array for Dimension object.")
 
@@ -319,17 +385,22 @@ def as_dimension(array, type=None):
         if np.all(np.diff(array, 1) == increment):
             return LinearDimension(
                 count=array.size,
-                increment=str(increment),
-                coordinates_offset=str(array[0]),
+                increment=f"{increment} {unit}",
+                coordinates_offset=f"{array[0]} {unit}",
+                **kwargs,
             )
 
     if type == "monotonic":
         if np.all(np.diff(array, 1) > 0) or np.all(np.diff(array, 1) < 0):
-            return MonotonicDimension(coordinates=array * string_to_quantity("1"))
+            return MonotonicDimension(
+                coordinates=array * string_to_quantity(unit), **kwargs
+            )
         raise Exception("The array is not monotonic.")
 
     if type == "labeled":
-        return LabeledDimension(labels=array.tolist())
+        if unit != "":
+            warnings.warn("Ignoring unit argument for LabeledDimension.")
+        return LabeledDimension(labels=array.tolist(), **kwargs)
 
 
 def plot(csdm_object, reverse_axis=None, range=None, **kwargs):

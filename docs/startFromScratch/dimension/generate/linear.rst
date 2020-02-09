@@ -38,25 +38,33 @@ using the :meth:`~csdmpy.as_dimension` method.
     >>> print(x2)
     LinearDimension([0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9])
 
-Note, the Dimension objects generated from the Numpy arrays are dimensionless.
-You can create a physical dimension bt appropriately multiplying the dimension
-object with a :class:`~csdmpy.ScalarQuantity`.
+Note, the Dimension object ``x2`` is dimensionless. You can create a physical
+dimension by either providing an appropriate unit as the argument to the
+:meth:`~csdmpy.as_dimension` method,
 
 .. doctest::
 
-    >>> x2 = cp.as_dimension(array) * cp.ScalarQuantity('s')
+    >>> x3 = cp.as_dimension(array, unit='s')
+    >>> print(x3)
+    LinearDimension([0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s)
+
+or appropriately multiplying the dimension object ``x2`` with a
+:class:`~csdmpy.ScalarQuantity`.
+
+.. doctest::
+
+    >>> x2 *= cp.ScalarQuantity('s')
     >>> print(x2)
     LinearDimension([0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s)
 
-The coordinates of the ``x2`` LinearDimension object are
-
+The coordinates of the ``x2`` LinearDimension object,
 .. doctest::
 
     >>> x2.coordinates
     <Quantity [0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] s>
 
 where ``x2.coordinates`` is a `Quantity <http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity>`_
-instance. The value and the unit of the quantity instance are
+array. The value and the unit of the quantity instance are
 
 .. doctest::
 
@@ -73,4 +81,9 @@ instance. The value and the unit of the quantity instance are
 respectively.
 
 .. Note:: When generating LinearDimension objects from NumPy array, the NumPy
-            array must be regularly spaced.
+            array must be one-dimensional and regularly spaced.
+
+.. doctest::
+
+    >>> cp.as_dimension(np.arange(20).reshape(2, 10))  # doctest: +SKIP
+    ValueError: Cannot convert a 2 dimensional array to a Dimension object.

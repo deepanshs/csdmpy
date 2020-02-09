@@ -10,33 +10,25 @@ CSDM
 .. autoclass:: CSDM
    :show-inheritance:
 
-
    .. rubric:: Attributes Summary
-
    .. autosummary::
+      :nosignatures:
 
       ~CSDM.version
       ~CSDM.description
       ~CSDM.read_only
+      ~CSDM.tags
       ~CSDM.timestamp
       ~CSDM.geographic_coordinate
       ~CSDM.dimensions
       ~CSDM.dependent_variables
-      ~CSDM.tags
       ~CSDM.application
       ~CSDM.data_structure
       ~CSDM.filename
 
-   .. rubric:: Numpy compatible attributes summary
-
-   .. autosummary::
-
-      ~CSDM.real
-      ~CSDM.imag
-
    .. rubric:: Methods summary
-
    .. autosummary::
+      :nosignatures:
 
       ~CSDM.add_dimension
       ~CSDM.add_dependent_variable
@@ -47,9 +39,18 @@ CSDM
       ~CSDM.copy
       ~CSDM.split
 
-   .. rubric:: Numpy compatible method summary
-
+   .. rubric:: Numpy compatible attributes summary
    .. autosummary::
+      :nosignatures:
+
+      ~CSDM.real
+      ~CSDM.imag
+      ~CSDM.shape
+
+   .. rubric:: Numpy compatible method summary
+   .. autosummary::
+      :nosignatures:
+
       ~CSDM.max
       ~CSDM.min
       ~CSDM.clip
@@ -66,11 +67,11 @@ CSDM
    .. autoattribute:: version
    .. autoattribute:: description
    .. autoattribute:: read_only
+   .. autoattribute:: tags
    .. autoattribute:: timestamp
    .. autoattribute:: geographic_coordinate
    .. autoattribute:: dimensions
    .. autoattribute:: dependent_variables
-   .. autoattribute:: tags
    .. autoattribute:: application
    .. autoattribute:: data_structure
    .. autoattribute:: filename
@@ -79,6 +80,7 @@ CSDM
 
    .. autoattribute:: real
    .. autoattribute:: imag
+   .. autoattribute:: shape
 
    .. rubric:: Methods documentation
 

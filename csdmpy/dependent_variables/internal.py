@@ -41,7 +41,8 @@ class InternalDataset(BaseDependentVariable):
 
         if kwargs["numeric_type"] is None:
             raise KeyError(
-                "Missing a required `numeric_type` key from the DependentVariable object."
+                "Missing a required `numeric_type` key from the DependentVariable "
+                "object."
             )
 
         # super base class must be initialized before retrieving
@@ -56,6 +57,11 @@ class InternalDataset(BaseDependentVariable):
                 self._numeric_type.dtype,
             )
             self._components = components
+
+        size = self._components.size
+        p = self.quantity_type.p
+
+        self._components.shape = (p, int(size / p))
 
         if kwargs["sparse_sampling"] != {}:
             self._sparse_sampling = SparseSampling(**kwargs["sparse_sampling"])
@@ -75,7 +81,7 @@ class InternalDataset(BaseDependentVariable):
             np.allclose(self._components, other._components),
             self._sparse_sampling == other._sparse_sampling,
         ]
-        print(check)
+        # print(check)
         if False in check:
             return False
         return True

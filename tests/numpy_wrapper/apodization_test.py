@@ -7,7 +7,7 @@ a = cp.new()
 data = np.ones(5 * 10).reshape(10, 5)
 dim1 = {"type": "linear", "count": 5, "increment": "1 s"}
 dim2 = {"type": "linear", "count": 10, "increment": "1 m"}
-dv = {"type": "internal", "components": [data], "quantity_type": "scalar"}
+dv = {"type": "internal", "components": [data.ravel()], "quantity_type": "scalar"}
 
 a.add_dimension(dim1)
 a.add_dimension(dim2)

@@ -9,7 +9,7 @@ a = cp.new()
 dim1 = {"type": "linear", "count": 10, "increment": "1"}
 dim2 = {"type": "linear", "count": 5, "increment": "1"}
 dim3 = {"type": "linear", "count": 15, "increment": "1"}
-dv = {"type": "internal", "components": [data], "quantity_type": "scalar"}
+dv = {"type": "internal", "components": [data.ravel()], "quantity_type": "scalar"}
 
 a.add_dimension(dim1)
 a.add_dimension(dim2)
@@ -18,7 +18,7 @@ a.add_dependent_variable(dv)
 
 data1 = np.random.rand(15 * 5 * 10).reshape(15, 5, 10) * 1e3 + 10
 a1 = cp.new()
-dv = {"type": "internal", "components": [data1], "quantity_type": "scalar"}
+dv = {"type": "internal", "components": [data1.ravel()], "quantity_type": "scalar"}
 
 a1.add_dimension(dim1)
 a1.add_dimension(dim2)
@@ -129,7 +129,12 @@ def test_log1p():
 
 data2 = np.random.rand(15 * 5 * 10).reshape(15, 5, 10) - 0.5
 a2 = cp.new()
-dv = {"type": "internal", "components": [data2], "quantity_type": "scalar", "unit": "m"}
+dv = {
+    "type": "internal",
+    "components": [data2.ravel()],
+    "quantity_type": "scalar",
+    "unit": "m",
+}
 
 a2.add_dimension(dim1)
 a2.add_dimension(dim2)

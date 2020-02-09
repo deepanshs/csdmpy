@@ -11,7 +11,7 @@ Create a new empty CSDM object following,
     >>> import csdmpy as cp
     >>> new_data = cp.new(description='A new test dimension dataset')
 
-An instance of the Dimension class is added using the
+Add an instance of the Dimension class using the
 :meth:`~csdmpy.CSDM.add_dimension` method of the :ref:`csdm_api`
 instance.
 There are three subtypes of Dimension objects,
@@ -20,51 +20,55 @@ There are three subtypes of Dimension objects,
 - MonotonicDimension
 - LabeledDimension
 
-**Using instance of Dimension class**
+**Using an instance of the Dimension class**
 
-Please read :ref:`generate_dimension_objects` for details on how to generate
-an instance of the Dimension object. Once created, use the
+Please read the topic :ref:`generate_dimension_objects` for details on how to
+generate an instance of the Dimension class. Once created, use the
 :meth:`~csdmpy.CSDM.add_dimension` method of the CSDM object to add the
 dimension, for example,
 
 .. doctest::
 
-    >>> linear_dim = cp.LinearDimension(count=10, increment='0.1')
+    >>> linear_dim = cp.LinearDimension(count=10, increment='0.1 C/V')
     >>> new_data.add_dimension(linear_dim)
     >>> print(new_data)
     CSDM(
-    LinearDimension([0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9])
+    LinearDimension([0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] C / V)
     )
 
-**Using Python's dictionary object**
+**Using Python's dictionary objects**
 
-The keywords of the dictionary must be valid for a given Dimension subtype.
-For example,
+When using python dictionaries, the key-value pairs of the dictionary must
+be a valid collection for the given Dimension subtype. For example,
 
 .. doctest::
 
+    >>> # dictionary representation of a linear dimension.
     >>> d0 = {
     ...     'type': 'linear',
     ...     'description': 'This is a linear dimension',
     ...     'count': 5,
     ...     'increment': '0.1 rad'
     ... }
+    >>> # dictionary representation of a monotonic dimension.
     >>> d1 = {
     ...     'type': 'monotonic',
     ...     'description': 'This is a monotonic dimension',
     ...     'coordinates': ['1 m/s', '2 cm/s', '4 mm/s'],
     ... }
+    >>> # dictionary representation of a labeled dimension.
     >>> d2 = {
     ...     'type': 'labeled',
     ...     'description': 'This is a labeled dimension',
     ...     'labels': ['Cu', 'Ag', 'Au'],
     ... }
+    >>> # add the dictionaries to the CSDM object.
     >>> new_data.add_dimension(d0)
     >>> new_data.add_dimension(d1)
     >>> new_data.add_dimension(d2)
     >>> print(new_data)
     CSDM(
-    LinearDimension([0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]),
+    LinearDimension([0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] C / V),
     LinearDimension([0.  0.1 0.2 0.3 0.4] rad),
     MonotonicDimension([1.    0.02  0.004] m / s),
     LabeledDimension(['Cu' 'Ag' 'Au'])

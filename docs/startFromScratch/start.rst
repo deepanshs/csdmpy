@@ -14,8 +14,9 @@ files.
 .. toctree::
     :maxdepth: 2
 
-    generating_csdm_object
     dimension/generate/dimension_objects
+    generating_dependent_variable_object
+    generating_csdm_object
     add_dimension_object
     add_dependent_variable_object
 

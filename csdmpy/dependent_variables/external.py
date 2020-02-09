@@ -29,7 +29,8 @@ class ExternalDataset(BaseDependentVariable):
 
         if kwargs["numeric_type"] is None:
             raise KeyError(
-                "Missing a required `numeric_type` key from the DependentVariable object."
+                "Missing a required `numeric_type` key from the DependentVariable "
+                "object."
             )
 
         super().__init__(**kwargs)
@@ -43,6 +44,9 @@ class ExternalDataset(BaseDependentVariable):
         self._components = Decoder(
             self._encoding, self._quantity_type, components, self._numeric_type.dtype
         )
+
+        if self._components.ndim == 1:
+            self._components = self._components[np.newaxis, :]
 
         if kwargs["sparse_sampling"] != {}:
             self._sparse_sampling = SparseSampling(**kwargs["sparse_sampling"])

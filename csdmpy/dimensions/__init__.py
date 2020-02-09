@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 """The Dimension object: attributes and methods."""
-import json
 from copy import deepcopy
 
 from .labeled import LabeledDimension
 from .linear import LinearDimension
 from .monotonic import MonotonicDimension
-from csdmpy.utils import _axis_label
 from csdmpy.utils import _get_dictionary
 from csdmpy.utils import validate
 
@@ -72,26 +70,26 @@ class Dimension:
         default = {
             "type": None,  # valid for all dimension subtypes
             "description": "",  # valid for all dimension subtypes
-            "count": None,  # valid for linear dimension subtype
-            "increment": None,  # valid for linear dimension subtype
-            "labels": None,  # valid for labled dimension subtype
-            "coordinates": None,  # valid for monotonic dimension subtype
-            "coordinates_offset": None,  # valid for linear dimension subtype
-            "origin_offset": None,  # valid for linear dimension subtype
-            "complex_fft": False,  # valid for linear dimension subtype
-            "period": None,  # valid for monotonic and linear dimension subtypes
-            "quantity_name": None,  # valid for monotonic and linear dimension subtypes
+            "count": None,  # valid for linear subtype
+            "increment": None,  # valid for linear subtype
+            "labels": None,  # valid for labeled subtype
+            "coordinates": None,  # valid for monotonic subtype
+            "coordinates_offset": None,  # valid for linear subtype
+            "origin_offset": None,  # valid for linear subtype
+            "complex_fft": False,  # valid for linear subtype
+            "period": None,  # valid for monotonic and linear subtypes
+            "quantity_name": None,  # valid for monotonic and linear subtypes
             "label": "",  # valid for all dimension subtypes
             "application": {},  # valid for all dimension subtypes
-            "reciprocal": {  # valid for all monotonic and linear subtypes
-                "increment": None,  # valid for all monotonic and linear subtypes
-                "coordinates_offset": None,  # valid for all monotonic and linear subtypes
-                "origin_offset": None,  # valid for all monotonic and linear subtypes
-                "period": None,  # valid for all monotonic and linear subtypes
-                "quantity_name": None,  # valid for all monotonic and linear subtypes
-                "label": "",  # valid for all monotonic and linear subtypes
-                "description": "",  # valid for all monotonic and linear subtypes
-                "application": {},  # valid for all monotonic and linear subtypes
+            "reciprocal": {  # valid for monotonic and linear subtypes
+                "increment": None,  # valid for monotonic and linear subtypes
+                "coordinates_offset": None,  # valid for monotonic and linear subtypes
+                "origin_offset": None,  # valid for monotonic and linear subtypes
+                "period": None,  # valid for monotonic and linear subtypes
+                "quantity_name": None,  # valid for monotonic and linear subtypes
+                "label": "",  # valid for monotonic and linear subtypes
+                "description": "",  # valid for monotonic and linear subtypes
+                "application": {},  # valid for monotonic and linear subtypes
             },
         }
 
@@ -178,14 +176,20 @@ class Dimension:
         return False
 
     def __mul__(self, other):
-        """Multiply the dimension object by a scalar."""
+        """Multiply the Dimension object by a scalar."""
         return self.subtype.__mul__(other)
 
     def __imul__(self, other):
-        """Multiply the dimension object by a scalar, in-place."""
+        """Multiply the Dimension object by a scalar, in-place."""
         return self.subtype.__imul__(other)
 
-    # add __truediv__ and __itruediv__ methods
+    def __truediv__(self, other):
+        """Divide the Dimension object by a scalar."""
+        return self.subtype.__truediv__(other)
+
+    def __itruediv__(self, other):
+        """Divide the Dimension object by a scalar, in-place."""
+        return self.subtype.__itruediv__(other)
 
     # ======================================================================= #
     #                          Dimension Attributes                           #
@@ -310,14 +314,15 @@ class Dimension:
         Raises:
             AttributeError: When assigned a value.
         """
-        if hasattr(self.subtype, "quantity_name"):
-            if self.label.strip() == "":
-                label = self.quantity_name
-            else:
-                label = self.label
-            return _axis_label(label, self.subtype._unit)
-        else:
-            return self.label
+        return self.subtype.axis_label
+        # if hasattr(self.subtype, "quantity_name"):
+        #     if self.label.strip() == "":
+        #         label = self.quantity_name
+        #     else:
+        #         label = self.label
+        #     return _axis_label(label, self.subtype._unit)
+        # else:
+        #     return self.label
 
     @property
     def coordinates(self):
@@ -386,7 +391,7 @@ class Dimension:
         Raises:
             AttributeError: When modified.
         """
-        return json.dumps(self.to_dict(), ensure_ascii=False, sort_keys=False, indent=2)
+        return self.subtype.data_structure
 
     @property
     def description(self):
@@ -418,7 +423,7 @@ class Dimension:
     @property
     def complex_fft(self):
         r"""
-        Boolean specifying if the coordinates along the dimension are the output of a complex fft.
+        If true, the coordinates are the ordered as the output of a complex fft.
 
         This attribute is only `valid` for the Dimension instances with `linear`
         subtype.
@@ -731,9 +736,9 @@ class Dimension:
     @property
     def reciprocal(self):
         r"""
-        An instance of the ReciprocalVariable class.
+        An instance of the ReciprocalDimension class.
 
-        The attributes of ReciprocalVariable class are:
+        The attributes of ReciprocalDimension class are:
             - coordinates_offset
             - origin_offset
             - period
@@ -769,7 +774,7 @@ class Dimension:
             >>> x.is_quantitative()
             True
         """
-        return self.subtype._is_quantitative()
+        return self.subtype.is_quantitative()
 
     def to(self, unit="", equivalencies=None):
         r"""

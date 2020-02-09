@@ -4,7 +4,10 @@ from __future__ import division
 from __future__ import print_function
 
 import json
+import warnings
 from copy import deepcopy
+
+import numpy as np
 
 from .external import ExternalDataset
 from .internal import InternalDataset
@@ -110,12 +113,14 @@ class DependentVariable:
 
         if "quantity_type" not in input_keys:
             raise KeyError(
-                "Missing a required `quantity_type` key from the DependentVariable object."
+                "Missing a required `quantity_type` key from the DependentVariable "
+                "object."
             )
 
         if input_dict["type"] == "external" and "encoding" in input_dict:
             raise KeyError(
-                "The `encoding` key is invalid for DependentVariable objects with `external` type."
+                "The `encoding` key is invalid for DependentVariable objects with the "
+                "`external` type."
             )
 
         def message(item, subtype):
@@ -170,13 +175,13 @@ class DependentVariable:
     def __str__(self):
         if self.unit.physical_type == "dimensionless":
             return (
-                f"DependentVariable({self.components.__str__()}, "
-                f"quantity_type={self.quantity_type})"
+                f"DependentVariable(\n{self.components.__str__()}, "
+                f"quantity_type={self.quantity_type}, numeric_type={self.numeric_type})"
             )
 
         return (
-            f"DependentVariable({self.components.__str__()} {self.unit}, "
-            f"quantity_type={self.quantity_type})"
+            f"DependentVariable(\n{self.components.__str__()} {self.unit}, "
+            f"quantity_type={self.quantity_type}, numeric_type={self.numeric_type})"
         )
         # properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
         # return f"DependentVariable({properties})"
@@ -532,9 +537,10 @@ class DependentVariable:
     @property
     def numeric_type(self):
         r"""
-        The numeric type of the data values from the dependent variable.
+        The numeric type of the component values from the dependent variable.
 
-        There are currently twelve *valid* numeric types:
+        There are currently twelve *valid* numeric types in core scientific dataset
+        model.
 
         ==============   ============   ============   ============
         ``uint8``        ``int8``       ``float32``    ``complex64``
@@ -543,11 +549,12 @@ class DependentVariable:
         ``uint64``       ``int64``
         ==============   ============   ============   ============
 
-        When assigning a valid value, this attribute updates the `dtype` of the
-        Numpy array from the corresponding
-        :attr:`~csdmpy.DependentVariable.components`
-        attribute. We recommended the use of the numeric type attribute for
-        updating the `dtype` of the Numpy array. For example,
+        Besides, csdmpy also accepts any valid `type` object, such as int, float,
+        np.complex64, as long as the type is consistent with the above twelve entries.
+
+        When assigning a valid value, this attribute updates the `dtype` of the Numpy
+        array from the corresponding :attr:`~csdmpy.DependentVariable.components`
+        attribute.
 
         .. doctest::
 
@@ -560,11 +567,16 @@ class DependentVariable:
              [20. 21. 22. 23. 24. 25. 26. 27. 28. 29.]]
 
             >>> y.numeric_type = 'complex64'
-
             >>> print(y.components[:,:5])
             [[ 0.+0.j  1.+0.j  2.+0.j  3.+0.j  4.+0.j]
              [10.+0.j 11.+0.j 12.+0.j 13.+0.j 14.+0.j]
              [20.+0.j 21.+0.j 22.+0.j 23.+0.j 24.+0.j]]
+
+            >>> y.numeric_type = float # python type object
+            >>> print(y.components[:,:5])
+            [[ 0.  1.  2.  3.  4.]
+             [10. 11. 12. 13. 14.]
+             [20. 21. 22. 23. 24.]]
 
         Returns:
             A string with a `valid` numeric type.
@@ -779,6 +791,57 @@ class DependentVariable:
     def copy(self):
         """Return a copy of the DependentVariable object."""
         return deepcopy(self)
+
+    def _reshape(self, shape):
+        r"""
+        Reshapes the components array.
+
+        The array is reshaped to :math:`(p \times N_{d-1} \times ... N_1 \times N_0)`
+        where :math:`p` is the number of components and :math:`N_k` is the number of
+        points along the :math:`k^\mathrm{th}` dimension.
+        """
+        # for item in self.dependent_variables:
+        item = self.subtype
+        sub_shape = (item.quantity_type.p,) + tuple(shape)
+        dtype = item.numeric_type.dtype
+
+        grid_points = np.asarray(sub_shape).prod()
+        components_size = item._components.size
+
+        if grid_points != components_size and item._sparse_sampling == {}:
+            warnings.warn(
+                (
+                    f"The number of elements in the components array, "
+                    f"{components_size}, is not consistent with the total "
+                    f"number of grid points, {grid_points}."
+                )
+            )
+        if item._sparse_sampling == {}:
+            item._components = np.asarray(
+                item._components[:, :grid_points].reshape(sub_shape), dtype=dtype
+            )
+        else:
+            item._components = fill_sparse_space(item, sub_shape, dtype)
+
+
+def fill_sparse_space(item, shape, dtype):
+    """Fill sparse grid using numpy broadcasting."""
+    components = np.zeros(shape, dtype=dtype)
+    sparse_dimensions_indexes = item._sparse_sampling._sparse_dimensions_indexes
+    sgs = item._sparse_sampling._sparse_grid_vertexes.size
+    grid_vertexes = item._sparse_sampling._sparse_grid_vertexes.reshape(
+        int(sgs / len(sparse_dimensions_indexes)), len(sparse_dimensions_indexes)
+    ).T
+
+    vertexes = [slice(None) for i in range(len(shape))]
+    for i, sparse_index in enumerate(sparse_dimensions_indexes):
+        vertexes[sparse_index] = grid_vertexes[i]
+
+    vertexes = tuple(vertexes[::-1])
+    _new_shape = components[vertexes].shape
+
+    components[vertexes] = item.components.reshape(_new_shape)
+    return components
 
 
 def check_sparse_sampling_key_value(input_dict):

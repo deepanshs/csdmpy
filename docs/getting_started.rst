@@ -43,8 +43,8 @@ An instance of the CSDM object may include multiple dimensions and
 dependent variables. Collectively, the dimensions form a multi-dimensional grid
 system, and the dependent variables populate this grid.
 In `csdmpy`,
-dimensions and dependent variables are structured as python's tuple object.
-To access these tuples, use the :attr:`~csdmpy.CSDM.dimensions` and
+dimensions and dependent variables are structured as list object.
+To access these lists, use the :attr:`~csdmpy.CSDM.dimensions` and
 :attr:`~csdmpy.CSDM.dependent_variables` attribute of the CSDM object,
 respectively. For example,
 
@@ -53,15 +53,7 @@ respectively. For example,
     >>> x = testdata1.dimensions
     >>> y = testdata1.dependent_variables
 
-In this example, the dataset contains one dimension and one dependent variable,
-and therefore, `x` and `y` are tuples with a single instance.
-
-.. doctest::
-
-    >>> print('x is a {0} of length {1}.'.format(type(x).__name__, len(x)))
-    x is a tuple of length 1.
-    >>> print('y is a {0} of length {1}.'.format(type(y).__name__, len(y)))
-    y is a tuple of length 1.
+In this example, the dataset contains one dimension and one dependent variable.
 
 You may access the instances of individual dimension and dependent variable by
 using the proper indexing. For example, the dimension and dependent variable

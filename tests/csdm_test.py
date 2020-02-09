@@ -12,12 +12,7 @@ def get_test(type):
     a_test = cp.new()
     a_test.add_dimension(cp.LinearDimension(count=10, increment="1s"))
     a_test.add_dependent_variable(
-        {
-            "type": "internal",
-            "quantity_type": "scalar",
-            "unit": "m",
-            "components": [out],
-        }
+        {"type": "internal", "quantity_type": "scalar", "unit": "m", "components": out}
     )
     return out, a_test
 
@@ -32,7 +27,7 @@ def get_test_2d(type):
             "type": "internal",
             "quantity_type": "scalar",
             "unit": "m",
-            "components": [out],
+            "components": out.ravel(),
         }
     )
     return out, a_test
@@ -40,6 +35,8 @@ def get_test_2d(type):
 
 def test_csdm():
     data = cp.new(description="This is a test")
+
+    assert data != "sd"
 
     # read_only
     assert data.read_only is False
@@ -106,6 +103,7 @@ def test_csdm():
     dm = data.copy()
 
     assert dm == data
+    assert dm.shape == ()
 
     dm.add_dimension(cp.LinearDimension(count=10, increment="1s"))
 
@@ -116,38 +114,22 @@ def test_split():
     a = cp.new()
     a.add_dimension(cp.LinearDimension(count=10, increment="1m"))
     a.add_dependent_variable(
-        {
-            "type": "internal",
-            "components": [np.arange(10) + 1],
-            "quantity_type": "scalar",
-        }
+        {"type": "internal", "components": np.arange(10) + 1, "quantity_type": "scalar"}
     )
 
     b = cp.new()
     b.add_dimension(cp.LinearDimension(count=10, increment="1m"))
     b.add_dependent_variable(
-        {
-            "type": "internal",
-            "components": [np.arange(10) + 2],
-            "quantity_type": "scalar",
-        }
+        {"type": "internal", "components": np.arange(10) + 2, "quantity_type": "scalar"}
     )
 
     c = cp.new()
     c.add_dimension(cp.LinearDimension(count=10, increment="1m"))
     c.add_dependent_variable(
-        {
-            "type": "internal",
-            "components": [np.arange(10) + 1],
-            "quantity_type": "scalar",
-        }
+        {"type": "internal", "components": np.arange(10) + 1, "quantity_type": "scalar"}
     )
     c.add_dependent_variable(
-        {
-            "type": "internal",
-            "components": [np.arange(10) + 2],
-            "quantity_type": "scalar",
-        }
+        {"type": "internal", "components": np.arange(10) + 2, "quantity_type": "scalar"}
     )
 
     a_, b_ = c.split()
@@ -163,7 +145,7 @@ a_test.add_dependent_variable(
         "type": "internal",
         "quantity_type": "scalar",
         "unit": "m",
-        "components": [np.arange(10)],
+        "components": np.arange(10),
     }
 )
 
@@ -174,7 +156,7 @@ a1_test.add_dependent_variable(
         "type": "internal",
         "quantity_type": "scalar",
         "unit": "m",
-        "components": [np.arange(10)],
+        "components": np.arange(10),
     }
 )
 
@@ -185,7 +167,7 @@ b_test.add_dependent_variable(
         "type": "internal",
         "quantity_type": "scalar",
         "unit": "km",
-        "components": [np.arange(10, dtype=float)],
+        "components": np.arange(10, dtype=float),
     }
 )
 
@@ -196,7 +178,7 @@ b1_test.add_dependent_variable(
         "type": "internal",
         "quantity_type": "scalar",
         "unit": "km",
-        "components": [np.arange(10)],
+        "components": np.arange(10),
     }
 )
 b1_test.add_dependent_variable(
@@ -204,7 +186,7 @@ b1_test.add_dependent_variable(
         "type": "internal",
         "quantity_type": "vector_2",
         "unit": "km",
-        "components": [np.arange(20)],
+        "components": np.arange(20),
     }
 )
 
@@ -229,7 +211,7 @@ def test_add_sub():
     out = np.arange(10) + 2
     assert np.allclose(c.dependent_variables[0].components, [out])
 
-    a_t = cp.as_csdm_object(np.arange(10))
+    a_t = cp.as_csdm(np.arange(10))
     c = a_t + 5.12
     out = np.arange(10) + 5.12
     assert np.allclose(c.dependent_variables[0].components, [out])
@@ -273,12 +255,18 @@ def test_add_sub():
 
 
 def test_iadd_isub():
-    out, a_test = get_test(float)
+    out, a_test = get_test(float)  # in units of m
     a_test += b_test
     out += 1000 * np.arange(10)
     assert np.allclose(a_test.dependent_variables[0].components, [out])
 
-    out, a_test = get_test(float)
+    out, a_test = get_test(float)  # in units of m
+    c = a_test / cp.ScalarQuantity("m")
+    c += 2.0
+    out += 2.0
+    assert np.allclose(c.dependent_variables[0].components, [out])
+
+    out, a_test = get_test(float)  # in units of m
     a_test -= b_test
     out -= 1000 * np.arange(10)
     assert np.allclose(a_test.dependent_variables[0].components, [out])

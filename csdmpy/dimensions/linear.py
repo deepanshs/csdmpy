@@ -3,13 +3,14 @@
 from __future__ import division
 from __future__ import print_function
 
+import json
 from copy import deepcopy
 
 import numpy as np
 from astropy.units import Quantity
 
 from csdmpy.dimensions.quantitative import BaseQuantitativeDimension
-from csdmpy.dimensions.quantitative import ReciprocalVariable
+from csdmpy.dimensions.quantitative import ReciprocalDimension
 from csdmpy.units import frequency_ratio
 from csdmpy.units import ScalarQuantity
 from csdmpy.utils import _axis_label
@@ -61,7 +62,7 @@ class LinearDimension(BaseQuantitativeDimension):
 
         # create a reciprocal dimension
         _reciprocal_unit = self._unit ** -1
-        self.reciprocal = ReciprocalVariable(
+        self.reciprocal = ReciprocalDimension(
             unit=_reciprocal_unit, **kwargs["reciprocal"]
         )
         self._get_coordinates()
@@ -71,7 +72,6 @@ class LinearDimension(BaseQuantitativeDimension):
         return f"LinearDimension({properties})"
 
     def __str__(self):
-        # properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
         return f"LinearDimension({self.coordinates.__str__()})"
 
     def __eq__(self, other):
@@ -100,11 +100,19 @@ class LinearDimension(BaseQuantitativeDimension):
 
     def __mul__(self, other):
         """Multiply the LinearDimension object by a scalar."""
-        return _update_linear_dimension_object_by_scalar_(self.copy(), other)
+        return _update_linear_dimension_object_by_scalar(self.copy(), other, "mul")
 
     def __imul__(self, other):
         """Multiply the LinearDimension object by a scalar, in-place."""
-        return _update_linear_dimension_object_by_scalar_(self, other)
+        return _update_linear_dimension_object_by_scalar(self, other, "mul")
+
+    def __truediv__(self, other):
+        """Divide the LinearDimension object by a scalar."""
+        return _update_linear_dimension_object_by_scalar(self.copy(), other, "truediv")
+
+    def __itruediv__(self, other):
+        """Divide the LinearDimension object by a scalar, in-place."""
+        return _update_linear_dimension_object_by_scalar(self, other, "truediv")
 
     def _swap(self):
         self._description, self.reciprocal._description = (
@@ -196,18 +204,21 @@ class LinearDimension(BaseQuantitativeDimension):
     def coordinates(self):
         """Return the coordinates along the dimensions."""
         n = self._count
-
-        unit = self._unit
-        equivalent_fn = self._equivalencies
         coordinates = self._coordinates[:n] + self.coordinates_offset
+
+        equivalent_fn = self._equivalencies
+
         if equivalent_fn is None:
             return coordinates.to(self._unit)
-        if equivalent_fn == frequency_ratio:
+
+        equivalent_unit = self._equivalent_unit
+        if equivalent_fn == "nmr_frequency_ratio":
             denominator = self.origin_offset - self.coordinates_offset
             if denominator.value == 0:
                 raise ZeroDivisionError("Cannot convert the coordinates to ppm.")
-            return coordinates.to(unit, frequency_ratio(denominator))
-        return coordinates.to(unit, equivalent_fn)
+            return coordinates.to(equivalent_unit, frequency_ratio(denominator))
+
+        return coordinates.to(equivalent_unit, equivalent_fn)
 
     @coordinates.setter
     def coordinates(self, value):
@@ -230,6 +241,11 @@ class LinearDimension(BaseQuantitativeDimension):
         else:
             label = self.label
         return _axis_label(label, self._unit)
+
+    @property
+    def data_structure(self):
+        """Json serialized string describing the LinearDimension class instance."""
+        return json.dumps(self.to_dict(), ensure_ascii=False, sort_keys=False, indent=2)
 
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
@@ -266,18 +282,27 @@ class LinearDimension(BaseQuantitativeDimension):
         return deepcopy(self)
 
 
-def _update_linear_dimension_object_by_scalar_(object_, other):
+def _update_linear_dimension_object_by_scalar(object_, other, type_="mul"):
     """Update object by multiplying by a scalar."""
     other = check_scalar_object(other)
 
-    object_._increment *= other
-    object_._coordinates *= other
-    object_._coordinates_offset *= other
-    object_._origin_offset *= other
-    object_._period *= other
+    if type_ == "mul":
+        object_._increment *= other
+        object_._coordinates *= other
+        object_._coordinates_offset *= other
+        object_._origin_offset *= other
+        object_._period *= other
+
+    if type_ == "truediv":
+        object_._increment /= other
+        object_._coordinates /= other
+        object_._coordinates_offset /= other
+        object_._origin_offset /= other
+        object_._period /= other
+
     object_._unit = object_._increment._unit
     object_._quantity_name = object_._unit.physical_type
     object_._equivalencies = None
     _reciprocal_unit = object_._unit ** -1
-    object_.reciprocal = ReciprocalVariable(unit=_reciprocal_unit)
+    object_.reciprocal = ReciprocalDimension(unit=_reciprocal_unit)
     return object_
