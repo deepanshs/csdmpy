@@ -285,8 +285,8 @@ def as_dependent_variable(
         >>> dim_object = cp.as_dependent_variable(array, )
         >>> print(dim_object)
         DependentVariable(
-        [[0.000e+00+0.j 1.000e+00+0.j 2.000e+00+0.j ... 9.997e+03+0.j 9.998e+03+0.j
-         9.999e+03+0.j]], quantity_type=scalar, numeric_type=complex128)
+        [[0.000e+00+0.j 1.000e+00+0.j 2.000e+00+0.j ... 9.997e+03+0.j
+          9.998e+03+0.j 9.999e+03+0.j]], quantity_type=scalar, numeric_type=complex128)
     """
     if not isinstance(array, (list, np.ndarray)):
         raise ValueError(

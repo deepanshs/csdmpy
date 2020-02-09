@@ -37,8 +37,8 @@ array as the DependentVariable object.
     >>> dv1 = cp.as_dependent_variable(np.arange(10000).astype(np.complex64), unit='J')
     >>> print(dv1)
     DependentVariable(
-    [[0.000e+00+0.j 1.000e+00+0.j 2.000e+00+0.j ... 9.997e+03+0.j 9.998e+03+0.j
-     9.999e+03+0.j]] J, quantity_type=scalar, numeric_type=complex64)
+    [[0.000e+00+0.j 1.000e+00+0.j 2.000e+00+0.j ... 9.997e+03+0.j
+      9.998e+03+0.j 9.999e+03+0.j]] J, quantity_type=scalar, numeric_type=complex64)
 
 You may additionally provide the quantity_type for the dependent variable,
 
@@ -47,8 +47,8 @@ You may additionally provide the quantity_type for the dependent variable,
     >>> dv2 = cp.as_dependent_variable(np.arange(10000).astype(np.complex64), quantity_type='pixel_1')
     >>> print(dv2)
     DependentVariable(
-    [[0.000e+00+0.j 1.000e+00+0.j 2.000e+00+0.j ... 9.997e+03+0.j 9.998e+03+0.j
-     9.999e+03+0.j]], quantity_type=pixel_1, numeric_type=complex64)
+    [[0.000e+00+0.j 1.000e+00+0.j 2.000e+00+0.j ... 9.997e+03+0.j
+      9.998e+03+0.j 9.999e+03+0.j]], quantity_type=pixel_1, numeric_type=complex64)
 
 Multi-component dependent variable
 ''''''''''''''''''''''''''''''''''
