@@ -9,8 +9,8 @@ from csdmpy.units import ScalarQuantity
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-__all__ = ["literals_encoding", "QuantityType", "NumericType"]
 
+__all__ = ["literals_encoding", "QuantityType", "NumericType"]
 
 literals_quantity_type = {
     "scalar": lambda n: 1,
@@ -30,75 +30,6 @@ literals_quantity_type_ = [
     "pixel_n",
     "symmetric_matrix_n",
 ]
-
-
-def validate(value, attr, types, method=None):
-    if isinstance(value, types):
-        if method is None:
-            return value
-        return method(value)
-    raise TypeError(type_error(types, attr, value))
-
-
-def type_error(a, b, c):
-    if isinstance(a, tuple):
-        a = [item.__name__ for item in a]
-        a = " or ".join(a)
-    else:
-        a = a.__name__
-    return ("Expecting an instance of type `{0}` for {1}, got `{2}`.").format(
-        a, b, type(c).__name__
-    )
-
-
-def attribute_error(a, b):
-    return "`{0}` has no attribute `{1}`.".format(a.__class__.__name__, b)
-
-
-def _axis_label(
-    label, unit, made_dimensionless=False, dimensionless_unit=None, label_type=""
-):
-
-    if unit != "":
-        if label_type == "":
-            return "{0} / ({1})".format(label, ScalarQuantity(1 * unit).format("unit"))
-        # if label_type == "latex":
-        #     return "{0} / ({1})".format(label, unit.to_string("latex"))
-    return label
-
-
-def _get_dictionary(*arg, **kwargs):
-    if arg != ():
-        if isinstance(arg[0], dict):
-            input_dict = arg[0]
-            return input_dict
-
-        raise Exception(
-            "The argument is either a dictionary with the allowed keywords or a "
-            "collection of valid arguments."
-        )
-    else:
-        input_dict = kwargs
-    return input_dict
-
-
-def check_encoding(element):
-    """
-    Validate the encoding string value.
-
-    The valid options are `base64`, `none`, and `raw`.
-
-    :returns: The encoding key-value, if the value is valid.
-    :raises KeyError: Otherwise.
-    """
-    if element in literals_encoding:
-        return element
-
-    message = (
-        "The value, `{0}`, is an invalid `encoding` enumeration literal. "
-        "The allowed values are '{1}', '{2}' and '{3}'."
-    )
-    raise ValueError(message.format(element, *literals_encoding))
 
 
 class QuantityType:
@@ -158,60 +89,6 @@ class QuantityType:
         components = self._get_number_of_components(keyword, numbers)
         self.value = element
         self.p = components
-
-
-def numpy_dtype_to_numeric_type(element):
-    """Return a valid numeric_type value based on the dtype of numpy array."""
-    lst = {
-        "<u1": "uint8",
-        "<u2": "uint16",
-        "<u4": "uint32",
-        "<u8": "uint64",
-        "<i1": "int8",
-        "<i2": "int16",
-        "<i4": "int32",
-        "<i8": "int64",
-        # "<f2": "float16",
-        "<f4": "float32",
-        "<f8": "float64",
-        "<c8": "complex64",
-        "<c16": "complex128",
-        ">u1": "uint8",
-        ">u2": "uint16",
-        ">u4": "uint32",
-        ">u8": "uint64",
-        ">i1": "int8",
-        ">i2": "int16",
-        ">i4": "int32",
-        ">i8": "int64",
-        # ">f2": "float16",
-        ">f4": "float32",
-        ">f8": "float64",
-        ">c8": "complex64",
-        ">c16": "complex128",
-    }
-
-    lst2 = (
-        "uint8",
-        "uint16",
-        "uint32",
-        "uint64",
-        "int8",
-        "int16",
-        "int32",
-        "int64",
-        # "float16",
-        "float32",
-        "float64",
-        "complex64",
-        "complex128",
-    )
-
-    if element in lst.keys():
-        return lst[element]
-    if element in lst2:
-        return element
-    raise ValueError("The dtype, {0}, is not supported.".format(element))
 
 
 class NumericType:
@@ -311,6 +188,129 @@ class NumericType:
 
         self.value = element
         self.dtype = np.dtype(lst[element])
+
+
+def validate(value, attr, types, method=None):
+    if isinstance(value, types):
+        if method is None:
+            return value
+        return method(value)
+    raise TypeError(type_error(types, attr, value))
+
+
+def type_error(a, b, c):
+    if isinstance(a, tuple):
+        a = [item.__name__ for item in a]
+        a = " or ".join(a)
+    else:
+        a = a.__name__
+    return ("Expecting an instance of type `{0}` for {1}, got `{2}`.").format(
+        a, b, type(c).__name__
+    )
+
+
+def attribute_error(a, b):
+    return "`{0}` has no attribute `{1}`.".format(a.__class__.__name__, b)
+
+
+def _axis_label(
+    label, unit, made_dimensionless=False, dimensionless_unit=None, label_type=""
+):
+
+    if unit != "":
+        if label_type == "":
+            return "{0} / ({1})".format(label, ScalarQuantity(1 * unit).format("unit"))
+        # if label_type == "latex":
+        #     return "{0} / ({1})".format(label, unit.to_string("latex"))
+    return label
+
+
+def _get_dictionary(*arg, **kwargs):
+    if arg != ():
+        if isinstance(arg[0], dict):
+            input_dict = arg[0]
+            return input_dict
+
+        raise Exception(
+            "The argument is either a dictionary with the allowed keywords or a "
+            "collection of valid arguments."
+        )
+    else:
+        input_dict = kwargs
+    return input_dict
+
+
+def check_encoding(element):
+    """
+    Validate the encoding string value.
+
+    The valid options are `base64`, `none`, and `raw`.
+
+    :returns: The encoding key-value, if the value is valid.
+    :raises KeyError: Otherwise.
+    """
+    if element in literals_encoding:
+        return element
+
+    message = (
+        "The value, `{0}`, is an invalid `encoding` enumeration literal. "
+        "The allowed values are '{1}', '{2}' and '{3}'."
+    )
+    raise ValueError(message.format(element, *literals_encoding))
+
+
+def numpy_dtype_to_numeric_type(element):
+    """Return a valid numeric_type value based on the dtype of numpy array."""
+    lst = {
+        "<u1": "uint8",
+        "<u2": "uint16",
+        "<u4": "uint32",
+        "<u8": "uint64",
+        "<i1": "int8",
+        "<i2": "int16",
+        "<i4": "int32",
+        "<i8": "int64",
+        # "<f2": "float16",
+        "<f4": "float32",
+        "<f8": "float64",
+        "<c8": "complex64",
+        "<c16": "complex128",
+        ">u1": "uint8",
+        ">u2": "uint16",
+        ">u4": "uint32",
+        ">u8": "uint64",
+        ">i1": "int8",
+        ">i2": "int16",
+        ">i4": "int32",
+        ">i8": "int64",
+        # ">f2": "float16",
+        ">f4": "float32",
+        ">f8": "float64",
+        ">c8": "complex64",
+        ">c16": "complex128",
+    }
+
+    lst2 = (
+        "uint8",
+        "uint16",
+        "uint32",
+        "uint64",
+        "int8",
+        "int16",
+        "int32",
+        "int64",
+        # "float16",
+        "float32",
+        "float64",
+        "complex64",
+        "complex128",
+    )
+
+    if element in lst.keys():
+        return lst[element]
+    if element in lst2:
+        return element
+    raise ValueError("The dtype, {0}, is not supported.".format(element))
 
 
 def check_and_assign_bool(element):

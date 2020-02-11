@@ -5,20 +5,32 @@ from __future__ import print_function
 
 import datetime
 import json
-from collections import MutableSequence
 from copy import deepcopy
 
 import numpy as np
 from astropy.units.quantity import Quantity
 
-from csdmpy.dependent_variables import DependentVariable
-from csdmpy.dimensions import Dimension
-from csdmpy.dimensions import LabeledDimension
-from csdmpy.dimensions import LinearDimension
-from csdmpy.dimensions import MonotonicDimension
-from csdmpy.units import string_to_quantity
-from csdmpy.utils import check_scalar_object
-from csdmpy.utils import validate
+from csdmpy.abstract_list import __dimensions_list__  # lgtm [py/import-own-module]
+from csdmpy.abstract_list import DependentVariableList  # lgtm [py/import-own-module]
+from csdmpy.abstract_list import DimensionList  # lgtm [py/import-own-module]
+from csdmpy.dependent_variables import (  # lgtm [py/import-own-module]
+    as_dependent_variable,
+)
+from csdmpy.dependent_variables import DependentVariable  # lgtm [py/import-own-module]
+from csdmpy.dimensions import as_dimension  # lgtm [py/import-own-module]
+from csdmpy.dimensions import Dimension  # lgtm [py/import-own-module] # noqa: F401
+from csdmpy.dimensions import (  # lgtm [py/import-own-module] # noqa: F401
+    LabeledDimension,
+)
+from csdmpy.dimensions import (  # lgtm [py/import-own-module] # noqa: F401
+    LinearDimension,
+)
+from csdmpy.dimensions import (  # lgtm [py/import-own-module] # noqa: F401
+    MonotonicDimension,
+)
+from csdmpy.units import string_to_quantity  # lgtm [py/import-own-module]
+from csdmpy.utils import check_scalar_object  # lgtm [py/import-own-module]
+from csdmpy.utils import validate  # lgtm [py/import-own-module]
 
 __all__ = ["CSDM"]
 __ufunc_list_dimensionless_unit__ = [
@@ -61,87 +73,6 @@ __function_reduction_list__ = [np.max, np.min, np.sum, np.mean, np.var, np.std, 
 __other_functions__ = [np.round, np.real, np.imag, np.clip]
 
 __shape_manipulation_functions__ = [np.transpose]
-
-__valid_dimensions__ = (
-    Dimension,
-    LinearDimension,
-    MonotonicDimension,
-    LabeledDimension,
-)
-
-
-class AbstractList(MutableSequence):
-    def __init__(self, data=[]):
-        super().__init__()
-        self._list = list(data)
-
-    def __repr__(self):
-        return "<{0} {1}>".format(self.__class__.__name__, self._list)
-
-    def __len__(self):
-        """List length"""
-        return len(self._list)
-
-    def __getitem__(self, index):
-        """Get a list item"""
-        return self._list[index]
-
-    def __delitem__(self, index):
-        raise Exception("Deleting items is not allowed.")
-        # del self._list[index]
-
-    def __setitem__(self, index, item):
-        pass
-
-    def insert(self, index, item):
-        # raise Exception("Inserting items is not allowed.")
-        self._list.insert(index, item)
-
-    def append(self, item):
-        # raise Exception("Appending items is not allowed.")
-        self.insert(len(self._list), item)
-
-    def __str__(self):
-        return str(self._list)
-
-    def __eq__(self, other):
-        """Check equality of DependentVariableList."""
-        if not isinstance(other, self.__class__):
-            return False
-        if len(self._list) != len(other._list):
-            return False
-
-        check = []
-        for i in range(len(self._list)):
-            check.append(self._list[i] == other._list[i])
-
-        if np.all(check):
-            return True
-        return False
-
-
-class DimensionList(AbstractList):
-    def __init__(self, data=[]):
-        super().__init__(data)
-
-    def __setitem__(self, index, item):
-        if not isinstance(item, __valid_dimensions__):
-            raise ValueError(
-                f"Expecting a Dimension object, found {item.__class__.name__}"
-            )
-        self._list[index] = item
-
-
-class DependentVariableList(AbstractList):
-    def __init__(self, data=[]):
-        super().__init__(data)
-
-    def __setitem__(self, index, item):
-        if not isinstance(item, DependentVariable):
-            raise ValueError(
-                f"Expecting a DependentVariable object, found {item.__class__.name__}"
-            )
-        self._list[index] = item
 
 
 class CSDM:
@@ -509,6 +440,65 @@ class CSDM:
                 item.components *= value.value
         return self
 
+    def __getitem__(self, indices):
+        """Return a csdm object corresponding to given indices."""
+        csdm = CSDM()
+
+        if isinstance(indices, tuple):
+            l_ = len(indices)
+            indices = indices + tuple(
+                [slice(0, _.count, 1) for _ in self.dimensions[l_:]]
+            )
+        if isinstance(indices, (int, slice)):
+            indices = (indices,) + tuple(
+                [slice(0, _.count, 1) for _ in self.dimensions[1:]]
+            )
+        for i, dim in enumerate(self.dimensions):
+            dim_ = dim
+            if hasattr(dim, "subtype"):
+                dim_ = dim.subtype
+
+            s_ = indices[i]
+            start, stop, step, length_ = 0, dim.count, 1, 1
+            if not isinstance(s_, int):
+                if s_.start is not None:
+                    start = s_.start
+                if s_.stop is not None:
+                    stop = s_.stop
+                if s_.step is not None:
+                    step = s_.step
+                length_ = (stop - start) / step
+
+            if length_ > 1:
+                if hasattr(dim_, "_equivalencies"):
+                    equivalencies_ = dim_._equivalencies
+                    dim_._equivalencies = None
+                    x = dim.coordinates[s_]
+                    new_dim = as_dimension(x.value, unit=str(x.unit))
+                    dim_._equivalencies = equivalencies_
+                    new_dim._equivalencies = equivalencies_
+
+                else:
+                    x = dim.coordinates[s_]
+                    new_dim = as_dimension(x)
+
+                new_dim._copy_metadata(dim_)
+
+                if hasattr(dim_, "_equivalencies"):
+                    dim_._equivalencies = equivalencies_
+                    new_dim._equivalencies = equivalencies_
+
+                csdm.add_dimension(new_dim)
+
+        for variable in self.dependent_variables:
+            section = (slice(0, len(variable.components), 1),) + indices[::-1]
+            y = variable.components[section].copy()
+            dv = as_dependent_variable(y, quantity_type=variable.quantity_type)
+            dv._copy_metadata(variable)
+            csdm.add_dependent_variable(dv)
+
+        return csdm
+
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
     # ----------------------------------------------------------------------- #
@@ -760,13 +750,11 @@ class CSDM:
         recommendation, always pass a copy of the :ref:`dim_api` instance to the
         :meth:`~csdmpy.CSDM.add_dimension` method.
         """
-        if args != () and isinstance(
-            args[0], (Dimension, LinearDimension, MonotonicDimension, LabeledDimension)
-        ):
-            self._dimensions += (args[0],)
+        if args != () and isinstance(args[0], __dimensions_list__):
+            self._dimensions += [args[0]]
             return
 
-        self._dimensions += (Dimension(*args, **kwargs),)
+        self._dimensions += [Dimension(*args, **kwargs)]
 
     def add_dependent_variable(self, *args, **kwargs):
         """
@@ -1408,34 +1396,14 @@ def _get_new_csdm_object_after_applying_ufunc(
     new = CSDM()
 
     # dimension should be added first
-    # if method == "reduce":
-    #     for i, variable in enumerate(csdm.dimensions):
-    #         if -1 - i not in kwargs["axis"]:
-    #             new.add_dimension(variable.copy())
-    # else:
     new._dimensions = deepcopy(csdm.dimensions)
-    # for i, variable in enumerate(csdm.dimensions):
-    #     new.add_dimension(variable.copy())
 
     for i, variable in enumerate(csdm.dependent_variables):
         y = func(variable.components * factor[i], *inputs, **kwargs)
 
-        shape0 = y.shape[0]
-        size = y[0].size
-        new_dependent_variable = {
-            "type": variable.type,
-            "description": variable.description,
-            "name": variable.name,
-            "unit": variable.unit,
-            "quantity_name": variable.quantity_name,
-            "component_labels": variable.component_labels,
-            "encoding": variable.encoding,
-            "numeric_type": str(y.dtype),
-            "quantity_type": variable.quantity_type,
-            "components": y.reshape(shape0, size),
-            "application": variable.application,
-        }
-        new.add_dependent_variable(new_dependent_variable)
+        obj = as_dependent_variable(y, quantity_type=variable.quantity_type)
+        obj._copy_metadata(variable)
+        new.add_dependent_variable(obj)
 
     return new
 
@@ -1456,28 +1424,13 @@ def _get_new_csdm_object_after_applying_function(func, *args, **kwargs):
 
     # dimension should be added first
     new._dimensions = deepcopy(csdm.dimensions)
-    # for i, variable in csdm.dimensions:
-    #     new._dimensions[i] = csdm.dimensions[kwargs["axes"][1:][i]]
 
     for variable in csdm.dependent_variables:
         y = func(variable.components, *args_, **kwargs)
 
-        shape0 = y.shape[0]
-        size = y[0].size
-        new_dependent_variable = {
-            "type": variable.type,
-            "description": variable.description,
-            "name": variable.name,
-            "unit": variable.unit,
-            "quantity_name": variable.quantity_name,
-            "component_labels": variable.component_labels,
-            "encoding": variable.encoding,
-            "numeric_type": str(y.dtype),
-            "quantity_type": variable.quantity_type,
-            "components": y.reshape(shape0, size),
-            "application": variable.application,
-        }
-        new.add_dependent_variable(new_dependent_variable)
+        obj = as_dependent_variable(y, quantity_type=variable.quantity_type)
+        obj._copy_metadata(variable)
+        new.add_dependent_variable(obj)
 
     return new
 
@@ -1513,30 +1466,13 @@ def _get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
 
     # dimension should be added first
     new._dimensions = deepcopy(csdm.dimensions)
-    # for i, variable in enumerate(self.dimensions):
-    #     new.add_dimension(variable.copy())
 
     for variable in csdm.dependent_variables:
         y = variable.components * apodization_vector_nd
 
-        shape0 = y.shape[0]
-        size = y[0].size
-        # print(shape0, size)
-        new_dependent_variable = {
-            "type": variable.type,
-            "description": variable.description,
-            "name": variable.name,
-            "unit": variable.unit,
-            "quantity_name": variable.quantity_name,
-            "component_labels": variable.component_labels,
-            "encoding": variable.encoding,
-            "numeric_type": str(y.dtype),
-            "quantity_type": variable.quantity_type,
-            "components": y.reshape(shape0, size),
-            "application": variable.application,
-        }
-        new.add_dependent_variable(new_dependent_variable)
-
+        obj = as_dependent_variable(y, quantity_type=variable.quantity_type)
+        obj._copy_metadata(variable)
+        new.add_dependent_variable(obj)
     return new
 
 
@@ -1576,22 +1512,9 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
         y = func(variable.components, *args_, **kwargs)
 
         if axis is not None:
-            shape0 = y.shape[0]
-            size = y[0].size
-            new_dependent_variable = {
-                "type": variable.type,
-                "description": variable.description,
-                "name": variable.name,
-                "unit": variable.unit,
-                "quantity_name": variable.quantity_name,
-                "component_labels": variable.component_labels,
-                "encoding": variable.encoding,
-                "numeric_type": str(y.dtype),
-                "quantity_type": variable.quantity_type,
-                "components": y.reshape(shape0, size),
-                "application": variable.application,
-            }
-            new.add_dependent_variable(new_dependent_variable)
+            obj = as_dependent_variable(y, quantity_type=variable.quantity_type)
+            obj._copy_metadata(variable)
+            new.add_dependent_variable(obj)
         else:
             lst.append(y)
 

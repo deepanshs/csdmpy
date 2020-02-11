@@ -76,6 +76,8 @@ class LinearDimension(BaseQuantitativeDimension):
 
     def __eq__(self, other):
         """Overrides the default implementation"""
+        if hasattr(other, "subtype"):
+            other = other.subtype
         if isinstance(other, LinearDimension):
             check = [
                 self._count == other._count,
@@ -93,9 +95,8 @@ class LinearDimension(BaseQuantitativeDimension):
                 self._unit == other._unit,
                 self._equivalencies == other._equivalencies,
             ]
-            if False in check:
-                return False
-            return True
+            if np.all(check):
+                return True
         return False
 
     def __mul__(self, other):
@@ -164,7 +165,7 @@ class LinearDimension(BaseQuantitativeDimension):
     @property
     def type(self):
         """Return the type of the dimension."""
-        return deepcopy(self._type)
+        return deepcopy(self.__class__._type)
 
     @property
     def count(self):
@@ -250,6 +251,24 @@ class LinearDimension(BaseQuantitativeDimension):
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
     # ----------------------------------------------------------------------- #
+
+    def _copy_metadata(self, obj, copy=False):
+        """Copy DependentVariable metadata"""
+        if hasattr(obj, "subtype"):
+            obj = obj.subtype
+        if isinstance(obj, LinearDimension):
+            self._description = obj._description
+            self._application = obj._application
+            self._label = obj._label
+
+            self._complex_fft = obj._complex_fft
+            self._origin_offset = obj._origin_offset
+            self._period = obj._period
+            self.reciprocal = obj.reciprocal
+            return
+
+        raise ValueError("Object is not a Dimension.")
+
     def to_dict(self):
         """Return the LinearDimension as a python dictionary."""
         obj = {}

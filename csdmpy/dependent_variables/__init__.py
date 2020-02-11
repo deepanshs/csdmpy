@@ -759,14 +759,6 @@ class DependentVariable:
         self.subtype._components = self.subtype._components * factor.value
         self.subtype._unit = factor.unit
 
-        # factor = (1.0*self.unit).to(unit)
-        # self._components = self.components*factor.value
-        # self._unit = factor.unit
-        # self.subtype.set_attribute(
-        #       '_components', self.components*factor.value
-        # )
-        # self.subtype.set_attribute('_unit', factor.unit)
-
     def to_dict(self):
         """
         Return DependentVariable object as a python dictionary.
@@ -823,6 +815,22 @@ class DependentVariable:
         else:
             item._components = fill_sparse_space(item, sub_shape, dtype)
 
+    def _copy_metadata(self, obj, copy=False):
+        """Copy DependentVariable metadata"""
+        if not isinstance(obj, DependentVariable):
+            raise ValueError("Object is not a DependentVariable.")
+
+        self.type = obj.type
+        self.subtype._description = obj.subtype._description
+        self.subtype._name = obj.subtype._name
+        self.subtype._unit = obj.subtype._unit
+        self.subtype._quantity_name = obj.subtype._quantity_name
+        self.subtype._component_labels = obj.subtype._component_labels
+        self.subtype._encoding = obj.subtype._encoding
+        self.subtype._numeric_type = obj.subtype._numeric_type
+        self.subtype._quantity_type = obj.subtype._quantity_type
+        self.subtype._application = obj.subtype._application
+
 
 def fill_sparse_space(item, shape, dtype):
     """Fill sparse grid using numpy broadcasting."""
@@ -866,3 +874,46 @@ def check_sparse_sampling_key_value(input_dict):
             "literal. The allowed values are `uint8`, `uint16`, `uint32`, ",
             "and `uint64`.",
         )
+
+
+def as_dependent_variable(
+    array, quantity_type="scalar", unit="", description="", application={}
+):
+    """Generate and return a DependentVariable object from a 1D or 2D numpy array.
+
+    Args:
+        array: A 1D or 2D numpy array.
+        quantity_type: The quantity type of the dependent variable. See
+                :ref:`quantityType_uml` for valid quantity types.
+        unit: The unit of the dependent variable components.
+        label: The label along the dimension. The default value is an empty string.
+        description: A description of the dimension. The default value is an empty
+                string.
+        application: An application dictionary. The default is an empty dictionary.
+
+    Example:
+        >>> array = np.arange(1e4).astype(np.complex128)
+        >>> dim_object = cp.as_dependent_variable(array, )
+        >>> print(dim_object)
+        DependentVariable(
+        [[0.000e+00+0.j 1.000e+00+0.j 2.000e+00+0.j ... 9.997e+03+0.j
+          9.998e+03+0.j 9.999e+03+0.j]], quantity_type=scalar, numeric_type=complex128)
+    """
+    if not isinstance(array, (list, np.ndarray)):
+        raise ValueError(
+            f"Cannot convert {array.__class__.__name__} to a DependentVariable object."
+        )
+    if isinstance(array, list):
+        array = np.asarray(array)
+    if array.ndim < 1:
+        raise ValueError(
+            f"Cannot convert a {array.ndim} dimensional array to a DependentVariable "
+            "object."
+        )
+    kwargs = {
+        "quantity_type": quantity_type,
+        "unit": unit,
+        "description": description,
+        "application": application,
+    }
+    return DependentVariable(type="internal", components=array, **kwargs)

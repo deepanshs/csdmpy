@@ -77,3 +77,14 @@ PIP is a package manager for Python packages and is included with
 python version 3.4 and higher.
 
     $ pip install csdmpy
+
+## Citation
+
+Srivastava D.J., Vosegaard T., Massiot D., Grandinetti P.J. (2020) Core Scientific Dataset Model: A lightweight and portable model and file format for multi-dimensional scientific data. [PLOS ONE 15(1): e0225953.](https://doi.org/10.1371/journal.pone.0225953)
+
+
+## Check out the media coverage.
+
+ - [<img src="https://inc.cnrs.fr/sites/institut_inc/files/styles/top_left/public/image/cnrs_20180120_0025%20%281%29.jpg?itok=i3wlyGBq" height="64" width="64"> Des chimistes élaborent un nouveau format pour le partage de données scientifiques](https://inc.cnrs.fr/fr/cnrsinfo/des-chimistes-elaborent-un-nouveau-format-pour-le-partage-de-donnees-scientifiques)
+
+ - [<img src="https://www.technology.org/texorgwp/wp-content/uploads/2020/01/1920_data-1536x1024.jpg" height="64" width="64"> Simplifying how scientists share data](https://www.technology.org/2020/01/03/simplifying-how-scientists-share-data/)

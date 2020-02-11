@@ -69,7 +69,7 @@ class InternalDataset(BaseDependentVariable):
     def __eq__(self, other):
         """Overrides the default implementation"""
         check = [
-            self.name == other.name,
+            self._name == other._name,
             self._unit == other._unit,
             self._quantity_name == other._quantity_name,
             self._encoding == other._encoding,

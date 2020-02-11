@@ -1,7 +1,7 @@
 [flake8]
 # ignore = E501
-max-line-length = 88
-exclude = .eggs,*.egg,build, csdmpy/__init__.py, examples/*
+max-line-length = 100
+exclude = .eggs,*.egg,build, csdmpy/__init__.py, examples/* tutorials/*
 max-complexity = 18
 select = B,C,E,F,W,T4,B9
 

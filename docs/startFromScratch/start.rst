@@ -1,7 +1,3 @@
-####################
-Using csdmpy objects
-####################
-
 =========================
 Generating csdmpy objects
 =========================
@@ -19,6 +15,7 @@ files.
     generating_csdm_object
     add_dimension_object
     add_dependent_variable_object
+    ../auto_tutorials/index
 
 ===============================
 Interacting with csdmpy objects

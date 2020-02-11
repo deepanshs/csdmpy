@@ -44,6 +44,8 @@ class LabeledDimension(BaseDimension):
 
     def __eq__(self, other):
         """Overrides the default implementation"""
+        if hasattr(other, "subtype"):
+            other = other.subtype
         if isinstance(other, LabeledDimension):
             check = [
                 self._count == other._count,
@@ -52,9 +54,8 @@ class LabeledDimension(BaseDimension):
                 self._description == other._description,
                 self._application == other._application,
             ]
-            if False in check:
-                return False
-            return True
+            if np.all(check):
+                return True
         return False
 
     def is_quantitative(self):
@@ -70,7 +71,7 @@ class LabeledDimension(BaseDimension):
     @property
     def type(self):
         """Return the type of the dimension."""
-        return deepcopy(self._type)
+        return deepcopy(self.__class__._type)
 
     @property
     def count(self):
@@ -137,10 +138,22 @@ class LabeledDimension(BaseDimension):
     #                                 Methods                                 #
     # ----------------------------------------------------------------------- #
 
+    def _copy_metadata(self, obj, copy=False):
+        """Copy DependentVariable metadata"""
+        if hasattr(obj, "subtype"):
+            obj = obj.subtype
+        if isinstance(obj, LabeledDimension):
+            self._description = obj._description
+            self._application = obj._application
+            self._label = obj._label
+            return
+
+        raise ValueError("Object is not a Dimension.")
+
     def to_dict(self):
         """Return the LabeledDimension as a python dictionary."""
         dictionary = {}
-        dictionary["type"] = self._type
+        dictionary["type"] = self.__class__._type
         if self._description.strip() != "":
             dictionary["description"] = self._description.strip()
         dictionary["labels"] = self._labels.tolist()

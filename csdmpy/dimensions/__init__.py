@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 """The Dimension object: attributes and methods."""
+import warnings
 from copy import deepcopy
+
+import numpy as np
 
 from .labeled import LabeledDimension
 from .linear import LinearDimension
 from .monotonic import MonotonicDimension
+from csdmpy.units import string_to_quantity
 from csdmpy.utils import _get_dictionary
 from csdmpy.utils import validate
 
@@ -315,14 +319,6 @@ class Dimension:
             AttributeError: When assigned a value.
         """
         return self.subtype.axis_label
-        # if hasattr(self.subtype, "quantity_name"):
-        #     if self.label.strip() == "":
-        #         label = self.quantity_name
-        #     else:
-        #         label = self.label
-        #     return _axis_label(label, self.subtype._unit)
-        # else:
-        #     return self.label
 
     @property
     def coordinates(self):
@@ -753,6 +749,14 @@ class Dimension:
     #                           Dimension Methods                             #
     # ======================================================================= #
 
+    def _copy_metadata(self, obj, copy=False):
+        """Copy DependentVariable metadata"""
+        if not isinstance(obj, Dimension):
+            raise ValueError("Object is not a Dimension.")
+
+        self.subtype._type = obj.subtype._type
+        self.subtype._copy_metadata(obj)
+
     def to_dict(self):
         r"""
         Return Dimension object as a python dictionary.
@@ -804,3 +808,98 @@ class Dimension:
     def copy(self):
         """Return a copy of the Dimension object."""
         return deepcopy(self)
+
+
+def as_dimension(array, unit="", type=None, label="", description="", application={}):
+    """Generate and return a Dimension object from a 1D numpy array.
+
+    Args:
+        array: A 1D numpy array.
+        unit: The unit of the coordinates along the dimension.
+        type: The dimension type. Valid values are linear, monotonic, labeled, or
+                None. If the value is None, let us decide. The default value is None.
+        label: The label along the dimension. The default value is an empty string.
+        description: A description of the dimension. The default value is an empty
+                string.
+        application: An application dictionary. The default is an empty dictionary.
+
+    Example:
+        >>> array = np.arange(15)*0.5
+        >>> dim_object = cp.as_dimension(array)
+        >>> print(dim_object)
+        LinearDimension([0.  0.5 1.  1.5 2.  2.5 3.  3.5 4.  4.5 5.  5.5 6.  6.5 7. ])
+
+        >>> array = ['The', 'great', 'circle']
+        >>> dim_object = cp.as_dimension(array, label='in the sky')
+        >>> print(dim_object)
+        LabeledDimension(['The' 'great' 'circle'])
+    """
+    options = [None, "linear", "monotonic", "labeled"]
+    if type not in options:
+        raise ValueError(f"Invalid value for `type`. Allowed values are {options}.")
+
+    if not isinstance(array, (list, np.ndarray)):
+        raise ValueError(
+            f"Cannot convert {array.__class__.__name__} to a Dimension object."
+        )
+    if isinstance(array, list):
+        array = np.asarray(array)
+    if array.ndim != 1:
+        raise ValueError(
+            f"Cannot convert a {array.ndim} dimensional array to a Dimension object."
+        )
+
+    kwargs = {"label": label, "description": description, "application": application}
+
+    if type is None:
+        # labeled
+        if str(array.dtype)[:2] in [">U", "<U"]:
+            if unit != "":
+                warnings.warn("Ignoring unit argument for LabeledDimension.")
+            return LabeledDimension(labels=array.tolist(), **kwargs)
+
+        # linear
+        increment = array[1] - array[0]
+        if increment == 0:
+            raise ValueError("Invalid array for Dimension object.")
+
+        if np.allclose(np.diff(array, 1), increment):
+            return LinearDimension(
+                count=array.size,
+                increment=f"{increment} {unit}",
+                coordinates_offset=f"{array[0]} {unit}",
+                **kwargs,
+            )
+
+        # monotonic
+        if np.all(np.diff(array, 1) > 0) or np.all(np.diff(array, 1) < 0):
+            return MonotonicDimension(
+                coordinates=array * string_to_quantity(unit), **kwargs
+            )
+
+        raise Exception("Invalid array for Dimension object.")
+
+    if type == "linear":
+        increment = array[1] - array[0]
+        if increment == 0:
+            raise ValueError("Invalid array for LinearDimension.")
+
+        if np.all(np.diff(array, 1) == increment):
+            return LinearDimension(
+                count=array.size,
+                increment=f"{increment} {unit}",
+                coordinates_offset=f"{array[0]} {unit}",
+                **kwargs,
+            )
+
+    if type == "monotonic":
+        if np.all(np.diff(array, 1) > 0) or np.all(np.diff(array, 1) < 0):
+            return MonotonicDimension(
+                coordinates=array * string_to_quantity(unit), **kwargs
+            )
+        raise Exception("The array is not monotonic.")
+
+    if type == "labeled":
+        if unit != "":
+            warnings.warn("Ignoring unit argument for LabeledDimension.")
+        return LabeledDimension(labels=array.tolist(), **kwargs)

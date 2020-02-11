@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+"""Test for the csdm object
+    1) generate csdm object.
+    2) split multiple dependent variables to individual objects.
+    3) add, sub, iadd, isub for scalar and ScalarQuantity.
+    4) mul, imul, truediv, itruediv for scalar and ScalarQuantity.
+    5) min, max, clip, real, imag, conj, round functions
+"""
 import json
 
 import numpy as np
