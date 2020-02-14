@@ -29,6 +29,7 @@ from csdmpy.dimensions import (  # lgtm [py/import-own-module] # noqa: F401
     MonotonicDimension,
 )
 from csdmpy.units import string_to_quantity  # lgtm [py/import-own-module]
+from csdmpy.utils import _get_broadcast_shape  # lgtm [py/import-own-module]
 from csdmpy.utils import check_scalar_object  # lgtm [py/import-own-module]
 from csdmpy.utils import validate  # lgtm [py/import-own-module]
 
@@ -1322,13 +1323,6 @@ class CSDM:
     # def atleast_1d(self, *args, **kwargs):
     #     print(args)
     #     print(kwargs)
-
-
-def _get_broadcast_shape(array, ndim, axis):
-    """Return the broadcast array for numpy ndarray operations."""
-    s = [None for i in range(ndim)]
-    s[axis] = slice(None, None, None)
-    return array[tuple(s)]
 
 
 def _check_dimension_indices(d, index=-1):

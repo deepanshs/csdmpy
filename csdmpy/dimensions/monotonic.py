@@ -200,7 +200,10 @@ class MonotonicDimension(BaseQuantitativeDimension):
             label = self.quantity_name
         else:
             label = self.label
-        return _axis_label(label, self._unit)
+        unit = (
+            self._equivalent_unit if self._equivalent_unit is not None else self._unit
+        )
+        return _axis_label(label, unit)
 
     @property
     def data_structure(self):

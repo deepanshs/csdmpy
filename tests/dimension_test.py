@@ -176,9 +176,9 @@ def test_linear_new():
     assert dim1 != 21
 
     # axis label
-    assert data.dimensions[0].axis_label == "speed / (m * s^-1)"
+    assert data.dimensions[0].axis_label == "speed / (m / s)"
     data.dimensions[0].label = "velocity"
-    assert data.dimensions[0].axis_label == "velocity / (m * s^-1)"
+    assert data.dimensions[0].axis_label == "velocity / (m / s)"
 
 
 def test_linearDimension():
@@ -453,10 +453,18 @@ def test_monotonicDimension():
     with pytest.raises(ZeroDivisionError, match=".*{0}.*".format(error)):
         ratio.coordinates
 
-    assert ratio.axis_label == "frequency / (Hz)"
+    assert ratio.axis_label == "frequency / (ppm)"
 
     ratio.label = "shift"
+    assert ratio.axis_label == "shift / (ppm)"
+
+    ratio.to("Hz", "nmr_frequency_ratio")
     assert ratio.axis_label == "shift / (Hz)"
+
+    ratio.to("MHz")
+    assert np.allclose(ratio.coordinates.value, np.asarray([0.0, 10.0e-6]))
+
+    assert ratio.axis_label == "shift / (MHz)"
 
 
 # labeled dimension

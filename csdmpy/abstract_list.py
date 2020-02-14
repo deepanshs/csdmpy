@@ -39,7 +39,7 @@ class AbstractList(MutableSequence):
         return self._list[index]
 
     def __delitem__(self, index):
-        raise Exception("Deleting items is not allowed.")
+        raise LookupError("Deleting items is not allowed.")
         # del self._list[index]
 
     def insert(self, index, item):

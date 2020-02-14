@@ -213,13 +213,10 @@ def attribute_error(a, b):
     return "`{0}` has no attribute `{1}`.".format(a.__class__.__name__, b)
 
 
-def _axis_label(
-    label, unit, made_dimensionless=False, dimensionless_unit=None, label_type=""
-):
-
-    if unit != "":
+def _axis_label(label, unit=None, label_type=""):
+    if unit is not None:
         if label_type == "":
-            return "{0} / ({1})".format(label, ScalarQuantity(1 * unit).format("unit"))
+            return f"{label} / ({unit})"
         # if label_type == "latex":
         #     return "{0} / ({1})".format(label, unit.to_string("latex"))
     return label
@@ -338,3 +335,10 @@ def check_scalar_object(other):
         return other.quantity
 
     return other
+
+
+def _get_broadcast_shape(array, ndim, axis):
+    """Return the broadcast array for numpy ndarray operations."""
+    s = [None for i in range(ndim)]
+    s[axis] = slice(None, None, None)
+    return array[tuple(s)]

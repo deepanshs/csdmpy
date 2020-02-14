@@ -253,7 +253,7 @@ class DependentVariable:
         .. doctest::
 
             >>> y.axis_label
-            ['energy / (s * W)', 'energy / (s * W)', 'energy / (s * W)']
+            ['energy / (s W)', 'energy / (s W)', 'energy / (s W)']
 
         Returns:
             A list of formated component label strings.
