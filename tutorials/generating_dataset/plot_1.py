@@ -32,7 +32,7 @@ d0 = cp.LinearDimension(
 )
 
 #%%
-# Here, ``d1`` is a LinearDimension with 256 points and 15.23 µs increment. You
+# Here, ``d0`` is a LinearDimension with 256 points and 15.23 µs increment. You
 # may similarly set the second dimension as a LinearDimension, however, in this
 # example, let's set it as a MonotonicDimension.
 #

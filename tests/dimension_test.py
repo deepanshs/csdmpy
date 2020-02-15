@@ -186,7 +186,7 @@ def test_linearDimension():
     assert a.__str__() == "LinearDimension([0. 2. 4.] s)"
 
     assert a.__repr__() == (
-        "LinearDimension(type=linear, count=3, increment=2.0 s, "
+        "LinearDimension(count=3, increment=2.0 s, "
         "quantity_name=time, reciprocal={'quantity_name': 'frequency'})"
     )
 
@@ -416,7 +416,7 @@ def test_monotonicDimension():
     a = cp.MonotonicDimension(coordinates=10 ** (np.arange(2)))
     assert a.__str__() == "MonotonicDimension([ 1. 10.])"
 
-    assert a.__repr__() == ("MonotonicDimension(type=monotonic, coordinates=[ 1 10])")
+    assert a.__repr__() == ("MonotonicDimension(coordinates=[ 1 10])")
 
     assert a != 2
     assert a.is_quantitative() is True
@@ -548,7 +548,7 @@ def test_labeledDimension():
 
     assert a.__str__() == "LabeledDimension(['1' 'a' 'c'])"
 
-    assert a.__repr__() == ("LabeledDimension(type=labeled, labels=['1', 'a', 'c'])")
+    assert a.__repr__() == ("LabeledDimension(labels=['1', 'a', 'c'])")
 
     assert a.type == "labeled"
     assert a != 1

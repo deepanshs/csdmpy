@@ -81,7 +81,6 @@ class InternalDataset(BaseDependentVariable):
             np.allclose(self._components, other._components),
             self._sparse_sampling == other._sparse_sampling,
         ]
-        # print(check)
         if False in check:
             return False
         return True

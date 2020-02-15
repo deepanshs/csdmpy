@@ -3,10 +3,9 @@
     1) indexing and slicing test
 """
 import numpy as np
+import pytest
 
 import csdmpy as cp
-
-# import pytest
 
 
 array = np.arange(6000).reshape(30, 20, 10)
@@ -97,3 +96,21 @@ def test_index_6():
     assert l_test.dimensions[1] == d2
     assert np.allclose(l_test.dependent_variables[0].components, array[:, :, 3])
     assert str(l_test.dependent_variables[0].unit) == "A"
+
+
+def test_index_7():
+    l_test = a_obj[1, 3, 9]
+    assert l_test.shape == ()
+    assert np.allclose(l_test.dependent_variables[0].components[0], array[9, 3, 1])
+    assert str(l_test.dependent_variables[0].unit) == "A"
+
+    l_test = a_obj[(1, 3, 19)]
+    assert l_test.shape == ()
+    assert np.allclose(l_test.dependent_variables[0].components[0], array[19, 3, 1])
+    assert str(l_test.dependent_variables[0].unit) == "A"
+
+
+def test_index_8():
+    error = "Fancy indexing using tuples or lists may result in"
+    with pytest.raises(NotImplementedError, match=".*{0}.*".format(error)):
+        a_obj[(1, 3, 9), 10]

@@ -68,7 +68,9 @@ class LinearDimension(BaseQuantitativeDimension):
         self._get_coordinates()
 
     def __repr__(self):
-        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
+        properties = ", ".join(
+            [f"{k}={v}" for k, v in self.to_dict().items() if k != "type"]
+        )
         return f"LinearDimension({properties})"
 
     def __str__(self):

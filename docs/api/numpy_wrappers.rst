@@ -2,8 +2,8 @@
 
 .. _wrapper_api:
 
-Numpy wrappers
-==============
+Numpy methods
+=============
 
 
 .. toctree::

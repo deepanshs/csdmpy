@@ -95,7 +95,9 @@ by the quantity type `pixel_3`. The remaining axes of the NumPy array are used
 in generating the dimensions of the csdm object. In this example, this
 corresponds to a single dimension of `linear` type with 10 points.
 
-The following example generates a 3D{2} vector dataset.
+The following example generates a 3D{2} vector dataset. Here, the first axis of
+the four-dimensional Numpy array is the components of the vector dataset, and
+the remaining three axes become the respective dimensions.
 
 .. doctest::
 

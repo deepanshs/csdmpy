@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""CSDM."""
+"""THE CSDM object"""
 from __future__ import division
 from __future__ import print_function
 
@@ -225,7 +225,7 @@ class CSDM:
         for v1, v2 in zip(self.dependent_variables, other.dependent_variables):
             if v1.unit.physical_type != v2.unit.physical_type:
                 raise Exception(
-                    "Cannot operate on dependent variables with of physical types: "
+                    "Cannot operate on dependent variables with physical types: "
                     f"{v1.unit.physical_type} and {v2.unit.physical_type}."
                 )
 
@@ -444,7 +444,6 @@ class CSDM:
     def __getitem__(self, indices):
         """Return a csdm object corresponding to given indices."""
         csdm = CSDM()
-
         if isinstance(indices, tuple):
             l_ = len(indices)
             indices = indices + tuple(
@@ -460,16 +459,33 @@ class CSDM:
                 dim_ = dim.subtype
 
             s_ = indices[i]
-            start, stop, step, length_ = 0, dim.count, 1, 1
-            if not isinstance(s_, int):
-                if s_.start is not None:
-                    start = s_.start
-                if s_.stop is not None:
-                    stop = s_.stop
-                if s_.step is not None:
-                    step = s_.step
-                length_ = (stop - start) / step
+            # if isinstance(s_, slice):
+            #     start, stop, step, length_ = 0, dim.count, 1, 1
+            #     if s_.start is not None:
+            #         start = s_.start
+            #         if start < 0:
+            #             start += dim.count
 
+            #     if s_.stop is not None:
+            #         stop = s_.stop
+            #         if stop < 0:
+            #             start += dim.count
+            #     if s_.step is not None:
+            #         step = s_.step
+            #     length_ = (stop - start) / step
+
+            if isinstance(s_, (tuple, list)):
+                raise NotImplementedError(
+                    "CSDMpy supports the grid base scientific dataset described in the"
+                    " Core Scientific dataset model. Fancy indexing using tuples or "
+                    "lists may result in a scatter dataset, and is not implemented in "
+                    "the current version."
+                )
+
+            # if isinstance(s_, int):
+            #     length_ = 1
+
+            length_ = dim.coordinates[s_].size
             if length_ > 1:
                 if hasattr(dim_, "_equivalencies"):
                     equivalencies_ = dim_._equivalencies
@@ -484,6 +500,8 @@ class CSDM:
                     new_dim = as_dimension(x)
 
                 new_dim._copy_metadata(dim_)
+                if hasattr(new_dim, "complex_fft"):
+                    new_dim.complex_fft = False
 
                 if hasattr(dim_, "_equivalencies"):
                     dim_._equivalencies = equivalencies_
@@ -500,13 +518,23 @@ class CSDM:
 
         return csdm
 
+    def _copy_metadata(self, other):
+        self._version = other._version
+        self._description = other._description
+        self._read_only = other._read_only
+        self._tags = other._tags
+        self._timestamp = other._timestamp
+        self._geographic_coordinate = other._geographic_coordinate
+        self._application = other._application
+        self._filename = other._filename
+
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
     # ----------------------------------------------------------------------- #
     @property
     def version(self):
         """Version number of the CSD model on file."""
-        return deepcopy(self._version)
+        return self._version
 
     @property
     def description(self):
@@ -674,8 +702,11 @@ class CSDM:
     @property
     def T(self):
         """Return a csdm object with a transpose of the data."""
-        pass
-        # return np.imag(self)
+        new = self.copy()
+        new._dimensions = self._dimensions[::-1]
+        for item in new.dependent_variables:
+            item.subtype._components = np.moveaxis(item.subtype._components.T, -1, 0)
+        return new
 
     @property
     def shape(self):
@@ -1244,7 +1275,7 @@ class CSDM:
         pass
 
     def __array_ufunc__(self, function, method, *inputs, **kwargs):
-        print("__array_ufunc__")
+        # print("__array_ufunc__")
         # print(inputs)
         # print(kwargs)
 
@@ -1284,7 +1315,7 @@ class CSDM:
         raise NotImplementedError(f"Function {function} is not implemented.")
 
     def __array_function__(self, function, types, *args, **kwargs):
-        print("__array_function__")
+        # print("__array_function__")
         # print(types)
         # print(kwargs)
         # print(function)

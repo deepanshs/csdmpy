@@ -28,7 +28,8 @@ class AbstractList(MutableSequence):
 
     def __str__(self):
         """String representation"""
-        return self._list.__str__()
+        string = ",\n".join([item.__repr__() for item in self._list])
+        return f"[{string}]"
 
     def __len__(self):
         """List length"""

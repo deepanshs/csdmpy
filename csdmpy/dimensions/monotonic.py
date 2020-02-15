@@ -94,7 +94,9 @@ class MonotonicDimension(BaseQuantitativeDimension):
         return False
 
     def __repr__(self):
-        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
+        properties = ", ".join(
+            [f"{k}={v}" for k, v in self.to_dict().items() if k != "type"]
+        )
         return f"MonotonicDimension({properties})"
 
     def __str__(self):

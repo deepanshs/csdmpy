@@ -262,10 +262,13 @@ class DependentVariable:
             AttributeError: When assigned a value.
         """
         labels = []
+        unit_ = str(self.unit)
+        if unit_ == "":
+            unit_ = None
         for label in self.component_labels:
             if label.strip() == "":
                 label = self.quantity_name
-            labels.append(_axis_label(label, self.unit))
+            labels.append(_axis_label(label, unit_))
         return labels
 
     @property
