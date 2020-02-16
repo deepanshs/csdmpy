@@ -1,5 +1,3 @@
-
-
 .. _csdm_api:
 
 ----
@@ -46,6 +44,7 @@ CSDM
       ~CSDM.real
       ~CSDM.imag
       ~CSDM.shape
+      ~CSDM.T
 
    .. rubric:: Numpy compatible method summary
    .. autosummary::
@@ -81,6 +80,7 @@ CSDM
    .. autoattribute:: real
    .. autoattribute:: imag
    .. autoattribute:: shape
+   .. autoattribute:: T
 
    .. rubric:: Methods documentation
 

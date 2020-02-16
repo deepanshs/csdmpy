@@ -1,5 +1,3 @@
-
-
 .. _wrapper_api:
 
 Numpy methods

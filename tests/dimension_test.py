@@ -563,3 +563,67 @@ def test_labeledDimension():
     assert a.count == 2
 
     assert a == a.copy()
+
+
+def test_as_dimension():
+    a = np.arange(10)
+    one = np.ones(10)
+    rand = np.random.rand(10)
+    monotonic = 10 ** a / 10
+
+    dim = cp.as_dimension(a, unit="s")
+    assert np.allclose(dim.coordinates.value, a)
+
+    # linear
+    error = "Invalid array for Dimension object."
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        cp.as_dimension(one, unit="s")
+
+    dim = cp.as_dimension(a, unit="s", type="linear")
+    assert np.allclose(dim.coordinates.value, a)
+
+    # linear with type
+    error = "Invalid array for LinearDimension object."
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        cp.as_dimension(one, unit="s", type="linear")
+
+    error = "Invalid array for LinearDimension object."
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        cp.as_dimension(one, unit="s", type="linear")
+
+    # monotonic
+
+    dim = cp.as_dimension(monotonic, unit="s")
+    assert np.allclose(dim.coordinates.value, monotonic)
+
+    dim = cp.as_dimension(monotonic, unit="s", type="monotonic")
+    assert np.allclose(dim.coordinates.value, monotonic)
+
+    error = "Invalid array for Dimension object."
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        cp.as_dimension(rand, unit="s")
+
+    error = "Invalid array for MonotonicDimension object."
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        cp.as_dimension(rand, unit="s", type="monotonic")
+
+    # labeled
+
+    dim = cp.as_dimension(list("abcd"))
+    assert np.all(dim.coordinates == list("abcd"))
+
+    dim = cp.as_dimension(list("abcd"), type="labeled")
+    assert np.all(dim.coordinates == list("abcd"))
+
+    # error
+    error = "Invalid value for `type`. Allowed values are"
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        cp.as_dimension(a, type="log-linear")
+
+    error = "to a Dimension object."
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        cp.as_dimension({"a": [1, 2, 3]})
+
+    error = "Cannot convert a 2 dimensional array to a Dimension object."
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        cp.as_dimension(np.arange(100).reshape(10, 10))

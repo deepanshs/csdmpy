@@ -13,6 +13,24 @@ def _check_dimension_type(csdm):
 
 
 def integral(csdm):
+    """Evaluate the integral of the dependent variables over all dimensions.
+
+    Args:
+        csdm: A csdm object.
+
+    Returns:
+        A list of integrals corresponding to the list of the dependent
+            variables.
+
+    Example:
+        >>> import csdmpy.statistics as stat
+        >>> x = np.arange(100) * 2 - 100.0
+        >>> gauss = np.exp(-((x - 5.) ** 2) / (2 * 4. ** 2))
+        >>> csdm = cp.as_csdm(gauss, unit='T')
+        >>> csdm.dimensions[0] = cp.as_dimension(x, unit="m")
+        >>> stat.integral(csdm)
+        [<Quantity 10.0265131 m T>]
+    """
     dim_l = len(csdm.dimensions)
     _check_dimension_type(csdm)
 
@@ -26,6 +44,19 @@ def integral(csdm):
 
 
 def mean(csdm):
+    """Evaluate the mean coordinate of a dependent variable along each dimension.
+
+    Args:
+        csdm: A csdm object.
+
+    Returns:
+        A list of tuples, where each tuple represents the mean coordinates of the
+            dependent variables.
+
+    Example:
+        >>> stat.mean(csdm)
+        [(<Quantity 5. m>,)]
+    """
     dim_l = len(csdm.dimensions)
     _check_dimension_type(csdm)
 
@@ -41,14 +72,60 @@ def mean(csdm):
         for dim in dims:
             unit = dim.unit * variable.unit
             y_.append(np.sum(variable.components * dim.value) / sum_csdm[i] * unit)
-        y.append(y_)
+        y.append(tuple(y_))
+
+    return y
+
+
+def var(csdm):
+    """Evaluate the variance of the dependent variables along each dimension.
+
+    Args:
+        csdm: A csdm object.
+
+    Returns:
+        A list of tuples, where each tuple is the variance along the dimensions
+            of the dependent variables.
+
+    Example:
+        >>> stat.var(csdm)
+        [(<Quantity 16. m2>,)]
+    """
+    dim_l = len(csdm.dimensions)
+    _check_dimension_type(csdm)
+
+    dims = [
+        _get_broadcast_shape(item.coordinates, dim_l, -i - 1)
+        for i, item in enumerate(csdm.dimensions)
+    ]
+
+    mean_csdm = mean(csdm)
+    sum_csdm = csdm.sum()
+    y = []
+    for i, variable in enumerate(csdm.dependent_variables):
+        y_ = []
+        for j, dim in enumerate(dims):
+            d = (dim - mean_csdm[i][j]) ** 2
+            unit = d.unit * variable.unit
+            y_.append(np.sum(variable.components * d.value) / sum_csdm[i] * unit)
+        y.append(tuple(y_))
 
     return y
 
 
 def std(csdm):
-    pass
+    """Evaluate the standard deviation of the dependent variables along each dimension.
 
+    Args:
+        csdm: A csdm object.
 
-# def var(csdm):
-#     return _base(csdm, np.mean) / np.asarray(csdm.sum())[:, np.newaxis]
+    Returns:
+        A list of tuples, where each tuple is the standard deviation along the
+            dimensions of the dependent variables.
+
+    Example:
+        >>> stat.std(csdm)
+        [(<Quantity 4. m>,)]
+    """
+    var_ = var(csdm)
+    return [tuple([np.sqrt(value) for value in items]) for items in var_]

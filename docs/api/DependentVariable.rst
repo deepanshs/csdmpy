@@ -1,5 +1,3 @@
-
-
 .. _dv_api:
 
 -----------------
@@ -38,6 +36,7 @@ DependentVariable
 
         ~DependentVariable.to
         ~DependentVariable.to_dict
+        ~DependentVariable.copy
 
 
     .. rubric:: Attributes Documentation
@@ -60,3 +59,4 @@ DependentVariable
     .. rubric:: Method Documentation
     .. automethod:: to
     .. automethod:: to_dict
+    .. automethod:: copy

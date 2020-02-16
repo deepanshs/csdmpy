@@ -1,4 +1,3 @@
-
 =============
 API-Reference
 =============
@@ -9,6 +8,7 @@ API-Reference
     api/CSDM
     api/Dimensions
     api/DependentVariable
+    api/statistics
     api/numpy_wrappers
 
 

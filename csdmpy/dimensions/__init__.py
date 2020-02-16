@@ -874,12 +874,12 @@ def as_dimension(array, unit="", type=None, label="", description="", applicatio
                 coordinates=array * string_to_quantity(unit), **kwargs
             )
 
-        raise Exception("Invalid array for Dimension object.")
+        raise ValueError("Invalid array for Dimension object.")
 
     if type == "linear":
         increment = array[1] - array[0]
         if increment == 0:
-            raise ValueError("Invalid array for LinearDimension.")
+            raise ValueError("Invalid array for LinearDimension object.")
 
         if np.all(np.diff(array, 1) == increment):
             return LinearDimension(
@@ -894,9 +894,9 @@ def as_dimension(array, unit="", type=None, label="", description="", applicatio
             return MonotonicDimension(
                 coordinates=array * string_to_quantity(unit), **kwargs
             )
-        raise Exception("The array is not monotonic.")
+        raise ValueError("Invalid array for MonotonicDimension object.")
 
     if type == "labeled":
         if unit != "":
-            warnings.warn("Ignoring unit argument for LabeledDimension.")
+            warnings.warn("Ignoring unit argument for LabeledDimension object.")
         return LabeledDimension(labels=array.tolist(), **kwargs)

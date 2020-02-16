@@ -1,5 +1,3 @@
-
-
 .. _dim_api:
 
 ---------
@@ -50,6 +48,7 @@ Dimension
         ~Dimension.to
         ~Dimension.to_dict
         ~Dimension.is_quantitative
+        ~Dimension.copy
 
 
     .. rubric:: Attributes Documentation
@@ -77,3 +76,4 @@ Dimension
     .. automethod:: to
     .. automethod:: to_dict
     .. automethod:: is_quantitative
+    .. automethod:: copy

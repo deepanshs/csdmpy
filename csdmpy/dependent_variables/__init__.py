@@ -169,8 +169,6 @@ class DependentVariable:
             f"DependentVariable({self.components.__repr__()} {self.unit}, "
             f"quantity_type={self.quantity_type})"
         )
-        # properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
-        # return f"DependentVariable({properties})"
 
     def __str__(self):
         if self.unit.physical_type == "dimensionless":
@@ -183,8 +181,6 @@ class DependentVariable:
             f"DependentVariable(\n{self.components.__str__()} {self.unit}, "
             f"quantity_type={self.quantity_type}, numeric_type={self.numeric_type})"
         )
-        # properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
-        # return f"DependentVariable({properties})"
 
     def __eq__(self, other):
         """Overrides the default implementation"""
@@ -192,10 +188,6 @@ class DependentVariable:
             if self.subtype == other.subtype:
                 return True
             return False
-        # if isinstance(other, (LinearDimension, LabeledDimension, MonotonicDimension)):
-        #     if self.subtype == other:
-        #         return True
-        #     return False
         return False
 
     # ======================================================================= #

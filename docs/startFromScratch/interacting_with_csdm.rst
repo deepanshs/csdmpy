@@ -362,7 +362,7 @@ Dimension reduction methods
 
     >>> minimum = np.min(new_csdm1)
     >>> print(minimum)
-    [0.0]
+    [<Quantity 0. K>]
     >>> np.min(new_csdm1) == new_csdm1.min()
     True
 

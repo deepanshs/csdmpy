@@ -1,4 +1,3 @@
-
 Supported NumPy functions
 -------------------------
 

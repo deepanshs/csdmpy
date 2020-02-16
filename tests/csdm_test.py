@@ -495,7 +495,8 @@ def test_max_min_clip():
     d0 = cp.LinearDimension(count=5, increment="1s")
     d1 = cp.LinearDimension(count=10, increment="1m")
     out, a_test = get_test_2d(float)
-    assert out.max() == a_test.max()
+    assert out.max() == a_test.max()[0].value
+    assert str(a_test.max()[0].unit) == "m"
 
     b = a_test.max(axis=1)
     assert np.allclose(out.max(0), b.dependent_variables[0].components[0])
@@ -507,7 +508,8 @@ def test_max_min_clip():
 
     # min
     out, a_test = get_test_2d(float)
-    assert out.min() == a_test.min()
+    assert out.min() == a_test.min()[0].value
+    assert str(a_test.min()[0].unit) == "m"
 
     b = a_test.min(axis=1)
     assert np.allclose(out.min(0), b.dependent_variables[0].components[0])

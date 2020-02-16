@@ -1,4 +1,3 @@
-
 Dimension specific Apodization methods
 --------------------------------------
 

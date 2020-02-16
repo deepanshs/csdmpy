@@ -702,7 +702,7 @@ class CSDM:
 
     @property
     def T(self):
-        """Return a csdm object with a transpose of the data."""
+        """Return a csdm object with a transpose of the dataset."""
         new = self.copy()
         new._dimensions = self._dimensions[::-1]
         for item in new.dependent_variables:
@@ -1084,9 +1084,6 @@ class CSDM:
             a._filename = self._filename
             return a
 
-        # copy = self.copy()
-        # copy._dependent_variables = ()
-
         dv = []
         for variable in self.dependent_variables:
             a = new_object()
@@ -1103,7 +1100,7 @@ class CSDM:
         given axis.
 
         Args:
-            dimension: An integer or None or a tuple of `m` integers cooresponding to
+            axis: An integer or None or a tuple of `m` integers cooresponding to
                     the index/indices of dimensions along which the sum of the
                     dependent variable components is performed. If None, the output is
                     the sum over all dimensions per dependent variable.
@@ -1145,19 +1142,24 @@ class CSDM:
         Clip the dependent variable components between the `min` and `max` values.
 
         Args:
-            dimension: An integer or None or a tuple of `m` integers cooresponding to
-                    the index/indices of dimensions along which the sum of the
-                    dependent variable components is performed. If None, the output is
-                    over all dimensions per dependent variable.
+            min: The minimum clip value.
+            max: The maximum clip value.
+
         Return:
-            A CSDM object with `m` dimensions removed, or a list when `axis` is None.
+            A CSDM object with values clipped between min and max.
         """
+        if len(self.dependent_variables) > 1:
+            raise NotImplementedError(
+                "CSDM objects with more that one dependent variable does not support "
+                "the clip method. Used `.split()` method to split the dependent "
+                "variables into individual csdm objects and try again."
+            )
         a_max = max
         if max is None:
-            a_max = np.max(self.max())
+            a_max = self.dependent_variables[0].components.max()
         a_min = min
         if min is None:
-            a_min = np.min(self.min())
+            a_min = self.dependent_variables[0].components.min()
         return np.clip(self, a_min, a_max)
 
     def conj(self):
@@ -1399,7 +1401,8 @@ def _get_new_csdm_object_after_applying_ufunc(
 
     new = CSDM()
 
-    # dimension should be added first
+    # dimension should be added first so that the dependent variables can be
+    # shaped appropriately.
     new._dimensions = deepcopy(csdm.dimensions)
 
     for i, variable in enumerate(csdm.dependent_variables):
@@ -1426,7 +1429,8 @@ def _get_new_csdm_object_after_applying_function(func, *args, **kwargs):
 
     new = CSDM()
 
-    # dimension should be added first
+    # dimension should be added first so that the dependent variables can be
+    # shaped appropriately.
     new._dimensions = deepcopy(csdm.dimensions)
 
     for variable in csdm.dependent_variables:
@@ -1468,7 +1472,8 @@ def _get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
 
     new = CSDM()
 
-    # dimension should be added first
+    # dimension should be added first so that the dependent variables can be
+    # shaped appropriately.
     new._dimensions = deepcopy(csdm.dimensions)
 
     for variable in csdm.dependent_variables:
@@ -1506,7 +1511,8 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
     new = CSDM()
     lst = []
 
-    # dimension should be added first
+    # dimension should be added first so that the dependent variables can be
+    # shaped appropriately.
     if axis is not None:
         for i, variable in enumerate(csdm.dimensions):
             if -1 - i not in axis:
@@ -1520,7 +1526,7 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
             obj._copy_metadata(variable)
             new.add_dependent_variable(obj)
         else:
-            lst.append(y)
+            lst.append(y * variable.unit)
 
     if axis is None:
         del new
