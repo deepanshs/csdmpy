@@ -146,18 +146,16 @@ class BaseQuantitativeDimension(BaseDimension):
 
         # The description key is added at the child class level.
         if self._coordinates_offset.value != 0.0:
-            obj["coordinates_offset"] = ScalarQuantity(
-                self._coordinates_offset
-            ).format()
+            obj["coordinates_offset"] = str(ScalarQuantity(self._coordinates_offset))
 
         if self._origin_offset.value != 0.0:
-            obj["origin_offset"] = ScalarQuantity(self._origin_offset).format()
+            obj["origin_offset"] = str(ScalarQuantity(self._origin_offset))
 
         if self._quantity_name not in [None, "unknown", "dimensionless"]:
             obj["quantity_name"] = self._quantity_name
 
         if self._period.value not in [0.0, inf]:
-            obj["period"] = ScalarQuantity(self._period).format()
+            obj["period"] = str(ScalarQuantity(self._period))
 
         if self.label.strip() != "":
             obj["label"] = self.label

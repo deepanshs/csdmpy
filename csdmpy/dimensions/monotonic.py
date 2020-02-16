@@ -217,7 +217,7 @@ class MonotonicDimension(BaseQuantitativeDimension):
     # ----------------------------------------------------------------------- #
 
     def _copy_metadata(self, obj, copy=False):
-        """Copy DependentVariable metadata"""
+        """Copy MonotonicDimension metadata."""
         if hasattr(obj, "subtype"):
             obj = obj.subtype
         if isinstance(obj, MonotonicDimension):
@@ -229,8 +229,6 @@ class MonotonicDimension(BaseQuantitativeDimension):
             self._period = obj._period
             self.reciprocal = obj.reciprocal
             return
-
-        raise ValueError("Object is not a Dimension.")
 
     def to_dict(self):
         """Return the MonotonicDimension as a python dictionary."""

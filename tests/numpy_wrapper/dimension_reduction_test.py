@@ -64,6 +64,8 @@ def test_sum():
     b = a.sum()
     assert np.allclose(b, data.sum())
 
+    assert np.allclose(a.sum(-1).dependent_variables[0].components, data.sum(axis=0))
+
 
 def test_mean():
     dimensions = [0, 1, 2]

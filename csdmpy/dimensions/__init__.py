@@ -750,10 +750,7 @@ class Dimension:
     # ======================================================================= #
 
     def _copy_metadata(self, obj, copy=False):
-        """Copy DependentVariable metadata"""
-        if not isinstance(obj, Dimension):
-            raise ValueError("Object is not a Dimension.")
-
+        """Copy Dimension metadata"""
         self.subtype._type = obj.subtype._type
         self.subtype._copy_metadata(obj)
 

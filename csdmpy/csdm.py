@@ -161,7 +161,7 @@ class CSDM:
             "description",
             "application",
         )
-        prop = ", ".join([f"{key}={getattr(self, key).__repr__()}" for key in keys])
+        prop = ", ".join([f"{k}={getattr(self, k).__repr__()}" for k in keys])
         return f"CSDM({prop})"
 
     def __str__(self):
@@ -173,30 +173,11 @@ class CSDM:
             return f"CSDM(\n{prop_dv}\n)"
         return f"CSDM(\n{prop_dv},\n{prop_dim}\n)"
 
-    def __eq__(self, other):
-        """Overrides the default implementation"""
-        if not isinstance(other, CSDM):
-            return False
-        check = [
-            self.dimensions == other.dimensions,
-            self.dependent_variables == other.dependent_variables,
-            self.tags == other.tags,
-            self.read_only == other.read_only,
-            self.version == other.version,
-            self.timestamp == other.timestamp,
-            self.geographic_coordinate == other.geographic_coordinate,
-            self.description == other.description,
-            self.application == other.application,
-        ]
-        if np.all(check):
-            return True
-        return False
-
-    def __check_csdm_object(self, other):
+    def __check_csdm_object(self, other, operator=""):
         """Check if the two objects are csdm objects"""
         if not isinstance(other, CSDM):
             raise TypeError(
-                "unsupported operand type(s): 'CSDM' and "
+                f"unsupported operand type(s) {operator}: 'CSDM' and "
                 f"'{other.__class__.__name__}'."
             )
 
@@ -242,19 +223,74 @@ class CSDM:
         self.__check_dependent_variable_len_equality(other)
         self.__check_dependent_variable_dimensionality(other)
 
+    def __eq__(self, other):
+        """Check the other object is a CSDM object with identical attribute values."""
+        if not isinstance(other, CSDM):
+            return False
+        check = [
+            self.dimensions == other.dimensions,
+            self.dependent_variables == other.dependent_variables,
+            self.tags == other.tags,
+            self.read_only == other.read_only,
+            self.version == other.version,
+            self.timestamp == other.timestamp,
+            self.geographic_coordinate == other.geographic_coordinate,
+            self.description == other.description,
+            self.application == other.application,
+        ]
+        if np.all(check):
+            return True
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __neg__(self):
+        """Return negative of self."""
+        return np.negative(self)
+
+    def __pos__(self):
+        """Return positive of self."""
+        return self
+
+    def __abs__(self):
+        """Return absolute of self."""
+        return np.absolute(self)
+
+    # def __complex__(self):
+    #     """Return self as complex."""
+    #     return self.astype(complex)
+
+    # def __int__(self):
+    #     """Return self as int."""
+    #     return self.astype(int)
+
+    # def __float__(self):
+    #     """Return self as float."""
+    #     return self.astype(float)
+
+    # def __invert__(self):
+    #     raise NotImplementedError("")
+
+    # def __lshift__(self, other):
+    #     raise NotImplementedError()
+
+    # def __ilshift__(self, other):
+    #     raise NotImplementedError()
+
+    # def __rshift__(self, other):
+    #     raise NotImplementedError()
+
+    # def __irshift__(self, other):
+    #     raise NotImplementedError()
+
     def __add__(self, other):
         """
-        Add two objects (z=x+y), if they are
-            1) csdm objects,
+        Add two objects (z=x+y), if the other object is a
+            1) csdm or scalar object,
             2) with identical dimension objects,
             3) same number of dependent-variables, and
             4) each dependent variables with identical dimensionality.
-
-        Args:
-            other: A CSDM object
-
-        Return:
-            A CSDM object as the sum of two CSDM objects.
         """
         if isinstance(other, CSDM):
             self.__check_csdm_object_additive_compatibility(other)
@@ -267,8 +303,7 @@ class CSDM:
                 )
             return d1
 
-        other = check_scalar_object(other)
-
+        other = check_scalar_object(other, "+")
         d1 = self.copy()
         for i, item in enumerate(d1.dependent_variables):
             if not isinstance(other, Quantity):
@@ -278,20 +313,12 @@ class CSDM:
                 item.components = item.components + factor * other.value
         return d1
 
+    def __radd__(self, other):
+        """Right add two objects. See __add__ for details."""
+        return self.__add__(other)
+
     def __iadd__(self, other):
-        """
-        Add two objects in-place (y+=x), if they are
-            1) csdm objects,
-            2) with identical dimension objects,
-            3) same number of dependent-variables, and
-            4) each dependent variables with identical dimensionality.
-
-        Args:
-            other: A CSDM object
-
-        Return:
-            A CSDM object as the sum of two CSDM objects.
-        """
+        """Add two objects in-place (y+=x).  See __add__ for details."""
         if isinstance(other, CSDM):
             self.__check_csdm_object_additive_compatibility(other)
 
@@ -302,7 +329,7 @@ class CSDM:
                 )
             return self
 
-        other = check_scalar_object(other)
+        other = check_scalar_object(other, "+")
 
         for i, item in enumerate(self.dependent_variables):
             if not isinstance(other, Quantity):
@@ -314,17 +341,11 @@ class CSDM:
 
     def __sub__(self, other):
         """
-        Subtract two objects (z=x-y), if they are
-            1) csdm objects,
+        Subtract two objects (z=x-y), if the other is
+            1) csdm or scalar object,
             2) with identical dimension objects,
             3) same number of dependent-variables, and
             4) each dependent variables with identical dimensionality.
-
-        Args:
-            other: A CSDM object
-
-        Return:
-            A CSDM object as the difference of two CSDM objects.
         """
         if isinstance(other, CSDM):
             self.__check_csdm_object_additive_compatibility(other)
@@ -337,8 +358,7 @@ class CSDM:
                 )
             return d1
 
-        other = check_scalar_object(other)
-
+        other = check_scalar_object(other, "-")
         d1 = self.copy()
         for i, item in enumerate(d1.dependent_variables):
             if not isinstance(other, Quantity):
@@ -348,18 +368,13 @@ class CSDM:
                 item.components = item.components - factor * other.value
         return d1
 
+    def __rsub__(self, other):
+        """Right subtract two objects. See __sub__ for details."""
+        return -self.__sub__(other)
+
     def __isub__(self, other):
         """
-        Subtract two objects in-lace (y-=x), if they are
-            1) csdm objects,
-            2) with identical dimension objects,
-            3) same number of dependent-variables, and
-            4) each dependent variables with identical dimensionality.
-        Args:
-            other: A CSDM object.
-
-        Return:
-            A CSDM object as the difference of two CSDM objects.
+        Subtract two objects in-lace (y-=x). See __sub__ for details.
         """
         if isinstance(other, CSDM):
             self.__check_csdm_object_additive_compatibility(other)
@@ -371,7 +386,7 @@ class CSDM:
                 )
             return self
 
-        other = check_scalar_object(other)
+        other = check_scalar_object(other, "-")
 
         for i, item in enumerate(self.dependent_variables):
             if not isinstance(other, Quantity):
@@ -383,7 +398,7 @@ class CSDM:
 
     def __mul__(self, other):
         """Multiply the components of the CSDM object by a scalar."""
-        other = check_scalar_object(other)
+        other = check_scalar_object(other, "*")
 
         d1 = self.copy()
         for item in d1.dependent_variables:
@@ -395,12 +410,14 @@ class CSDM:
                 item.components = item.components * value.value
         return d1
 
+    def __rmul__(self, other):
+        """Right multiply the components of the CSDM object by a scalar."""
+        return self.__mul__(other)
+
     def __imul__(self, other):
-        """
-        In place multiplication of the components of the CSDM object
-        by a scalar.
-        """
-        other = check_scalar_object(other)
+        """In place multiplication of the components of the CSDM object by a scalar."""
+
+        other = check_scalar_object(other, "*")
 
         for item in self.dependent_variables:
             if not isinstance(other, Quantity):
@@ -413,7 +430,7 @@ class CSDM:
 
     def __truediv__(self, other):
         """Divide the components of the CSDM object by a scalar."""
-        other = check_scalar_object(other)
+        other = check_scalar_object(other, "/")
 
         d1 = self.copy()
         for item in d1.dependent_variables:
@@ -425,12 +442,13 @@ class CSDM:
                 item.components = item.components * value.value
         return d1
 
+    def __rtruediv__(self, other):
+        """Right divide the components of the CSDM object by a scalar."""
+        return np.reciprocal(self) * other
+
     def __itruediv__(self, other):
-        """
-        In place division of the components of the CSDM object
-        by a scalar.
-        """
-        other = check_scalar_object(other)
+        """In place division of the components of the CSDM object by a scalar."""
+        other = check_scalar_object(other, "/")
 
         for item in self.dependent_variables:
             if not isinstance(other, Quantity):
@@ -459,21 +477,6 @@ class CSDM:
                 dim_ = dim.subtype
 
             s_ = indices[i]
-            # if isinstance(s_, slice):
-            #     start, stop, step, length_ = 0, dim.count, 1, 1
-            #     if s_.start is not None:
-            #         start = s_.start
-            #         if start < 0:
-            #             start += dim.count
-
-            #     if s_.stop is not None:
-            #         stop = s_.stop
-            #         if stop < 0:
-            #             start += dim.count
-            #     if s_.step is not None:
-            #         step = s_.step
-            #     length_ = (stop - start) / step
-
             if isinstance(s_, (tuple, list)):
                 raise NotImplementedError(
                     "CSDMpy supports the grid base scientific dataset described in the"
@@ -481,9 +484,6 @@ class CSDM:
                     "lists may result in a scatter dataset, and is not implemented in "
                     "the current version."
                 )
-
-            # if isinstance(s_, int):
-            #     length_ = 1
 
             length_ = dim.coordinates[s_].size
             if length_ > 1:
@@ -516,6 +516,7 @@ class CSDM:
             dv._copy_metadata(variable)
             csdm.add_dependent_variable(dv)
 
+        csdm._copy_metadata(self)
         return csdm
 
     def _copy_metadata(self, other):
@@ -850,30 +851,8 @@ class CSDM:
         if shape != ():
             dv._reshape(shape[::-1])
 
-        # if np.prod(shape) == 1:
-        #     self._dependent_variables += (dv,)
-        #     return
-
-        # size = np.prod(shape)
-        # if dv.components[0].size != np.prod(shape):
-        #     raise Exception(
-        #         f"Expecting a DependentVariable with {size} points per component, "
-        #         f"instead found {dv.components[0].size} points per component."
-        #     )
-        # if dv.components[0].shape != shape[::-1]:
-        #     raise Exception(
-        #         f"The components array from the Dependent variable of shape "
-        #         f"{dv.components[0].shape} is not aligned with the order of "
-        #         f"dimensions, {shape}."
-        #     )
         self._dependent_variables += [dv]
         return
-
-        # self._dependent_variables += (
-        #     DependentVariable(filename=self.filename, *args, **kwargs),
-        # )
-        # self._dependent_variables[-1].encoding = "base64"
-        # self._dependent_variables[-1].type = "internal"
 
     def to_dict(
         self, update_timestamp=False, read_only=False, version=__latest_CSDM_version__

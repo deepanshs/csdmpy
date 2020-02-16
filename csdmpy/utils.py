@@ -316,7 +316,7 @@ def check_and_assign_bool(element):
     return validate(element, "boolean", bool)
 
 
-def check_scalar_object(other):
+def check_scalar_object(other, operator=""):
     """Check if the object is scalar:
         int, float, complex, np.ndarray, Quantity, or ScalarQuantity.
         Returns: The other object.
@@ -325,7 +325,8 @@ def check_scalar_object(other):
         other, (int, float, complex, np.ndarray, Quantity, ScalarQuantity)
     ):
         raise TypeError(
-            f"unsupported operand type(s): 'CSDM' and " f"'{other.__class__.__name__}'."
+            f"unsupported operand type(s) {operator}: 'CSDM' and "
+            f"'{other.__class__.__name__}'."
         )
     if isinstance(other, np.ndarray):
         if other.ndim != 0:

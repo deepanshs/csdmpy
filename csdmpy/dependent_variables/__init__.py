@@ -820,8 +820,6 @@ class DependentVariable:
 
     def _copy_metadata(self, obj, copy=False):
         """Copy DependentVariable metadata"""
-        if not isinstance(obj, DependentVariable):
-            raise ValueError("Object is not a DependentVariable.")
 
         self.type = obj.type
         self.subtype._description = obj.subtype._description

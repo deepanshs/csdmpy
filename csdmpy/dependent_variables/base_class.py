@@ -242,7 +242,7 @@ class BaseDependentVariable:
             obj["name"] = self._name
 
         if str(self._unit) != "":
-            obj["unit"] = ScalarQuantity(1.0 * self._unit).format("unit")
+            obj["unit"] = ScalarQuantity(1.0 * self._unit).__format__("unit")
 
         if self._quantity_name not in ["dimensionless", "unknown", None]:
             obj["quantity_name"] = self._quantity_name

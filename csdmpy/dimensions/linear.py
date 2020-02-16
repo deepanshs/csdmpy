@@ -258,7 +258,7 @@ class LinearDimension(BaseQuantitativeDimension):
     # ----------------------------------------------------------------------- #
 
     def _copy_metadata(self, obj, copy=False):
-        """Copy DependentVariable metadata"""
+        """Copy LinearDimension metadata."""
         if hasattr(obj, "subtype"):
             obj = obj.subtype
         if isinstance(obj, LinearDimension):
@@ -272,8 +272,6 @@ class LinearDimension(BaseQuantitativeDimension):
             self.reciprocal = obj.reciprocal
             return
 
-        raise ValueError("Object is not a Dimension.")
-
     def to_dict(self):
         """Return the LinearDimension as a python dictionary."""
         obj = {}
@@ -283,7 +281,7 @@ class LinearDimension(BaseQuantitativeDimension):
             obj["description"] = self._description.strip()
 
         obj["count"] = self._count
-        obj["increment"] = ScalarQuantity(self.increment).format()
+        obj["increment"] = str(ScalarQuantity(self.increment))
         obj.update(self._to_dict())
 
         if self.complex_fft:

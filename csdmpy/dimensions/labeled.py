@@ -41,7 +41,6 @@ class LabeledDimension(BaseDimension):
         return f"LabeledDimension({properties})"
 
     def __str__(self):
-        # properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
         return f"LabeledDimension({self.coordinates.__str__()})"
 
     def __eq__(self, other):
@@ -141,7 +140,7 @@ class LabeledDimension(BaseDimension):
     # ----------------------------------------------------------------------- #
 
     def _copy_metadata(self, obj, copy=False):
-        """Copy DependentVariable metadata"""
+        """Copy LabeledDimension metadata."""
         if hasattr(obj, "subtype"):
             obj = obj.subtype
         if isinstance(obj, LabeledDimension):

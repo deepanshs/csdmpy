@@ -10,6 +10,7 @@ import csdmpy as cp
 
 array = np.arange(6000).reshape(30, 20, 10)
 a_obj = cp.as_csdm(array, unit="A", quantity_type="scalar")
+a_obj.description = "This is a test."
 d2 = cp.LinearDimension(
     count=30,
     increment="2.4 ms",
@@ -39,6 +40,7 @@ def test_index_0():
     assert l_test.dimensions[0] == d0
     assert np.allclose(l_test.dependent_variables[0].components, array[0, 0, :])
     assert str(l_test.dependent_variables[0].unit) == "A"
+    assert l_test.description == "This is a test."
 
 
 def test_index_1():
@@ -48,6 +50,8 @@ def test_index_1():
     assert np.all(l_test.dimensions[0].coordinates == np.asarray(list("bdfh")))
     assert np.allclose(l_test.dependent_variables[0].components, array[0, 0, 1:9:2])
     assert str(l_test.dependent_variables[0].unit) == "A"
+    assert l_test.description == "This is a test."
+    assert l_test.dimensions[0].label == "l1"
 
 
 def test_index_2():
@@ -57,6 +61,7 @@ def test_index_2():
     assert l_test.dimensions[1] == d1
     assert np.allclose(l_test.dependent_variables[0].components, array[0, :, :])
     assert str(l_test.dependent_variables[0].unit) == "A"
+    assert l_test.description == "This is a test."
 
 
 def test_index_3():
@@ -67,6 +72,7 @@ def test_index_3():
     assert l_test.dimensions[1].label == "d2"
     assert np.allclose(l_test.dependent_variables[0].components, array[0, 4:19:4, :])
     assert str(l_test.dependent_variables[0].unit) == "A"
+    assert l_test.description == "This is a test."
 
 
 def test_index_4():
@@ -78,6 +84,7 @@ def test_index_4():
     assert l_test.dimensions[1].label == "d2"
     assert np.allclose(l_test.dependent_variables[0].components, array[:, 4:19:2, :])
     assert str(l_test.dependent_variables[0].unit) == "A"
+    assert l_test.description == "This is a test."
 
 
 def test_index_5():
@@ -87,6 +94,7 @@ def test_index_5():
     assert l_test.dimensions[1] == d2
     assert np.allclose(l_test.dependent_variables[0].components, array[:, :, 0])
     assert str(l_test.dependent_variables[0].unit) == "A"
+    assert l_test.description == "This is a test."
 
 
 def test_index_6():
