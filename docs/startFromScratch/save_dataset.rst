@@ -23,9 +23,6 @@ types for the dependent variables:
 For the following examples, consider ``data`` as an instance of the
 :attr:`~csdmpy.CSDM` class.
 
-Serializing dependent-variables
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 To serialize a dependent variable with a given encoding type, set the value
 of it's encoding attribute to the respective encoding. For example,
 
