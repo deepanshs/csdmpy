@@ -9,9 +9,11 @@ Basic math operations
 The csdm object supports basic mathematical operations such as additive and
 multiplicative operations.
 
-.. note:: All operation applied to or involving the csdm object applies only to
+.. note:: All operations applied to or involving the csdm objects apply only to
     the components of the dependent variables within the csdm object. These
     operations do not apply to the dimensions within the csdm object.
+
+Consider the following csdm data object.
 
 .. doctest::
 
@@ -93,7 +95,7 @@ multiplicative operations.
     LinearDimension([0. 1.])
     )
 
-You can change the dimensionality of the dependent variables by mutliplying the
+You may change the dimensionality of the dependent variables by multiplying the
 csdm object with the appropriate scalar quantity, for example,
 
 **Example 5**
@@ -127,9 +129,9 @@ csdm object with the appropriate scalar quantity, for example,
 
 **Additive operations involving two csdm objects**
 
-The additive operations are supported between two csdm objects with
-identical sets of Dimension objects and DependentVariable objects with
-the same dimensionality. For examples,
+The additive operations are supported between two csdm objects only when the
+two objects have identical sets of Dimension objects and DependentVariable
+objects with the same dimensionality. For examples,
 
 **Example 7**
 
@@ -167,16 +169,16 @@ csdm objects are different.
 .. doctest::
 
     >>> csdm1 = cp.as_csdm(np.ones((2,3)), unit='m/s')
-    >>> csdm1.dimensions[0] = cp.MonotonicDimension(coordinates=['1 ms', '1 s'])
+    >>> csdm1.dimensions[1] = cp.MonotonicDimension(coordinates=['1 ms', '1 s'])
     >>> csdm2 = cp.as_csdm(np.ones((2,3)), unit='cm/s')
     >>> csdm_obj = csdm1 + csdm2 # doctest: +SKIP
     Exception: Cannot operate on CSDM objects with different dimensions.
 
 
-Indexing and slicing
-""""""""""""""""""""
+Basic Slicing and Indexing
+""""""""""""""""""""""""""
 
-The CSDM objects support NumPy indexing and slicing and follow the same
+The CSDM objects support NumPy basic slicing and indexing and follow the same
 rules as the NumPy array. Consider the following 3D{1} csdm object.
 
 .. doctest::
@@ -192,7 +194,9 @@ rules as the NumPy array. Consider the following 3D{1} csdm object.
     MonotonicDimension(coordinates=[ 1.  2.  3.  5.  7. 11. 13. 17. 19. 23.] mm, quantity_name=length, reciprocal={'quantity_name': 'wavenumber'}),
     LabeledDimension(labels=['a', 'b', 'c', 'd', 'e'])]
 
-To retrieve a sub-grid of this 3D{1} dataset using NumPy indexing scheme.
+The above object ``csdm1`` has three dimensions, each with different
+dimensionality and dimension type.
+To retrieve a sub-grid of this 3D{1} dataset, use the NumPy indexing scheme.
 
 **Example 10**
 
@@ -227,7 +231,7 @@ sub-grid of the 3D{1} datasets in ``csdm1``. In ``sub_csdm``, the first
 dimension is a sub-grid of the first dimension from the ``csdm1`` object,
 where only every fifth grid point is selected. Similarly, the second dimension
 of the ``sub_csdm`` object is sampled from the second dimension of the
-``csdm1`` object, where every second grid point is selected starting with the
+``csdm1`` object, where every second grid point is selected, starting with the
 entry at the grid index two. The third dimension of the ``sub_csdm`` object
 is the same as the third object of the ``csdm1`` object. The values of the
 corresponding linear, monotonic, and labeled dimensions are accordingly
@@ -252,16 +256,16 @@ dimension indexed in reversed starting at the third index from the end.
 
 .. seealso::
 
-    `Numpy Indexing <https://docs.scipy.org/doc/numpy/reference/arrays.indexing.html>`_
+    `Basic Slicing and Indexing <https://docs.scipy.org/doc/numpy/reference/arrays.indexing.html#basic-slicing-and-indexing>`_
 
 Support for Numpy methods
 """""""""""""""""""""""""
 
-In most cases, you may use the csdm object as you would use a NumPy array.
+In most cases, the csdm object may be used as if it were a NumPy array.
 See the list of all supported :ref:`wrapper_api`.
 
-Method that operates on dimensionless dependent variables
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Method that only operate on dimensionless dependent variables
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 **Example 13**
 
@@ -280,7 +284,7 @@ Method that operates on dimensionless dependent variables
 
 .. doctest::
 
-    >>> new_csdm2 = np.cos(new_csdm1*2*np.pi)
+    >>> new_csdm2 = np.cos(2*np.pi*new_csdm1)
     >>> print(new_csdm2)
     CSDM(
     DependentVariable(
@@ -289,15 +293,15 @@ Method that operates on dimensionless dependent variables
     LinearDimension([0. 1. 2. 3. 4. 5. 6. 7. 8. 9.])
     )
 
-An exception is raised for csdm object with non dimensionless dependent
-variables
-
 **Example 15**
 
 .. doctest::
 
     >>> new_csdm2 = np.exp(new_csdm1 * cp.ScalarQuantity('K')) # doctest: +SKIP
     ValueError: Cannot apply `exp` to quantity with physical type `temperature`.
+
+An exception is raised for csdm object with non-dimensionless dependent
+variables
 
 Method that are independent of the dependent variable dimensionality
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -362,7 +366,7 @@ Dimension reduction methods
 
     >>> minimum = np.min(new_csdm1)
     >>> print(minimum)
-    [<Quantity 0. K>]
+    0.0 K
     >>> np.min(new_csdm1) == new_csdm1.min()
     True
 

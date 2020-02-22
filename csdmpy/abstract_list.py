@@ -76,6 +76,11 @@ class DimensionList(AbstractList):
             raise ValueError(
                 f"Expecting a Dimension object, found {item.__class__.name__}"
             )
+        if self._list[index].count != item.count:
+            raise ValueError(
+                f"Cannot substitute a dimension with {item.count} points to for a "
+                f"dimension with {self._list[index].count} points."
+            )
         self._list[index] = item
 
 

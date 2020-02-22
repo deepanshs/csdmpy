@@ -820,8 +820,8 @@ class DependentVariable:
         self.subtype._quantity_name = obj.subtype._quantity_name
         self.subtype._component_labels = obj.subtype._component_labels
         self.subtype._encoding = obj.subtype._encoding
-        self.subtype._numeric_type = obj.subtype._numeric_type
-        self.subtype._quantity_type = obj.subtype._quantity_type
+        # self.subtype._numeric_type = obj.subtype._numeric_type
+        # self.subtype._quantity_type = obj.subtype._quantity_type
         self.subtype._application = obj.subtype._application
 
 

@@ -1530,6 +1530,8 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
 
     if axis is None:
         del new
-        return lst
+        if len(lst) > 1:
+            return lst
+        return lst[0]
 
     return new

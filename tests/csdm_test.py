@@ -495,8 +495,8 @@ def test_max_min_clip():
     d0 = cp.LinearDimension(count=5, increment="1s")
     d1 = cp.LinearDimension(count=10, increment="1m")
     out, a_test = get_test_2d(float)
-    assert out.max() == a_test.max()[0].value
-    assert str(a_test.max()[0].unit) == "m"
+    assert out.max() == a_test.max().value
+    assert str(a_test.max().unit) == "m"
 
     b = a_test.max(axis=1)
     assert np.allclose(out.max(0), b.dependent_variables[0].components[0])
@@ -508,8 +508,8 @@ def test_max_min_clip():
 
     # min
     out, a_test = get_test_2d(float)
-    assert out.min() == a_test.min()[0].value
-    assert str(a_test.min()[0].unit) == "m"
+    assert out.min() == a_test.min().value
+    assert str(a_test.min().unit) == "m"
 
     b = a_test.min(axis=1)
     assert np.allclose(out.min(0), b.dependent_variables[0].components[0])
@@ -530,15 +530,19 @@ def test_max_min_clip():
 def test_real_imag_conj():
     out, a_test = get_test_2d(complex)
     b = a_test.real
+    assert b.dependent_variables[0].numeric_type == "float64"
     assert np.allclose(out.real, b.dependent_variables[0].components[0])
 
     b = np.real(a_test)
+    assert b.dependent_variables[0].numeric_type == "float64"
     assert np.allclose(out.real, b.dependent_variables[0].components[0])
 
     b = a_test.imag
+    assert b.dependent_variables[0].numeric_type == "float64"
     assert np.allclose(out.imag, b.dependent_variables[0].components[0])
 
     b = a_test.conj()
+    assert b.dependent_variables[0].numeric_type == "complex128"
     assert np.allclose(out.conj(), b.dependent_variables[0].components[0])
 
 

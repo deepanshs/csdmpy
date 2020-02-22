@@ -270,6 +270,9 @@ class LinearDimension(BaseQuantitativeDimension):
             self._origin_offset = obj._origin_offset
             self._period = obj._period
             self.reciprocal = obj.reciprocal
+
+            self._equivalent_unit = obj._equivalent_unit
+            self._equivalencies = obj._equivalencies
             return
 
     def to_dict(self):

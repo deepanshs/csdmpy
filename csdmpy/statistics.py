@@ -18,9 +18,9 @@ def integral(csdm):
     Args:
         csdm: A csdm object.
 
-    Returns:
-        A list of integrals corresponding to the list of the dependent
-            variables.
+    Return:
+        A list of integrals corresponding to the list of the dependent variables. If
+        only one dependent variable is present, return a quantity instead.
 
     Example:
         >>> import csdmpy.statistics as stat
@@ -29,7 +29,7 @@ def integral(csdm):
         >>> csdm = cp.as_csdm(gauss, unit='T')
         >>> csdm.dimensions[0] = cp.as_dimension(x, unit="m")
         >>> stat.integral(csdm)
-        [<Quantity 10.0265131 m T>]
+        <Quantity 10.0265131 m T>
     """
     dim_l = len(csdm.dimensions)
     _check_dimension_type(csdm)
@@ -40,7 +40,9 @@ def integral(csdm):
         i = i * intervals[_]
 
     csdm_sum = csdm.sum()
-    return [sum_ * i for sum_ in csdm_sum]
+    if isinstance(csdm_sum, list):
+        return [sum_ * i for sum_ in csdm_sum]
+    return csdm_sum * i
 
 
 def mean(csdm):
@@ -49,13 +51,14 @@ def mean(csdm):
     Args:
         csdm: A csdm object.
 
-    Returns:
+    Return:
         A list of tuples, where each tuple represents the mean coordinates of the
-            dependent variables.
+        dependent variables. If only one dependent variable is present, return a tuple
+        of coordinates instead.
 
     Example:
         >>> stat.mean(csdm)
-        [(<Quantity 5. m>,)]
+        (<Quantity 5. m>,)
     """
     dim_l = len(csdm.dimensions)
     _check_dimension_type(csdm)
@@ -66,6 +69,8 @@ def mean(csdm):
     ]
 
     sum_csdm = csdm.sum()
+    if not isinstance(sum_csdm, list):
+        sum_csdm = [sum_csdm]
     y = []
     for i, variable in enumerate(csdm.dependent_variables):
         y_ = []
@@ -74,7 +79,9 @@ def mean(csdm):
             y_.append(np.sum(variable.components * dim.value) / sum_csdm[i] * unit)
         y.append(tuple(y_))
 
-    return y
+    if len(y) > 1:
+        return y
+    return y[0]
 
 
 def var(csdm):
@@ -83,13 +90,14 @@ def var(csdm):
     Args:
         csdm: A csdm object.
 
-    Returns:
-        A list of tuples, where each tuple is the variance along the dimensions
-            of the dependent variables.
+    Return:
+        A list of tuples, where each tuple is the variance along the dimensions of the
+        dependent variables. If only one dependent variable is present, return a tuple
+        instead.
 
     Example:
         >>> stat.var(csdm)
-        [(<Quantity 16. m2>,)]
+        (<Quantity 16. m2>,)
     """
     dim_l = len(csdm.dimensions)
     _check_dimension_type(csdm)
@@ -100,7 +108,13 @@ def var(csdm):
     ]
 
     mean_csdm = mean(csdm)
+    if not isinstance(mean_csdm, list):
+        mean_csdm = [mean_csdm]
+
     sum_csdm = csdm.sum()
+    if not isinstance(sum_csdm, list):
+        sum_csdm = [sum_csdm]
+
     y = []
     for i, variable in enumerate(csdm.dependent_variables):
         y_ = []
@@ -110,7 +124,9 @@ def var(csdm):
             y_.append(np.sum(variable.components * d.value) / sum_csdm[i] * unit)
         y.append(tuple(y_))
 
-    return y
+    if len(y) > 1:
+        return y
+    return y[0]
 
 
 def std(csdm):
@@ -119,13 +135,16 @@ def std(csdm):
     Args:
         csdm: A csdm object.
 
-    Returns:
+    Return:
         A list of tuples, where each tuple is the standard deviation along the
-            dimensions of the dependent variables.
+        dimensions of the dependent variables. If only one dependent variable is
+        present, return a tuple instead.
 
     Example:
         >>> stat.std(csdm)
-        [(<Quantity 4. m>,)]
+        (<Quantity 4. m>,)
     """
     var_ = var(csdm)
-    return [tuple([np.sqrt(value) for value in items]) for items in var_]
+    if isinstance(var_, list):
+        return [tuple([np.sqrt(value) for value in items]) for items in var_]
+    return tuple([np.sqrt(value) for value in var_])
