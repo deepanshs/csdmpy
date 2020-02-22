@@ -4,10 +4,13 @@ from __future__ import division
 from __future__ import print_function
 
 import json
+import warnings
 from copy import deepcopy
 
-from csdmpy.dependent_variables.external import ExternalDataset
-from csdmpy.dependent_variables.internal import InternalDataset
+import numpy as np
+
+from .external import ExternalDataset
+from .internal import InternalDataset
 from csdmpy.utils import _axis_label
 from csdmpy.utils import _get_dictionary
 
@@ -110,12 +113,14 @@ class DependentVariable:
 
         if "quantity_type" not in input_keys:
             raise KeyError(
-                "Missing a required `quantity_type` key from the DependentVariable object."
+                "Missing a required `quantity_type` key from the DependentVariable "
+                "object."
             )
 
         if input_dict["type"] == "external" and "encoding" in input_dict:
             raise KeyError(
-                "The `encoding` key is invalid for DependentVariable objects with `external` type."
+                "The `encoding` key is invalid for DependentVariable objects with the "
+                "`external` type."
             )
 
         def message(item, subtype):
@@ -154,12 +159,36 @@ class DependentVariable:
             self.subtype = ExternalDataset(**dictionary)
 
     def __repr__(self):
-        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
-        return f"DependentVariable({properties})"
+        if self.unit.physical_type == "dimensionless":
+            return (
+                f"DependentVariable({self.components.__repr__()}, "
+                f"quantity_type={self.quantity_type})"
+            )
+
+        return (
+            f"DependentVariable({self.components.__repr__()} {self.unit}, "
+            f"quantity_type={self.quantity_type})"
+        )
 
     def __str__(self):
-        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
-        return f"DependentVariable({properties})"
+        if self.unit.physical_type == "dimensionless":
+            return (
+                f"DependentVariable(\n{self.components.__str__()}, "
+                f"quantity_type={self.quantity_type}, numeric_type={self.numeric_type})"
+            )
+
+        return (
+            f"DependentVariable(\n{self.components.__str__()} {self.unit}, "
+            f"quantity_type={self.quantity_type}, numeric_type={self.numeric_type})"
+        )
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, DependentVariable):
+            if self.subtype == other.subtype:
+                return True
+            return False
+        return False
 
     # ======================================================================= #
     #                      DependentVariable  Attributes                      #
@@ -216,7 +245,7 @@ class DependentVariable:
         .. doctest::
 
             >>> y.axis_label
-            ['energy / (s * W)', 'energy / (s * W)', 'energy / (s * W)']
+            ['energy / (s W)', 'energy / (s W)', 'energy / (s W)']
 
         Returns:
             A list of formated component label strings.
@@ -225,10 +254,13 @@ class DependentVariable:
             AttributeError: When assigned a value.
         """
         labels = []
+        unit_ = str(self.unit)
+        if unit_ == "":
+            unit_ = None
         for label in self.component_labels:
             if label.strip() == "":
                 label = self.quantity_name
-            labels.append(_axis_label(label, self.unit))
+            labels.append(_axis_label(label, unit_))
         return labels
 
     @property
@@ -319,11 +351,12 @@ class DependentVariable:
         *float32* to *uint8*.
         In this other example,
 
-            >>> try:
+            >>> try: # doctest: +SKIP
             ...     y.components = np.random.rand(1,10).astype('u1')
             ... except ValueError as e:
             ...     print(e)
-            The shape of the `ndarray`, `(1, 10)`, is inconsistent with the shape of the components array, `(3, 10)`.
+            The shape of the `ndarray`, `(1, 10)`, is inconsistent with the
+            shape of the components array, `(3, 10)`.
 
         a `ValueError` is raised because the shape of the input array (1, 10)
         is not consistent with the shape of the components array, (3, 10).
@@ -459,7 +492,7 @@ class DependentVariable:
             >>> y.encoding = 'base64'
 
         The value of this attribute will be used in serializing the data to the file,
-        when using the :meth:`~csdmpy.csdm.CSDM.save` method.
+        when using the :meth:`~csdmpy.CSDM.save` method.
 
         Returns:
             A string with a `valid` encoding type.
@@ -499,9 +532,10 @@ class DependentVariable:
     @property
     def numeric_type(self):
         r"""
-        The numeric type of the data values from the dependent variable.
+        The numeric type of the component values from the dependent variable.
 
-        There are currently twelve *valid* numeric types:
+        There are currently twelve *valid* numeric types in core scientific dataset
+        model.
 
         ==============   ============   ============   ============
         ``uint8``        ``int8``       ``float32``    ``complex64``
@@ -510,11 +544,12 @@ class DependentVariable:
         ``uint64``       ``int64``
         ==============   ============   ============   ============
 
-        When assigning a valid value, this attribute updates the `dtype` of the
-        Numpy array from the corresponding
-        :attr:`~csdmpy.dependent_variables.DependentVariable.components`
-        attribute. We recommended the use of the numeric type attribute for
-        updating the `dtype` of the Numpy array. For example,
+        Besides, csdmpy also accepts any valid `type` object, such as int, float,
+        np.complex64, as long as the type is consistent with the above twelve entries.
+
+        When assigning a valid value, this attribute updates the `dtype` of the Numpy
+        array from the corresponding :attr:`~csdmpy.DependentVariable.components`
+        attribute.
 
         .. doctest::
 
@@ -527,11 +562,16 @@ class DependentVariable:
              [20. 21. 22. 23. 24. 25. 26. 27. 28. 29.]]
 
             >>> y.numeric_type = 'complex64'
-
             >>> print(y.components[:,:5])
             [[ 0.+0.j  1.+0.j  2.+0.j  3.+0.j  4.+0.j]
              [10.+0.j 11.+0.j 12.+0.j 13.+0.j 14.+0.j]
              [20.+0.j 21.+0.j 22.+0.j 23.+0.j 24.+0.j]]
+
+            >>> y.numeric_type = float # python type object
+            >>> print(y.components[:,:5])
+            [[ 0.  1.  2.  3.  4.]
+             [10. 11. 12. 13. 14.]
+             [20. 21. 22. 23. 24.]]
 
         Returns:
             A string with a `valid` numeric type.
@@ -657,7 +697,7 @@ class DependentVariable:
 
         .. note::
             The attribute cannot be modified. To convert the unit, use the
-            :meth:`~csdmpy.dependent_variables.DependentVariable.to` method of
+            :meth:`~csdmpy.DependentVariable.to` method of
             the class instance.
 
         .. doctest::
@@ -714,21 +754,18 @@ class DependentVariable:
         self.subtype._components = self.subtype._components * factor.value
         self.subtype._unit = factor.unit
 
-        # factor = (1.0*self.unit).to(unit)
-        # self._components = self.components*factor.value
-        # self._unit = factor.unit
-        # self.subtype.set_attribute(
-        #       '_components', self.components*factor.value
-        # )
-        # self.subtype.set_attribute('_unit', factor.unit)
-
     def to_dict(self):
         """
         Return DependentVariable object as a python dictionary.
 
         Example:
-            >>> y.to_dict()
-            {'type': 'internal', 'description': 'A test image', 'name': 'star', 'unit': 's * W', 'quantity_name': 'energy', 'encoding': 'none', 'numeric_type': 'float32', 'quantity_type': 'pixel_3', 'components': [[0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0], [10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0], [20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0]]}
+            >>> y.to_dict() # doctest: +SKIP
+            {'type': 'internal', 'description': 'A test image', 'name': 'star',
+            'unit': 's * W', 'quantity_name': 'energy', 'encoding': 'none',
+            'numeric_type': 'float32', 'quantity_type': 'pixel_3',
+            'components': [[0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0],
+            [10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0],
+            [20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0]]}
         """
         return self.subtype.to_dict()
 
@@ -741,6 +778,71 @@ class DependentVariable:
     def copy(self):
         """Return a copy of the DependentVariable object."""
         return deepcopy(self)
+
+    def _reshape(self, shape):
+        r"""
+        Reshapes the components array.
+
+        The array is reshaped to :math:`(p \times N_{d-1} \times ... N_1 \times N_0)`
+        where :math:`p` is the number of components and :math:`N_k` is the number of
+        points along the :math:`k^\mathrm{th}` dimension.
+        """
+        # for item in self.dependent_variables:
+        item = self.subtype
+        sub_shape = (item.quantity_type.p,) + tuple(shape)
+        dtype = item.numeric_type.dtype
+
+        grid_points = np.asarray(sub_shape).prod()
+        components_size = item._components.size
+
+        if grid_points != components_size and item._sparse_sampling == {}:
+            warnings.warn(
+                (
+                    f"The number of elements in the components array, "
+                    f"{components_size}, is not consistent with the total "
+                    f"number of grid points, {grid_points}."
+                )
+            )
+        if item._sparse_sampling == {}:
+            item._components = np.asarray(
+                item._components[:, :grid_points].reshape(sub_shape), dtype=dtype
+            )
+        else:
+            item._components = fill_sparse_space(item, sub_shape, dtype)
+
+    def _copy_metadata(self, obj, copy=False):
+        """Copy DependentVariable metadata"""
+
+        self.type = obj.type
+        self.subtype._description = obj.subtype._description
+        self.subtype._name = obj.subtype._name
+        self.subtype._unit = obj.subtype._unit
+        self.subtype._quantity_name = obj.subtype._quantity_name
+        self.subtype._component_labels = obj.subtype._component_labels
+        self.subtype._encoding = obj.subtype._encoding
+        # self.subtype._numeric_type = obj.subtype._numeric_type
+        # self.subtype._quantity_type = obj.subtype._quantity_type
+        self.subtype._application = obj.subtype._application
+
+
+def fill_sparse_space(item, shape, dtype):
+    """Fill sparse grid using numpy broadcasting."""
+    components = np.zeros(shape, dtype=dtype)
+    sparse_dimensions_indexes = item._sparse_sampling._sparse_dimensions_indexes
+    sgs = item._sparse_sampling._sparse_grid_vertexes.size
+    grid_vertexes = item._sparse_sampling._sparse_grid_vertexes.reshape(
+        int(sgs / len(sparse_dimensions_indexes)), len(sparse_dimensions_indexes)
+    ).T
+
+    vertexes = [slice(None) for i in range(len(shape))]
+    for i, sparse_index in enumerate(sparse_dimensions_indexes):
+        vertexes[sparse_index] = grid_vertexes[i]
+
+    vertexes = tuple(vertexes[::-1])
+    _new_shape = components[vertexes].shape
+
+    components[vertexes] = item.components.reshape(_new_shape)
+    return components
 
 
 def check_sparse_sampling_key_value(input_dict):
@@ -765,3 +867,46 @@ def check_sparse_sampling_key_value(input_dict):
             "literal. The allowed values are `uint8`, `uint16`, `uint32`, ",
             "and `uint64`.",
         )
+
+
+def as_dependent_variable(
+    array, quantity_type="scalar", unit="", description="", application={}
+):
+    """Generate and return a DependentVariable object from a 1D or 2D numpy array.
+
+    Args:
+        array: A 1D or 2D numpy array.
+        quantity_type: The quantity type of the dependent variable. See
+                :ref:`quantityType_uml` for valid quantity types.
+        unit: The unit of the dependent variable components.
+        label: The label along the dimension. The default value is an empty string.
+        description: A description of the dimension. The default value is an empty
+                string.
+        application: An application dictionary. The default is an empty dictionary.
+
+    Example:
+        >>> array = np.arange(1e4).astype(np.complex128)
+        >>> dim_object = cp.as_dependent_variable(array, )
+        >>> print(dim_object)
+        DependentVariable(
+        [[0.000e+00+0.j 1.000e+00+0.j 2.000e+00+0.j ... 9.997e+03+0.j
+          9.998e+03+0.j 9.999e+03+0.j]], quantity_type=scalar, numeric_type=complex128)
+    """
+    if not isinstance(array, (list, np.ndarray)):
+        raise ValueError(
+            f"Cannot convert {array.__class__.__name__} to a DependentVariable object."
+        )
+    if isinstance(array, list):
+        array = np.asarray(array)
+    if array.ndim < 1:
+        raise ValueError(
+            f"Cannot convert a {array.ndim} dimensional array to a DependentVariable "
+            "object."
+        )
+    kwargs = {
+        "quantity_type": quantity_type,
+        "unit": unit,
+        "description": description,
+        "application": application,
+    }
+    return DependentVariable(type="internal", components=array, **kwargs)

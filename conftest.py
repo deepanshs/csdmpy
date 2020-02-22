@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 
 import csdmpy as cp
+import csdmpy.statistics as stat
 from csdmpy.dependent_variables import DependentVariable
 from csdmpy.dimensions import Dimension
 
@@ -13,6 +14,7 @@ __all__ = []
 def add_cp_dimension(doctest_namespace):
     doctest_namespace["cp"] = cp
     doctest_namespace["np"] = np
+    doctest_namespace["stat"] = stat
     doctest_namespace["Dimension"] = Dimension
     doctest_namespace["DependentVariable"] = DependentVariable
     doctest_namespace["x"] = Dimension(
@@ -58,3 +60,9 @@ def add_cp_dimension(doctest_namespace):
 
     doctest_namespace["data"] = cp.load(cp.tests.test01)
     doctest_namespace["my_data"] = cp.load(cp.tests.test02)
+
+    x = np.arange(100) * 2 - 100.0
+    gauss = np.exp(-((x - 5.0) ** 2) / (2 * 4.0 ** 2))
+    csdm = cp.as_csdm(gauss, unit="T")
+    csdm.dimensions[0] = cp.as_dimension(x, unit="m")
+    doctest_namespace["csdm"] = csdm

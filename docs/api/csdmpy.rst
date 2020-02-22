@@ -31,15 +31,24 @@ Methods
 .. rubric:: Methods Summary
 
 .. autosummary::
-    ~load
-    ~new
+   :nosignatures:
+
     ~parse_dict
+    ~load
     ~loads
+    ~new
+    ~as_dimension
+    ~as_dependent_variable
+    ~as_csdm
     ~plot
 
 .. rubric:: Method Documentation
-.. autofunction:: load
-.. autofunction:: new
+
 .. autofunction:: parse_dict
+.. autofunction:: load
 .. autofunction:: loads
+.. autofunction:: new
+.. autofunction:: as_csdm
+.. autofunction:: as_dimension
+.. autofunction:: as_dependent_variable
 .. autofunction:: plot

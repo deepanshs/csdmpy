@@ -7,8 +7,7 @@ Sparse along two dimensions, 2D{1,1} dataset
 # The following is an example [#f2]_ of a 2D{1,1} sparse dataset with two-dimensions,
 # :math:`d=2`, and two, :math:`p=2`, sparse single-component dependent-variables,
 # where the component is sparsely sampled along two dimensions.
-
-#%%
+#
 # Let's import the CSD model data-file and look at its data structure.
 import csdmpy as cp
 

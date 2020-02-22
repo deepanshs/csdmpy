@@ -5,7 +5,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SOURCEDIR     = .
-BUILDDIR      = ../../csdmpy-doc
+BUILDDIR      = _build
 PDFBUILDDIR   = /tmp
 PDF           = ../manual.pdf
 
@@ -19,3 +19,8 @@ help:
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+clean:
+	rm -rf $(BUILDDIR)/*
+	rm -rf auto_examples/
+	rm -rf auto_tutorials/

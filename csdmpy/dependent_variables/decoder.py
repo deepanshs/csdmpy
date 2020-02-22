@@ -33,7 +33,7 @@ class Decoder:
 
     @staticmethod
     def decode_none(components, dtype, component_len=None):
-        if dtype in ["<c8", "<c16"]:
+        if dtype in ["<c8", "<c16", ">c8", ">c16"]:
             components = np.asarray(
                 [
                     np.asarray(item[0::2]) + 1j * np.asarray(item[1::2])
@@ -42,9 +42,10 @@ class Decoder:
                 dtype=dtype,
             )
         else:
-            components = np.asarray(
-                [np.asarray(item) for item in components], dtype=dtype
-            )
+            # components = np.asarray(
+            #     [np.asarray(item) for item in components], dtype=dtype
+            # )
+            components = np.asarray(components, dtype=dtype)
         return components
 
     @staticmethod

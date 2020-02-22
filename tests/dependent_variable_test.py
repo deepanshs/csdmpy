@@ -119,7 +119,7 @@ def test_internal_new():
             "quantity_type": "vector_2",
             "component_labels": [":(", "2"],
             "components": [
-                ["(100+0j), (101+0j), ..., " "(108+0j), (109+0j)"],
+                ["(100+0j), (101+0j), ..., (108+0j), (109+0j)"],
                 ["(110+0j), (111+0j), ..., (118+0j), (119+0j)"],
             ],
         }
@@ -146,11 +146,38 @@ def test_internal_new():
         "component_labels": [":(", "2"],
         "encoding": "base64",
         "components": [
-            "AADIQgAAAAAAAMpCAAAAAAAAzEIAAAAAAADOQgAAAAAAANBCAAAAAAAA0kIAAAAAAADUQgAAAAAAANZCAAAAAAAA2EIAAAAAAADaQgAAAAA=",
-            "AADcQgAAAAAAAN5CAAAAAAAA4EIAAAAAAADiQgAAAAAAAORCAAAAAAAA5kIAAAAAAADoQgAAAAAAAOpCAAAAAAAA7EIAAAAAAADuQgAAAAA=",
+            (
+                "AADIQgAAAAAAAMpCAAAAAAAAzEIAAAAAAADOQgAAAAAAANBCAAAAAA"
+                "AA0kIAAAAAAADUQgAAAAAAANZCAAAAAAAA2EIAAAAAAADaQgAAAAA="
+            ),
+            (
+                "AADcQgAAAAAAAN5CAAAAAAAA4EIAAAAAAADiQgAAAAAAAORCAAAAAA"
+                "AA5kIAAAAAAADoQgAAAAAAAOpCAAAAAAAA7EIAAAAAAADuQgAAAAA="
+            ),
         ],
     }
     assert data.dependent_variables[0].to_dict() == dependent_variables_dict_2
+
+    # data = cp.new()
+    # test_array = np.arange(20).reshape(2, 10)
+    # dim = {
+    #     "type": "internal",
+    #     "numeric_type": "float32",
+    #     "quantity_type": "vector_1",
+    #     "components": test_array,
+    # }
+    # error = "The quantity_type, 'vector_1', requires exactly 1 component"
+    # with pytest.raises(Exception, match=".*{0}.*".format(error)):
+    #     data.add_dependent_variable(dim)
+
+    # check equality
+    dim1 = data.dependent_variables[0].copy()
+    assert data.dependent_variables[0] == dim1
+
+    dim1.quantity_type = "pixel_2"
+    assert data.dependent_variables[0] != dim1
+
+    assert dim1 != 21
 
 
 def test_external_new():
@@ -231,6 +258,15 @@ def test_external_new():
     assert data.data_structure == json.dumps(
         dict1, ensure_ascii=False, sort_keys=False, indent=2
     )
+
+    # check equality
+    dim1 = data.dependent_variables[0].copy()
+    assert data.dependent_variables[0] == dim1
+
+    dim1.numeric_type = "int64"
+    assert data.dependent_variables[0] != dim1
+
+    assert dim1 != 21
 
 
 def test_missing_type():

@@ -1,13 +1,12 @@
 # The csdmpy package
 
-[![Build Status](https://travis-ci.org/DeepanshS/csdmpy.svg?branch=master)](https://travis-ci.org/DeepanshS/csdmpy)
-[![Documentation Status](https://readthedocs.org/projects/csdmpy/badge/?version=stable)](https://csdmpy.readthedocs.io/en/stable/?badge=stable)
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
-![GitHub issues](https://img.shields.io/github/issues-raw/deepanshs/csdmpy)
-![GitHub release](https://img.shields.io/github/release/deepanshs/csdmpy)
-[![PyPI version](https://badge.fury.io/py/csdmpy.svg)](https://badge.fury.io/py/csdmpy)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DeepanshS/csdmpy/context:python)
+|              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Deployment   | [![PyPI version](https://img.shields.io/pypi/v/csdmpy.svg?style=flat&logo=pypi&logoColor=white)](https://pypi.python.org/pypi/csdmpy)                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Build Status | [![Build Status](https://travis-ci.org/DeepanshS/csdmpy.svg?branch=master)](https://travis-ci.org/DeepanshS/csdmpy) [![Documentation Status](https://readthedocs.org/projects/csdmpy/badge/?version=stable)](https://csdmpy.readthedocs.io/en/stable/?badge=stable)                                                                                                                                                                                                                                                                                                          |
+| License      | [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Metrics      | [![PyPI - Downloads](https://img.shields.io/pypi/dm/csdmpy.svg)](https://img.shields.io/pypi/dm/csdmpy)[![Total alerts](https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DeepanshS/csdmpy/context:python) [![codecov](https://codecov.io/gh/DeepanshS/csdmpy/branch/master/graph/badge.svg)](https://codecov.io/gh/DeepanshS/csdmpy) |
+| GitHub       | ![GitHub issues](https://img.shields.io/github/issues-raw/deepanshs/csdmpy)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 The _csdmpy_ package is a Python support for the core scientific
 dataset (CSD) model file exchange-format.
@@ -25,8 +24,8 @@ compatible with Numpy.
 
 For further reading, refer to the [documentation](https://csdmpy.readthedocs.io/en/latest/).
 
-You may [![](https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet)](https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u)
-used in the project.
+> **Download the examples files using in this package**
+> [![](https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet)](https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u)
 
 ## The core scientific dataset (CSD) model
 
@@ -78,3 +77,14 @@ PIP is a package manager for Python packages and is included with
 python version 3.4 and higher.
 
     $ pip install csdmpy
+
+## Citation
+
+Srivastava D.J., Vosegaard T., Massiot D., Grandinetti P.J. (2020) Core Scientific Dataset Model: A lightweight and portable model and file format for multi-dimensional scientific data. [PLOS ONE 15(1): e0225953.](https://doi.org/10.1371/journal.pone.0225953)
+
+
+## Check out the media coverage.
+
+ - [<img src="https://inc.cnrs.fr/sites/institut_inc/files/styles/top_left/public/image/cnrs_20180120_0025%20%281%29.jpg?itok=i3wlyGBq" height="64" width="64"> Des chimistes élaborent un nouveau format pour le partage de données scientifiques](https://inc.cnrs.fr/fr/cnrsinfo/des-chimistes-elaborent-un-nouveau-format-pour-le-partage-de-donnees-scientifiques)
+
+ - [<img src="https://www.technology.org/texorgwp/wp-content/uploads/2020/01/1920_data-1536x1024.jpg" height="64" width="64"> Simplifying how scientists share data](https://www.technology.org/2020/01/03/simplifying-how-scientists-share-data/)

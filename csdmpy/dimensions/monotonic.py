@@ -3,21 +3,29 @@
 from __future__ import division
 from __future__ import print_function
 
+import json
+import warnings
 from copy import deepcopy
 
 import numpy as np
+from astropy.units import Quantity
 
 from csdmpy.dimensions.quantitative import BaseQuantitativeDimension
-from csdmpy.dimensions.quantitative import ReciprocalVariable
+from csdmpy.dimensions.quantitative import ReciprocalDimension
+from csdmpy.units import frequency_ratio
+from csdmpy.units import scalar_quantity_format
 from csdmpy.units import ScalarQuantity
-
+from csdmpy.utils import _axis_label
+from csdmpy.utils import attribute_error
+from csdmpy.utils import check_scalar_object
+from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 __all__ = ["MonotonicDimension"]
 
 # =========================================================================== #
-#                     ArbitrarilySampledDimension Class                       #
+#                     MonotonicDimension Class                       #
 # =========================================================================== #
 
 
@@ -25,63 +33,222 @@ class MonotonicDimension(BaseQuantitativeDimension):
     r"""
     A monotonic grid dimension.
 
-    .. warning ::
-        This class should not be used directly. Instead,
-        use the ``CSDM`` object to access the attributes
-        and methods of this class. See example, :ref:`asgd`.
-
-    This class returns an object which represents a physical
-    dimension, sampled monotonically along a grid dimension.
-    Let :math:`\mathbf{A}_k` be an ordered array of physical
-    quantities, :math:`c_k` be the reference offset, and
-    :math:`o_k` be the origin offset along the :math:`k^{th}`
-    grid dimension, then the coordinates along this dimension
-    are given as
-
-    .. math ::
-        \mathbf{X}_k^\mathrm{ref} = \mathbf{A}_k - c_k \mathbf{1},
-    .. math ::
-        \mathbf{X}_k^\mathrm{abs} = \mathbf{X}_k^\mathrm{ref} + o_k \mathbf{1},
-
-    where :math:`\mathbf{X}_k^\mathrm{ref}` is an ordered array of the
-    reference controlled variable coordinates,
-    :math:`\mathbf{X}_k^\mathrm{abs}` is an ordered array of the absolute
-    controlled variable coordinates, and
-    :math:`\mathbf{1}` is an array of ones.
+    Generates an object representing a physical dimension whose coordinates are
+    monotonically sampled along a grid dimension. See :ref:`monotonicDimension_uml`
+    for details.
     """
 
-    __slots__ = ("_unit", "reciprocal", "_count", "_values", "_coordinates")
+    __slots__ = ("reciprocal", "_count", "_values", "_coordinates")
 
     _type = "monotonic"
 
-    def __init__(self, values, **kwargs):
+    def __init__(self, coordinates, **kwargs):
         """Instantiate a MonotonicDimension class."""
-        self._unit = ScalarQuantity(values[0]).quantity.unit
-        super(MonotonicDimension, self).__init__(unit=self._unit, **kwargs)
+        if isinstance(coordinates, Quantity):
+            _unit = coordinates.unit
+        elif isinstance(coordinates, np.ndarray):
+            _unit = Quantity(1, "").unit
+        else:
+            _unit = ScalarQuantity(coordinates[0]).quantity.unit
+        if "reciprocal" not in kwargs.keys():
+            kwargs["reciprocal"] = {
+                "increment": None,
+                "coordinates_offset": None,
+                "origin_offset": None,
+                "period": None,
+                "quantity_name": None,
+                "label": "",
+                "description": "",
+                "application": {},
+            }
+        super().__init__(unit=_unit, **kwargs)
 
         _reciprocal_unit = self._unit ** -1
-        self.reciprocal = ReciprocalVariable(
+        self.reciprocal = ReciprocalDimension(
             unit=_reciprocal_unit, **kwargs["reciprocal"]
         )
 
-        self._get_coordinates(values)
+        self._get_coordinates(coordinates)
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if hasattr(other, "subtype"):
+            other = other.subtype
+        if isinstance(other, MonotonicDimension):
+            check = [
+                self._count == other._count,
+                np.all(self._coordinates == other._coordinates),
+                self.reciprocal == other.reciprocal,
+                # super class
+                self._coordinates_offset == other._coordinates_offset,
+                self._origin_offset == other._origin_offset,
+                self._quantity_name == other._quantity_name,
+                self._period == other._period,
+                self._label == other._label,
+                self._description == other._description,
+                self._application == other._application,
+                self._unit == other._unit,
+                self._equivalencies == other._equivalencies,
+            ]
+            if np.all(check):
+                return True
+        return False
+
+    def __repr__(self):
+        properties = ", ".join(
+            [
+                f"coordinates={self._coordinates.__str__()}",
+                *[
+                    f"{k}={v}"
+                    for k, v in self.to_dict().items()
+                    if k not in ["type", "coordinates"]
+                ],
+            ]
+        )
+        return f"MonotonicDimension({properties})"
+
+    def __str__(self):
+        return f"MonotonicDimension({self.coordinates.__str__()})"
+
+    def __mul__(self, other):
+        """Multiply the MonotonicDimension object by a scalar."""
+        return _update_monotonic_dimension_object_by_scalar(self.copy(), other, "mul")
+
+    def __imul__(self, other):
+        """Multiply the MonotonicDimension object by a scalar, in-place."""
+        return _update_monotonic_dimension_object_by_scalar(self, other, "mul")
+
+    def __truediv__(self, other):
+        """Divide the MonotonicDimension object by a scalar."""
+        return _update_monotonic_dimension_object_by_scalar(
+            self.copy(), other, "truediv"
+        )
+
+    def __itruediv__(self, other):
+        """Divide the MonotonicDimension object by a scalar, in-place."""
+        return _update_monotonic_dimension_object_by_scalar(self, other, "truediv")
+
+    def _get_coordinates(self, values):
+        _unit = self._unit
+        if isinstance(values, list):
+            _coordinates = [
+                ScalarQuantity(item, _unit).quantity.to(_unit).value for item in values
+            ]
+            self._coordinates = np.asarray(_coordinates, dtype=np.float64) * _unit
+            self._values = values
+            self._count = self._coordinates.size
+            return
+
+        if isinstance(values, Quantity):
+            self._coordinates = values
+        elif isinstance(values, np.ndarray):
+            self._coordinates = values * _unit
+
+        unit = scalar_quantity_format(self._coordinates[0], numerical_value=False)
+        self._values = [f"{item.value} {unit}" for item in self._coordinates]
+        self._count = self._coordinates.size
+
+    # ----------------------------------------------------------------------- #
+    #                                 Attributes                              #
+    # ----------------------------------------------------------------------- #
+    @property
+    def type(self):
+        """Return the type of the dimension."""
+        return deepcopy(self.__class__._type)
+
+    @property
+    def count(self):
+        r"""Total number of points along the monotonic dimension."""
+        return deepcopy(self._count)
+
+    @count.setter
+    def count(self, value):
+        value = validate(value, "count", int)
+        if value > self.count:
+            raise ValueError(
+                f"Cannot set the count, {value}, more than the number of coordinates, "
+                f"{self.count}, for the monotonic dimensions."
+            )
+
+        if value < self.count:
+            warnings.warn(
+                f"The number of coordinates, {self.count}, are truncated to {value}."
+            )
+            self._count = value
+
+    @property
+    def coordinates_offset(self):
+        raise AttributeError(attribute_error(self, "coordinates_offset"))
+
+    @property
+    def coordinates(self):
+        """Return the coordinates along the dimensions."""
+        n = self._count
+        coordinates = self._coordinates[:n]
+
+        equivalent_fn = self._equivalencies
+
+        if equivalent_fn is None:
+            return coordinates.to(self._unit)
+
+        equivalent_unit = self._equivalent_unit
+        if equivalent_fn == "nmr_frequency_ratio":
+            denominator = self.origin_offset - coordinates[0]
+            if denominator.value == 0:
+                raise ZeroDivisionError("Cannot convert the coordinates to ppm.")
+            return coordinates.to(equivalent_unit, frequency_ratio(denominator))
+
+        return coordinates.to(equivalent_unit, equivalent_fn)
+
+    @coordinates.setter
+    def coordinates(self, value):
+        self._get_coordinates(value)
+
+    @property
+    def absolute_coordinates(self):
+        """Return the absolute coordinates along the dimensions."""
+        return (self.coordinates + self.origin_offset).to(self._unit)
+
+    @property
+    def axis_label(self):
+        """Return a formatted string for displaying label along the dimension axis."""
+        if self.label.strip() == "":
+            label = self.quantity_name
+        else:
+            label = self.label
+        unit = (
+            self._equivalent_unit if self._equivalent_unit is not None else self._unit
+        )
+        return _axis_label(label, unit)
+
+    @property
+    def data_structure(self):
+        """Json serialized string describing the MonotonicDimension class instance."""
+        return json.dumps(self.to_dict(), ensure_ascii=False, sort_keys=False, indent=2)
 
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
     # ----------------------------------------------------------------------- #
 
-    def _get_coordinates(self, values):
-        _unit = self._unit
-        _value = [
-            ScalarQuantity(item, _unit).quantity.to(_unit).value for item in values
-        ]
-        _value = np.asarray(_value, dtype=np.float64) * _unit
-        self._count = _value.size
-        self._values = values
-        self._coordinates = _value
+    def _copy_metadata(self, obj, copy=False):
+        """Copy MonotonicDimension metadata."""
+        if hasattr(obj, "subtype"):
+            obj = obj.subtype
+        if isinstance(obj, MonotonicDimension):
+            self._description = obj._description
+            self._application = obj._application
+            self._label = obj._label
+
+            self._origin_offset = obj._origin_offset
+            self._period = obj._period
+            self.reciprocal = obj.reciprocal
+
+            self._equivalent_unit = obj._equivalent_unit
+            self._equivalencies = obj._equivalencies
+            return
 
     def to_dict(self):
-        """Return MonotonicDimension as a python dictionary."""
+        """Return the MonotonicDimension as a python dictionary."""
         dictionary = {}
 
         dictionary["type"] = self.__class__._type
@@ -90,12 +257,12 @@ class MonotonicDimension(BaseQuantitativeDimension):
             dictionary["description"] = self._description.strip()
 
         dictionary["coordinates"] = self._values
-        dictionary.update(self._get_quantitative_dictionary())
+        dictionary.update(self._to_dict())
 
         reciprocal_dictionary = {}
         if self.reciprocal._description.strip() != "":
             reciprocal_dictionary["description"] = self.reciprocal._description.strip()
-        reciprocal_dictionary.update(self.reciprocal._get_quantitative_dictionary())
+        reciprocal_dictionary.update(self.reciprocal._to_dict())
         if reciprocal_dictionary == {}:
             del reciprocal_dictionary
         else:
@@ -103,14 +270,31 @@ class MonotonicDimension(BaseQuantitativeDimension):
 
         return dictionary
 
-    # ----------------------------------------------------------------------- #
-    #                                 Attributes                              #
-    # ----------------------------------------------------------------------- #
-    @property
-    def values(self):
-        r"""Return a list of values along the dimension."""
-        return deepcopy(self._values)
+    def copy(self):
+        """Return a copy of the object."""
+        return deepcopy(self)
 
-    @values.setter
-    def values(self, array):
-        self._get_coordinates(array)
+
+def _update_monotonic_dimension_object_by_scalar(object_, other, type_):
+    """Update object by multiplying by a scalar."""
+    other = check_scalar_object(other)
+
+    if type_ == "mul":
+        object_._coordinates *= other
+        object_._coordinates_offset *= other
+        object_._origin_offset *= other
+        object_._period *= other
+
+    if type_ == "truediv":
+        object_._coordinates /= other
+        object_._coordinates_offset /= other
+        object_._origin_offset /= other
+        object_._period /= other
+
+    object_._values = [str(item) for item in object_._coordinates]
+    object_._unit = object_._coordinates.unit
+    object_._quantity_name = object_._unit.physical_type
+    object_._equivalencies = None
+    _reciprocal_unit = object_._unit ** -1
+    object_.reciprocal = ReciprocalDimension(unit=_reciprocal_unit)
+    return object_

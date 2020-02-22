@@ -199,9 +199,9 @@ class ScalarQuantity:
                 return quantity
 
     def __str__(self):
-        return str(self.quantity)
+        return self.__format__()
 
-    def format(self, format="quantity"):
+    def __format__(self, format="quantity"):
         """Format the units according to csdmpy recommendation.
 
         :ivar: format: The value can either be 'quantity' or 'unit'
@@ -211,9 +211,9 @@ class ScalarQuantity:
             >>> a = ScalarQuantity('5 kg m^2 /s')
             >>> print(a.quantity)
             5.0 kg m2 / s
-            >>> print(ScalarQuantity(a.quantity).format())
+            >>> print(str(ScalarQuantity(a.quantity)))
             5.0 kg * m^2 * s^-1
-            >>> print(ScalarQuantity(a.quantity).format('unit'))
+            >>> print(ScalarQuantity(a.quantity).__format__('unit'))
             kg * m^2 * s^-1
         """
 

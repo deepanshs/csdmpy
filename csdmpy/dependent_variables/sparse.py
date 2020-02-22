@@ -2,12 +2,13 @@
 """The SparseSampling class."""
 from copy import deepcopy
 
+import numpy as np
+
 from csdmpy.dependent_variables.decoder import Decoder
 from csdmpy.utils import check_encoding
 from csdmpy.utils import NumericType
 from csdmpy.utils import QuantityType
 from csdmpy.utils import validate
-
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -51,6 +52,25 @@ class SparseSampling:
             [sparse_grid_vertexes],
             self._unsigned_integer_type.dtype,
         )
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, SparseSampling):
+            check = [
+                np.all(
+                    self._sparse_dimensions_indexes == other._sparse_dimensions_indexes
+                ),
+                np.all(self._sparse_grid_vertexes == other._sparse_grid_vertexes),
+                self._encoding == other._encoding,
+                self._quantity_type == other._quantity_type,
+                self._unsigned_integer_type == other._unsigned_integer_type,
+                self._description == other._description,
+                self._application == other._application,
+            ]
+            if False in check:
+                return False
+            return True
+        return False
 
     # ----------------------------------------------------------------------- #
     #                                 Attributes                              #

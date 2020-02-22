@@ -3,15 +3,19 @@
 from __future__ import division
 from __future__ import print_function
 
+import json
 from copy import deepcopy
 
 import numpy as np
 from astropy.units import Quantity
 
 from csdmpy.dimensions.quantitative import BaseQuantitativeDimension
-from csdmpy.dimensions.quantitative import ReciprocalVariable
+from csdmpy.dimensions.quantitative import ReciprocalDimension
+from csdmpy.units import frequency_ratio
 from csdmpy.units import ScalarQuantity
+from csdmpy.utils import _axis_label
 from csdmpy.utils import check_and_assign_bool
+from csdmpy.utils import check_scalar_object
 from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
@@ -27,40 +31,12 @@ class LinearDimension(BaseQuantitativeDimension):
     r"""
     LinearDimension class.
 
-    .. warning ::
-        This class should not be used directly. Instead,
-        use the ``CSDM`` object to access the attributes
-        and methods of this class. See example, :ref:`lsgd`.
-
-    The class returns an object which represents a physical
-    dimension, sampled uniformly along a grid dimension.
-    Let :math:`m_k` be the increment, :math:`N_k \ge 1` be the
-    number of points, :math:`c_k` be the reference offset, and
-    :math:`o_k` be the origin offset along the :math:`k^{th}`
-    grid dimension, then the coordinates along the
-    grid dimension are given as
-
-    .. math ::
-        \mathbf{X}_k^\mathrm{ref} = [m_k j ]_{j=0}^{N_k-1} - c_k \mathbf{1},
-    .. math ::
-        \mathbf{X}_k^\mathrm{abs} = \mathbf{X}_k^\mathrm{ref} + o_k \mathbf{1},
-
-    where :math:`\mathbf{X}_k^\mathrm{ref}` is an ordered array of the
-    reference controlled variable coordinates,
-    :math:`\mathbf{X}_k^\mathrm{abs}` is an ordered array of the absolute
-    controlled variable coordinates, and :math:`\mathbf{1}`
-    is an array of ones.
+    Generates an object representing a physical dimension whose coordinates are
+    uniformly sampled along a grid dimension. See :ref:`linearDimension_uml` for
+    details.
     """
 
-    __slots__ = (
-        "_count",
-        "_increment",
-        "_complex_fft",
-        "reciprocal",
-        "_reciprocal_count",
-        "_reciprocal_increment",
-        "_coordinates",
-    )
+    __slots__ = ("_count", "_increment", "_complex_fft", "reciprocal", "_coordinates")
 
     _type = "linear"
 
@@ -69,20 +45,78 @@ class LinearDimension(BaseQuantitativeDimension):
         self._count = count
         self._increment = ScalarQuantity(increment).quantity
         self._complex_fft = check_and_assign_bool(complex_fft)
-        self._unit = self._increment.unit
+        _unit = self._increment.unit
+        if "reciprocal" not in kwargs.keys():
+            kwargs["reciprocal"] = {
+                "increment": None,
+                "coordinates_offset": None,
+                "origin_offset": None,
+                "period": None,
+                "quantity_name": None,
+                "label": "",
+                "description": "",
+                "application": {},
+            }
 
-        super(LinearDimension, self).__init__(unit=self._unit, **kwargs)
+        super().__init__(unit=_unit, **kwargs)
 
         # create a reciprocal dimension
         _reciprocal_unit = self._unit ** -1
-        self.reciprocal = ReciprocalVariable(
+        self.reciprocal = ReciprocalDimension(
             unit=_reciprocal_unit, **kwargs["reciprocal"]
         )
         self._get_coordinates()
 
-    # ----------------------------------------------------------------------- #
-    #                                  Methods                                #
-    # ----------------------------------------------------------------------- #
+    def __repr__(self):
+        properties = ", ".join(
+            [f"{k}={v}" for k, v in self.to_dict().items() if k != "type"]
+        )
+        return f"LinearDimension({properties})"
+
+    def __str__(self):
+        return f"LinearDimension({self.coordinates.__str__()})"
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if hasattr(other, "subtype"):
+            other = other.subtype
+        if isinstance(other, LinearDimension):
+            check = [
+                self._count == other._count,
+                self._increment == other._increment,
+                self._complex_fft == other._complex_fft,
+                self.reciprocal == other.reciprocal,
+                # super class
+                self._coordinates_offset == other._coordinates_offset,
+                self._origin_offset == other._origin_offset,
+                self._quantity_name == other._quantity_name,
+                self._period == other._period,
+                self._label == other._label,
+                self._description == other._description,
+                self._application == other._application,
+                self._unit == other._unit,
+                self._equivalencies == other._equivalencies,
+            ]
+            if np.all(check):
+                return True
+        return False
+
+    def __mul__(self, other):
+        """Multiply the LinearDimension object by a scalar."""
+        return _update_linear_dimension_object_by_scalar(self.copy(), other, "mul")
+
+    def __imul__(self, other):
+        """Multiply the LinearDimension object by a scalar, in-place."""
+        return _update_linear_dimension_object_by_scalar(self, other, "mul")
+
+    def __truediv__(self, other):
+        """Divide the LinearDimension object by a scalar."""
+        return _update_linear_dimension_object_by_scalar(self.copy(), other, "truediv")
+
+    def __itruediv__(self, other):
+        """Divide the LinearDimension object by a scalar, in-place."""
+        return _update_linear_dimension_object_by_scalar(self, other, "truediv")
+
     def _swap(self):
         self._description, self.reciprocal._description = (
             self.reciprocal._description,
@@ -123,51 +157,33 @@ class LinearDimension(BaseQuantitativeDimension):
         _index = np.arange(_count, dtype=np.float64)
 
         if self._complex_fft:
-            if _count % 2 == 0:
-                _index -= _count / 2
-            else:
-                _index -= (_count - 1) / 2
+            _index -= int(_count / 2)
 
         self._coordinates = _index * _increment
-
-    def to_dict(self):
-        """Return LinearDimension as a python dictionary."""
-        obj = {}
-        obj["type"] = self.__class__._type
-
-        if self._description.strip() != "":
-            obj["description"] = self._description.strip()
-
-        obj["count"] = self._count
-        obj["increment"] = ScalarQuantity(self.increment).format()
-        obj.update(self._get_quantitative_dictionary())
-
-        if self.complex_fft:
-            obj["complex_fft"] = True
-
-        # reciprocal dictionary
-        reciprocal_obj = {}
-        if self.reciprocal._description.strip() != "":
-            reciprocal_obj["description"] = self.reciprocal._description
-        reciprocal_obj.update(self.reciprocal._get_quantitative_dictionary())
-        if reciprocal_obj == {}:
-            del reciprocal_obj
-        else:
-            obj["reciprocal"] = reciprocal_obj
-
-        return obj
 
     # ----------------------------------------------------------------------- #
     #                                  Attributes                             #
     # ----------------------------------------------------------------------- #
-    # @property
-    # def count(self):
-    #     r"""Total number of points along the linear dimension."""
-    #     return deepcopy(self._count)
+    @property
+    def type(self):
+        """Return the type of the dimension."""
+        return deepcopy(self.__class__._type)
+
+    @property
+    def count(self):
+        r"""Total number of points along the linear dimension."""
+        return deepcopy(self._count)
+
+    @count.setter
+    def count(self, value):
+        value = validate(value, "count", int)
+        self._count = value
+        self._get_coordinates()
+        return
 
     @property
     def increment(self):
-        r"""Increment of the grid points along the linear dimension."""
+        r"""Increment along the linear dimension."""
         return deepcopy(self._increment)
 
     @increment.setter
@@ -186,3 +202,132 @@ class LinearDimension(BaseQuantitativeDimension):
     def complex_fft(self, value):
         self._complex_fft = validate(value, "complex_fft", bool)
         self._get_coordinates()
+
+    @property
+    def coordinates(self):
+        """Return the coordinates along the dimensions."""
+        n = self._count
+        coordinates = self._coordinates[:n] + self.coordinates_offset
+
+        equivalent_fn = self._equivalencies
+
+        if equivalent_fn is None:
+            return coordinates.to(self._unit)
+
+        equivalent_unit = self._equivalent_unit
+        if equivalent_fn == "nmr_frequency_ratio":
+            denominator = self.origin_offset - self.coordinates_offset
+            if denominator.value == 0:
+                raise ZeroDivisionError("Cannot convert the coordinates to ppm.")
+            return coordinates.to(equivalent_unit, frequency_ratio(denominator))
+
+        return coordinates.to(equivalent_unit, equivalent_fn)
+
+    @coordinates.setter
+    def coordinates(self, value):
+        raise AttributeError(
+            "The attribute cannot be modifed for Dimension objects with `linear` "
+            "type. Use the `count`, `increment` or `coordinates_offset` attributes"
+            " to update the coordinate along the linear dimension."
+        )
+
+    @property
+    def absolute_coordinates(self):
+        """Return the absolute coordinates along the dimensions."""
+        return (self.coordinates + self.origin_offset).to(self._unit)
+
+    @property
+    def axis_label(self):
+        """Return a formatted string for displaying label along the dimension axis."""
+        if self.label.strip() == "":
+            label = self.quantity_name
+        else:
+            label = self.label
+        unit = (
+            self._equivalent_unit if self._equivalent_unit is not None else self._unit
+        )
+        return _axis_label(label, unit)
+
+    @property
+    def data_structure(self):
+        """Json serialized string describing the LinearDimension class instance."""
+        return json.dumps(self.to_dict(), ensure_ascii=False, sort_keys=False, indent=2)
+
+    # ----------------------------------------------------------------------- #
+    #                                 Methods                                 #
+    # ----------------------------------------------------------------------- #
+
+    def _copy_metadata(self, obj, copy=False):
+        """Copy LinearDimension metadata."""
+        if hasattr(obj, "subtype"):
+            obj = obj.subtype
+        if isinstance(obj, LinearDimension):
+            self._description = obj._description
+            self._application = obj._application
+            self._label = obj._label
+
+            self._complex_fft = obj._complex_fft
+            self._origin_offset = obj._origin_offset
+            self._period = obj._period
+            self.reciprocal = obj.reciprocal
+
+            self._equivalent_unit = obj._equivalent_unit
+            self._equivalencies = obj._equivalencies
+            return
+
+    def to_dict(self):
+        """Return the LinearDimension as a python dictionary."""
+        obj = {}
+        obj["type"] = self.__class__._type
+
+        if self._description.strip() != "":
+            obj["description"] = self._description.strip()
+
+        obj["count"] = self._count
+        obj["increment"] = str(ScalarQuantity(self.increment))
+        obj.update(self._to_dict())
+
+        if self.complex_fft:
+            obj["complex_fft"] = True
+
+        # reciprocal dictionary
+        reciprocal_obj = {}
+        if self.reciprocal._description.strip() != "":
+            reciprocal_obj["description"] = self.reciprocal._description
+        reciprocal_obj.update(self.reciprocal._to_dict())
+        if reciprocal_obj == {}:
+            del reciprocal_obj
+        else:
+            obj["reciprocal"] = reciprocal_obj
+
+        return obj
+
+    def copy(self):
+        """Return a copy of the object."""
+        return deepcopy(self)
+
+
+def _update_linear_dimension_object_by_scalar(object_, other, type_="mul"):
+    """Update object by multiplying by a scalar."""
+    other = check_scalar_object(other)
+
+    if type_ == "mul":
+        object_._increment *= other
+        object_._coordinates *= other
+        object_._coordinates_offset *= other
+        object_._origin_offset *= other
+        object_._period *= other
+
+    if type_ == "truediv":
+        object_._increment /= other
+        object_._coordinates /= other
+        object_._coordinates_offset /= other
+        object_._origin_offset /= other
+        object_._period /= other
+
+    object_._unit = object_._increment._unit
+    object_._quantity_name = object_._unit.physical_type
+    object_._equivalencies = None
+    _reciprocal_unit = object_._unit ** -1
+    object_.reciprocal = ReciprocalDimension(unit=_reciprocal_unit)
+    return object_

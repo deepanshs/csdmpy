@@ -1,13 +1,19 @@
-
-
 .. _dim_api:
 
-----------
+---------
 Dimension
-----------
+---------
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Dimension subtypes
+
+    dimension/linear
+    dimension/monotonic
+    dimension/labeled
+
 
 .. currentmodule:: csdmpy
-
 
 .. autoclass:: Dimension
     :show-inheritance:
@@ -15,6 +21,8 @@ Dimension
     .. rubric:: Attributes Summary
 
     .. autosummary::
+       :nosignatures:
+
         ~Dimension.type
         ~Dimension.description
         ~Dimension.application
@@ -35,9 +43,12 @@ Dimension
     .. rubric:: Methods Summary
 
     .. autosummary::
+       :nosignatures:
+
         ~Dimension.to
         ~Dimension.to_dict
         ~Dimension.is_quantitative
+        ~Dimension.copy
 
 
     .. rubric:: Attributes Documentation
@@ -65,3 +76,4 @@ Dimension
     .. automethod:: to
     .. automethod:: to_dict
     .. automethod:: is_quantitative
+    .. automethod:: copy

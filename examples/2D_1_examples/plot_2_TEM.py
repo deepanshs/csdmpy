@@ -9,8 +9,7 @@ Transmission Electron Microscopy (TEM) dataset
 # analysis of neuronal microcircuitry. The dataset was obtained
 # from the `TrakEM2 tutorial <http://www.ini.uzh.ch/~acardona/data.html>`_ and
 # subsequently converted to the CSD model file-format.
-
-#%%
+#
 # Let's import the CSD model data-file and look at its data structure.
 import csdmpy as cp
 
@@ -36,7 +35,7 @@ print(x[1].coordinates[:10])
 
 #%%
 # For convenience, let's convert the coordinates from `nm` to `µm` using the
-# :meth:`~csdmpy.dimensions.Dimension.to` method of the respective :ref:`dim_api`
+# :meth:`~csdmpy.Dimension.to` method of the respective :ref:`dim_api`
 # instance,
 
 x[0].to("µm")

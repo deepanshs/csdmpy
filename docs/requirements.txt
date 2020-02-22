@@ -1,5 +1,5 @@
 sphinxjp.themes.basicstrap
 sphinx>=2.0
-sphinx-gallery
+sphinx-gallery>=0.5.0
 pillow
 matplotlib

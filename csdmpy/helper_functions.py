@@ -451,13 +451,13 @@ try:
                         plot_vector(x, y, ax)
 
                 if number_of_independents == 2:
-                    print(y.quantity_type)
+                    # print(y.quantity_type)
                     if y.quantity_type in scalar:
                         fig, ax = set_gui()
                         if np.any([x[i].type == "labeled" for i in [0, 1]]):
                             plot_line(x, y, ax)
                         else:
-                            print("plot image")
+                            # print("plot image")
                             plot_image(x, y, fig, ax)
                     if y.quantity_type == "vector_2":
                         fig, ax = set_gui()

@@ -1,7 +1,29 @@
 v0.2.0
  - Fixed a bug in cp.plot method.
- - Wrapped numpy functions.
+ - Added following methods.
+   - __eq__ for all class
+   - __add__ = Adds two for csdm object.
+   - __iadd__ = Adds two csdm objects in place.
+   - __sub__ = Subtrace two csdm objects.
+   - __isub__ = Subtrace two csdm objects in place.
+   - __mul__ = Multiply the components of the csdm object by a scalar.
+   - __imul__ = Multiply the components of the csdm object by a scalar in place.
+   - __truvdiv__ = Divide the components of the csdm object by a scalar.
+   - __itruediv__ = Divide the components of the csdm object by a scalar in place.
+   - split = Split the dependent-variables into individual csdm objects.
+
+  - Numpy dimension reduction functions
+   - sum = Sum along a given dimension.
+   - prod = Product along a given dimension.
+
+ - Numpy ufunc functions
+   - sin, cos, tan, arcsin, arccos, arctan, sinh, cosh, tanh, arcsinh, arccosh, arctanh
+   - exp, exp2, log, log2, log10. expm1, log1p, negative, positive, absolute, fabs, rint
+   - sign, conj, conjugate.
+   - sqrt, square, cbrt, reciprocal
+
  - Added apodization functions.
+   - sin, cos, tan, arcsin, arccos, arctan, exp
 
 v0.1.5
  - Added method to convert the frequency dimension to nmr dimensionless frequency ratio.

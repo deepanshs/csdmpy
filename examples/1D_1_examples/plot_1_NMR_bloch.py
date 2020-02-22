@@ -16,8 +16,8 @@ print(NMR_data.data_structure)
 
 #%%
 # This particular example illustrates two additional attributes of the CSD model,
-# namely, the :attr:`~csdmpy.csdm.CSDM.geographic_coordinate` and
-# :attr:`~csdmpy.csdm.CSDM.tags`. The `geographic_coordinate` described the
+# namely, the :attr:`~csdmpy.CSDM.geographic_coordinate` and
+# :attr:`~csdmpy.CSDM.tags`. The `geographic_coordinate` described the
 # location where the CSDM file was last serialized. You may access this
 # attribute through,
 
@@ -50,7 +50,7 @@ print(x0)
 # Unlike the previous example, the data structure of an NMR measurement is
 # a complex-valued dependent variable. The numeric type of the components from
 # a dependent variable is accessed through the
-# :attr:`~csdmpy.dependent_variables.DependentVariable.numeric_type` attribute.
+# :attr:`~csdmpy.DependentVariable.numeric_type` attribute.
 
 #%%
 y = NMR_data.dependent_variables
@@ -76,7 +76,7 @@ print(x[0].data_structure)
 
 #%%
 # notice, there is a reciprocal keyword. The
-# :attr:`~csdmpy.dimensions.Dimension.reciprocal` attribute is useful for datasets
+# :attr:`~csdmpy.Dimension.reciprocal` attribute is useful for datasets
 # that frequently transform to a reciprocal domain, such as the NMR dataset.
 # The value of the reciprocal attribute is the reciprocal object, which contains metadata
 # for describing the reciprocal coordinates, such as the `coordinates_offset`,

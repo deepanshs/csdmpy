@@ -1,5 +1,3 @@
-
-
 The requirements for `csdmpy`
 =============================
 

@@ -10,8 +10,7 @@ Astronomy dataset
 # in February 2016. The original dataset was obtained in the FITS format
 # and subsequently converted to the CSD model file-format. For the convenience of
 # illustration, we have downsampled the original dataset.
-
-#%%
+#
 # Let's load the `.csdfe` file and look at its data structure.
 import csdmpy as cp
 
@@ -35,7 +34,7 @@ y = bubble_nebula.dependent_variables
 #%%
 # There are two dimension instances in ``x``. Let's look
 # at the coordinates along each dimension, using the
-# :attr:`~csdmpy.dimensions.Dimension.coordinates` attribute of the
+# :attr:`~csdmpy.Dimension.coordinates` attribute of the
 # respective instances.
 
 #%%
@@ -49,7 +48,7 @@ print(x[1].coordinates[:10])
 
 #%%
 # The component of the dependent variable is accessed through the
-# :attr:`~csdmpy.dependent_variables.DependentVariable.components` attribute.
+# :attr:`~csdmpy.DependentVariable.components` attribute.
 y00 = y[0].components[0]
 
 #%%

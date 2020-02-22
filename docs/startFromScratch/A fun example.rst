@@ -43,7 +43,7 @@ python dictionary.
 The above python dictionary contains two keys. The `type` key identifies the
 dimension as a labeled dimension while the `labels` key holds an
 array of labels. In this example, the labels are emojis. Add this dictionary
-as an argument of the :meth:`~csdmpy.csdm.CSDM.add_dimension` method
+as an argument of the :meth:`~csdmpy.CSDM.add_dimension` method
 of the `fundata` instance.
 
 .. doctest::
@@ -76,7 +76,7 @@ instance.
 
 Next, add a dependent variable. Set up a python dictionary corresponding to the
 dependent variable object and add this dictionary as an argument of the
-:meth:`~csdmpy.csdm.CSDM.add_dependent_variable` method of the `fundata`
+:meth:`~csdmpy.CSDM.add_dependent_variable` method of the `fundata`
 instance.
 
 .. doctest::
@@ -126,7 +126,7 @@ Now, we have a 😂 dataset...
       }
     }
 
-To serialize this file, use the :meth:`~csdmpy.csdm.CSDM.save` method of the
+To serialize this file, use the :meth:`~csdmpy.CSDM.save` method of the
 `fundata` instance as
 
 .. doctest::
@@ -140,7 +140,7 @@ To serialize this file, use the :meth:`~csdmpy.csdm.CSDM.save` method of the
     os.remove('csdmpy/my_file.csdf')
 
 In the above code, the components from the
-:attr:`~csdmpy.csdm.CSDM.dependent_variables` attribute at index zero, are
+:attr:`~csdmpy.CSDM.dependent_variables` attribute at index zero, are
 encoded as `base64` strings before serializing to the `my_file.csdf` file.
 
 You may also save the components as a binary file, in which case, the file is

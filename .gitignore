@@ -14,6 +14,7 @@ Test_files/**
 */Test Files-CSDM-v1.0/**
 docs/_build/**
 docs/auto_examples/**
+docs/auto_tutorials/**
 
 # Compiled source #
 ###################
@@ -68,3 +69,4 @@ my_file**
 .coverage
 csdm.code-workspace
 csdmpy.pdf
+*.temp

@@ -1,4 +1,3 @@
-
 Dimension specific Apodization methods
 --------------------------------------
 
@@ -20,7 +19,17 @@ object.
 .. autosummary::
     ~sin
     ~cos
+    ~tan
+    ~arcsin
+    ~arccos
+    ~arctan
+    ~exp
 
 .. rubric:: Method Documentation
 .. autofunction:: sin
 .. autofunction:: cos
+.. autofunction:: tan
+.. autofunction:: arcsin
+.. autofunction:: arccos
+.. autofunction:: arctan
+.. autofunction:: exp

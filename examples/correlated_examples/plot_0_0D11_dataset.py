@@ -11,8 +11,7 @@ Scatter, 0D{1,1} dataset
 # the :math:`^{29}\text{Si}` - :math:`^{29}\text{Si}` nuclear spin couplings,
 # :math:`^2J`, across a Si-O-Si linkage, and the `s`-character product on the
 # O and two Si along the Si-O bond across the Si-O-Si linkage.
-
-#%%
+#
 # Let's import the dataset.
 import csdmpy as cp
 
@@ -21,13 +20,13 @@ zero_d_dataset = cp.load(filename)
 
 #%%
 # Since the dataset has no dimensions, the value of the
-# :attr:`~csdmpy.csdm.CSDM.dimensions` attribute of the :attr:`~csdmpy.csdm.CSDM`
+# :attr:`~csdmpy.CSDM.dimensions` attribute of the :attr:`~csdmpy.CSDM`
 # class is an empty tuple,
 
 print(zero_d_dataset.dimensions)
 
 #%%
-# The :attr:`~csdmpy.csdm.CSDM.dependent_variables` attribute, however, holds
+# The :attr:`~csdmpy.CSDM.dependent_variables` attribute, however, holds
 # two dependent-variable objects. The data structure from the two dependent
 # variables is
 

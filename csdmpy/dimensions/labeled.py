@@ -3,10 +3,13 @@
 from __future__ import division
 from __future__ import print_function
 
+import json
+import warnings
 from copy import deepcopy
 
 import numpy as np
 
+from csdmpy.dimensions.base import BaseDimension
 from csdmpy.utils import validate
 
 
@@ -15,28 +18,86 @@ __email__ = "srivastava.89@osu.edu"
 __all__ = ["LabeledDimension"]
 
 
-class LabeledDimension:
-    """A labeled dimension."""
+class LabeledDimension(BaseDimension):
+    """A labeled dimension.
 
-    __slots__ = ("_count", "_labels", "_label", "_description", "_application")
+    Generates an object representing a non-physical dimension whose coordinates are
+    labels. See :ref:`labeledDimension_uml` for details.
+    """
+
+    __slots__ = ("_count", "_labels")
 
     _type = "labeled"
 
     def __init__(self, labels, label="", description="", application={}, **kwargs):
         r"""Instantiate a LabeledDimension class."""
-        self._description = description
-        self._application = application
-        self._label = label
+        super().__init__(label, application, description)
         self.labels = labels
+
+    def __repr__(self):
+        properties = ", ".join(
+            [f"{k}={v}" for k, v in self.to_dict().items() if k != "type"]
+        )
+        return f"LabeledDimension({properties})"
+
+    def __str__(self):
+        return f"LabeledDimension({self.coordinates.__str__()})"
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if hasattr(other, "subtype"):
+            other = other.subtype
+        if isinstance(other, LabeledDimension):
+            check = [
+                self._count == other._count,
+                np.all(self._labels == other._labels),
+                self._label == other._label,
+                self._description == other._description,
+                self._application == other._application,
+            ]
+            if np.all(check):
+                return True
+        return False
+
+    def is_quantitative(self):
+        r"""Return `True`, if the dimension is quantitative, otherwise `False`.
+        :returns: A Boolean.
+        """
+        return False
 
     # ----------------------------------------------------------------------- #
     #                                 Attributes                              #
     # ----------------------------------------------------------------------- #
 
     @property
+    def type(self):
+        """Return the type of the dimension."""
+        return deepcopy(self.__class__._type)
+
+    @property
+    def count(self):
+        r"""Total number of labels along the dimension."""
+        return deepcopy(self._count)
+
+    @count.setter
+    def count(self, value):
+        value = validate(value, "count", int)
+        if value > self.count:
+            raise ValueError(
+                f"Cannot set the count, {value}, more than the number of coordinates, "
+                f"{self.count}, for the labeled dimensions."
+            )
+
+        if value < self.count:
+            warnings.warn(
+                f"The number of labels, {self.count}, are truncated to {value}."
+            )
+            self._count = value
+
+    @property
     def labels(self):
         r"""Return a list of labels along the dimension."""
-        return deepcopy(self._labels)
+        return self._labels
 
     @labels.setter
     def labels(self, labels):
@@ -48,53 +109,63 @@ class LabeledDimension:
             self._labels = np.asarray(labels)
             self._count = len(labels)
         else:
-            i = np.where(items is False)[0][0]
+            i = np.where(items == 0)[0][0]
             raise ValueError(
-                f"A list of string labels are required, found {type(labels[i])} at index {i}."
+                "A list of string labels are required, found "
+                f"{labels[i].__class__.__name__} at index {i}."
             )
 
     @property
-    def label(self):
-        r"""Label associated with the dimension."""
-        return deepcopy(self._label)
+    def coordinates(self):
+        """Return the coordinates along the dimensions. This is an alias for labels."""
+        n = self._count
+        return self.labels[:n]
 
-    @label.setter
-    def label(self, label=""):
-        self._label = validate(label, "label", str)
-
-    @property
-    def application(self):
-        r"""Return an application dimension associated with the dimensions."""
-        return deepcopy(self._application)
-
-    @application.setter
-    def application(self, value):
-        self._application = value
+    @coordinates.setter
+    def coordinates(self, value):
+        self.labels = value
 
     @property
-    def description(self):
-        r"""Return a description of the dimension."""
-        return deepcopy(self._description)
+    def axis_label(self):
+        """Return a formatted string for displaying label along the dimension axis."""
+        return self.label
 
-    @description.setter
-    def description(self, value):
-        self._description = validate(value, "description", str)
+    @property
+    def data_structure(self):
+        """Json serialized string describing the LabeledDimension class instance."""
+        return json.dumps(self.to_dict(), ensure_ascii=False, sort_keys=False, indent=2)
 
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
     # ----------------------------------------------------------------------- #
 
-    def _is_quantitative(self):
-        r"""Return `True`, if the dimension is quantitative, otherwise `False`.
-        :returns: A Boolean.
-        """
-        return False
+    def _copy_metadata(self, obj, copy=False):
+        """Copy LabeledDimension metadata."""
+        if hasattr(obj, "subtype"):
+            obj = obj.subtype
+        if isinstance(obj, LabeledDimension):
+            self._description = obj._description
+            self._application = obj._application
+            self._label = obj._label
+            return
+
+        raise ValueError("Object is not a Dimension.")
 
     def to_dict(self):
-        """Return LabeledDimension as a python dictionary."""
+        """Return the LabeledDimension as a python dictionary."""
         dictionary = {}
-        dictionary["type"] = self._type
+        dictionary["type"] = self.__class__._type
         if self._description.strip() != "":
             dictionary["description"] = self._description.strip()
         dictionary["labels"] = self._labels.tolist()
+
+        if self._label.strip() != "":
+            dictionary["label"] = self._label.strip()
+
+        if self._application != {}:
+            dictionary["application"] = self._application
         return dictionary
+
+    def copy(self):
+        """Return a copy of the object."""
+        return deepcopy(self)

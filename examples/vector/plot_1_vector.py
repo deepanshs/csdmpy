@@ -31,7 +31,7 @@ print(x[1].coordinates[:5])
 
 #%%
 # The components of the dependent variable are vector components as seen
-# from the :attr:`~csdmpy.dependent_variables.DependentVariable.quantity_type`
+# from the :attr:`~csdmpy.DependentVariable.quantity_type`
 # attribute of the corresponding dependent variable instance.
 
 print(y[0].quantity_type)

@@ -5,6 +5,7 @@ from copy import deepcopy
 from astropy.units import Quantity
 from numpy import inf
 
+from csdmpy.dimensions.base import BaseDimension
 from csdmpy.units import check_quantity_name
 from csdmpy.units import ScalarQuantity
 from csdmpy.utils import type_error
@@ -13,14 +14,14 @@ from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-__all__ = ["BaseQuantitativeDimension", "ReciprocalVariable"]
+__all__ = ["BaseQuantitativeDimension", "ReciprocalDimension"]
 
 # =========================================================================== #
 #                          Base Quantitative Class                            #
 # =========================================================================== #
 
 
-class BaseQuantitativeDimension:
+class BaseQuantitativeDimension(BaseDimension):
     r"""A BaseQuantitativeDimension class."""
 
     __slots__ = (
@@ -28,10 +29,8 @@ class BaseQuantitativeDimension:
         "_origin_offset",
         "_quantity_name",
         "_period",
-        "_label",
-        "_description",
-        "_application",
         "_unit",
+        "_equivalent_unit",
         "_equivalencies",
     )
 
@@ -49,8 +48,8 @@ class BaseQuantitativeDimension:
     ):
         r"""Instantiate a BaseIndependentVariable class."""
 
-        self._description = description
-        self._application = application
+        super().__init__(label, application, description)
+
         self._coordinates_offset = ScalarQuantity(coordinates_offset, unit).quantity
         self._origin_offset = ScalarQuantity(origin_offset, unit).quantity
         self._quantity_name = check_quantity_name(quantity_name, unit)
@@ -60,22 +59,31 @@ class BaseQuantitativeDimension:
             value = inf * value.unit
         self._period = value
 
-        self.label = label
         self._unit = unit
+        self._equivalent_unit = None
         self._equivalencies = None
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        check = [
+            # super class
+            self._coordinates_offset == other._coordinates_offset,
+            self._origin_offset == other._origin_offset,
+            self._quantity_name == other._quantity_name,
+            self._period == other._period,
+            self._label == other._label,
+            self._description == other._description,
+            self._application == other._application,
+            self._unit == other._unit,
+            self._equivalencies == other._equivalencies,
+        ]
+        if False in check:
+            return False
+        return True
 
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
     # ----------------------------------------------------------------------- #
-
-    @property
-    def application(self):
-        """Return application metadata, if available."""
-        return self._application
-
-    @application.setter
-    def application(self, value):
-        self._application = validate(value, "application", dict)
 
     @property
     def coordinates_offset(self):
@@ -128,46 +136,26 @@ class BaseQuantitativeDimension:
     def quantity_name(self, value):
         raise NotImplementedError("This attribute is not yet implemented.")
 
-    @property
-    def label(self):
-        r"""Label associated with this dimension."""
-        return deepcopy(self._label)
-
-    @label.setter
-    def label(self, label=""):
-        self._label = validate(label, "label", str)
-
-    @property
-    def description(self):
-        r"""Brief description of the dimension object."""
-        return deepcopy(self._description)
-
-    @description.setter
-    def description(self, value):
-        self._description = validate(value, "description", str)
-
     # ----------------------------------------------------------------------- #
     #                                  Methods                                #
     # ----------------------------------------------------------------------- #
 
-    def _get_quantitative_dictionary(self):
+    def _to_dict(self):
         r"""Return the object as a python dictionary."""
         obj = {}
 
         # The description key is added at the child class level.
         if self._coordinates_offset.value != 0.0:
-            obj["coordinates_offset"] = ScalarQuantity(
-                self._coordinates_offset
-            ).format()
+            obj["coordinates_offset"] = str(ScalarQuantity(self._coordinates_offset))
 
         if self._origin_offset.value != 0.0:
-            obj["origin_offset"] = ScalarQuantity(self._origin_offset).format()
+            obj["origin_offset"] = str(ScalarQuantity(self._origin_offset))
 
         if self._quantity_name not in [None, "unknown", "dimensionless"]:
             obj["quantity_name"] = self._quantity_name
 
         if self._period.value not in [0.0, inf]:
-            obj["period"] = ScalarQuantity(self._period).format()
+            obj["period"] = str(ScalarQuantity(self._period))
 
         if self.label.strip() != "":
             obj["label"] = self.label
@@ -177,28 +165,33 @@ class BaseQuantitativeDimension:
 
         return obj
 
-    def _is_quantitative(self):
+    def is_quantitative(self):
         r"""Return `True`, if the dimension is quantitative, otherwise `False`.
         :returns: A Boolean.
         """
         return True
 
-    def _to(self, unit="", equivalencies=None):
+    def to(self, unit="", equivalencies=None):
         r"""Convert the unit to given value `unit`."""
         unit = validate(unit, "unit", str)
         if equivalencies is None:
             self._unit = ScalarQuantity(unit, self._unit).quantity.unit
-        else:
-            self._unit = ScalarQuantity(unit).quantity.unit
+            self._equivalent_unit = None
+            self._equivalencies = None
+            return
+
+        # self._unit = ScalarQuantity(unit).quantity.unit
+        self._equivalent_unit = ScalarQuantity(unit).quantity.unit
         self._equivalencies = equivalencies
 
 
 # =========================================================================== #
-#                      ReciprocalVariable Dimension Class                     #
+#                           ReciprocalDimension Class                         #
 # =========================================================================== #
 
 
-class ReciprocalVariable(BaseQuantitativeDimension):
-    r"""Declare a ReciprocalVariable class."""
+class ReciprocalDimension(BaseQuantitativeDimension):
+    r"""Declare a ReciprocalDimension class."""
 
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)

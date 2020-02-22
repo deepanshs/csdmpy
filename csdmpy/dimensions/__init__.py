@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 """The Dimension object: attributes and methods."""
-import json
 import warnings
 from copy import deepcopy
 
-from csdmpy.dimensions.labeled import LabeledDimension
-from csdmpy.dimensions.linear import LinearDimension
-from csdmpy.dimensions.monotonic import MonotonicDimension
-from csdmpy.units import frequency_ratio
-from csdmpy.utils import _axis_label
+import numpy as np
+
+from .labeled import LabeledDimension
+from .linear import LinearDimension
+from .monotonic import MonotonicDimension
+from csdmpy.units import string_to_quantity
 from csdmpy.utils import _get_dictionary
-from csdmpy.utils import attribute_error
 from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
@@ -75,26 +74,26 @@ class Dimension:
         default = {
             "type": None,  # valid for all dimension subtypes
             "description": "",  # valid for all dimension subtypes
-            "count": None,  # valid for linear dimension subtype
-            "increment": None,  # valid for linear dimension subtype
-            "labels": None,  # valid for labled dimension subtype
-            "coordinates": None,  # valid for monotonic dimension subtype
-            "coordinates_offset": None,  # valid for linear dimension subtype
-            "origin_offset": None,  # valid for linear dimension subtype
-            "complex_fft": False,  # valid for linear dimension subtype
-            "period": None,  # valid for monotonic and linear dimension subtypes
-            "quantity_name": None,  # valid for monotonic and linear dimension subtypes
+            "count": None,  # valid for linear subtype
+            "increment": None,  # valid for linear subtype
+            "labels": None,  # valid for labeled subtype
+            "coordinates": None,  # valid for monotonic subtype
+            "coordinates_offset": None,  # valid for linear subtype
+            "origin_offset": None,  # valid for linear subtype
+            "complex_fft": False,  # valid for linear subtype
+            "period": None,  # valid for monotonic and linear subtypes
+            "quantity_name": None,  # valid for monotonic and linear subtypes
             "label": "",  # valid for all dimension subtypes
             "application": {},  # valid for all dimension subtypes
-            "reciprocal": {  # valid for all monotonic and linear subtypes
-                "increment": None,  # valid for all monotonic and linear subtypes
-                "coordinates_offset": None,  # valid for all monotonic and linear subtypes
-                "origin_offset": None,  # valid for all monotonic and linear subtypes
-                "period": None,  # valid for all monotonic and linear subtypes
-                "quantity_name": None,  # valid for all monotonic and linear subtypes
-                "label": "",  # valid for all monotonic and linear subtypes
-                "description": "",  # valid for all monotonic and linear subtypes
-                "application": {},  # valid for all monotonic and linear subtypes
+            "reciprocal": {  # valid for monotonic and linear subtypes
+                "increment": None,  # valid for monotonic and linear subtypes
+                "coordinates_offset": None,  # valid for monotonic and linear subtypes
+                "origin_offset": None,  # valid for monotonic and linear subtypes
+                "period": None,  # valid for monotonic and linear subtypes
+                "quantity_name": None,  # valid for monotonic and linear subtypes
+                "label": "",  # valid for monotonic and linear subtypes
+                "description": "",  # valid for monotonic and linear subtypes
+                "application": {},  # valid for monotonic and linear subtypes
             },
         }
 
@@ -161,12 +160,40 @@ class Dimension:
         return LinearDimension(**default)
 
     def __repr__(self):
-        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
-        return f"Dimension({properties})"
+        """String representation of object."""
+        return self.subtype.__repr__()
 
     def __str__(self):
-        properties = ", ".join([f"{k}={v}" for k, v in self.to_dict().items()])
-        return f"Dimension({properties})"
+        """String representation of object."""
+        return self.subtype.__str__()
+
+    def __eq__(self, other):
+        """Overrides the default implementation."""
+        if isinstance(other, Dimension):
+            if self.subtype == other.subtype:
+                return True
+            return False
+        if isinstance(other, (LinearDimension, LabeledDimension, MonotonicDimension)):
+            if self.subtype == other:
+                return True
+            return False
+        return False
+
+    def __mul__(self, other):
+        """Multiply the Dimension object by a scalar."""
+        return self.subtype.__mul__(other)
+
+    def __imul__(self, other):
+        """Multiply the Dimension object by a scalar, in-place."""
+        return self.subtype.__imul__(other)
+
+    def __truediv__(self, other):
+        """Divide the Dimension object by a scalar."""
+        return self.subtype.__truediv__(other)
+
+    def __itruediv__(self, other):
+        """Divide the Dimension object by a scalar, in-place."""
+        return self.subtype.__itruediv__(other)
 
     # ======================================================================= #
     #                          Dimension Attributes                           #
@@ -184,7 +211,7 @@ class Dimension:
             \mathbf{X}_k^\mathrm{abs} = \mathbf{X}_k + o_k \mathbf{1}
 
         where :math:`\mathbf{X}_k` are the coordinates along the dimension and
-        :math:`o_k` is the :attr:`~csdmpy.dimensions.Dimension.origin_offset`.
+        :math:`o_k` is the :attr:`~csdmpy.Dimension.origin_offset`.
         For example, consider
 
         .. doctest::
@@ -203,7 +230,7 @@ class Dimension:
 
         For `linear` dimensions, the order of the `absolute_coordinates`
         further depend on the value of the
-        :attr:`~csdmpy.dimensions.Dimension.complex_fft` attributes. For
+        :attr:`~csdmpy.Dimension.complex_fft` attributes. For
         examples, when the value of the `complex_fft` attribute is True,
         the absolute coordinates are
 
@@ -224,9 +251,7 @@ class Dimension:
         Raises:
             AttributeError: For labeled dimensions.
         """
-        if self.subtype != "labeled":
-            return (self.coordinates + self.origin_offset).to(self.subtype._unit)
-        raise AttributeError(attribute_error(self.subtype, "absolute_coordinates"))
+        return self.subtype.absolute_coordinates
 
     @property
     def application(self):
@@ -256,7 +281,7 @@ class Dimension:
         Returns:
             A python dictionary containing dimension application metadata.
         """
-        return self.subtype._application
+        return self.subtype.application
 
     @application.setter
     def application(self, value):
@@ -273,8 +298,8 @@ class Dimension:
         For quantitative dimensions, this attributes returns a string,
         `label / unit`,  if the `label` is a non-empty string, otherwise,
         `quantity_name / unit`. Here
-        :attr:`~csdmpy.dimensions.Dimension.quantity_name` and
-        :attr:`~csdmpy.dimensions.Dimension.label` are the attributes of the
+        :attr:`~csdmpy.Dimension.quantity_name` and
+        :attr:`~csdmpy.Dimension.label` are the attributes of the
         :ref:`dim_api` instances, and `unit` is the unit associated with the
         coordinates along the dimension. For examples,
 
@@ -293,14 +318,7 @@ class Dimension:
         Raises:
             AttributeError: When assigned a value.
         """
-        if hasattr(self.subtype, "quantity_name"):
-            if self.label.strip() == "":
-                label = self.quantity_name
-            else:
-                label = self.label
-            return _axis_label(label, self.subtype._unit)
-        else:
-            return self.label
+        return self.subtype.axis_label
 
     @property
     def coordinates(self):
@@ -312,7 +330,7 @@ class Dimension:
             [100. 105. 110. 115. 120. 125. 130. 135. 140. 145.] G
 
         For `linear` dimensions, the order of the `coordinates` also depend on the
-        value of the :attr:`~csdmpy.dimensions.Dimension.complex_fft` attributes.
+        value of the :attr:`~csdmpy.Dimension.complex_fft` attributes.
         For examples, when the value of the `complex_fft` attribute is True,
         the coordinates are
 
@@ -336,35 +354,11 @@ class Dimension:
         Raises:
             AttributeError: For dimensions with subtype `linear`.
         """
-        n = self.subtype._count
-        if self.type == "monotonic":
-            return self.subtype._coordinates[:n]
-
-        if self.type == "linear":
-            unit = self.subtype._unit
-            equivalent_fn = self.subtype._equivalencies
-            coordinates = self.subtype._coordinates[:n] + self.coordinates_offset
-            if equivalent_fn is None:
-                return coordinates.to(self.subtype._unit)
-            return coordinates.to(
-                unit, equivalent_fn(self.origin_offset - self.coordinates_offset)
-            )
-
-        if self.type == "labeled":
-            return self.subtype.labels[:n]
+        return self.subtype.coordinates
 
     @coordinates.setter
     def coordinates(self, value):
-        if self.type == "monotonic":
-            self.subtype.values = value
-        if self.type == "labeled":
-            self.subtype.labels = value
-        if self.type == "linear":
-            raise AttributeError(
-                "The attribute cannot be modifed for Dimension objects with `linear` "
-                "type. Use the `count`, `increment` or `coordinates_offset` attributes"
-                " to update the coordinate along the linear dimension."
-            )
+        self.subtype.coordinates = value
 
     @property
     def data_structure(self):
@@ -393,7 +387,7 @@ class Dimension:
         Raises:
             AttributeError: When modified.
         """
-        return json.dumps(self.to_dict(), ensure_ascii=False, sort_keys=False, indent=2)
+        return self.subtype.data_structure
 
     @property
     def description(self):
@@ -425,7 +419,7 @@ class Dimension:
     @property
     def complex_fft(self):
         r"""
-        Boolean specifying if the coordinates along the dimension are the output of a complex fft.
+        If true, the coordinates are the ordered as the output of a complex fft.
 
         This attribute is only `valid` for the Dimension instances with `linear`
         subtype.
@@ -524,9 +518,7 @@ class Dimension:
             TypeError: When the assigned value is not a string containing a quantity
                        or a Quantity object.
         """
-        if self.type == "linear":
-            return self.subtype.coordinates_offset
-        raise AttributeError(attribute_error(self.subtype, "coordinates_offset"))
+        return self.subtype.coordinates_offset
 
     @coordinates_offset.setter
     def coordinates_offset(self, value):
@@ -573,24 +565,7 @@ class Dimension:
 
     @count.setter
     def count(self, value):
-        value = validate(value, "count", int)
-
-        if self.type in functional_dimension:
-            self.subtype._count = value
-            self.subtype._get_coordinates()
-            return
-
-        if value > self.count:
-            raise ValueError(
-                f"Cannot set the count, {value}, more than the number of coordinates, "
-                f"{self.count}, for the monotonic and labeled dimensions."
-            )
-
-        if value < self.count:
-            warnings.warn(
-                f"The number of coordinates, {self.count}, are truncated to {value}."
-            )
-            self.subtype._count = value
+        self.subtype.count = value
 
     @property
     def origin_offset(self):
@@ -706,7 +681,7 @@ class Dimension:
         Raises:
             AttributeError: When the attribute is modified.
         """
-        return self.subtype.__class__._type
+        return self.subtype.type
 
     @property
     def labels(self):
@@ -730,8 +705,8 @@ class Dimension:
             ['Cu' 'Ag' 'Au']
 
         .. note::
-            For Labeled dimension, the :attr:`~csdmpy.dimensions.Dimension.coordinates`
-            attribute is an alias of :attr:`~csdmpy.dimensions.Dimension.labels`
+            For Labeled dimension, the :attr:`~csdmpy.Dimension.coordinates`
+            attribute is an alias of :attr:`~csdmpy.Dimension.labels`
             attribute. For example,
 
             .. doctest::
@@ -753,14 +728,13 @@ class Dimension:
     @labels.setter
     def labels(self, array):
         self.subtype.labels = array
-        self.subtype._get_coordinates(array)
 
     @property
     def reciprocal(self):
         r"""
-        An instance of the ReciprocalVariable class.
+        An instance of the ReciprocalDimension class.
 
-        The attributes of ReciprocalVariable class are:
+        The attributes of ReciprocalDimension class are:
             - coordinates_offset
             - origin_offset
             - period
@@ -775,13 +749,21 @@ class Dimension:
     #                           Dimension Methods                             #
     # ======================================================================= #
 
+    def _copy_metadata(self, obj, copy=False):
+        """Copy Dimension metadata"""
+        self.subtype._type = obj.subtype._type
+        self.subtype._copy_metadata(obj)
+
     def to_dict(self):
         r"""
         Return Dimension object as a python dictionary.
 
         Example:
-            >>> x.to_dict()
-            {'type': 'linear', 'description': 'This is a test', 'count': 10, 'increment': '5.0 G', 'coordinates_offset': '10.0 mT', 'origin_offset': '10.0 T', 'quantity_name': 'magnetic flux density', 'label': 'field strength'}
+            >>> x.to_dict() # doctest: +SKIP
+            {'type': 'linear', 'description': 'This is a test', 'count': 10,
+            'increment': '5.0 G', 'coordinates_offset': '10.0 mT',
+            'origin_offset': '10.0 T', 'quantity_name': 'magnetic flux density',
+            'label': 'field strength'}
         """
         return self.subtype.to_dict()
 
@@ -793,7 +775,7 @@ class Dimension:
             >>> x.is_quantitative()
             True
         """
-        return self.subtype._is_quantitative()
+        return self.subtype.is_quantitative()
 
     def to(self, unit="", equivalencies=None):
         r"""
@@ -818,11 +800,103 @@ class Dimension:
         Raises:
             AttributeError: For `labeled` dimensions.
         """
-        if equivalencies == "nmr_frequency_ratio":
-            self.subtype._to(unit, frequency_ratio)
-        else:
-            self.subtype._to(unit, equivalencies)
+        self.subtype.to(unit, equivalencies)
 
     def copy(self):
         """Return a copy of the Dimension object."""
         return deepcopy(self)
+
+
+def as_dimension(array, unit="", type=None, label="", description="", application={}):
+    """Generate and return a Dimension object from a 1D numpy array.
+
+    Args:
+        array: A 1D numpy array.
+        unit: The unit of the coordinates along the dimension.
+        type: The dimension type. Valid values are linear, monotonic, labeled, or
+                None. If the value is None, let us decide. The default value is None.
+        label: The label along the dimension. The default value is an empty string.
+        description: A description of the dimension. The default value is an empty
+                string.
+        application: An application dictionary. The default is an empty dictionary.
+
+    Example:
+        >>> array = np.arange(15)*0.5
+        >>> dim_object = cp.as_dimension(array)
+        >>> print(dim_object)
+        LinearDimension([0.  0.5 1.  1.5 2.  2.5 3.  3.5 4.  4.5 5.  5.5 6.  6.5 7. ])
+
+        >>> array = ['The', 'great', 'circle']
+        >>> dim_object = cp.as_dimension(array, label='in the sky')
+        >>> print(dim_object)
+        LabeledDimension(['The' 'great' 'circle'])
+    """
+    options = [None, "linear", "monotonic", "labeled"]
+    if type not in options:
+        raise ValueError(f"Invalid value for `type`. Allowed values are {options}.")
+
+    if not isinstance(array, (list, np.ndarray)):
+        raise ValueError(
+            f"Cannot convert {array.__class__.__name__} to a Dimension object."
+        )
+    if isinstance(array, list):
+        array = np.asarray(array)
+    if array.ndim != 1:
+        raise ValueError(
+            f"Cannot convert a {array.ndim} dimensional array to a Dimension object."
+        )
+
+    kwargs = {"label": label, "description": description, "application": application}
+
+    if type is None:
+        # labeled
+        if str(array.dtype)[:2] in [">U", "<U"]:
+            if unit != "":
+                warnings.warn("Ignoring unit argument for LabeledDimension.")
+            return LabeledDimension(labels=array.tolist(), **kwargs)
+
+        # linear
+        increment = array[1] - array[0]
+        if increment == 0:
+            raise ValueError("Invalid array for Dimension object.")
+
+        if np.allclose(np.diff(array, 1), increment):
+            return LinearDimension(
+                count=array.size,
+                increment=f"{increment} {unit}",
+                coordinates_offset=f"{array[0]} {unit}",
+                **kwargs,
+            )
+
+        # monotonic
+        if np.all(np.diff(array, 1) > 0) or np.all(np.diff(array, 1) < 0):
+            return MonotonicDimension(
+                coordinates=array * string_to_quantity(unit), **kwargs
+            )
+
+        raise ValueError("Invalid array for Dimension object.")
+
+    if type == "linear":
+        increment = array[1] - array[0]
+        if increment == 0:
+            raise ValueError("Invalid array for LinearDimension object.")
+
+        if np.all(np.diff(array, 1) == increment):
+            return LinearDimension(
+                count=array.size,
+                increment=f"{increment} {unit}",
+                coordinates_offset=f"{array[0]} {unit}",
+                **kwargs,
+            )
+
+    if type == "monotonic":
+        if np.all(np.diff(array, 1) > 0) or np.all(np.diff(array, 1) < 0):
+            return MonotonicDimension(
+                coordinates=array * string_to_quantity(unit), **kwargs
+            )
+        raise ValueError("Invalid array for MonotonicDimension object.")
+
+    if type == "labeled":
+        if unit != "":
+            warnings.warn("Ignoring unit argument for LabeledDimension object.")
+        return LabeledDimension(labels=array.tolist(), **kwargs)
