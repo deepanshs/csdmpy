@@ -94,10 +94,20 @@ compatible with Numpy.
 
     .. only:: html
 
-        **View the examples gallery**
+        **View the core scientific dataset model (CSDM) examples gallery.**
 
         .. image:: https://img.shields.io/badge/View-Example%20Gallery-Purple?size=large
             :target: auto_examples/index.html
+
+----
+
+    .. only:: html
+
+        **Tutorial on generating and serializing CSDM objects from Numpy arrays.**
+
+        .. image:: https://img.shields.io/badge/View-Tutorial%20Gallery-Blue?size=large
+            :target: auto_tutorials/index.html
+
 
 ----
 

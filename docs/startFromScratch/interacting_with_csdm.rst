@@ -262,7 +262,7 @@ Support for Numpy methods
 """""""""""""""""""""""""
 
 In most cases, the csdm object may be used as if it were a NumPy array.
-See the list of all supported :ref:`wrapper_api`.
+See the list of all supported :ref:`numpy_support`.
 
 Method that only operate on dimensionless dependent variables
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -301,7 +301,7 @@ Method that only operate on dimensionless dependent variables
     ValueError: Cannot apply `exp` to quantity with physical type `temperature`.
 
 An exception is raised for csdm object with non-dimensionless dependent
-variables
+variables.
 
 Method that are independent of the dependent variable dimensionality
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -370,5 +370,4 @@ Dimension reduction methods
     >>> np.min(new_csdm1) == new_csdm1.min()
     True
 
-Here, np.min returns a list of minimum values corresponding to each
-dependent variable of the csdm object.
+.. note:: See the list of all supported :ref:`numpy_support`.

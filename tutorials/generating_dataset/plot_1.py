@@ -54,3 +54,7 @@ print(data_csdm.dimensions)
 #%%
 # Plot of the dataset.
 cp.plot(data_csdm)
+
+#%%
+# To serialize the file, use the save method.
+data_csdm.save("filename.csdf")

@@ -4,7 +4,7 @@
     2) split multiple dependent variables to individual objects.
     3) add, sub, iadd, radd, isub, rsub for scalar and ScalarQuantity.
     4) mul, imul, rmul, truediv, itruediv, rtruediv for scalar and ScalarQuantity.
-    5) min, max, clip, real, imag, conj, round functions.
+    5) min, max, clip, real, imag, conj, round, angle functions.
 """
 import json
 
@@ -527,7 +527,7 @@ def test_max_min_clip():
     assert np.allclose(out.clip(max=0.5), b.dependent_variables[0].components[0])
 
 
-def test_real_imag_conj():
+def test_real_imag_conj_angle():
     out, a_test = get_test_2d(complex)
     b = a_test.real
     assert b.dependent_variables[0].numeric_type == "float64"
@@ -545,11 +545,18 @@ def test_real_imag_conj():
     assert b.dependent_variables[0].numeric_type == "complex128"
     assert np.allclose(out.conj(), b.dependent_variables[0].components[0])
 
+    b = np.angle(a_test)
+    assert b.dependent_variables[0].numeric_type == "float64"
+    assert np.allclose(np.angle(out), b.dependent_variables[0].components[0])
 
-def test_round():
+
+def test_round_around():
     out, a_test = get_test_2d(float)
     b = a_test.round(1)
     assert np.allclose(out.round(1), b.dependent_variables[0].components[0])
+
+    b = np.around(a_test, 1)
+    assert np.allclose(np.around(out, 1), b.dependent_variables[0].components[0])
 
 
 def test_not_implemented_error():

@@ -13,6 +13,7 @@ from astropy.units import Quantity
 from csdmpy.dimensions.quantitative import BaseQuantitativeDimension
 from csdmpy.dimensions.quantitative import ReciprocalDimension
 from csdmpy.units import frequency_ratio
+from csdmpy.units import scalar_quantity_format
 from csdmpy.units import ScalarQuantity
 from csdmpy.utils import _axis_label
 from csdmpy.utils import attribute_error
@@ -95,7 +96,14 @@ class MonotonicDimension(BaseQuantitativeDimension):
 
     def __repr__(self):
         properties = ", ".join(
-            [f"{k}={v}" for k, v in self.to_dict().items() if k != "type"]
+            [
+                f"coordinates={self._coordinates.__str__()}",
+                *[
+                    f"{k}={v}"
+                    for k, v in self.to_dict().items()
+                    if k not in ["type", "coordinates"]
+                ],
+            ]
         )
         return f"MonotonicDimension({properties})"
 
@@ -122,17 +130,23 @@ class MonotonicDimension(BaseQuantitativeDimension):
 
     def _get_coordinates(self, values):
         _unit = self._unit
-        if not isinstance(values, np.ndarray):
-            _value = [
+        if isinstance(values, list):
+            _coordinates = [
                 ScalarQuantity(item, _unit).quantity.to(_unit).value for item in values
             ]
-        if isinstance(values, np.ndarray):
-            _value = values * _unit
+            self._coordinates = np.asarray(_coordinates, dtype=np.float64) * _unit
+            self._values = values
+            self._count = self._coordinates.size
+            return
 
-        _value = np.asarray(_value, dtype=np.float64) * _unit
-        self._count = _value.size
-        self._values = values
-        self._coordinates = _value
+        if isinstance(values, Quantity):
+            self._coordinates = values
+        elif isinstance(values, np.ndarray):
+            self._coordinates = values * _unit
+
+        unit = scalar_quantity_format(self._coordinates[0], numerical_value=False)
+        self._values = [f"{item.value} {unit}" for item in self._coordinates]
+        self._count = self._coordinates.size
 
     # ----------------------------------------------------------------------- #
     #                                 Attributes                              #

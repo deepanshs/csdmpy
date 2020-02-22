@@ -416,7 +416,7 @@ def test_monotonicDimension():
     a = cp.MonotonicDimension(coordinates=10 ** (np.arange(2)))
     assert a.__str__() == "MonotonicDimension([ 1. 10.])"
 
-    assert a.__repr__() == ("MonotonicDimension(coordinates=[ 1 10])")
+    assert a.__repr__() == ("MonotonicDimension(coordinates=[ 1. 10.])")
 
     assert a != 2
     assert a.is_quantitative() is True

@@ -71,7 +71,7 @@ __ufunc_list_applies_to_unit__ = [np.sqrt, np.square, np.cbrt, np.reciprocal, np
 
 __function_reduction_list__ = [np.max, np.min, np.sum, np.mean, np.var, np.std, np.prod]
 
-__other_functions__ = [np.round, np.real, np.imag, np.clip]
+__other_functions__ = [np.round, np.real, np.imag, np.clip, np.around, np.angle]
 
 __shape_manipulation_functions__ = [np.transpose]
 
