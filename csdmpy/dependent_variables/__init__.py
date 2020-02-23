@@ -9,10 +9,10 @@ from copy import deepcopy
 
 import numpy as np
 
-from .external import ExternalDataset
-from .internal import InternalDataset
-from csdmpy.utils import _axis_label
-from csdmpy.utils import _get_dictionary
+from .external import ExternalDataset  # lgtm [py/import-own-module]
+from .internal import InternalDataset  # lgtm [py/import-own-module]
+from csdmpy.utils import _axis_label  # lgtm [py/import-own-module]
+from csdmpy.utils import _get_dictionary  # lgtm [py/import-own-module]
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"

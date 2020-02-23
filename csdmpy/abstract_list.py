@@ -74,7 +74,7 @@ class DimensionList(AbstractList):
     def __setitem__(self, index, item):
         if not isinstance(item, __dimensions_list__):
             raise ValueError(
-                f"Expecting a Dimension object, found {item.__class__.name__}"
+                f"Expecting a Dimension object, found {item.__class__.__name__}"
             )
         if self._list[index].count != item.count:
             raise ValueError(

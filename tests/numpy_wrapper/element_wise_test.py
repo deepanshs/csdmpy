@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+"""Test for the csdm object
+    1) sin, cos, tan, arcsin, arccos, arctan,
+    2) sinh, cosh, tanh, arcsinh, arccosh, arctanh
+    3) exp, exp2, expm1, log, log2, log10, log1p
+    4) negative, positive, absolute, fabs, rint, sign, conj, conjugate
+    5) sqrt, square, cbrt, reciprocal, power
+"""
 import numpy as np
 import pytest
 

@@ -3,7 +3,7 @@
     1) generate csdm object.
     2) split multiple dependent variables to individual objects.
     3) add, sub, iadd, radd, isub, rsub for scalar and ScalarQuantity.
-    4) mul, imul, rmul, truediv, itruediv, rtruediv for scalar and ScalarQuantity.
+    4) mul, imul, rmul, truediv, itruediv, rtruediv, pow, ipow for scalar and ScalarQuantity.
     5) min, max, clip, real, imag, conj, round, angle functions.
 """
 import json
@@ -291,7 +291,7 @@ def test_iadd_isub():
     assert np.allclose(a_test_.dependent_variables[0].components, [out])
 
 
-def test_mul_truediv():
+def test_mul_truediv_pow():
     # mul
     c = a_test * 2
     out = a_test.dependent_variables[0].components
@@ -402,6 +402,20 @@ def test_mul_truediv():
     error = r"Only scalar multiplication or division is allowed."
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         c = a_test / np.asarray([1, 2])
+
+    # pow
+    c = b1_test ** 2
+    out = b1_test.dependent_variables[0].components
+    assert np.allclose(c.dependent_variables[0].components, np.power(out, 2))
+    assert str(c.dependent_variables[0].unit) == "km2"
+
+    c **= 2
+    assert np.allclose(c.dependent_variables[0].components, np.power(out, 4))
+    assert str(c.dependent_variables[0].unit) == "km4"
+
+    c **= 1 / 4
+    assert np.allclose(c.dependent_variables[0].components, out)
+    assert str(c.dependent_variables[0].unit) == "km"
 
 
 def test_imul_itruediv():

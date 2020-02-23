@@ -5,12 +5,12 @@ from copy import deepcopy
 
 import numpy as np
 
-from .labeled import LabeledDimension
-from .linear import LinearDimension
-from .monotonic import MonotonicDimension
-from csdmpy.units import string_to_quantity
-from csdmpy.utils import _get_dictionary
-from csdmpy.utils import validate
+from .labeled import LabeledDimension  # lgtm [py/import-own-module]
+from .linear import LinearDimension  # lgtm [py/import-own-module]
+from .monotonic import MonotonicDimension  # lgtm [py/import-own-module]
+from csdmpy.units import string_to_quantity  # lgtm [py/import-own-module]
+from csdmpy.utils import _get_dictionary  # lgtm [py/import-own-module]
+from csdmpy.utils import validate  # lgtm [py/import-own-module]
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"

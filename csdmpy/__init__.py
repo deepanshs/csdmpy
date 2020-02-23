@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 import numpy as np
 
 from csdmpy.csdm import as_dependent_variable  # lgtm [py/import-own-module]
-from csdmpy.csdm import as_dimension
+from csdmpy.csdm import as_dimension  # lgtm [py/import-own-module]
 from csdmpy.csdm import CSDM  # lgtm [py/import-own-module]
 from csdmpy.csdm import DependentVariable  # lgtm [py/import-own-module]
 from csdmpy.csdm import Dimension  # lgtm [py/import-own-module]

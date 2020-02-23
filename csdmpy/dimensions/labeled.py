@@ -72,12 +72,12 @@ class LabeledDimension(BaseDimension):
     @property
     def type(self):
         """Return the type of the dimension."""
-        return deepcopy(self.__class__._type)
+        return self.__class__._type
 
     @property
     def count(self):
         r"""Total number of labels along the dimension."""
-        return deepcopy(self._count)
+        return self._count
 
     @count.setter
     def count(self, value):

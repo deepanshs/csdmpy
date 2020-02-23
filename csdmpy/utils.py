@@ -158,7 +158,9 @@ class NumericType:
 
     def update(self, element):
         """Update the numeric type."""
-        validate(element, "numeric_type", (str, type), self._check_numeric_type)
+        validate(
+            element, "numeric_type", (str, type, np.dtype), self._check_numeric_type
+        )
 
     def __str__(self):
         """Return a string with the numeric type."""
@@ -172,9 +174,14 @@ class NumericType:
         return True
 
     def _check_numeric_type(self, element):
+        if isinstance(element, np.dtype):
+            self.dtype = element
+            self.value = str(element)
+            return
+
         if isinstance(element, type):
-            self.value = element
             self.dtype = np.dtype(element)
+            self.value = str(self.dtype)
             return
 
         lst = self.__class__._lst
