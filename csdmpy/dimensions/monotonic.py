@@ -4,12 +4,13 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import warnings
 from copy import deepcopy
 
 import numpy as np
 from astropy.units import Quantity
 
+from csdmpy.dimensions.base import _copy_core_metadata
+from csdmpy.dimensions.base import check_count
 from csdmpy.dimensions.quantitative import BaseQuantitativeDimension
 from csdmpy.dimensions.quantitative import ReciprocalDimension
 from csdmpy.units import frequency_ratio
@@ -18,7 +19,7 @@ from csdmpy.units import ScalarQuantity
 from csdmpy.utils import _axis_label
 from csdmpy.utils import attribute_error
 from csdmpy.utils import check_scalar_object
-from csdmpy.utils import validate
+
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -163,18 +164,7 @@ class MonotonicDimension(BaseQuantitativeDimension):
 
     @count.setter
     def count(self, value):
-        value = validate(value, "count", int)
-        if value > self.count:
-            raise ValueError(
-                f"Cannot set the count, {value}, more than the number of coordinates, "
-                f"{self.count}, for the monotonic dimensions."
-            )
-
-        if value < self.count:
-            warnings.warn(
-                f"The number of coordinates, {self.count}, are truncated to {value}."
-            )
-            self._count = value
+        self._count = check_count(value, self._count, "monotonic")
 
     @property
     def coordinates_offset(self):
@@ -235,17 +225,7 @@ class MonotonicDimension(BaseQuantitativeDimension):
         if hasattr(obj, "subtype"):
             obj = obj.subtype
         if isinstance(obj, MonotonicDimension):
-            self._description = obj._description
-            self._application = obj._application
-            self._label = obj._label
-
-            self._origin_offset = obj._origin_offset
-            self._period = obj._period
-            self.reciprocal = obj.reciprocal
-
-            self._equivalent_unit = obj._equivalent_unit
-            self._equivalencies = obj._equivalencies
-            return
+            _copy_core_metadata(self, obj, "monotonic")
 
     def to_dict(self):
         """Return the MonotonicDimension as a python dictionary."""

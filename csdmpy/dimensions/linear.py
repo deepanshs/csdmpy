@@ -9,6 +9,7 @@ from copy import deepcopy
 import numpy as np
 from astropy.units import Quantity
 
+from csdmpy.dimensions.base import _copy_core_metadata
 from csdmpy.dimensions.quantitative import BaseQuantitativeDimension
 from csdmpy.dimensions.quantitative import ReciprocalDimension
 from csdmpy.units import frequency_ratio
@@ -262,18 +263,7 @@ class LinearDimension(BaseQuantitativeDimension):
         if hasattr(obj, "subtype"):
             obj = obj.subtype
         if isinstance(obj, LinearDimension):
-            self._description = obj._description
-            self._application = obj._application
-            self._label = obj._label
-
-            self._complex_fft = obj._complex_fft
-            self._origin_offset = obj._origin_offset
-            self._period = obj._period
-            self.reciprocal = obj.reciprocal
-
-            self._equivalent_unit = obj._equivalent_unit
-            self._equivalencies = obj._equivalencies
-            return
+            _copy_core_metadata(self, obj, "linear")
 
     def to_dict(self):
         """Return the LinearDimension as a python dictionary."""

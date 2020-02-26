@@ -14,20 +14,20 @@ from csdmpy.abstract_list import __dimensions_list__  # lgtm [py/import-own-modu
 from csdmpy.abstract_list import DependentVariableList  # lgtm [py/import-own-module]
 from csdmpy.abstract_list import DimensionList  # lgtm [py/import-own-module]
 from csdmpy.dependent_variables import (  # lgtm [py/import-own-module] # noqa: F401
-    as_dependent_variable,  # lgtm [py/unused-import]
-)
+    as_dependent_variable,
+)  # lgtm [py/unused-import]
 from csdmpy.dependent_variables import DependentVariable  # lgtm [py/import-own-module]
 from csdmpy.dimensions import as_dimension  # lgtm [py/import-own-module]
 from csdmpy.dimensions import Dimension  # lgtm [py/import-own-module] # noqa: F401
 from csdmpy.dimensions import (  # lgtm [py/import-own-module] # noqa: F401
-    LabeledDimension,  # lgtm [py/unused-import]
-)
+    LabeledDimension,
+)  # lgtm [py/unused-import]
 from csdmpy.dimensions import (  # lgtm [py/import-own-module] # noqa: F401
     LinearDimension,
 )
 from csdmpy.dimensions import (  # lgtm [py/import-own-module] # noqa: F401
-    MonotonicDimension,  # lgtm [py/unused-import]
-)
+    MonotonicDimension,
+)  # lgtm [py/unused-import]
 from csdmpy.units import string_to_quantity  # lgtm [py/import-own-module]
 from csdmpy.utils import _get_broadcast_shape  # lgtm [py/import-own-module]
 from csdmpy.utils import check_scalar_object  # lgtm [py/import-own-module]
@@ -732,6 +732,11 @@ class CSDM:
         tuple."""
         return tuple([item.count for item in self.dimensions])
 
+    @property
+    def ndim(self):
+        """Return the total number of dimensions."""
+        return len(self.dimensions)
+
     # ----------------------------------------------------------------------- #
     #                                  Methods                                #
     # ----------------------------------------------------------------------- #
@@ -1047,6 +1052,13 @@ class CSDM:
                 indent=2,
                 allow_nan=False,
             )
+
+    def to_list(self):
+        """Return the dimension coordinates and dependent variable components as
+        a list of numpy arrays."""
+        dim = [item.coordinates for item in self.dimensions]
+        dep = [i for item in self.dependent_variables for i in item.components]
+        return [*dim, *dep]
 
     def astype(self, numeric_type):
         """Return a copy of the CSDM object by converting the numeric type of each

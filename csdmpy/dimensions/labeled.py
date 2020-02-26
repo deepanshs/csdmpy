@@ -4,13 +4,13 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import warnings
 from copy import deepcopy
 
 import numpy as np
 
+from csdmpy.dimensions.base import _copy_core_metadata
 from csdmpy.dimensions.base import BaseDimension
-from csdmpy.utils import validate
+from csdmpy.dimensions.base import check_count
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -81,18 +81,7 @@ class LabeledDimension(BaseDimension):
 
     @count.setter
     def count(self, value):
-        value = validate(value, "count", int)
-        if value > self.count:
-            raise ValueError(
-                f"Cannot set the count, {value}, more than the number of coordinates, "
-                f"{self.count}, for the labeled dimensions."
-            )
-
-        if value < self.count:
-            warnings.warn(
-                f"The number of labels, {self.count}, are truncated to {value}."
-            )
-            self._count = value
+        self._count = check_count(value, self._count, "labeled")
 
     @property
     def labels(self):
@@ -144,12 +133,7 @@ class LabeledDimension(BaseDimension):
         if hasattr(obj, "subtype"):
             obj = obj.subtype
         if isinstance(obj, LabeledDimension):
-            self._description = obj._description
-            self._application = obj._application
-            self._label = obj._label
-            return
-
-        raise ValueError("Object is not a Dimension.")
+            _copy_core_metadata(self, obj, "labeled")
 
     def to_dict(self):
         """Return the LabeledDimension as a python dictionary."""
