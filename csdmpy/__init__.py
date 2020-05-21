@@ -34,7 +34,7 @@ __credits__ = ["Deepansh J. Srivastava"]
 __license__ = "BSD License"
 __maintainer__ = "Deepansh J. Srivastava"
 __status__ = "Development"
-__version__ = "0.2.1.dev"
+__version__ = "0.2.1"
 
 __all__ = [
     "parse_dict",

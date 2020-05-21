@@ -89,9 +89,12 @@ CSDM
    .. automethod:: to_dict
    .. automethod:: dumps
    .. automethod:: save
+   .. automethod:: to_list
    .. automethod:: astype
    .. automethod:: copy
    .. automethod:: split
+   .. automethod:: transpose
+   .. automethod:: fft
 
    .. rubric:: Numpy compatible method documentation
 

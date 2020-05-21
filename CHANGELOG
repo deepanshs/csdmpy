@@ -1,3 +1,9 @@
+v0.2.1
+  - Add reciprocal_coordinates and reciprocal_increment methods to the dimension
+    object.
+  - Added fft function to the csdm object.
+  - Added transpose method to the csdm object.
+
 v0.2.0
  - Fixed a bug in cp.plot method.
  - Added following methods.

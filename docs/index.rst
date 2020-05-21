@@ -1,6 +1,6 @@
-===========================================
-Welcome to the csdmpy project documentation
-===========================================
+===================================
+Welcome to the csdmpy documentation
+===================================
 
 .. only:: html
 

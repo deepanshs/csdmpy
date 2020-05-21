@@ -81,3 +81,16 @@ print(x[0].data_structure)
 # The value of the reciprocal attribute is the reciprocal object, which contains metadata
 # for describing the reciprocal coordinates, such as the `coordinates_offset`,
 # `origin_offset` of the reciprocal dimension.
+#
+# You may perform a fourier transform to visualize the NMR spectrum. Use the
+# :meth:`~csdmpy.CSDM.fft` method on the csdm object ``NMR_data`` as follows
+
+fft_NMR_data = NMR_data.fft()
+cp.plot(fft_NMR_data)
+
+#%%
+# To return to time domain signal, use the :meth:`~csdmpy.CSDM.fft` method on the
+# ``fft_NMR_data`` object,
+
+NMR_data_2 = fft_NMR_data.fft()
+cp.plot(NMR_data_2)

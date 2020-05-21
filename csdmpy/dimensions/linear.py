@@ -150,6 +150,11 @@ class LinearDimension(BaseQuantitativeDimension):
 
         self._unit, self.reciprocal._unit = self.reciprocal._unit, self._unit
 
+        self._equivalent_unit, self.reciprocal._equivalent_unit = (
+            self.reciprocal._equivalent_unit,
+            self._equivalent_unit,
+        )
+
     def _get_coordinates(self):
         _unit = self._unit
         _count = self._count
@@ -168,12 +173,12 @@ class LinearDimension(BaseQuantitativeDimension):
     @property
     def type(self):
         """Return the type of the dimension."""
-        return deepcopy(self.__class__._type)
+        return self.__class__._type
 
     @property
     def count(self):
         r"""Total number of points along the linear dimension."""
-        return deepcopy(self._count)
+        return self._count
 
     @count.setter
     def count(self, value):
@@ -185,7 +190,7 @@ class LinearDimension(BaseQuantitativeDimension):
     @property
     def increment(self):
         r"""Increment along the linear dimension."""
-        return deepcopy(self._increment)
+        return self._increment
 
     @increment.setter
     def increment(self, value):
@@ -197,7 +202,7 @@ class LinearDimension(BaseQuantitativeDimension):
     @property
     def complex_fft(self):
         """If True, orders the coordinates according to FFT output order."""
-        return deepcopy(self._complex_fft)
+        return self._complex_fft
 
     @complex_fft.setter
     def complex_fft(self, value):
@@ -211,11 +216,11 @@ class LinearDimension(BaseQuantitativeDimension):
         coordinates = self._coordinates[:n] + self.coordinates_offset
 
         equivalent_fn = self._equivalencies
+        equivalent_unit = self._equivalent_unit
 
-        if equivalent_fn is None:
+        if equivalent_fn is None or equivalent_unit is None:
             return coordinates.to(self._unit)
 
-        equivalent_unit = self._equivalent_unit
         if equivalent_fn == "nmr_frequency_ratio":
             denominator = self.origin_offset - self.coordinates_offset
             if denominator.value == 0:
@@ -295,6 +300,20 @@ class LinearDimension(BaseQuantitativeDimension):
     def copy(self):
         """Return a copy of the object."""
         return deepcopy(self)
+
+    def reciprocal_coordinates(self):
+        """Return reciprocal coordinates assuming Nyquist-shannan theorem."""
+        count = self._count
+        increment = 1.0 / (count * self._increment)
+        coordinates_offset = self.reciprocal._coordinates_offset
+        coordinates = np.arange(count) * increment + coordinates_offset
+        if self.complex_fft:
+            return coordinates
+        return coordinates - int(count / 2) * increment
+
+    def reciprocal_increment(self):
+        """Return reciprocal increment assuming Nyquist-shannan theorem."""
+        return 1.0 / (self._count * self._increment)
 
 
 def _update_linear_dimension_object_by_scalar(object_, other, type_="mul"):

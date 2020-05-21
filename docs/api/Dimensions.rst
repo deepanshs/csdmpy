@@ -49,6 +49,8 @@ Dimension
         ~Dimension.to_dict
         ~Dimension.is_quantitative
         ~Dimension.copy
+        ~Dimension.reciprocal_coordinates
+        ~Dimension.reciprocal_increment
 
 
     .. rubric:: Attributes Documentation
@@ -77,3 +79,5 @@ Dimension
     .. automethod:: to_dict
     .. automethod:: is_quantitative
     .. automethod:: copy
+    .. automethod:: reciprocal_coordinates
+    .. automethod:: reciprocal_increment

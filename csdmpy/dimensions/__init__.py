@@ -806,6 +806,14 @@ class Dimension:
         """Return a copy of the Dimension object."""
         return deepcopy(self)
 
+    def reciprocal_coordinates(self):
+        """Return reciprocal coordinates assuming Nyquist-shannan theorem."""
+        return self.subtype.reciprocal_coordinates()
+
+    def reciprocal_increment(self):
+        """Return reciprocal increment assuming Nyquist-shannan theorem."""
+        return self.subtype.reciprocal_coordinates()
+
 
 def as_dimension(array, unit="", type=None, label="", description="", application={}):
     """Generate and return a Dimension object from a 1D numpy array.

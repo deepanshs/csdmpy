@@ -2,6 +2,8 @@
 """Helper methods for CSDM class."""
 from __future__ import print_function
 
+from copy import deepcopy
+
 import numpy as np
 from astropy.units.quantity import Quantity
 
@@ -350,3 +352,35 @@ def _get_broadcast_shape(array, ndim, axis):
     s = [None for i in range(ndim)]
     s[axis] = slice(None, None, None)
     return array[tuple(s)]
+
+
+def _check_dimension_indices(d, index=-1):
+    """
+        Check the list of indexes to ensure that each index is an integer
+        and within the counts of dimensions.
+    """
+    index = deepcopy(index)
+
+    def _correct_index(i, d):
+        if not isinstance(i, int):
+            raise TypeError(f"{message}, found {type(i)}")
+        if i < 0:
+            i += d
+        if i > d:
+            raise IndexError(
+                f"The `index` {index} cannot be greater than the total number of "
+                f"dimensions, {d}."
+            )
+        return -1 - i
+
+    message = "Index/Indices are expected as integer(s)"
+    if isinstance(index, tuple):
+        index = list(index)
+    if isinstance(index, (list, np.ndarray)):
+        for i, item in enumerate(index):
+            index[i] = _correct_index(item, d)
+        return tuple(index)
+    elif isinstance(index, int):
+        return tuple([_correct_index(index, d)])
+    else:
+        raise TypeError(f"{message}, found {type(i)}")

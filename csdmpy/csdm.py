@@ -10,28 +10,28 @@ from copy import deepcopy
 import numpy as np
 from astropy.units.quantity import Quantity
 
-from csdmpy.abstract_list import __dimensions_list__  # lgtm [py/import-own-module]
-from csdmpy.abstract_list import DependentVariableList  # lgtm [py/import-own-module]
-from csdmpy.abstract_list import DimensionList  # lgtm [py/import-own-module]
-from csdmpy.dependent_variables import (  # lgtm [py/import-own-module] # noqa: F401
+from .abstract_list import __dimensions_list__  # lgtm [py/import-own-module]
+from .abstract_list import DependentVariableList  # lgtm [py/import-own-module]
+from .abstract_list import DimensionList  # lgtm [py/import-own-module]
+from .dependent_variables import (  # lgtm [py/import-own-module] # noqa: F401
     as_dependent_variable,
 )  # lgtm [py/unused-import]
-from csdmpy.dependent_variables import DependentVariable  # lgtm [py/import-own-module]
-from csdmpy.dimensions import as_dimension  # lgtm [py/import-own-module]
-from csdmpy.dimensions import Dimension  # lgtm [py/import-own-module] # noqa: F401
-from csdmpy.dimensions import (  # lgtm [py/import-own-module] # noqa: F401
+from .dependent_variables import DependentVariable  # lgtm [py/import-own-module]
+from .dimensions import as_dimension  # lgtm [py/import-own-module]
+from .dimensions import Dimension  # lgtm [py/import-own-module] # noqa: F401
+from .dimensions import (  # lgtm [py/import-own-module] # noqa: F401
     LabeledDimension,
 )  # lgtm [py/unused-import]
-from csdmpy.dimensions import (  # lgtm [py/import-own-module] # noqa: F401
-    LinearDimension,
-)
-from csdmpy.dimensions import (  # lgtm [py/import-own-module] # noqa: F401
+from .dimensions import LinearDimension  # lgtm [py/import-own-module] # noqa: F401
+from .dimensions import (  # lgtm [py/import-own-module] # noqa: F401
     MonotonicDimension,
 )  # lgtm [py/unused-import]
-from csdmpy.units import string_to_quantity  # lgtm [py/import-own-module]
-from csdmpy.utils import _get_broadcast_shape  # lgtm [py/import-own-module]
-from csdmpy.utils import check_scalar_object  # lgtm [py/import-own-module]
-from csdmpy.utils import validate  # lgtm [py/import-own-module]
+from .numpy_wrapper import fft
+from .units import string_to_quantity  # lgtm [py/import-own-module]
+from .utils import _get_broadcast_shape  # lgtm [py/import-own-module]
+from .utils import check_scalar_object  # lgtm [py/import-own-module]
+from .utils import validate  # lgtm [py/import-own-module]
+
 
 __all__ = ["CSDM"]
 __ufunc_list_dimensionless_unit__ = [
@@ -542,6 +542,15 @@ class CSDM:
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
     # ----------------------------------------------------------------------- #
+    # @property
+    # def name(self):
+    #     """Name of the CSDM object."""
+    #     return self._name
+
+    # @name.setter
+    # def name(self, name):
+    #     self._name = validate(name, "name", str)
+
     @property
     def version(self):
         """Version number of the CSD model on file."""
@@ -876,16 +885,13 @@ class CSDM:
         self._dependent_variables += [dv]
         return
 
-    def to_dict(
-        self, update_timestamp=False, read_only=False, version=__latest_CSDM_version__
-    ):
+    def to_dict(self, update_timestamp=False, read_only=False):
         """
         Serialize the :ref:`CSDM_api` instance as a python dictionary.
 
         Args:
             update_timestamp(bool): If True, timestamp is updated to current time.
             read_only (bool): If true, the read_only flag is set true.
-            version (str): Serialize the dict with the given csdm version.
 
         Example:
             >>> data.to_dict() # doctest: +SKIP
@@ -900,7 +906,7 @@ class CSDM:
             'quantity_type': 'scalar', 'component_labels': ['response'],'components':
             ['AAAAABh5Fj9xeHM/cXhzPxh5Fj8yMQ0lGHkWv3F4c79xeHO/GHkWvw==']}]}}
         """
-        return self._to_dict()
+        return self._to_dict(update_timestamp=update_timestamp, read_only=read_only)
 
     def _to_dict(
         self,
@@ -954,7 +960,11 @@ class CSDM:
         return csdm
 
     def dumps(
-        self, update_timestamp=False, read_only=False, version=__latest_CSDM_version__
+        self,
+        update_timestamp=False,
+        read_only=False,
+        version=__latest_CSDM_version__,
+        **kwargs,
     ):
         """
         Serialize the :ref:`CSDM_api` instance as a JSON data-exchange string.
@@ -971,8 +981,8 @@ class CSDM:
             self._to_dict(update_timestamp, read_only, version),
             ensure_ascii=False,
             sort_keys=False,
-            indent=2,
             allow_nan=False,
+            **kwargs,
         )
 
     def save(
@@ -981,6 +991,7 @@ class CSDM:
         read_only=False,
         version=__latest_CSDM_version__,
         output_device=None,
+        indent=0,
     ):
         """
         Serialize the :ref:`CSDM_api` instance as a JSON data-exchange file.
@@ -1040,7 +1051,7 @@ class CSDM:
                     outfile,
                     ensure_ascii=False,
                     sort_keys=False,
-                    indent=2,
+                    indent=indent,
                     allow_nan=False,
                 )
         else:
@@ -1049,13 +1060,25 @@ class CSDM:
                 output_device,
                 ensure_ascii=False,
                 sort_keys=False,
-                indent=2,
+                indent=indent,
                 allow_nan=False,
             )
 
     def to_list(self):
-        """Return the dimension coordinates and dependent variable components as
-        a list of numpy arrays."""
+        r"""Return the dimension coordinates and dependent variable components as
+        a list of numpy arrays. For multiple dependent variables, the components
+        of each dependent variable is appended in the order of the dependent
+        variables.
+
+        For example,
+         - A 2D{1} will be packed as :math:`[x_{0}, x_{1}, y_{0,0}]`
+         - A 2D{3} will be packed as :math:`[x_{0}, x_{1}, y_{0,0}, y_{0,1}, y_{0,2}]`
+         - A 1D{1,2} will be packed as :math:`[x_{0}, y_{0,0}, y_{1,0}, y_{1,1}]`
+
+        where :math:`x_i` represents the :math:`i^\text{th}` dimension and
+        :math:`y_{i,j}` represents the :math:`j^\text{th}` component of the
+        :math:`i^\text{th}` dependent variable.
+        """
         dim = [item.coordinates for item in self.dimensions]
         dep = [i for item in self.dependent_variables for i in item.components]
         return [*dim, *dep]
@@ -1119,6 +1142,47 @@ class CSDM:
             a._dependent_variables += [variable]
             dv.append(a)
         return dv
+
+    # csdm dimension order manipulation
+    def transpose(self):
+        """Return a transpose of the dependent variable data from the CSDM object."""
+        return self.T
+
+    def fft(self, axis=0):
+        """
+        Perform a FFT along the given `dimension=axis`, for linear dimension assuming
+        Nyquist-shannan relation.
+
+        Args:
+            axis: The index of the dimension along which the FFT is performed.
+
+        The FFT method uses the :attr:`~csdmpy.Dimension.complex_fft` attribute of the
+        Dimension object to decide whether a forward or inverse Fourier transform is
+        performed. If the value of the `complex_fft` is True, an inverse FFT is
+        performed, otherwise a forward FFT.
+
+        For FFT process, this function is equivalent to performing
+
+        .. code:: python
+
+            phase = np.exp(-2j * np.pi * coordinates_offset * reciprocal_coordinates)
+            x_fft = np.fft.fftshift(np.fft.fft(x)) * phase
+
+        over all components for every dependent variable.
+
+        Similarly, for inverse FFT process, this function is equivalent to performing
+
+        .. code:: python
+
+            phase = np.exp(2j * np.pi * reciprocal_coordinates_offset * coordinates)
+            x = np.fft.ifft(np.fft.ifftshift(x_fft * phase))
+
+        over all components for every dependent variable.
+
+        Return:
+            A CSDM object with the Fourier Transform data.
+        """
+        return fft(self, axis)
 
     # ----------------------------------------------------------------------- #
     #                            NumPy-like functions                         #
@@ -1279,10 +1343,6 @@ class CSDM:
 
     def cumprod(self, axis=None):
         raise NotImplementedError("")
-
-    # csdm dimension order manipulation
-    def transpose(self):
-        return self.T
 
     def __array_ufunc__(self, function, method, *inputs, **kwargs):
         # print("__array_ufunc__")
