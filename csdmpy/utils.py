@@ -356,8 +356,8 @@ def _get_broadcast_shape(array, ndim, axis):
 
 def _check_dimension_indices(d, index=-1):
     """
-        Check the list of indexes to ensure that each index is an integer
-        and within the counts of dimensions.
+    Check the list of indexes to ensure that each index is an integer
+    and within the counts of dimensions.
     """
     index = deepcopy(index)
 
@@ -369,7 +369,7 @@ def _check_dimension_indices(d, index=-1):
         if i > d:
             raise IndexError(
                 f"The `index` {index} cannot be greater than the total number of "
-                f"dimensions, {d}."
+                f"dimensions - 1, {d}."
             )
         return -1 - i
 
@@ -383,4 +383,4 @@ def _check_dimension_indices(d, index=-1):
     elif isinstance(index, int):
         return tuple([_correct_index(index, d)])
     else:
-        raise TypeError(f"{message}, found {type(i)}")
+        raise TypeError(f"{message}, found {type(index)}")

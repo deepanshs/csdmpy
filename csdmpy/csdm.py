@@ -14,25 +14,21 @@ from .abstract_list import __dimensions_list__  # lgtm [py/import-own-module]
 from .abstract_list import DependentVariableList  # lgtm [py/import-own-module]
 from .abstract_list import DimensionList  # lgtm [py/import-own-module]
 from .dependent_variables import (  # lgtm [py/import-own-module] # noqa: F401
-    as_dependent_variable,  # lgtm [py/unused-import]
+    as_dependent_variable,
 )
 from .dependent_variables import DependentVariable  # lgtm [py/import-own-module]
 from .dimensions import as_dimension  # lgtm [py/import-own-module]
 from .dimensions import Dimension  # lgtm [py/import-own-module] # noqa: F401
-from .dimensions import (  # lgtm [py/import-own-module] # noqa: F401
-    LabeledDimension,  # lgtm [py/unused-import]
-)
+from .dimensions import LabeledDimension  # lgtm [py/import-own-module] # noqa: F401
 from .dimensions import LinearDimension  # lgtm [py/import-own-module] # noqa: F401
-from .dimensions import (  # lgtm [py/import-own-module] # noqa: F401
-    MonotonicDimension,  # lgtm [py/unused-import]
-)
+from .dimensions import MonotonicDimension  # lgtm [py/import-own-module] # noqa: F401
 from .helper_functions import _preview  # lgtm [py/import-own-module]
 from .numpy_wrapper import fft
 from .units import string_to_quantity  # lgtm [py/import-own-module]
+from .utils import _check_dimension_indices  # lgtm [py/import-own-module]
 from .utils import _get_broadcast_shape  # lgtm [py/import-own-module]
 from .utils import check_scalar_object  # lgtm [py/import-own-module]
 from .utils import validate  # lgtm [py/import-own-module]
-
 
 __all__ = ["CSDM"]
 __ufunc_list_dimensionless_unit__ = [
@@ -1458,43 +1454,6 @@ class CSDM:
             >>> cp.plot(data_object) # doctest: +SKIP
         """
         return _preview(self, reverse_axis, range, **kwargs)
-
-
-def _check_dimension_indices(d, index=-1):
-    """
-        Check the list of indexes to ensure that each index is an integer
-        and within the counts of dimensions.
-    """
-
-    index = deepcopy(index)
-
-    def _correct_index(i, d):
-        if not isinstance(i, int):
-            raise TypeError(f"{message}, found {type(i)}")
-        if i < 0:
-            i += d
-        if i > d:
-            raise IndexError(
-                f"The `index` {index} cannot be greater than the total number of "
-                f"dimensions - 1, {d}."
-            )
-        return -1 - i
-
-    message = "Index/Indices are expected as integer(s)"
-
-    if isinstance(index, tuple):
-        index = list(index)
-
-    if isinstance(index, (list, np.ndarray)):
-        for i, item in enumerate(index):
-            index[i] = _correct_index(item, d)
-        return tuple(index)
-
-    elif isinstance(index, int):
-        return tuple([_correct_index(index, d)])
-
-    else:
-        raise TypeError(f"{message}, found {type(index)}")
 
 
 def _check_for_out(csdm, **kwargs):
