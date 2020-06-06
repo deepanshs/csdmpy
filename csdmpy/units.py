@@ -18,6 +18,7 @@ __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 __all__ = ["string_to_quantity", "ScalarQuantity"]
 
+NUMERIC = "0123456789-+.eE*/j^ ()"
 
 tr = u.def_unit(["tr", "turn", "revolution"], 1.0 * u.cycle)
 u.add_enabled_units([cds.ppm, tr])
@@ -33,20 +34,12 @@ convert = {
 }
 
 
-def string_to_quantity(string, dtype=float):
-    """
-    Parse the string and return a ``Quantity`` object.
-
-    The string must contain a physical quantity. The method parse the string
-    for numerical value and unit.
-
-    :returns: ``Quantity`` object
-    """
-    numeric = "0123456789-+.eE*/j^ ()"
+def get_start_index_of_quantity_unit(string):
+    """Return the index where the unit of the quantity starts."""
     string = string.strip() + " "
 
     for i, c in enumerate(string):
-        if c not in numeric:
+        if c not in NUMERIC:
             break
 
     j = 1
@@ -56,11 +49,23 @@ def string_to_quantity(string, dtype=float):
         if string[:i][-j] == ")":
             j = j - 1
             break
-    if i - j == 0:
-        index = i
-    else:
-        index = i - j
 
+    index = i if i == j else i - j
+    return index
+
+
+def string_to_quantity(string, dtype=float):
+    """
+    Parse the string and return a ``Quantity`` object.
+
+    The string must contain a physical quantity. The method parse the string
+    for numerical value and unit.
+
+    :returns: ``Quantity`` object
+    """
+    index = get_start_index_of_quantity_unit(string)
+
+    # the string has numerical value and unit
     if index != -1:
         try:
             number = eval(string[:index])
@@ -68,6 +73,7 @@ def string_to_quantity(string, dtype=float):
             number = inf
         except Exception as e:
             raise ValueError(e)
+    # the string is unit only
     else:
         index = 0
         number = 1.0

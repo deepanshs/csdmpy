@@ -10,6 +10,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import datetime
 import os
 import sys
 import warnings
@@ -20,9 +21,13 @@ from sphinx_gallery.sorting import FileNameSortKey
 sys.path.insert(0, os.path.abspath("../.."))
 
 # -- Project information -----------------------------------------------------
+now = datetime.datetime.now()
+year = now.year
+
 project = "csdmpy"
-copyright = "2019-2020, The CSDMpy project."
+copyright = f"2019-{year}, Deepansh J. Srivastava"
 author = "Deepansh J. Srivastava"
+
 
 path = os.path.split(__file__)[0]
 # get version number from the file
@@ -53,6 +58,7 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
+    "sphinx_copybutton",
     "sphinxjp.themes.basicstrap",
     "sphinx_gallery.gen_gallery",
     "sphinx.ext.intersphinx",
@@ -87,6 +93,14 @@ warnings.filterwarnings(
         "for unit N / C."
     ),
 )
+
+# numfig config
+numfig = True
+numfig_secnum_depth = 1
+numfig_format = {"figure": "Figure %s", "table": "Table %s", "code-block": "Listing %s"}
+
+# math
+math_number_all = True
 
 # sphinx gallery config
 sphinx_gallery_conf = {
@@ -177,9 +191,9 @@ html_theme_options = {
     # Fix navbar to top of screen. Defaults to true
     "nav_fixed_top": True,
     # Fix the width of the sidebar. Defaults to false
-    "nav_fixed": False,
+    "nav_fixed": True,
     # Set the width of the sidebar. Defaults to '900px'
-    "nav_width": "900px",
+    "nav_width": "300px",
     # Fix the width of the content area. Defaults to false
     "content_fixed": False,
     # Set the width of the content area. Defaults to '900px'
@@ -223,22 +237,14 @@ html_theme_options = {
 }
 
 # Theme options
+html_style = "style.css"
+html_title = f"csdmpy:doc v{__version__}"
 html_logo = "_static/csdmpy.png"
-
-# html_context = {
-#     "display_github": True,
-#     "github_user": "DeepanshS",
-#     "github_repo": "csdmpy",
-#     "github_version": "master/docs/",
-#     "css_files": [
-#         "_static/button.css",
-#         #     "_static/theme_overrides.css",  # override wide tables in RTD theme
-#         #     "_static/style.css",
-#         #     "_static/custom.css",
-#         #     "_static/bootstrap-toc.css",
-#     ],
-# }
-
+html_last_updated_fmt = ""
+html_sidebars = {
+    "**": ["searchbox.html", "globaltoc.html"],
+    "using/windows": ["searchbox.html", "windowssidebar.html"],
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -321,3 +327,7 @@ epub_title = project
 
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ["search.html"]
+
+
+def setup(app):
+    app.add_stylesheet("style.css")

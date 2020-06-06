@@ -99,6 +99,32 @@ class DependentVariable:
         input_dict = _get_dictionary(*args, **kwargs)
         input_keys = input_dict.keys()
 
+        self.__validate_key_value__(input_keys, input_dict)
+
+        if "filename" in kwargs.keys():
+            dictionary["filename"] = kwargs["filename"]
+
+        for key in input_keys:
+            if key in default_keys and key != "sparse_sampling":
+                dictionary[key] = input_dict[key]
+
+        if "sparse_sampling" in input_keys:
+            check_sparse_sampling_key_value(input_dict)
+            for key in input_dict["sparse_sampling"].keys():
+                dictionary["sparse_sampling"][key] = input_dict["sparse_sampling"][key]
+        else:
+            dictionary["sparse_sampling"] = {}
+
+        if dictionary["type"] == "internal":
+            self._type = "internal"
+            self.subtype = InternalDataset(**dictionary)
+
+        if dictionary["type"] == "external":
+            self._type = "external"
+            self.subtype = ExternalDataset(**dictionary)
+
+    @staticmethod
+    def __validate_key_value__(input_keys, input_dict):
         if "type" not in input_keys:
             raise KeyError(
                 "Missing a required `type` key from the DependentVariable object."
@@ -135,28 +161,6 @@ class DependentVariable:
         if input_dict["type"] == "external":
             if "components_url" not in input_keys:
                 raise KeyError(message("components_url", "external"))
-
-        if "filename" in kwargs.keys():
-            dictionary["filename"] = kwargs["filename"]
-
-        for key in input_keys:
-            if key in default_keys and key != "sparse_sampling":
-                dictionary[key] = input_dict[key]
-
-        if "sparse_sampling" in input_keys:
-            check_sparse_sampling_key_value(input_dict)
-            for key in input_dict["sparse_sampling"].keys():
-                dictionary["sparse_sampling"][key] = input_dict["sparse_sampling"][key]
-        else:
-            dictionary["sparse_sampling"] = {}
-
-        if dictionary["type"] == "internal":
-            self._type = "internal"
-            self.subtype = InternalDataset(**dictionary)
-
-        if dictionary["type"] == "external":
-            self._type = "external"
-            self.subtype = ExternalDataset(**dictionary)
 
     def __repr__(self):
         if self.unit.physical_type == "dimensionless":

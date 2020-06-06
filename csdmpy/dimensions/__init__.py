@@ -114,6 +114,19 @@ class Dimension:
                 else:
                     default[key] = input_dict[key]
 
+        self.__validate_key_value__(default)
+
+        if default["type"] == "labeled":
+            self.subtype = LabeledDimension(**default)
+
+        if default["type"] == "monotonic":
+            self.subtype = MonotonicDimension(values=default["coordinates"], **default)
+
+        if default["type"] == "linear":
+            self.subtype = self._linear(default)
+
+    @staticmethod
+    def __validate_key_value__(default):
         _valid_types = ["monotonic", "linear", "labeled"]
 
         type_ = default["type"]
@@ -131,19 +144,11 @@ class Dimension:
                 "Missing a required `labels` key from the LabeledDimension object."
             )
 
-        if default["type"] == "labeled":
-            self.subtype = LabeledDimension(**default)
-
         if default["type"] == "monotonic" and default["coordinates"] is None:
             raise KeyError(
                 "Missing a required `coordinates` key from the MonotonicDimension "
                 "object."
             )
-        if default["type"] == "monotonic":
-            self.subtype = MonotonicDimension(values=default["coordinates"], **default)
-
-        if default["type"] == "linear":
-            self.subtype = self._linear(default)
 
     def _linear(self, default):
         """Create and assign a linear dimension."""
@@ -843,20 +848,7 @@ def as_dimension(array, unit="", type=None, label="", description="", applicatio
         >>> print(dim_object)
         LabeledDimension(['The' 'great' 'circle'])
     """
-    options = [None, "linear", "monotonic", "labeled"]
-    if type not in options:
-        raise ValueError(f"Invalid value for `type`. Allowed values are {options}.")
-
-    if not isinstance(array, (list, np.ndarray)):
-        raise ValueError(
-            f"Cannot convert {array.__class__.__name__} to a Dimension object."
-        )
-    if isinstance(array, list):
-        array = np.asarray(array)
-    if array.ndim != 1:
-        raise ValueError(
-            f"Cannot convert a {array.ndim} dimensional array to a Dimension object."
-        )
+    array = __check_array_for_dimension__(array, type)
 
     kwargs = {"label": label, "description": description, "application": application}
 
@@ -879,6 +871,24 @@ def as_dimension(array, unit="", type=None, label="", description="", applicatio
         if unit != "":
             warnings.warn("Ignoring unit argument for LabeledDimension object.")
         return LabeledDimension(labels=array.tolist(), **kwargs)
+
+
+def __check_array_for_dimension__(array, type):
+    options = [None, "linear", "monotonic", "labeled"]
+    if type not in options:
+        raise ValueError(f"Invalid value for `type`. Allowed values are {options}.")
+
+    if not isinstance(array, (list, np.ndarray)):
+        raise ValueError(
+            f"Cannot convert {array.__class__.__name__} to a Dimension object."
+        )
+
+    array = np.asarray(array)
+    if array.ndim != 1:
+        raise ValueError(
+            f"Cannot convert a {array.ndim} dimensional array to a Dimension object."
+        )
+    return array
 
 
 def _generic_dimensions(array, unit, className="Dimension", **kwargs):

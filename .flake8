@@ -1,5 +1,5 @@
 [flake8]
 max-line-length = 88
 exclude = .eggs,*.egg,build, csdmpy/__init__.py, examples/* tutorials/*
-max-complexity = 18
+max-complexity = 14
 select = C9,E,F,W,N8

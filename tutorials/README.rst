@@ -1,3 +1,3 @@
 =============================================
-Tutorial examples on generating csdm datasets
+Tutorial examples on generating CSDM datasets
 =============================================

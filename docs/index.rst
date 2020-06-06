@@ -120,17 +120,24 @@ compatible with Numpy.
 
 ----
 
+.. only:: html
+
+	Table of Contents
+	-----------------
+
 .. toctree::
     :maxdepth: 2
-    :caption: Table of Contents
 
     CSD_model
     installation
     getting_started
     auto_examples/index
     startFromScratch/start
+    auto_tutorials/index
+    startFromScratch/interacting_with_csdmpy_objects
     startFromScratch/save_dataset
     startFromScratch/A fun example
+    changelog
     referenceAPI
 
 ----

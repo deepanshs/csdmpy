@@ -41,7 +41,6 @@ and field related application-software.
 
 .. toctree::
     :maxdepth: 2
-    :caption: Table of Contents
 
     CSDmodel_uml/csdm
     CSDmodel_uml/dimensions/dimension

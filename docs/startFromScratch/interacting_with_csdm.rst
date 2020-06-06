@@ -34,7 +34,8 @@ Consider the following csdm data object.
     LinearDimension([-500. -490.] us)
     )
 
-**Additive operations involving a scalar**
+Additive operations involving a scalar
+''''''''''''''''''''''''''''''''''''''
 
 **Example 1**
 
@@ -64,7 +65,8 @@ Consider the following csdm data object.
     LinearDimension([-500. -490.] us)
     )
 
-**Multiplicative operations involving scalar / ScalarQuantity**
+Multiplicative operations involving scalar / ScalarQuantity
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 **Example 3**
 
@@ -127,7 +129,8 @@ csdm object with the appropriate scalar quantity, for example,
     )
 
 
-**Additive operations involving two csdm objects**
+Additive operations involving two csdm objects
+''''''''''''''''''''''''''''''''''''''''''''''
 
 The additive operations are supported between two csdm objects only when the
 two objects have identical sets of Dimension objects and DependentVariable

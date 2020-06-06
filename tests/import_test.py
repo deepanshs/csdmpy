@@ -7,7 +7,7 @@ import pytest
 import csdmpy as cp
 
 
-def test_load_test_files():
+def test_load_files():
     assert split(cp.tests.test01)[1] == "yis83dhuj1q7v2srw2b1hjnb66d1rw1h.csdf"
     assert split(cp.tests.test02)[1] == "0jsvs9bmme8vf6yn76bctkhfxm4vkcc8.csdf"
 

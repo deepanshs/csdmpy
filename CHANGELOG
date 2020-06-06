@@ -1,90 +1,105 @@
-v0.2.2
-  - Added `dict()` as an alias to the `to_dict()` method for all objects.
-  - Added a reference of cp.plot() to the CSDM object as a plot() method.
+
+v0.3.0.dev0
+-----------
+
+- Added `dict()` as an alias to the `to_dict()` method for all objects.
+- Added an alias of the ``cp.plot()`` function to the CSDM object as the
+  ``plot()`` method.
 
 v0.2.1
-  - Add reciprocal_coordinates and reciprocal_increment methods to the dimension
-    object.
-  - Added fft function to the csdm object.
-  - Added transpose method to the csdm object.
+------
+
+- Add ``reciprocal_coordinates()`` and ``reciprocal_increment()`` methods to the
+  `LinearDimension` class.
+- Added ``fft()`` function to the CSDM class.
+- Added ``transpose()`` method to the CSDM class.
 
 v0.2.0
- - Fixed a bug in cp.plot method.
- - Added following methods.
-   - __eq__ for all class
-   - __add__ = Adds two for csdm object.
-   - __iadd__ = Adds two csdm objects in place.
-   - __sub__ = Subtrace two csdm objects.
-   - __isub__ = Subtrace two csdm objects in place.
-   - __mul__ = Multiply the components of the csdm object by a scalar.
-   - __imul__ = Multiply the components of the csdm object by a scalar in place.
-   - __truvdiv__ = Divide the components of the csdm object by a scalar.
-   - __itruediv__ = Divide the components of the csdm object by a scalar in place.
-   - split = Split the dependent-variables into individual csdm objects.
+------
 
-  - Numpy dimension reduction functions
-   - sum = Sum along a given dimension.
-   - prod = Product along a given dimension.
+- Fixed a bug in ``cp.plot()`` method.
+- Added following methods to the `CSDM` class:
+   - ``__eq__()`` for all class
+   - ``__add__()`` = Adds two csdm object.
+   - ``__iadd__()`` = Adds two csdm objects in-place.
+   - ``__sub__()`` = Subtrace two csdm objects.
+   - ``__isub__()`` = Subtrace two csdm objects in-place.
+   - ``__mul__()`` = Multiply the components of the csdm object by a scalar.
+   - ``__imul__()`` = Multiply the components of the csdm object by a scalar in-place.
+   - ``__truvdiv__()`` = Divide the components of the csdm object by a scalar.
+   - ``__itruediv__()`` = Divide the components of the csdm object by a scalar
+     in-place.
+   - ``split()`` = Split the dependent-variables into individual csdm objects.
 
- - Numpy ufunc functions
-   - sin, cos, tan, arcsin, arccos, arctan, sinh, cosh, tanh, arcsinh, arccosh, arctanh
-   - exp, exp2, log, log2, log10. expm1, log1p, negative, positive, absolute, fabs, rint
-   - sign, conj, conjugate.
-   - sqrt, square, cbrt, reciprocal
+- Support for Numpy dimension reduction functions
+    - ``sum()``: Sum along a given dimension.
+    - ``prod()``: Product along a given dimension.
 
- - Added apodization functions.
-   - sin, cos, tan, arcsin, arccos, arctan, exp
+- Support for Numpy ufunc functions:
+   - ``sin``, ``cos``, ``tan``, ``arcsin``, ``arccos``, ``arctan``, ``sinh``, ``cosh``,
+     ``tanh``, ``arcsinh``, ``arccosh``, ``arctanh``, ``exp``, ``exp2``, ``log``,
+     ``log2``, ``log10``, ``expm1``, ``log1p``, ``negative``, ``positive``, ``square``,
+     ``absolute``, ``fabs``, ``rint``, ``sign``, ``conj``, ``conjugate``, ``sqrt``,
+     ``cbrt``, ``reciprocal``
+
+- Added apodization functions.
+   - ``sin``, ``cos``, ``tan``, ``arcsin``, ``arccos``, ``arctan``, ``exp``
 
 v0.1.5
- - Added method to convert the frequency dimension to nmr dimensionless frequency ratio.
- - csdmpy.plot method also displays the dimension index on the axis label.
+------
+
+- Added method to convert the frequency dimension to nmr dimensionless frequency ratio
+  with syntax, ``dimension.to('ppm', 'nmr_frequency_ratio')``, where `dimension` is a
+  LinearDimension object.
+- The ``csdmpy.plot()`` method also displays the dimension index on the axis label.
 
 v0.1.4
- - Added to_dict method to the CSDM, Dimension, and DependentVariable objects. Return the said object as python dictionary.
+------
 
-version 0.1.3
- - Fixed warning message when physical quantity name is not found in the astropy units package.
- - Added dumps and loads function to dump and load the data model as json serialized string, respectively
-   without serializing it to a file.
+- Added ``to_dict()`` method to the CSDM, Dimension, and DependentVariable objects.
 
-version 0.1.2
- - Add a required `unsigned_interger_type` for SparseSampling dimension.
- - Fixed minor bugs.
+v0.1.3
+------
 
-version0.0.12
- - Added a tags attribute to the CSDmodel object.
- - Changed 'sampling_interval' key to 'count'.
- - Changed 'quantity' key to 'quantity_name'.
- - Changed 'index_zero_value' key to 'coordinates_offset'.
- - Changed 'fft_output_order' key to 'complex_fft'.
+- Fixed warning message when physical quantity name is not found in the astropy units
+  package.
+- Added dumps and loads function to dump and load the data model as json serialized
+  string, respectively without serializing it to a file.
 
-version0.0.11
+v0.0.11 to v0.1.2
+-----------------
+
+- Add a required `unsigned_interger_type` for SparseSampling dimension.
+- Fixed minor bugs.
+- Added a tags attribute to the CSDmodel object.
+- Changed 'sampling_interval' key to 'count'.
+- Changed 'quantity' key to 'quantity_name'.
+- Changed 'index_zero_value' key to 'coordinates_offset'.
+- Changed 'fft_output_order' key to 'complex_fft'.
 - Renamed IndependentVariable class to Dimension.
 - Renamed LinearlySpacedDimension class to LinearDimension.
 - Renamed ArbitrarilySpacedDimension class to MonotonicDimension.
-
 - Added a reciprocal attribute to LinearDimension and MonotonicDimension classes.
 - Removed the reverse attribute from all Dimension classes.
-
 - Changed 'sampling_interval' keyword to 'increment'.
 - Changed 'reference_offset' keyword to 'index_zero_value'.
 - Changed 'linear_spacing' literal to 'linear'.
 - Changed 'arbitrarily_sampled' literal to 'monotonic'.
-- Changed the defining of the coordinates from LinearDimension to
-        $X^(ref) = m_k J_k - c_k 1$
+- Changed the defining of the coordinates for the LinearDimension from
+
+  .. math::
+
+        X^\text{ref} = m_k J_k - c_k {\bf 1}
+
   to
-        $X^(ref) = m_k J_k + c_k 1$,
-  where $c_k$ is the reference offset, $m_k$ is the increment, and $J_k$ is the
-  set of integer indices along the dimension.
+
+  .. math::
+        X^\text{ref} = m_k J_k + c_k {\bf 1},
+
+  where :math:`c_k` is the reference offset, :math:`m_k` is the increment, and
+  :math:`J_k` is the set of integer indices along the dimension.
 
 - Added 'description' key to 'Dimension', 'DependentVariable' and 'CSDM' object.
 - Changed 'CSDM' keyword to 'csdm'
 - Changed 'FFT_output_order' keyword to 'fft_output_order'
 - Changed 'components_URL' keyword to 'components_url'
-
-New methods
-
-- sum(index=0) Sum of data values from the dependent variable along the
-        independent variable at indices given by `index`.
-- prop(index=0) Product of data values from the dependent variable along the
-        independent variable at indices given by `index`.
