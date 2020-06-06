@@ -111,14 +111,13 @@ sphinx_gallery_conf = {
     "reference_url": {
         # The module you locally document uses None
         "csdmpy": None,
-        # "matplotlib": "https://matplotlib.org",
-        # "numpy": "https://numpy.org",
     },
 }
 
 intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org", None),
-    "numpy": ("https://numpy.org", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "astropy": ("https://docs.astropy.org/en/stable/", None),
 }
 
 # Add any paths that contain templates here, relative to this directory.

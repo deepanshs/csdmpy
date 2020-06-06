@@ -6,6 +6,7 @@ Linear and Monotonic dimensions
 #%%
 # In the following example, we illustrate how one can covert a Numpy array into
 # a CSDM object. Start by importing the Numpy and csdmpy libraries.
+import matplotlib.pyplot as plt
 import numpy as np
 
 import csdmpy as cp
@@ -54,6 +55,7 @@ print(data_csdm.dimensions)
 #%%
 # Plot of the dataset.
 cp.plot(data_csdm)
+plt.show()
 
 #%%
 # To serialize the file, use the save method.

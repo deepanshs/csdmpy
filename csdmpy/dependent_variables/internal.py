@@ -88,6 +88,10 @@ class InternalDataset(BaseDependentVariable):
     def to_dict(
         self, filename=None, dataset_index=None, for_display=False, version=None
     ):
+        """Alias to the `dict()` method of the class."""
+        return self.dict(filename, dataset_index, for_display, version)
+
+    def dict(self, filename=None, dataset_index=None, for_display=False, version=None):
         """Return InternalDataset object as a python dictionary."""
         dictionary = {}
 

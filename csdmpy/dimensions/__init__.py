@@ -755,17 +755,21 @@ class Dimension:
         self.subtype._copy_metadata(obj)
 
     def to_dict(self):
+        """Alias to the `dict()` method of the class."""
+        return self.dict()
+
+    def dict(self):
         r"""
         Return Dimension object as a python dictionary.
 
         Example:
-            >>> x.to_dict() # doctest: +SKIP
+            >>> x.dict() # doctest: +SKIP
             {'type': 'linear', 'description': 'This is a test', 'count': 10,
             'increment': '5.0 G', 'coordinates_offset': '10.0 mT',
             'origin_offset': '10.0 T', 'quantity_name': 'magnetic flux density',
             'label': 'field strength'}
         """
-        return self.subtype.to_dict()
+        return self.subtype.dict()
 
     def is_quantitative(self):
         r"""
@@ -857,54 +861,65 @@ def as_dimension(array, unit="", type=None, label="", description="", applicatio
     kwargs = {"label": label, "description": description, "application": application}
 
     if type is None:
-        # labeled
-        if str(array.dtype)[:2] in [">U", "<U"]:
-            if unit != "":
-                warnings.warn("Ignoring unit argument for LabeledDimension.")
-            return LabeledDimension(labels=array.tolist(), **kwargs)
-
-        # linear
-        increment = array[1] - array[0]
-        if increment == 0:
-            raise ValueError("Invalid array for Dimension object.")
-
-        if np.allclose(np.diff(array, 1), increment):
-            return LinearDimension(
-                count=array.size,
-                increment=f"{increment} {unit}",
-                coordinates_offset=f"{array[0]} {unit}",
-                **kwargs,
-            )
-
-        # monotonic
-        if np.all(np.diff(array, 1) > 0) or np.all(np.diff(array, 1) < 0):
-            return MonotonicDimension(
-                coordinates=array * string_to_quantity(unit), **kwargs
-            )
-
-        raise ValueError("Invalid array for Dimension object.")
+        return _generic_dimensions(array, unit, **kwargs)
 
     if type == "linear":
-        increment = array[1] - array[0]
-        if increment == 0:
-            raise ValueError("Invalid array for LinearDimension object.")
-
-        if np.all(np.diff(array, 1) == increment):
-            return LinearDimension(
-                count=array.size,
-                increment=f"{increment} {unit}",
-                coordinates_offset=f"{array[0]} {unit}",
-                **kwargs,
-            )
+        obj = _linear_dimension(array, unit, **kwargs)
+        if obj is not None:
+            return obj
+        raise ValueError("Invalid array for LinearDimension object.")
 
     if type == "monotonic":
-        if np.all(np.diff(array, 1) > 0) or np.all(np.diff(array, 1) < 0):
-            return MonotonicDimension(
-                coordinates=array * string_to_quantity(unit), **kwargs
-            )
+        obj = _monotonic_dimension(array, unit, **kwargs)
+        if obj is not None:
+            return obj
         raise ValueError("Invalid array for MonotonicDimension object.")
 
     if type == "labeled":
         if unit != "":
             warnings.warn("Ignoring unit argument for LabeledDimension object.")
         return LabeledDimension(labels=array.tolist(), **kwargs)
+
+
+def _generic_dimensions(array, unit, className="Dimension", **kwargs):
+    """Return a dimension object based on the array coordinates."""
+    # labeled
+    if str(array.dtype)[:2] in [">U", "<U"]:
+        if unit != "":
+            warnings.warn("Ignoring unit argument for LabeledDimension.")
+        return LabeledDimension(labels=array.tolist(), **kwargs)
+
+    # linear
+    obj = _linear_dimension(array, unit, className, **kwargs)
+    if obj is not None:
+        return obj
+
+    # monotonic
+    obj = _monotonic_dimension(array, unit, **kwargs)
+    if obj is not None:
+        return obj
+
+    raise ValueError("Invalid array for Dimension object.")
+
+
+def _linear_dimension(array, unit, className="LinearDimension", **kwargs):
+    """Return a LinearDimension is array is linear, else None."""
+    increment = array[1] - array[0]
+    if increment == 0:
+        raise ValueError(f"Invalid array for {className} object.")
+
+    if np.allclose(np.diff(array, 1), increment):
+        return LinearDimension(
+            count=array.size,
+            increment=f"{increment} {unit}",
+            coordinates_offset=f"{array[0]} {unit}",
+            **kwargs,
+        )
+
+
+def _monotonic_dimension(array, unit, **kwargs):
+    """Return a MonotonicDimension is array is monotonic, else None."""
+    if np.all(np.diff(array, 1) > 0) or np.all(np.diff(array, 1) < 0):
+        return MonotonicDimension(
+            coordinates=array * string_to_quantity(unit), **kwargs
+        )

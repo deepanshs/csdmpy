@@ -1,6 +1,6 @@
 
 # required
-numpy>=1.17
+numpy>=1.16
 setuptools>=27.3
 
 # for units
@@ -10,4 +10,4 @@ astropy>=3.0
 requests>=2.21.0
 
 # Additional packages
-matplotlib>=3.0.2
+matplotlib>=3.0

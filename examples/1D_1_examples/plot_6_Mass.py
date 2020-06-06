@@ -8,6 +8,8 @@ Mass spectrometry (sparse) dataset
 # Here, the CSDM data file holds a sparse dependent variable. Upon import, the components
 # of the dependent variable sparsely populates the coordinate grid. The
 # remaining unpopulated coordinates are assigned a zero value.
+import matplotlib.pyplot as plt
+
 import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/ul3rajps49zfuz9ozj3j5xsjmgeuybuy.csdf"
@@ -29,3 +31,4 @@ print(mass_spec.dependent_variables[0].components[0])
 
 #%%
 cp.plot(mass_spec)
+plt.show()

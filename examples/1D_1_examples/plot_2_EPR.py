@@ -8,6 +8,8 @@ Electron Paramagnetic Resonance (EPR) dataset
 # `EPR dataset <http://wwwchem.uwimona.edu.jm/spectra/index.html>`_,
 # originally obtained as a JCAMP-DX file, and subsequently converted to the
 # CSD model file-format. The data structure of this dataset follows,
+import matplotlib.pyplot as plt
+
 import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/0dh8mwnjr600lh1ufpsmt5780yp7wi99.csdf"
@@ -18,3 +20,4 @@ print(EPR_data.data_structure)
 # and the corresponding plot
 
 cp.plot(EPR_data)
+plt.show()

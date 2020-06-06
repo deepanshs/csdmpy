@@ -36,7 +36,7 @@ class LabeledDimension(BaseDimension):
 
     def __repr__(self):
         properties = ", ".join(
-            [f"{k}={v}" for k, v in self.to_dict().items() if k != "type"]
+            [f"{k}={v}" for k, v in self.dict().items() if k != "type"]
         )
         return f"LabeledDimension({properties})"
 
@@ -122,7 +122,7 @@ class LabeledDimension(BaseDimension):
     @property
     def data_structure(self):
         """Json serialized string describing the LabeledDimension class instance."""
-        return json.dumps(self.to_dict(), ensure_ascii=False, sort_keys=False, indent=2)
+        return json.dumps(self.dict(), ensure_ascii=False, sort_keys=False, indent=2)
 
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
@@ -136,6 +136,10 @@ class LabeledDimension(BaseDimension):
             _copy_core_metadata(self, obj, "labeled")
 
     def to_dict(self):
+        """Alias to the `dict()` method of the class."""
+        return self.dict()
+
+    def dict(self):
         """Return the LabeledDimension as a python dictionary."""
         dictionary = {}
         dictionary["type"] = self.__class__._type

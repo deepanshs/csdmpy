@@ -10,6 +10,8 @@ Vector, 1D{2} dataset
 # as a function of time.
 #
 # The following is an example of a simulated 1D vector field dataset.
+import matplotlib.pyplot as plt
+
 import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/w63851uqruzhz6kx9rx5qgk3or2pot9l.csdf"
@@ -44,3 +46,4 @@ print(y[0].quantity_type)
 # **Visualizing the dataset**
 
 cp.plot(vector_data)
+plt.show()

@@ -30,6 +30,7 @@ CSDM
 
       ~CSDM.add_dimension
       ~CSDM.add_dependent_variable
+      ~CSDM.dict
       ~CSDM.to_dict
       ~CSDM.dumps
       ~CSDM.astype
@@ -86,6 +87,7 @@ CSDM
 
    .. automethod:: add_dimension
    .. automethod:: add_dependent_variable
+   .. automethod:: dict
    .. automethod:: to_dict
    .. automethod:: dumps
    .. automethod:: save

@@ -140,7 +140,7 @@ class BaseQuantitativeDimension(BaseDimension):
     #                                  Methods                                #
     # ----------------------------------------------------------------------- #
 
-    def _to_dict(self):
+    def _dict(self):
         r"""Return the object as a python dictionary."""
         obj = {}
 

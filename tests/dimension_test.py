@@ -132,7 +132,7 @@ def test_linear_new():
     assert data.data_structure == json.dumps(
         dict1, ensure_ascii=False, sort_keys=False, indent=2
     )
-    assert data.dimensions[0].to_dict() == dict1["csdm"]["dimensions"][0]
+    assert data.dimensions[0].dict() == dict1["csdm"]["dimensions"][0]
 
     # reduced dict
     data.dimensions[0].reciprocal.description = ""
@@ -160,7 +160,7 @@ def test_linear_new():
     assert data.data_structure == json.dumps(
         dict1, ensure_ascii=False, sort_keys=False, indent=2
     )
-    assert data.dimensions[0].to_dict() == dict1["csdm"]["dimensions"][0]
+    assert data.dimensions[0].dict() == dict1["csdm"]["dimensions"][0]
 
     assert data.dimensions[0].data_structure == json.dumps(
         dict1["csdm"]["dimensions"][0], ensure_ascii=False, sort_keys=False, indent=2
@@ -389,7 +389,7 @@ def test_monotonic_new():
         dict1["csdm"]["dimensions"][0], ensure_ascii=False, sort_keys=False, indent=2
     )
 
-    assert data.dimensions[0].to_dict() == dict1["csdm"]["dimensions"][0]
+    assert data.dimensions[0].dict() == dict1["csdm"]["dimensions"][0]
 
     error = r"The unit 's' \(time\) is inconsistent with the unit 'm' \(length\)"
     with pytest.raises(Exception, match=".*{0}.*".format(error)):
@@ -526,7 +526,7 @@ def test_labeled_new():
     assert data.data_structure == json.dumps(
         dict1, ensure_ascii=False, sort_keys=False, indent=2
     )
-    assert data.dimensions[0].to_dict() == dict1["csdm"]["dimensions"][0]
+    assert data.dimensions[0].dict() == dict1["csdm"]["dimensions"][0]
 
     assert data.dimensions[0].data_structure == json.dumps(
         dict1["csdm"]["dimensions"][0], ensure_ascii=False, sort_keys=False, indent=2

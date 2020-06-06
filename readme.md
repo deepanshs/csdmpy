@@ -24,9 +24,13 @@ compatible with Numpy.
 
 For further reading, refer to the [documentation](https://csdmpy.readthedocs.io/en/latest/).
 
-> **Download the examples files using in this package** > [![](https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet)](https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u)
+> **Download the examples files using in this package**
+>
+> [![](https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet)](https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u)
 
-> **See example gallery** > [![](https://img.shields.io/badge/View-Example%20Gallery-Purple?size=large)](https://csdmpy.readthedocs.io/en/latest/auto_examples/index.html)
+> **See example gallery**
+>
+> [![](https://img.shields.io/badge/View-Example%20Gallery-Purple?size=large)](https://csdmpy.readthedocs.io/en/latest/auto_examples/index.html)
 
 ## The core scientific dataset (CSD) model
 

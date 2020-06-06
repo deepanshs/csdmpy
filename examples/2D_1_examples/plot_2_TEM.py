@@ -11,6 +11,8 @@ Transmission Electron Microscopy (TEM) dataset
 # subsequently converted to the CSD model file-format.
 #
 # Let's import the CSD model data-file and look at its data structure.
+import matplotlib.pyplot as plt
+
 import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/3w5iqkx15fayan1u6g6sn5woc2ublkyh.csdf"
@@ -45,3 +47,4 @@ x[1].to("µm")
 # and plot the data.
 
 cp.plot(TEM)
+plt.show()

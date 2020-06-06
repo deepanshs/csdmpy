@@ -1,3 +1,7 @@
+v0.2.2
+  - Added `dict()` as an alias to the `to_dict()` method for all objects.
+  - Added a reference of cp.plot() to the CSDM object as a plot() method.
+
 v0.2.1
   - Add reciprocal_coordinates and reciprocal_increment methods to the dimension
     object.

@@ -101,7 +101,7 @@ class MonotonicDimension(BaseQuantitativeDimension):
                 f"coordinates={self._coordinates.__str__()}",
                 *[
                     f"{k}={v}"
-                    for k, v in self.to_dict().items()
+                    for k, v in self.dict().items()
                     if k not in ["type", "coordinates"]
                 ],
             ]
@@ -214,7 +214,7 @@ class MonotonicDimension(BaseQuantitativeDimension):
     @property
     def data_structure(self):
         """Json serialized string describing the MonotonicDimension class instance."""
-        return json.dumps(self.to_dict(), ensure_ascii=False, sort_keys=False, indent=2)
+        return json.dumps(self.dict(), ensure_ascii=False, sort_keys=False, indent=2)
 
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
@@ -228,6 +228,10 @@ class MonotonicDimension(BaseQuantitativeDimension):
             _copy_core_metadata(self, obj, "monotonic")
 
     def to_dict(self):
+        """Alias to the `dict()` method of the class."""
+        return self.dict()
+
+    def dict(self):
         """Return the MonotonicDimension as a python dictionary."""
         dictionary = {}
 
@@ -237,12 +241,12 @@ class MonotonicDimension(BaseQuantitativeDimension):
             dictionary["description"] = self._description.strip()
 
         dictionary["coordinates"] = self._values
-        dictionary.update(self._to_dict())
+        dictionary.update(self._dict())
 
         reciprocal_dictionary = {}
         if self.reciprocal._description.strip() != "":
             reciprocal_dictionary["description"] = self.reciprocal._description.strip()
-        reciprocal_dictionary.update(self.reciprocal._to_dict())
+        reciprocal_dictionary.update(self.reciprocal._dict())
         if reciprocal_dictionary == {}:
             del reciprocal_dictionary
         else:

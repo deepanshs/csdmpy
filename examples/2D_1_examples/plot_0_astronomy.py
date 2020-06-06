@@ -12,6 +12,8 @@ Astronomy dataset
 # illustration, we have downsampled the original dataset.
 #
 # Let's load the `.csdfe` file and look at its data structure.
+import matplotlib.pyplot as plt
+
 import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/0p3o1ga1kqno4dk4sooi1rbk29pbs3mm.csdf"
@@ -57,7 +59,7 @@ y00 = y[0].components[0]
 from matplotlib.colors import LogNorm
 
 cp.plot(bubble_nebula, norm=LogNorm(vmin=7.5e-3, clip=True))
-
+plt.show()
 #%%
 # .. note::
 #   For 2D{1} datasets, the :meth:`~csdmpy.plot` method utilizes the matplotlib `imshow`

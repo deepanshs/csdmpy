@@ -14,18 +14,19 @@ from .abstract_list import __dimensions_list__  # lgtm [py/import-own-module]
 from .abstract_list import DependentVariableList  # lgtm [py/import-own-module]
 from .abstract_list import DimensionList  # lgtm [py/import-own-module]
 from .dependent_variables import (  # lgtm [py/import-own-module] # noqa: F401
-    as_dependent_variable,
-)  # lgtm [py/unused-import]
+    as_dependent_variable,  # lgtm [py/unused-import]
+)
 from .dependent_variables import DependentVariable  # lgtm [py/import-own-module]
 from .dimensions import as_dimension  # lgtm [py/import-own-module]
 from .dimensions import Dimension  # lgtm [py/import-own-module] # noqa: F401
 from .dimensions import (  # lgtm [py/import-own-module] # noqa: F401
-    LabeledDimension,
-)  # lgtm [py/unused-import]
+    LabeledDimension,  # lgtm [py/unused-import]
+)
 from .dimensions import LinearDimension  # lgtm [py/import-own-module] # noqa: F401
 from .dimensions import (  # lgtm [py/import-own-module] # noqa: F401
-    MonotonicDimension,
-)  # lgtm [py/unused-import]
+    MonotonicDimension,  # lgtm [py/unused-import]
+)
+from .helper_functions import _preview  # lgtm [py/import-own-module]
 from .numpy_wrapper import fft
 from .units import string_to_quantity  # lgtm [py/import-own-module]
 from .utils import _get_broadcast_shape  # lgtm [py/import-own-module]
@@ -184,9 +185,7 @@ class CSDM:
     def __check_dimension_equality(self, other):
         """Check if the dimensions of the two csdm objects are identical."""
         if self.dimensions != other.dimensions:
-            raise Exception(
-                f"Cannot operate on CSDM objects with different dimensions."
-            )
+            raise Exception("Cannot operate on CSDM objects with different dimensions.")
 
     def __check_dependent_variable_len_equality(self, other):
         """
@@ -696,7 +695,7 @@ class CSDM:
         Raises:
             AttributeError: When modified.
         """
-        dictionary = self._to_dict(filename=self.filename, for_display=True)
+        dictionary = self._dict(filename=self.filename, for_display=True)
 
         return json.dumps(dictionary, ensure_ascii=False, sort_keys=False, indent=2)
 
@@ -886,6 +885,10 @@ class CSDM:
         return
 
     def to_dict(self, update_timestamp=False, read_only=False):
+        """Alias to the `dict()` method of the class."""
+        return self.dict(update_timestamp, read_only)
+
+    def dict(self, update_timestamp=False, read_only=False):
         """
         Serialize the :ref:`CSDM_api` instance as a python dictionary.
 
@@ -894,7 +897,7 @@ class CSDM:
             read_only (bool): If true, the read_only flag is set true.
 
         Example:
-            >>> data.to_dict() # doctest: +SKIP
+            >>> data.dict() # doctest: +SKIP
             {'csdm': {'version': '1.0', 'timestamp': '1994-11-05T13:15:30Z',
             'geographic_coordinate': {'latitude': '10 deg', 'longitude': '93.2 deg',
             'altitude': '10 m'}, 'description': 'A simulated sine curve.',
@@ -906,9 +909,9 @@ class CSDM:
             'quantity_type': 'scalar', 'component_labels': ['response'],'components':
             ['AAAAABh5Fj9xeHM/cXhzPxh5Fj8yMQ0lGHkWv3F4c79xeHO/GHkWvw==']}]}}
         """
-        return self._to_dict(update_timestamp=update_timestamp, read_only=read_only)
+        return self._dict(update_timestamp=update_timestamp, read_only=read_only)
 
-    def _to_dict(
+    def _dict(
         self,
         filename=None,
         update_timestamp=False,
@@ -942,12 +945,12 @@ class CSDM:
         dictionary["dependent_variables"] = []
 
         for i in range(len(self.dimensions)):
-            dictionary["dimensions"].append(self.dimensions[i].to_dict())
+            dictionary["dimensions"].append(self.dimensions[i].dict())
 
         _length_of_dependent_variables = len(self.dependent_variables)
         for i in range(_length_of_dependent_variables):
             dictionary["dependent_variables"].append(
-                self.dependent_variables[i]._to_dict(
+                self.dependent_variables[i]._dict(
                     filename=filename,
                     dataset_index=i,
                     for_display=for_display,
@@ -978,7 +981,7 @@ class CSDM:
             >>> data.dumps()  # doctest: +SKIP
         """
         return json.dumps(
-            self._to_dict(update_timestamp, read_only, version),
+            self._dict(update_timestamp, read_only, version),
             ensure_ascii=False,
             sort_keys=False,
             allow_nan=False,
@@ -1036,7 +1039,7 @@ class CSDM:
             import os
             os.remove('my_file.csdf')
         """
-        dictionary = self._to_dict(filename=filename, version=version)
+        dictionary = self._dict(filename=filename, version=version)
 
         timestamp = datetime.datetime.utcnow().isoformat()[:-7] + "Z"
         dictionary["csdm"]["timestamp"] = timestamp
@@ -1425,6 +1428,37 @@ class CSDM:
     #     print(args)
     #     print(kwargs)
 
+    def plot(self, reverse_axis=None, range=None, **kwargs):
+        """
+        A supplementary function for plotting basic 1D and 2D datasets only.
+
+        Args:
+            csdm_object: The CSDM object.
+            reverse_axis: An ordered array of boolean specifying which dimensions will
+                be displayed on a reverse axis.
+            range: A list of minimum and maxmim coordinates along the dimensions. The
+                range along each dimension is given as [min, max]
+            kwargs: Additional keyword arguments are used in matplotlib plotting
+                functions. We implement the following matplotlib methods for the one
+                and two-dimensional datasets.
+
+                - The 1D{1} scalar dataset use the plt.plot() method.
+                - The 1D{2} vector dataset use the plt.quiver() method.
+                - The 2D{1} scalar dataset use the plt.imshow() method if the two
+                  dimensions have a `linear` subtype. If any one of the dimension is
+                  `monotonic`, plt.NonUniformImage() method is used instead.
+                - The 2D{2} vector dataset use the plt.quiver() method.
+                - The 2D{3} pixel dataset use the plt.imshow(), assuming the pixel
+                  dataset as an RGB image.
+
+        Returns:
+            A matplotlib figure instance.
+
+        Example:
+            >>> cp.plot(data_object) # doctest: +SKIP
+        """
+        return _preview(self, reverse_axis, range, **kwargs)
+
 
 def _check_dimension_indices(d, index=-1):
     """
@@ -1600,7 +1634,7 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
     """
     axis = None
     args_ = []
-    if args is not ():
+    if args != ():
         csdm = args[0]
         args_ = list(args[1:])
         if len(args) > 1:

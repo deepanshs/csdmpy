@@ -34,7 +34,7 @@ __credits__ = ["Deepansh J. Srivastava"]
 __license__ = "BSD License"
 __maintainer__ = "Deepansh J. Srivastava"
 __status__ = "Development"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 __all__ = [
     "parse_dict",
@@ -282,18 +282,23 @@ def plot(csdm_object, reverse_axis=None, range=None, **kwargs):
     Args:
         csdm_object: The CSDM object.
         reverse_axis: An ordered array of boolean specifying which dimensions will be
-                displayed on a reverse axis.
+            displayed on a reverse axis.
+        range: A list of minimum and maxmim coordinates along the dimensions. The range
+            along each dimension is given as [min, max]
         kwargs: Additional keyword arguments are used in matplotlib plotting functions.
-                We implement the following matplotlib methods for the one and
-                two-dimensional datasets.
+            We implement the following matplotlib methods for the one and
+            two-dimensional datasets.
 
-                - The 1D{1} scalar dataset use the plt.plot() method.
-                - The 1D{2} vector dataset use the plt.quiver() method.
-                - The 2D{1} scalar dataset use the plt.imshow() method if the two dimensions have a `linear` subtype. If any one of the dimension is `monotonic`, plt.NonUniformImage() method is used instead.
-                - The 2D{2} vector dataset use the plt.quiver() method.
-                - The 2D{3} pixel dataset use the plt.imshow(), assuming the pixel dataset as an RGB image.
+            - The 1D{1} scalar dataset use the plt.plot() method.
+            - The 1D{2} vector dataset use the plt.quiver() method.
+            - The 2D{1} scalar dataset use the plt.imshow() method if the two dimensions have a `linear` subtype. If any one of the dimension is `monotonic`, plt.NonUniformImage() method is used instead.
+            - The 2D{2} vector dataset use the plt.quiver() method.
+            - The 2D{3} pixel dataset use the plt.imshow(), assuming the pixel dataset as an RGB image.
+
+    Returns:
+        A matplotlib figure instance.
 
     Example:
         >>> cp.plot(data_object) # doctest: +SKIP
     """
-    _preview(csdm_object, reverse_axis, range, **kwargs)
+    return _preview(csdm_object, reverse_axis, range, **kwargs)

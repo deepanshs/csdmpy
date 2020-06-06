@@ -433,10 +433,7 @@ class DependentVariable:
             AttributeError: When modified.
         """
         return json.dumps(
-            self._to_dict(for_display=True),
-            ensure_ascii=False,
-            sort_keys=False,
-            indent=2,
+            self._dict(for_display=True), ensure_ascii=False, sort_keys=False, indent=2,
         )
 
     @property
@@ -755,11 +752,15 @@ class DependentVariable:
         self.subtype._unit = factor.unit
 
     def to_dict(self):
+        """Alias to the `dict()` method of the class."""
+        return self.dict()
+
+    def dict(self):
         """
         Return DependentVariable object as a python dictionary.
 
         Example:
-            >>> y.to_dict() # doctest: +SKIP
+            >>> y.dict() # doctest: +SKIP
             {'type': 'internal', 'description': 'A test image', 'name': 'star',
             'unit': 's * W', 'quantity_name': 'energy', 'encoding': 'none',
             'numeric_type': 'float32', 'quantity_type': 'pixel_3',
@@ -767,13 +768,11 @@ class DependentVariable:
             [10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0],
             [20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0]]}
         """
-        return self.subtype.to_dict()
+        return self.subtype.dict()
 
-    def _to_dict(
-        self, filename=None, dataset_index=None, for_display=False, version=None
-    ):
+    def _dict(self, filename=None, dataset_index=None, for_display=False, version=None):
         """Return DependentVariable object as a python dictionary."""
-        return self.subtype.to_dict(filename, dataset_index, for_display, version)
+        return self.subtype.dict(filename, dataset_index, for_display, version)
 
     def copy(self):
         """Return a copy of the DependentVariable object."""

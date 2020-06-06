@@ -8,6 +8,8 @@ Nuclear Magnetic Resonance (NMR) dataset
 # signal of ethanol.
 # Let's load this data file and take a quick look at its data
 # structure. We follow the steps described in the previous example.
+import matplotlib.pyplot as plt
+
 import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/2e4fqm8n8bh4i5wgrinbwcavafa8x7y1.csdf"
@@ -65,7 +67,7 @@ print(y[0].numeric_type)
 # for plotting 1D and 2D datasets only.
 
 cp.plot(NMR_data)
-
+plt.show()
 
 #%%
 # **Reciprocal dimension object**
@@ -87,6 +89,7 @@ print(x[0].data_structure)
 
 fft_NMR_data = NMR_data.fft()
 cp.plot(fft_NMR_data)
+plt.show()
 
 #%%
 # To return to time domain signal, use the :meth:`~csdmpy.CSDM.fft` method on the
@@ -94,3 +97,4 @@ cp.plot(fft_NMR_data)
 
 NMR_data_2 = fft_NMR_data.fft()
 cp.plot(NMR_data_2)
+plt.show()

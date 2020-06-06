@@ -104,7 +104,7 @@ def test_csdm():
         json.dumps(structure, ensure_ascii=False, sort_keys=False, indent=2)
     )
 
-    assert data.to_dict() == structure
+    assert data.dict() == structure
 
     # equality check
     dm = data.copy()

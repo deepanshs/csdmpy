@@ -70,7 +70,7 @@ class LinearDimension(BaseQuantitativeDimension):
 
     def __repr__(self):
         properties = ", ".join(
-            [f"{k}={v}" for k, v in self.to_dict().items() if k != "type"]
+            [f"{k}={v}" for k, v in self.dict().items() if k != "type"]
         )
         return f"LinearDimension({properties})"
 
@@ -257,7 +257,7 @@ class LinearDimension(BaseQuantitativeDimension):
     @property
     def data_structure(self):
         """Json serialized string describing the LinearDimension class instance."""
-        return json.dumps(self.to_dict(), ensure_ascii=False, sort_keys=False, indent=2)
+        return json.dumps(self.dict(), ensure_ascii=False, sort_keys=False, indent=2)
 
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
@@ -271,6 +271,10 @@ class LinearDimension(BaseQuantitativeDimension):
             _copy_core_metadata(self, obj, "linear")
 
     def to_dict(self):
+        """Alias to the `dict()` method of the class."""
+        return self.dict()
+
+    def dict(self):
         """Return the LinearDimension as a python dictionary."""
         obj = {}
         obj["type"] = self.__class__._type
@@ -280,7 +284,7 @@ class LinearDimension(BaseQuantitativeDimension):
 
         obj["count"] = self._count
         obj["increment"] = str(ScalarQuantity(self.increment))
-        obj.update(self._to_dict())
+        obj.update(self._dict())
 
         if self.complex_fft:
             obj["complex_fft"] = True
@@ -289,7 +293,7 @@ class LinearDimension(BaseQuantitativeDimension):
         reciprocal_obj = {}
         if self.reciprocal._description.strip() != "":
             reciprocal_obj["description"] = self.reciprocal._description
-        reciprocal_obj.update(self.reciprocal._to_dict())
+        reciprocal_obj.update(self.reciprocal._dict())
         if reciprocal_obj == {}:
             del reciprocal_obj
         else:

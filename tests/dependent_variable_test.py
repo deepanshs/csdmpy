@@ -156,7 +156,7 @@ def test_internal_new():
             ),
         ],
     }
-    assert data.dependent_variables[0].to_dict() == dependent_variables_dict_2
+    assert data.dependent_variables[0].dict() == dependent_variables_dict_2
 
     # data = cp.new()
     # test_array = np.arange(20).reshape(2, 10)

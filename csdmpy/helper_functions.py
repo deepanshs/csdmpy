@@ -4,41 +4,31 @@ import sys
 from copy import deepcopy
 from warnings import warn
 
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.backends.qt_compat import is_pyqt5
+from matplotlib.backends.qt_compat import QtWidgets
+from matplotlib.image import NonUniformImage
 from numpy.fft import fftshift
 
-try:
-    import matplotlib
-    import matplotlib.pyplot as plt
-    from matplotlib.image import NonUniformImage
-except ImportError as e:
-    print(str(e))
-    sys.exit()
-
-import numpy as np
-
-# global SOUND
-scalar = ["scalar", "vector_1", "pixel_1", "matrix_1_1", "symmetric_matrix_1"]
-
-try:
-    from matplotlib.backends.qt_compat import QtWidgets, is_pyqt5
-
-    if is_pyqt5():
-        from matplotlib.backends.backend_qt5agg import (
-            FigureCanvas,
-            NavigationToolbar2QT as NavigationToolbar,
-        )
-    else:
-        from matplotlib.backends.backend_qt4agg import (
-            FigureCanvas,
-            NavigationToolbar2QT as NavigationToolbar,
-        )
-    from matplotlib.figure import Figure
-except ImportError:
-    pass
+if is_pyqt5():
+    from matplotlib.backends.backend_qt5agg import (
+        FigureCanvas,
+        NavigationToolbar2QT as NavigationToolbar,
+    )
+else:
+    from matplotlib.backends.backend_qt4agg import (
+        FigureCanvas,
+        NavigationToolbar2QT as NavigationToolbar,
+    )
+from matplotlib.figure import Figure
 
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
+
+scalar = ["scalar", "vector_1", "pixel_1", "matrix_1_1", "symmetric_matrix_1"]
 
 
 def preview(data_object):
@@ -100,17 +90,16 @@ def _preview(data, reverse_axis=None, range_=None, **kwargs):
     if np.any([x[i].type == "labeled" for i in range(len(x))]):
         raise NotImplementedError("Preview of labeled dimensions is not implemented.")
 
+    fig = plt.gcf()
     if len(x) <= 2:
         if y_len <= 2:
-            fig, ax = plt.subplots(y_grid)
+            ax = fig.subplots(y_grid)
             if y_len == 1:
                 ax = [[ax]]
             else:
                 ax = [ax]
         else:
-            fig, ax = plt.subplots(y_grid, 2)
-
-        fig.canvas.set_window_title(data.filename)
+            ax = fig.subplots(y_grid, 2)
 
     if len(x) == 1:
         for i in range(y_len):
@@ -124,9 +113,6 @@ def _preview(data, reverse_axis=None, range_=None, **kwargs):
                 vector_plot(x, y[i], ax_, range_, **kwargs)
             # if "audio" in y[i].quantity_type:
             #     audio(x, y, i, fig, ax, **kwargs)
-
-        plt.tight_layout(w_pad=0.0, h_pad=0.0)
-        plt.show()
 
     if len(x) == 2:
         for i in range(y_len):
@@ -144,8 +130,7 @@ def _preview(data, reverse_axis=None, range_=None, **kwargs):
             if "vector" in y[i].quantity_type:
                 vector_plot(x, y[i], ax_, range_, **kwargs)
 
-        plt.tight_layout(w_pad=0.0, h_pad=0.0)
-        plt.show()
+    return fig
 
 
 def oneD_scalar(x, y, ax, range_, **kwargs):

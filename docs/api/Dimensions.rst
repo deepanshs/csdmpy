@@ -46,6 +46,7 @@ Dimension
        :nosignatures:
 
         ~Dimension.to
+        ~Dimension.dict
         ~Dimension.to_dict
         ~Dimension.is_quantitative
         ~Dimension.copy
@@ -76,6 +77,7 @@ Dimension
     .. rubric:: Method Documentation
 
     .. automethod:: to
+    .. automethod:: dict
     .. automethod:: to_dict
     .. automethod:: is_quantitative
     .. automethod:: copy

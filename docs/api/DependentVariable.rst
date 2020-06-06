@@ -35,6 +35,7 @@ DependentVariable
        :nosignatures:
 
         ~DependentVariable.to
+        ~DependentVariable.dict
         ~DependentVariable.to_dict
         ~DependentVariable.copy
 
@@ -58,5 +59,6 @@ DependentVariable
 
     .. rubric:: Method Documentation
     .. automethod:: to
+    .. automethod:: dict
     .. automethod:: to_dict
     .. automethod:: copy
