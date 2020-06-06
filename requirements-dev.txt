@@ -1,6 +1,6 @@
 
 # required
-numpy>=1.16
+numpy>=1.17
 setuptools>=27.3
 
 # for units
@@ -22,4 +22,7 @@ codecov
 
 # doc build
 sphinxjp.themes.basicstrap
-sphinx>=2.1.2
+sphinx>=2.0
+sphinx-gallery>=0.6.2
+pillow>=7.1.2  # for sphinx-gallery images
+sphinx_copybutton>=0.2.11
