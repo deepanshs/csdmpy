@@ -3,7 +3,7 @@
 Gas Chromatography dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
-#%%
+# %%
 # The following
 # `Gas Chromatography dataset  <http://wwwchem.uwimona.edu.jm/spectra/index.html>`_
 # was obtained as a JCAMP-DX file, and subsequently converted to the CSD model
@@ -16,8 +16,9 @@ filename = "https://osu.box.com/shared/static/zt452x7p3plbnjqt2898dy8px6hkhkd8.c
 GCData = cp.load(filename)
 print(GCData.data_structure)
 
-#%%
+# %%
 # and the corresponding plot
-
+plt.figure(figsize=(6, 4))
 cp.plot(GCData)
+plt.tight_layout()
 plt.show()

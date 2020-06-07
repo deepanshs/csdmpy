@@ -3,7 +3,7 @@
 Nuclear Magnetic Resonance (NMR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
-#%%
+# %%
 # The following example is a :math:`^{29}\mathrm{Si}` NMR time-domain
 # saturation recovery measurement of a highly siliceous zeolite ZSM-12.
 # Usually, the spin recovery measurements are acquired over a rectilinear grid
@@ -18,53 +18,48 @@ filename = "https://osu.box.com/shared/static/27yrgdaubtb4wqj5adbavp2u16c2h7k8.c
 NMR_2D_data = cp.load(filename)
 print(NMR_2D_data.description)
 
-#%%
+# %%
 # The tuples of the dimension and dependent variable instances from the
 # ``NMR_2D_data`` instance are
-
 x = NMR_2D_data.dimensions
 y = NMR_2D_data.dependent_variables
 
-#%%
+# %%
 # respectively. There are two dimension instances in this example with respective
 # dimension data structures as
-
 print(x[0].data_structure)
 
-#%%
+# %%
 # and
 
 print(x[1].data_structure)
 
-#%%
+# %%
 # respectively. The first dimension is uniformly spaced, as indicated by the
 # `linear` subtype, while the second dimension is non-linear and monotonically
 # sampled. The coordinates along the respective dimensions are
-
 x0 = x[0].coordinates
 print(x0)
 
-#%%
+# %%
 x1 = x[1].coordinates
 print(x1)
 
-#%%
+# %%
 # Notice, the unit of ``x0`` is in microseconds. It might be convenient to
 # convert the unit to milliseconds. To do so, use the
 # :meth:`~csdmpy.Dimension.to` method of the respective
 # :ref:`dim_api` instance as follows,
-
 x[0].to("ms")
 x0 = x[0].coordinates
 print(x0)
 
-#%%
+# %%
 # As before, the components of the dependent variable are accessed using the
 # :attr:`~csdmpy.DependentVariable.components` attribute.
-
 y00 = y[0].components[0]
 
-#%%
+# %%
 # **Visualize the dataset**
 #
 # The :meth:`~csdmpy.plot` method is a very basic supplementary function for
@@ -72,7 +67,7 @@ y00 = y[0].components[0]
 # the data from this example, however, we use the following script to
 # visualize the data with projections onto the respective dimensions.
 
-#%%
+# %%
 import matplotlib.pyplot as plt
 from matplotlib.image import NonUniformImage
 import numpy as np
@@ -82,7 +77,6 @@ import numpy as np
 # pixel, subtract and add half the sampling interval from the first
 # and the last coordinate, respectively, of the linearly sampled
 # dimension, i.e., x0.
-
 si = x[0].increment
 extent = (
     (x0[0] - 0.5 * si).to("ms").value,

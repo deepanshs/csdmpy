@@ -95,10 +95,7 @@ def oneD_scalar(x, y, ax, range_, **kwargs):
 
     components = y.components.shape[0]
     for k in range(components):
-        ax.plot(x[0].coordinates, y.components[k].real, **kwargs)
-        if "complex" in y.numeric_type:
-            ax.plot(x[0].coordinates, y.components[k].imag, **kwargs)
-
+        ax.plot(x[0].coordinates, y.components[k], **kwargs)
         ax.set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
         ax.set_xlabel(f"{x[0].axis_label} - 0")
         ax.set_ylabel(y.axis_label[0])
@@ -120,13 +117,24 @@ def twoD_scalar(x, y, ax, range_, **kwargs):
 
     x0 = x[0].coordinates.value
     x1 = x[1].coordinates.value
-    y00 = y.components[0].real.astype(np.float64)
+    y00 = y.components[0]
     extent = [x0[0], x0[-1], x1[0], x1[-1]]
+    if "extent" not in kwargs.keys():
+        kwargs["extent"] = extent
+
     if x[0].type == "linear" and x[1].type == "linear":
-        cs = ax.imshow(y00, extent=extent, origin="lower", aspect="auto", **kwargs)
+        if "origin" not in kwargs.keys():
+            kwargs["origin"] = "lower"
+        if "aspect" not in kwargs.keys():
+            kwargs["aspect"] = "auto"
+
+        cs = ax.imshow(y00, **kwargs)
     else:
-        cs = NonUniformImage(ax, interpolation="nearest", extent=extent, **kwargs)
-        cs.set_data(x0, x1, y00 / y00.max())
+        if "interpolation" not in kwargs.keys():
+            kwargs["interpolation"] = "nearest"
+
+        cs = NonUniformImage(ax, **kwargs)
+        cs.set_data(x0, x1, y00)
         ax.images.append(cs)
 
     cbar = ax.figure.colorbar(cs, ax=ax)
@@ -163,7 +171,10 @@ def vector_plot(x, y, ax, range_, **kwargs):
     x0, x1 = np.meshgrid(x0, x1)
     u1 = y.components[0]
     v1 = y.components[1]
-    ax.quiver(x0, x1, u1, v1, pivot="middle", **kwargs)
+
+    if "pivot" not in kwargs.keys():
+        kwargs["pivot"] = "middle"
+    ax.quiver(x0, x1, u1, v1, **kwargs)
     ax.set_xlabel(f"{x[0].axis_label} - 0")
     ax.set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
     if len(x) == 2:

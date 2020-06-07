@@ -1,3 +1,4 @@
+.. _generating_csdm_objects:
 
 -----------------------
 Generating CSDM objects

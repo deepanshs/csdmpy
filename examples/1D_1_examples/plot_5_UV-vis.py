@@ -3,7 +3,7 @@
 Ultraviolet–visible (UV-vis) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
-#%%
+# %%
 # The following
 # `UV-vis dataset <http://wwwchem.uwimona.edu.jm/spectra/index.html>`_
 # was obtained as a JCAMP-DX file, and subsequently converted to the CSD model
@@ -16,8 +16,9 @@ filename = "https://osu.box.com/shared/static/c9wg59hya5ohc083qi2jgd7wk5emmlmu.c
 UV_data = cp.load(filename)
 print(UV_data.data_structure)
 
-#%%
+# %%
 # and the corresponding plot
-
+plt.figure(figsize=(6, 4))
 cp.plot(UV_data)
+plt.tight_layout()
 plt.show()

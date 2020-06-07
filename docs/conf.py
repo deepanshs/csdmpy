@@ -62,6 +62,7 @@ extensions = [
     "sphinxjp.themes.basicstrap",
     "sphinx_gallery.gen_gallery",
     "sphinx.ext.intersphinx",
+    "sphinx.ext.todo",
 ]
 
 autosummary_generate = True
@@ -82,6 +83,11 @@ warnings.filterwarnings(
         "with 'plane angle' as the physical quantity name "
         "for unit deg."
     ),
+)
+warnings.filterwarnings(
+    "ignore",
+    category=UserWarning,
+    message="This method interprets the `pixel_3` dataset as an RGB image.",
 )
 warnings.filterwarnings(
     "ignore",
@@ -116,6 +122,7 @@ sphinx_gallery_conf = {
             "../examples/1D_1_examples",
             "../examples/2D_1_examples",
             "../examples/vector",
+            "../examples/tensor",
             "../examples/pixel",
             "../examples/correlated_examples",
             "../examples/sparse",
