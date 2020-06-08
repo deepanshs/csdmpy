@@ -25,8 +25,8 @@ for i in range(4):
 
 
 # The plot on same axes =======================================================
-plt.figure(figsize=(6, 4))
-# create the ax with `projection="csdm"``
+plt.figure(figsize=(5, 3.5))
+# create the axes with `projection="csdm"`
 ax = plt.subplot(projection="csdm")
 # use matplotlib plot function with csdm object.
 ax.plot(csdm)
@@ -40,7 +40,7 @@ plt.show()
 # Split the CSDM object into multiple single dependent-variable CSDM objects.
 sub_type = csdm.split()
 
-# create the axes with `projection="csdm"``
+# create the axes with `projection="csdm"`
 _, ax = plt.subplots(2, 2, figsize=(8, 6), subplot_kw={"projection": "csdm"})
 # now use matplotlib plot function with csdm object.
 ax[0, 0].plot(sub_type[0])

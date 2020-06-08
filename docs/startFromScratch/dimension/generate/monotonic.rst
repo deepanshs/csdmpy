@@ -32,7 +32,7 @@ a MonotonicDimension.
      -0.01817061  0.05936719  0.18141424  0.34758913] cm)
 
 In the above example, we generate a dimensionless MonotonicDimension from
-the NumPy array and scale its dimensionality by multiplying the object with an
+the NumPy array and then scale its dimensionality by multiplying the object with an
 appropriate :class:`~csdmpy.ScalarQuantity`.
 
 **From numpy arrays.**

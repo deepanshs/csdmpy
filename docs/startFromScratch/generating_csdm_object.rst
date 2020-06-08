@@ -116,3 +116,4 @@ along the first axis of the NumPy array are inconsistent, for example,
 
 .. note::
     Only a csdm object with a single dependent variable may be created from a NumPy array.
+    To add more dependent variables to the CSDM object, see :ref:`adding_dv`.

@@ -41,7 +41,8 @@ x[1].to("µm")
 
 # %%
 # and plot the data.
-plt.figure(figsize=(6, 4))
-cp.plot(TEM)
+plt.figure(figsize=(5, 3.5))
+ax = plt.subplot(projection="csdm")
+ax.imshow(TEM, aspect="auto")
 plt.tight_layout()
 plt.show()

@@ -245,10 +245,7 @@ class LinearDimension(BaseQuantitativeDimension):
     @property
     def axis_label(self):
         """Return a formatted string for displaying label along the dimension axis."""
-        if self.label.strip() == "":
-            label = self.quantity_name
-        else:
-            label = self.label
+        label = self.quantity_name if self.label.strip() == "" else self.label
         unit = (
             self._equivalent_unit if self._equivalent_unit is not None else self._unit
         )

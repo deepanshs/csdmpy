@@ -54,7 +54,7 @@ print(data_csdm.dimensions)
 
 # %%
 # Plot of the dataset.
-plt.figure(figsize=(6, 4))
+plt.figure(figsize=(5, 3.5))
 cp.plot(data_csdm)
 plt.tight_layout()
 plt.show()

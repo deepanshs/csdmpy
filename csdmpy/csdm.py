@@ -516,7 +516,7 @@ class CSDM:
         for variable in self.dependent_variables:
             section = (slice(0, len(variable.components), 1),) + indices[::-1]
             y = variable.components[section]
-            dv = empty_dependent_variable(variable.numeric_type)
+            dv = empty_dependent_variable(variable.numeric_type, variable.quantity_type)
             dv.subtype._components = y
             dv._copy_metadata(variable)
             csdm._dependent_variables += [dv]
@@ -719,11 +719,10 @@ class CSDM:
         """Return a csdm object with a transpose of the dataset."""
         new = CSDM()
         new._copy_metadata(self)
-        # new = self.copy()
         new._dimensions += self._dimensions[::-1]
 
         for item in self.dependent_variables:
-            dv = empty_dependent_variable(item.numeric_type)
+            dv = empty_dependent_variable(item.numeric_type, item.quantity_type)
             dv._copy_metadata(item)
             dv.subtype._components = np.moveaxis(item.subtype._components.T, -1, 0)
             new._dependent_variables += [dv]

@@ -1,8 +1,8 @@
 .. _how_to_add_dimension:
 
---------------------------------------------------
-Adding instances of Dimension class to CSDM object
---------------------------------------------------
+---------------------------------------
+Adding Dimension objects to CSDM object
+---------------------------------------
 
 Create a new empty CSDM object following,
 

@@ -132,12 +132,12 @@ compatible with Numpy.
     installation
     getting_started
     auto_examples/index
-    startFromScratch/start
-    auto_tutorials/index
-    startFromScratch/interacting_with_csdmpy_objects
     startFromScratch/save_dataset
-    startFromScratch/A fun example
+    startFromScratch/start
+    startFromScratch/interacting_with_csdmpy_objects
     using_csdm_with_pyplot
+    auto_tutorials/index
+    startFromScratch/A fun example
     changelog
     referenceAPI
 

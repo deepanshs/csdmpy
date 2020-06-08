@@ -56,14 +56,8 @@ y00 = y[0].components[0]
 # **Visualize the dataset**
 from matplotlib.colors import LogNorm
 
-plt.figure(figsize=(6, 4))
-cp.plot(bubble_nebula, norm=LogNorm(vmin=7.5e-3, clip=True))
+plt.figure(figsize=(6, 4.5))
+ax = plt.subplot(projection="csdm")
+ax.imshow(bubble_nebula, norm=LogNorm(vmin=7.5e-3, clip=True), aspect="auto")
 plt.tight_layout()
 plt.show()
-# %%
-# .. note::
-#   For 2D{1} datasets, the :meth:`~csdmpy.plot` method utilizes the matplotlib `imshow`
-#   method to render figures. Any additional arguments provided to the
-#   :meth:`~csdmpy.plot` method becomes the arguments for the matplotlib `imshow`
-#   method. In the above example, the argument `norm` is the argument for the `imshow`
-#   method.

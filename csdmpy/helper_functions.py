@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Helper functions."""
+from copy import deepcopy
 from warnings import warn
 
 import matplotlib.projections as proj
@@ -14,7 +15,13 @@ __email__ = "srivastava.89@osu.edu"
 scalar = ["scalar", "vector_1", "pixel_1", "matrix_1_1", "symmetric_matrix_1"]
 
 
-def _get_label_from_dependent_variable(dv, i):
+def _get_label_from_dv(dv, i):
+    """Return label along with the unit of the dependent variable
+
+    Args:
+        dv: DependentVariable object.
+        i: integer counter.
+    """
     name, unit = dv.name, dv.unit
     name = name if name != "" else str(i)
     label = f"{name} / ({unit})" if unit != "" else name
@@ -34,8 +41,8 @@ class CSDMAxes(plt.Axes):
         plotted on the same figure.
 
         Args:
-            csdm: A CSDM object of one-dimensional dataset.
-            kwargs: Additional keyward arguments for the plt.plot() method.
+            csdm: A CSDM object of a one-dimensional dataset.
+            kwargs: Additional keyword arguments for the matplotlib plot() method.
 
         Example
         -------
@@ -59,19 +66,30 @@ class CSDMAxes(plt.Axes):
                 raise Exception(message)
 
         z = csdm.split()
+        one = True if len(z) == 1 else False
+
         for i, item in enumerate(z):
             x_, y_ = item.to_list()
             # dv will always be at index 0 because we called the object.split() before.
             dv = item.dependent_variables[0]
-            label = _get_label_from_dependent_variable(dv, i)
-            super().plot(x_, y_, label=label, **kwargs)
+
+            kwargs_ = deepcopy(kwargs)
+            # add a default label if not provided by the user.
+            if "label" not in kwargs_.keys():
+                kwargs_["label"] = dv.name if one else _get_label_from_dv(dv, i)
+
+            r_plt = super().plot(x_, y_, **kwargs_)
         self.set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
         self.set_xlabel(f"{x[0].axis_label} - 0")
-        self.set_ylabel("dimensionless")
+
+        ylabel = dv.axis_label[0] if one else "dimensionless"
+        self.set_ylabel(ylabel)
         self.grid(color="gray", linestyle="--", linewidth=0.5)
         self.legend()
 
-    def imshow(self, csdm, **kwargs):
+        return r_plt
+
+    def imshow(self, csdm, origin="lower", **kwargs):
         """Produce a figure using the `imshow` method from the matplotlib library.
 
         Apply to all 2D datasets with either single-component (scalar),
@@ -84,15 +102,17 @@ class CSDMAxes(plt.Axes):
         are plotted on the same figure.
 
         Args:
-            csdm: A CSDM object of two-dimensional dataset with scalar, pixel_3 or
+            csdm: A CSDM object of a two-dimensional dataset with scalar, pixel_3, or
                 pixel_4 quantity_type dependent variable.
-            kwargs: Additional keyward arguments for the plt.plot() method.
+            origin: The matplotlib `origin` argument. In matplotlib, the default is
+                'upper'. In csdmpy, however, we set the default to 'lower'.
+            kwargs: Additional keyword arguments for the matplotlib imshow() method.
 
         Example
         -------
 
         >>> ax = plt.subplot(projection='csdm') # doctest: +SKIP
-        >>> ax.plot(csdm_object) # doctest: +SKIP
+        >>> ax.imshow(csdm_object) # doctest: +SKIP
         >>> plt.show() # doctest: +SKIP
 
         """
@@ -110,38 +130,55 @@ class CSDMAxes(plt.Axes):
                 raise Exception(message)
 
         if x[0].type == "linear" and x[1].type == "linear":
-            self._call_uniform_2D(csdm, **kwargs)
+            return self._call_uniform_2D(csdm, origin=origin, **kwargs)
 
     def _call_uniform_2D(self, csdm, **kwargs):
-        z = csdm.split()
-        for item in z:
-            x, dv = item.dimensions, item.dependent_variables[0]
-            # dv will always be at index 0 because we called the object.split() before.
 
-            x0, x1 = x[0].coordinates, x[1].coordinates
+        kw_keys = kwargs.keys()
+
+        # set extent
+        x = csdm.dimensions
+        x0, x1 = x[0].coordinates.value, x[1].coordinates.value
+        extent = [x0[0], x0[-1], x1[0], x1[-1]]
+        if kwargs["origin"] == "upper":
+            extent = [x0[0], x0[-1], x1[-1], x1[0]]
+        if "extent" not in kw_keys:
+            kwargs["extent"] = extent
+
+        # add cmap for multiple dependent variables.
+        cmaps_bool = False
+        if "cmaps" in kw_keys:
+            cmaps_bool = True
+            cmaps = kwargs.pop("cmaps")
+
+        one = True if len(csdm.dependent_variables) == 1 else False
+
+        for i, dv in enumerate(csdm.dependent_variables):
             y = dv.components
-
-            # pre-set config
-            extent = [x0[0].value, x0[-1].value, x1[0].value, x1[-1].value]
-            if "extent" not in kwargs.keys():
-                kwargs["extent"] = extent
-            if "origin" not in kwargs.keys():
-                kwargs["origin"] = "lower"
-            if "aspect" not in kwargs.keys():
-                kwargs["aspect"] = "auto"
-
             if dv.quantity_type == "scalar":
-                super().imshow(y[0], **kwargs)
-            if dv.quantity_type == "pixel_3":
-                super().imshow(y.T, **kwargs)
-            if dv.quantity_type == "pixel_4":
-                super().imshow(y.T, **kwargs)
+                if cmaps_bool:
+                    kwargs["cmap"] = cmaps[i]
 
-        self.set_xlim(x0[0].value, x0[-1].value)
-        self.set_ylim(x1[0].value, x1[-1].value)
-        self.set_xlabel(f"{item.dimensions[0].axis_label} - 0")
-        self.set_ylabel(f"{item.dimensions[1].axis_label} - 0")
+                r_plt = super().imshow(y[0], **kwargs)
+
+                label = dv.axis_label[0] if one else f"{dv.name} - {dv.axis_label[0]}"
+                cbar = plt.gcf().colorbar(r_plt, ax=self)
+                cbar.ax.minorticks_off()
+                cbar.set_label(label)
+
+            if dv.quantity_type == "pixel_3":
+                r_plt = super().imshow(np.moveaxis(y.copy(), 0, -1), **kwargs)
+
+            if dv.quantity_type == "pixel_4":
+                r_plt = super().imshow(np.moveaxis(y.copy(), 0, -1), **kwargs)
+
+        self.set_xlabel(f"{x[0].axis_label} - 0")
+        self.set_ylabel(f"{x[1].axis_label} - 0")
+        if one:
+            self.set_title(dv.name)
         self.grid(color="gray", linestyle="--", linewidth=0.5)
+
+        return r_plt
 
 
 proj.register_projection(CSDMAxes)

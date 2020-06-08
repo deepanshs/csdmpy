@@ -35,9 +35,9 @@ attribute use,
     >>> testdata1.description
     'A simulated sine curve.'
 
----------------------------------------------------------------
-Accessing the dimensions and dependent variables of the dataset
----------------------------------------------------------------
+-----------------------------------------------------------
+Accessing dimensions and dependent variables of the dataset
+-----------------------------------------------------------
 
 An instance of the CSDM object may include multiple dimensions and
 dependent variables. Collectively, the dimensions form a multi-dimensional grid
@@ -162,11 +162,6 @@ We make use of Python's `Matplotlib library <https://matplotlib.org>`_
 for generating these figures. The users may, however, use their favorite
 plotting library.
 
-.. Attention::
-
-    Although we show code for visualizing the dataset, this documentation is not
-    a guide for data visualization.
-
 The following snippet plots the dataset from this example. Here, the
 `axis_label` is an attribute of both Dimension and DependentVariable
 instances, and the `name` is an attribute of the DependentVariable instance.
@@ -174,14 +169,17 @@ instances, and the `name` is an attribute of the DependentVariable instance.
 .. doctest::
 
     >>> import matplotlib.pyplot as plt
+
+    >>> plt.figure(figsize=(5, 3.5))  # doctest: +SKIP
     >>> plt.plot(x[0].coordinates, y[0].components[0])  # doctest: +SKIP
     >>> plt.xlabel(x[0].axis_label)  # doctest: +SKIP
     >>> plt.ylabel(y[0].axis_label[0])  # doctest: +SKIP
     >>> plt.title(y[0].name)  # doctest: +SKIP
+    >>> plt.tight_layout()  # doctest: +SKIP
     >>> plt.show()
 
-.. figure:: _images/test.*
-    :figclass: figure-polaroid
+.. plot:: ../pyplot/getting_started.py
+
 
 .. seealso::
 

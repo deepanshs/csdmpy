@@ -230,16 +230,16 @@ the MonotonicDimension and LabeledDimension.
     LabeledDimension(labels=['a', 'b', 'c', 'd', 'e'])]
 
 The above example returns a 3D{1} dataset, ``sub_csdm``, which contains a
-sub-grid of the 3D{1} datasets in ``csdm1``. In ``sub_csdm``, the first
+sub-grid of the 3D{1} datasets from ``csdm1``. In ``sub_csdm``, the first
 dimension is a sub-grid of the first dimension from the ``csdm1`` object,
 where only every fifth grid point is selected. Similarly, the second dimension
 of the ``sub_csdm`` object is sampled from the second dimension of the
 ``csdm1`` object, where every second grid point is selected, starting with the
 entry at the grid index two. The third dimension of the ``sub_csdm`` object
 is the same as the third object of the ``csdm1`` object. The values of the
-corresponding linear, monotonic, and labeled dimensions are accordingly
-adjusted, for example, notice the value of the `count` and `increment`
-attribute of the linear dimension in ``sub_csdm`` object.
+corresponding linear, monotonic, and labeled dimensions are adjusted accordingly.
+For example, notice the value of the `count` and `increment` attributes of the linear
+dimension in ``sub_csdm`` object.
 
 **Example 12**
 

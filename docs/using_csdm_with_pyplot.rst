@@ -8,8 +8,8 @@ unit, and physical quantity of the dimensions and dependent-variables, which is 
 to visualize the CSDM dataset. In the following section, we illustrate how to use the
 CSDM object with the matplotlib plotting library.
 
-To plot the content of a csdm object, add a ``projection='csdm`` to the Axes instance
-of matplotlib, as follows,
+To plot the content of a csdm object, add a ``projection="csdm"`` to the matplotlib's
+Axes instance, as follows,
 
 .. code-block:: python
 
@@ -41,7 +41,7 @@ dependent variable is displayed within the legend.
 Plotting on separate Axes.
 """"""""""""""""""""""""""
 
-To plot the data from individual dependent variables onto a separate axes, use the
+To plot the data from individual dependent variables onto separate axes, use the
 :meth:`~csdmpy.CSDM.split` method to first split the CSDM object with `n` dependent
 variables into `n` CSDM objects with single dependent variables, and then plot them
 separately.

@@ -18,8 +18,8 @@ csdm.add_dependent_variable(y)
 
 
 # Plot ========================================================================
-plt.figure(figsize=(6, 4))
-# create the ax with `projection="csdm"``
+plt.figure(figsize=(5, 3.5))
+# create the axes with `projection="csdm"`
 ax = plt.subplot(projection="csdm")
 # using matplotlib plot function with csdm object.
 ax.plot(csdm)

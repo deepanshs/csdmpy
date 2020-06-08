@@ -18,7 +18,8 @@ print(UV_data.data_structure)
 
 # %%
 # and the corresponding plot
-plt.figure(figsize=(6, 4))
-cp.plot(UV_data)
+plt.figure(figsize=(5, 3.5))
+ax = plt.subplot(projection="csdm")
+ax.plot(UV_data)
 plt.tight_layout()
 plt.show()
