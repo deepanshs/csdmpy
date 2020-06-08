@@ -137,6 +137,7 @@ compatible with Numpy.
     startFromScratch/interacting_with_csdmpy_objects
     startFromScratch/save_dataset
     startFromScratch/A fun example
+    using_csdm_with_pyplot
     changelog
     referenceAPI
 

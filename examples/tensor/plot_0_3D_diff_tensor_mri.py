@@ -93,4 +93,4 @@ plt.show()
 # %%
 # .. rubric:: Citation
 #
-# .. [#f1] Diffusion tensor MRI `dataset <http://www.sci.utah.edu/~gk/DTI-data/>`_; 2000.
+# .. [#f1] Diffusion tensor MRI `data <http://www.sci.utah.edu/~gk/DTI-data/>`_; 2000.

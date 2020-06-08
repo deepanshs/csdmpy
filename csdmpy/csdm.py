@@ -1110,7 +1110,7 @@ class CSDM:
         return deepcopy(self)
 
     def split(self):
-        """Split the dependent-variables into view of individual csdm objects.
+        """View of the dependent-variables as individual csdm objects.
 
         Return:
             A list of CSDM objects, each with one dependent variable. The
@@ -1586,11 +1586,7 @@ def _get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
     return new
 
 
-def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
-    """
-    Perform the operation, func, on the components of the dependent variables, and
-    return the corresponding CSDM object.
-    """
+def _get_CSDM_object__args__axes(*args, **kwargs):
     axis = None
     args_ = []
     if args != ():
@@ -1608,6 +1604,15 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
             kwargs["axis"] = axis
 
     _check_for_out(csdm, **kwargs)
+    return csdm, args_, axis, kwargs
+
+
+def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
+    """
+    Perform the operation, func, on the components of the dependent variables, and
+    return the corresponding CSDM object.
+    """
+    csdm, args_, axis, kwargs = _get_CSDM_object__args__axes(*args, **kwargs)
 
     new = CSDM()
     lst = []
@@ -1638,9 +1643,9 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
 
     if axis is None:
         del new
-        if len(lst) > 1:
-            return lst
-        return lst[0]
+        # if len(lst) > 1:
+        #     return lst
+        return lst if len(lst) > 1 else lst[0]
 
     new._copy_metadata(csdm)
     return new

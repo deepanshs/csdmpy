@@ -1,6 +1,12 @@
 
-v0.3.0.dev0
------------
+Work in progress
+----------------
+
+What's new
+''''''''''
+
+- New ``plot`` and ``imshow`` classes compatible with the matplotlib library to produce
+  a basic formatted figure directly from the ``CSDM`` objects.
 
 - Added `dict()` as an alias to the `to_dict()` method for all objects.
 - Added an alias of the ``cp.plot()`` function to the CSDM object as the

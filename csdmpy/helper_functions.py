@@ -2,14 +2,149 @@
 """Helper functions."""
 from warnings import warn
 
+import matplotlib.projections as proj
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.image import NonUniformImage
+
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 
 scalar = ["scalar", "vector_1", "pixel_1", "matrix_1_1", "symmetric_matrix_1"]
+
+
+def _get_label_from_dependent_variable(dv, i):
+    name, unit = dv.name, dv.unit
+    name = name if name != "" else str(i)
+    label = f"{name} / ({unit})" if unit != "" else name
+    return label
+
+
+class CSDMAxes(plt.Axes):
+    """A custom CSDM data plot axes."""
+
+    name = "csdm"
+
+    def plot(self, csdm, **kwargs):
+        """Produce a figure using the `plot` method from the matplotlib library.
+
+        Apply to all 1D datasets with single-component dependent-variables. For
+        multiple dependent variables, the data from individual dependent-variables are
+        plotted on the same figure.
+
+        Args:
+            csdm: A CSDM object of one-dimensional dataset.
+            kwargs: Additional keyward arguments for the plt.plot() method.
+
+        Example
+        -------
+
+        >>> ax = plt.subplot(projection='csdm') # doctest: +SKIP
+        >>> ax.plot(csdm_object) # doctest: +SKIP
+        >>> plt.show() # doctest: +SKIP
+
+        """
+        x, y = csdm.dimensions, csdm.dependent_variables
+
+        message = (
+            "The function requires a 1D dataset with single-component dependent "
+            "variables. For multiple dependent-variables, the data from all the "
+            "dependent variables are ploted on the same figure."
+        )
+        if len(x) != 1:
+            raise Exception(message)
+        for y_ in y:
+            if len(y_.components) != 1:
+                raise Exception(message)
+
+        z = csdm.split()
+        for i, item in enumerate(z):
+            x_, y_ = item.to_list()
+            # dv will always be at index 0 because we called the object.split() before.
+            dv = item.dependent_variables[0]
+            label = _get_label_from_dependent_variable(dv, i)
+            super().plot(x_, y_, label=label, **kwargs)
+        self.set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
+        self.set_xlabel(f"{x[0].axis_label} - 0")
+        self.set_ylabel("dimensionless")
+        self.grid(color="gray", linestyle="--", linewidth=0.5)
+        self.legend()
+
+    def imshow(self, csdm, **kwargs):
+        """Produce a figure using the `imshow` method from the matplotlib library.
+
+        Apply to all 2D datasets with either single-component (scalar),
+        three-components (pixel_3), or four-components (pixel_4) dependent-variables.
+        For single-component (scalar) dependent-variable, grayscale image is produced.
+        For three-components (pixel_3) dependent-variable, an RGB image is produced.
+        For four-components (pixel_4) dependent-variable, an RGBA image is produced.
+
+        For multiple dependent variables, the data from individual dependent-variables
+        are plotted on the same figure.
+
+        Args:
+            csdm: A CSDM object of two-dimensional dataset with scalar, pixel_3 or
+                pixel_4 quantity_type dependent variable.
+            kwargs: Additional keyward arguments for the plt.plot() method.
+
+        Example
+        -------
+
+        >>> ax = plt.subplot(projection='csdm') # doctest: +SKIP
+        >>> ax.plot(csdm_object) # doctest: +SKIP
+        >>> plt.show() # doctest: +SKIP
+
+        """
+        x, y = csdm.dimensions, csdm.dependent_variables
+
+        message = (
+            "The function requires a 2D dataset with a single-component (scalar), "
+            "three components (pixel_3), or four components (pixel_4) dependent "
+            "variables. The pixel_3 produces an RGB image while pixel_4, a RGBA image."
+        )
+        if len(x) != 2:
+            raise Exception(message)
+        for y_ in y:
+            if len(y_.components) not in [1, 3, 4]:
+                raise Exception(message)
+
+        if x[0].type == "linear" and x[1].type == "linear":
+            self._call_uniform_2D(csdm, **kwargs)
+
+    def _call_uniform_2D(self, csdm, **kwargs):
+        z = csdm.split()
+        for item in z:
+            x, dv = item.dimensions, item.dependent_variables[0]
+            # dv will always be at index 0 because we called the object.split() before.
+
+            x0, x1 = x[0].coordinates, x[1].coordinates
+            y = dv.components
+
+            # pre-set config
+            extent = [x0[0].value, x0[-1].value, x1[0].value, x1[-1].value]
+            if "extent" not in kwargs.keys():
+                kwargs["extent"] = extent
+            if "origin" not in kwargs.keys():
+                kwargs["origin"] = "lower"
+            if "aspect" not in kwargs.keys():
+                kwargs["aspect"] = "auto"
+
+            if dv.quantity_type == "scalar":
+                super().imshow(y[0], **kwargs)
+            if dv.quantity_type == "pixel_3":
+                super().imshow(y.T, **kwargs)
+            if dv.quantity_type == "pixel_4":
+                super().imshow(y.T, **kwargs)
+
+        self.set_xlim(x0[0].value, x0[-1].value)
+        self.set_ylim(x1[0].value, x1[-1].value)
+        self.set_xlabel(f"{item.dimensions[0].axis_label} - 0")
+        self.set_ylabel(f"{item.dimensions[1].axis_label} - 0")
+        self.grid(color="gray", linestyle="--", linewidth=0.5)
+
+
+proj.register_projection(CSDMAxes)
 
 
 def _preview(data, reverse_axis=None, range_=None, **kwargs):

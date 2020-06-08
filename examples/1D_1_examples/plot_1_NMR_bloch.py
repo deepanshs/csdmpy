@@ -75,12 +75,11 @@ plt.show()
 print(x[0].data_structure)
 
 # %%
-# notice, there is a reciprocal keyword. The
-# :attr:`~csdmpy.Dimension.reciprocal` attribute is useful for datasets
-# that frequently transform to a reciprocal domain, such as the NMR dataset.
-# The value of the reciprocal attribute is the reciprocal object, which contains metadata
-# for describing the reciprocal coordinates, such as the `coordinates_offset`,
-# `origin_offset` of the reciprocal dimension.
+# notice, there is a reciprocal keyword. The :attr:`~csdmpy.Dimension.reciprocal`
+# attribute is useful for datasets that frequently transform to a reciprocal domain,
+# such as the NMR dataset. The value of the reciprocal attribute is the reciprocal
+# object, which contains metadata for describing the reciprocal coordinates, such as
+# the `coordinates_offset`, `origin_offset` of the reciprocal dimension.
 #
 # You may perform a fourier transform to visualize the NMR spectrum. Use the
 # :meth:`~csdmpy.CSDM.fft` method on the csdm object ``NMR_data`` as follows

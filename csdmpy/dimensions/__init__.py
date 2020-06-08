@@ -824,7 +824,7 @@ class Dimension:
         return self.subtype.reciprocal_coordinates()
 
 
-def as_dimension(array, unit="", type=None, label="", description="", application={}):
+def as_dimension(array, unit="", type=None, **kwargs):
     """Generate and return a Dimension object from a 1D numpy array.
 
     Args:
@@ -832,10 +832,7 @@ def as_dimension(array, unit="", type=None, label="", description="", applicatio
         unit: The unit of the coordinates along the dimension.
         type: The dimension type. Valid values are linear, monotonic, labeled, or
                 None. If the value is None, let us decide. The default value is None.
-        label: The label along the dimension. The default value is an empty string.
-        description: A description of the dimension. The default value is an empty
-                string.
-        application: An application dictionary. The default is an empty dictionary.
+        kwargs: Additional keyword arguments from the Dimension class.
 
     Example:
         >>> array = np.arange(15)*0.5
@@ -849,8 +846,6 @@ def as_dimension(array, unit="", type=None, label="", description="", applicatio
         LabeledDimension(['The' 'great' 'circle'])
     """
     array = __check_array_for_dimension__(array, type)
-
-    kwargs = {"label": label, "description": description, "application": application}
 
     if type is None:
         return _generic_dimensions(array, unit, **kwargs)

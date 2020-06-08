@@ -5,8 +5,8 @@ Mass spectrometry (sparse) dataset
 """
 # %%
 # The following mass spectrometry data of acetone is an example of a sparse dataset.
-# Here, the CSDM data file holds a sparse dependent variable. Upon import, the components
-# of the dependent variable sparsely populates the coordinate grid. The
+# Here, the CSDM data file holds a sparse dependent variable. Upon import, the
+# components of the dependent variable sparsely populates the coordinate grid. The
 # remaining unpopulated coordinates are assigned a zero value.
 import matplotlib.pyplot as plt
 

@@ -88,5 +88,5 @@ plt.show()
 # %%
 # .. rubric:: Citation
 #
-# .. [#f0] Church JA, White NJ. Sea-Level Rise from the Late 19th to the Early 21st Century.
-#          Surveys in Geophysics. 2011;32:585–602. DOI:10.1007/s10712-011-9119-1
+# .. [#f0] Church JA, White NJ. Sea-Level Rise from the Late 19th to the Early 21st
+#       Century. Surveys in Geophysics. 2011;32:585–602. DOI:10.1007/s10712-011-9119-1.

@@ -5,8 +5,8 @@ Astronomy dataset
 """
 # %%
 # The following dataset is a new observation of the Bubble Nebula
-# acquired by
-# `The Hubble Heritage Team <https://archive.stsci.edu/prepds/heritage/bubble/introduction.html>`_,
+# acquired by `The Hubble Heritage Team
+# <https://archive.stsci.edu/prepds/heritage/bubble/introduction.html>`_,
 # in February 2016. The original dataset was obtained in the FITS format
 # and subsequently converted to the CSD model file-format. For the convenience of
 # illustration, we have downsampled the original dataset.
@@ -63,6 +63,7 @@ plt.show()
 # %%
 # .. note::
 #   For 2D{1} datasets, the :meth:`~csdmpy.plot` method utilizes the matplotlib `imshow`
-#   method to render figures. Any additional arguments provided to the :meth:`~csdmpy.plot`
-#   method becomes the arguments for the matplotlib `imshow` method. In the above
-#   example, the argument `norm` is the argument for the `imshow` method.
+#   method to render figures. Any additional arguments provided to the
+#   :meth:`~csdmpy.plot` method becomes the arguments for the matplotlib `imshow`
+#   method. In the above example, the argument `norm` is the argument for the `imshow`
+#   method.

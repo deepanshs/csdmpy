@@ -6,8 +6,8 @@ Labeled Dataset
 # %%
 # The CSD model also supports labeled dimensions. In the following example, we
 # present a mixed `linear` and `labeled` two-dimensional dataset representing
-# the population of the country as a function of time. The dataset is
-# obtained from `The World Bank <https://data.worldbank.org/indicator/SP.POP.TOTL?view=chart>`_.
+# the population of the country as a function of time. The dataset is obtained from
+# `The World Bank <https://data.worldbank.org/indicator/SP.POP.TOTL?view=chart>`_.
 #
 # Import the `csdmpy` model and load the dataset.
 import csdmpy as cp
