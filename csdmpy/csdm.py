@@ -936,6 +936,10 @@ class CSDM:
 
         if self.description.strip() != "":
             dictionary["description"] = self.description
+
+        if self.application != {}:
+            dictionary["application"] = self.application
+
         dictionary["dimensions"] = []
         dictionary["dependent_variables"] = []
 

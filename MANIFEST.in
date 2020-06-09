@@ -2,10 +2,12 @@
 include README.md
 include LICENSE
 include CHANGELOG
-recursive-include csdmpy/tests/*
+recursive-include tests *
 include requirements.txt
-# include CITATION
-
+include requirements-dev.txt
 recursive-include docs *
+recursive-exclude docs/_build *
+recursive-exclude docs/auto_examples *
+recursive-exclude docs/auto_tutorials *
 
-global-exclude *.pyc *.o
+global-exclude *.pyc *.o *.csdf *.temp

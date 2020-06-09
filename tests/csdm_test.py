@@ -96,6 +96,7 @@ def test_csdm():
             "read_only": True,
             "tags": ["1", "2", "3"],
             "description": "Enough with the tests",
+            "application": {"csdmpy": "Some day"},
             "dimensions": [],
             "dependent_variables": [],
         }
