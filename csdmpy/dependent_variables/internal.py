@@ -68,19 +68,7 @@ class InternalDataset(BaseDependentVariable):
 
     def __eq__(self, other):
         """Overrides the default implementation"""
-        check = [
-            self._name == other._name,
-            self._unit == other._unit,
-            self._quantity_name == other._quantity_name,
-            self._encoding == other._encoding,
-            self._numeric_type == other._numeric_type,
-            self._quantity_type == other._quantity_type,
-            self._component_labels == other._component_labels,
-            self._description == other._description,
-            self._application == other._application,
-            np.allclose(self._components, other._components),
-            self._sparse_sampling == other._sparse_sampling,
-        ]
+        check = [super().__eq__(other), self._sparse_sampling == other._sparse_sampling]
         if False in check:
             return False
         return True
