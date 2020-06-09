@@ -29,6 +29,12 @@ Bug fixes
 - Fixed bug where the metadata from the ``csdm.application`` key was not serialized
   to the file when using ``csdm.save()`` method.
 
+
+Other changes
+'''''''''''''
+
+- Add a new diffusion tensor MRI dataset to the example gallery.
+
 v0.2.1
 ------
 
