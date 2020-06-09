@@ -12,13 +12,6 @@ Whats new!
   Now you can directly plot CSDM objects as an argument to the above matplotlib
   methods.
 
-Other changes
-'''''''''''''
-
-- Added ``dict()`` as an alias to the ``to_dict()`` method for all objects.
-- Added an alias of the ``cp.plot()`` function to the CSDM object as the
-  ``plot()`` method.
-
 
 v0.2.2
 ------
@@ -34,6 +27,9 @@ Other changes
 '''''''''''''
 
 - Add a new diffusion tensor MRI dataset to the example gallery.
+- Added ``dict()`` as an alias to the ``to_dict()`` method for all objects.
+- Added an alias of the ``cp.plot()`` function to the CSDM object as the
+  ``plot()`` method.
 
 v0.2.1
 ------
