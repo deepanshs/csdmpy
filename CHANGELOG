@@ -1,13 +1,41 @@
 
-v0.3.0.dev0
------------
+Upcoming additions and changes
+------------------------------
 
-- Added `dict()` as an alias to the `to_dict()` method for all objects.
+Whats new!
+''''''''''
+
+- Support for ``matplotlib.pyplot`` functions from ``CSDM`` objects.
+    - ``plot``
+    - ``imshow``
+
+  Now you can directly plot CSDM objects as an argument to the above matplotlib
+  methods.
+
+
+v0.2.2
+------
+
+Bug fixes
+'''''''''
+
+- Fixed bug where the metadata from the ``csdm.application`` key was not serialized
+  to the file when using ``csdm.save()`` method.
+
+
+Other changes
+'''''''''''''
+
+- Add a new diffusion tensor MRI dataset to the example gallery.
+- Added ``dict()`` as an alias to the ``to_dict()`` method for all objects.
 - Added an alias of the ``cp.plot()`` function to the CSDM object as the
   ``plot()`` method.
 
 v0.2.1
 ------
+
+Whats new!
+''''''''''
 
 - Add ``reciprocal_coordinates()`` and ``reciprocal_increment()`` methods to the
   `LinearDimension` class.
@@ -17,33 +45,40 @@ v0.2.1
 v0.2.0
 ------
 
-- Fixed a bug in ``cp.plot()`` method.
-- Added following methods to the `CSDM` class:
-   - ``__eq__()`` for all class
-   - ``__add__()`` = Adds two csdm object.
-   - ``__iadd__()`` = Adds two csdm objects in-place.
-   - ``__sub__()`` = Subtrace two csdm objects.
-   - ``__isub__()`` = Subtrace two csdm objects in-place.
-   - ``__mul__()`` = Multiply the components of the csdm object by a scalar.
-   - ``__imul__()`` = Multiply the components of the csdm object by a scalar in-place.
-   - ``__truvdiv__()`` = Divide the components of the csdm object by a scalar.
-   - ``__itruediv__()`` = Divide the components of the csdm object by a scalar
-     in-place.
-   - ``split()`` = Split the dependent-variables into individual csdm objects.
+Whats new!
+''''''''''
+
+- Added following methods to the ``CSDM`` class:
+    - ``__eq__()`` for all class
+    - ``__add__()`` = Adds two csdm object.
+    - ``__iadd__()`` = Adds two csdm objects in-place.
+    - ``__sub__()`` = Subtrace two csdm objects.
+    - ``__isub__()`` = Subtrace two csdm objects in-place.
+    - ``__mul__()`` = Multiply the components of the csdm object by a scalar.
+    - ``__imul__()`` = Multiply the components of the csdm object by a scalar in-place.
+    - ``__truvdiv__()`` = Divide the components of the csdm object by a scalar.
+    - ``__itruediv__()`` = Divide the components of the csdm object by a scalar
+      in-place.
+    - ``split()`` = Split the dependent-variables into individual csdm objects.
 
 - Support for Numpy dimension reduction functions
     - ``sum()``: Sum along a given dimension.
     - ``prod()``: Product along a given dimension.
 
 - Support for Numpy ufunc functions:
-   - ``sin``, ``cos``, ``tan``, ``arcsin``, ``arccos``, ``arctan``, ``sinh``, ``cosh``,
-     ``tanh``, ``arcsinh``, ``arccosh``, ``arctanh``, ``exp``, ``exp2``, ``log``,
-     ``log2``, ``log10``, ``expm1``, ``log1p``, ``negative``, ``positive``, ``square``,
-     ``absolute``, ``fabs``, ``rint``, ``sign``, ``conj``, ``conjugate``, ``sqrt``,
-     ``cbrt``, ``reciprocal``
+    - ``sin``, ``cos``, ``tan``, ``arcsin``, ``arccos``, ``arctan``, ``sinh``, ``cosh``,
+      ``tanh``, ``arcsinh``, ``arccosh``, ``arctanh``, ``exp``, ``exp2``, ``log``,
+      ``log2``, ``log10``, ``expm1``, ``log1p``, ``negative``, ``positive``, ``square``,
+      ``absolute``, ``fabs``, ``rint``, ``sign``, ``conj``, ``conjugate``, ``sqrt``,
+      ``cbrt``, ``reciprocal``
 
 - Added apodization functions.
-   - ``sin``, ``cos``, ``tan``, ``arcsin``, ``arccos``, ``arctan``, ``exp``
+    - ``sin``, ``cos``, ``tan``, ``arcsin``, ``arccos``, ``arctan``, ``exp``
+
+Bug fixes
+'''''''''
+
+- Fixed a bug in ``cp.plot()`` method.
 
 v0.1.5
 ------

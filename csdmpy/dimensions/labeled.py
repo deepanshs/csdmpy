@@ -51,9 +51,7 @@ class LabeledDimension(BaseDimension):
             check = [
                 self._count == other._count,
                 np.all(self._labels == other._labels),
-                self._label == other._label,
-                self._description == other._description,
-                self._application == other._application,
+                super().__eq__(other),
             ]
             if np.all(check):
                 return True

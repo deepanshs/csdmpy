@@ -19,6 +19,17 @@ class BaseDimension:
         self._application = application
         self._label = label
 
+    def __eq__(self, other):
+        """Check if two objects are equal"""
+        check = [
+            self._description == other._description,
+            self._application == other._application,
+            self._label == other._label,
+        ]
+        if False in check:
+            return False
+        return True
+
     @property
     def label(self):
         r"""Label associated with the dimension."""
