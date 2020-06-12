@@ -37,7 +37,7 @@ class CSDMAxes(plt.Axes):
         """Produce a figure using the `plot` method from the matplotlib library.
 
         Apply to all 1D datasets with single-component dependent-variables. For
-        multiple dependent variables, the data from individual dependent-variables are
+        multiple dependent variables, the data from individual dependent-variables is
         plotted on the same figure.
 
         Args:
@@ -80,7 +80,7 @@ class CSDMAxes(plt.Axes):
 
             r_plt = super().plot(x_, y_, **kwargs_)
         self.set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
-        self.set_xlabel(f"{x[0].axis_label} - 0")
+        self.set_xlabel(x[0].axis_label)
 
         ylabel = dv.axis_label[0] if one else "dimensionless"
         self.set_ylabel(ylabel)
@@ -94,18 +94,18 @@ class CSDMAxes(plt.Axes):
 
         Apply to all 2D datasets with either single-component (scalar),
         three-components (pixel_3), or four-components (pixel_4) dependent-variables.
-        For single-component (scalar) dependent-variable, grayscale image is produced.
+        For single-component (scalar) dependent-variable, a colormap image is produced.
         For three-components (pixel_3) dependent-variable, an RGB image is produced.
         For four-components (pixel_4) dependent-variable, an RGBA image is produced.
 
         For multiple dependent variables, the data from individual dependent-variables
-        are plotted on the same figure.
+        is plotted on the same figure.
 
         Args:
             csdm: A CSDM object of a two-dimensional dataset with scalar, pixel_3, or
                 pixel_4 quantity_type dependent variable.
             origin: The matplotlib `origin` argument. In matplotlib, the default is
-                'upper'. In csdmpy, however, we set the default to 'lower'.
+                'upper'. In csdmpy, however, the default to 'lower'.
             kwargs: Additional keyword arguments for the matplotlib imshow() method.
 
         Example
@@ -130,10 +130,120 @@ class CSDMAxes(plt.Axes):
                 raise Exception(message)
 
         if x[0].type == "linear" and x[1].type == "linear":
-            return self._call_uniform_2D(csdm, origin=origin, **kwargs)
+            return self._call_uniform_2D_image(csdm, origin=origin, **kwargs)
 
-    def _call_uniform_2D(self, csdm, **kwargs):
+    def contour(self, csdm, **kwargs):
+        """Produce a figure using the `contour` method from the matplotlib library.
 
+        Apply to all 2D datasets with a single-component (scalar) dependent-variables.
+        For multiple dependent variables, the data from individual dependent-variables
+        is plotted on the same figure.
+
+        Args:
+            csdm: A CSDM object of a two-dimensional dataset with scalar dependent
+                variable.
+            kwargs: Additional keyword arguments for the matplotlib contour() method.
+
+        Example
+        -------
+
+        >>> ax = plt.subplot(projection='csdm') # doctest: +SKIP
+        >>> ax.contour(csdm_object) # doctest: +SKIP
+        >>> plt.show() # doctest: +SKIP
+
+        """
+        x, y = csdm.dimensions, csdm.dependent_variables
+
+        message = (
+            "The function requires a 2D dataset with a single-component (scalar), "
+            "dependent variables."
+        )
+        if len(x) != 2:
+            raise Exception(message)
+        for y_ in y:
+            if len(y_.components) != 1:
+                raise Exception(message)
+
+        if x[0].type == "linear" and x[1].type == "linear":
+            return self._call_uniform_2D_contour(csdm, "contour", **kwargs)
+
+    def contourf(self, csdm, **kwargs):
+        """Produce a figure using the `contourf` method from the matplotlib library.
+
+        Apply to all 2D datasets with a single-component (scalar) dependent-variables.
+        For multiple dependent variables, the data from individual dependent-variables
+        is plotted on the same figure.
+
+        Args:
+            csdm: A CSDM object of a two-dimensional dataset with scalar dependent
+                variable.
+            kwargs: Additional keyword arguments for the matplotlib contourf() method.
+
+        Example
+        -------
+
+        >>> ax = plt.subplot(projection='csdm') # doctest: +SKIP
+        >>> ax.contourf(csdm_object) # doctest: +SKIP
+        >>> plt.show() # doctest: +SKIP
+
+        """
+        x, y = csdm.dimensions, csdm.dependent_variables
+
+        message = (
+            "The function requires a 2D dataset with a single-component (scalar), "
+            "dependent variables."
+        )
+        if len(x) != 2:
+            raise Exception(message)
+        for y_ in y:
+            if len(y_.components) != 1:
+                raise Exception(message)
+
+        if x[0].type == "linear" and x[1].type == "linear":
+            return self._call_uniform_2D_contour(csdm, "contourf", **kwargs)
+
+    def _call_uniform_2D_contour(self, csdm, fn, **kwargs):
+        kw_keys = kwargs.keys()
+
+        # set extent
+        x = csdm.dimensions
+        x0, x1 = x[0].coordinates.value, x[1].coordinates.value
+
+        # add cmap for multiple dependent variables.
+        cmaps_bool = False
+        if "cmaps" in kw_keys:
+            cmaps_bool = True
+            cmaps = kwargs.pop("cmaps")
+
+        one = True if len(csdm.dependent_variables) == 1 else False
+
+        for i, dv in enumerate(csdm.dependent_variables):
+            y = dv.components
+            if dv.quantity_type == "scalar":
+                if cmaps_bool:
+                    kwargs["cmap"] = cmaps[i]
+
+                if fn == "contour":
+                    r_plt = super().contour(x0, x1, y[0], **kwargs)
+                if fn == "contourf":
+                    r_plt = super().contourf(x0, x1, y[0], **kwargs)
+
+                label = dv.axis_label[0] if one else f"{dv.name} - {dv.axis_label[0]}"
+                cbar = plt.gcf().colorbar(r_plt, ax=self)
+                cbar.ax.minorticks_off()
+                cbar.set_label(label)
+
+        self.set_xlim(x0.min(), x0.max())
+        self.set_ylim(x1.min(), x1.max())
+        self.set_xlabel(x[0].axis_label)
+        self.set_ylabel(x[1].axis_label)
+        if one:
+            self.set_title(dv.name)
+        self.grid(color="gray", linestyle="--", linewidth=0.5)
+
+        return r_plt
+
+    def _call_uniform_2D_image(self, csdm, **kwargs):
         kw_keys = kwargs.keys()
 
         # set extent
@@ -172,8 +282,8 @@ class CSDMAxes(plt.Axes):
             if dv.quantity_type == "pixel_4":
                 r_plt = super().imshow(np.moveaxis(y.copy(), 0, -1), **kwargs)
 
-        self.set_xlabel(f"{x[0].axis_label} - 0")
-        self.set_ylabel(f"{x[1].axis_label} - 0")
+        self.set_xlabel(x[0].axis_label)
+        self.set_ylabel(x[1].axis_label)
         if one:
             self.set_title(dv.name)
         self.grid(color="gray", linestyle="--", linewidth=0.5)

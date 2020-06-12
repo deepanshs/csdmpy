@@ -21,11 +21,21 @@ y = cp.as_dependent_variable(np.diag(np.ones(5), 5), name="off-body-diagonal")
 csdm.add_dependent_variable(y)
 
 
-# Plot ========================================================================
+# Plot imshow =================================================================
 plt.figure(figsize=(5, 3.5))
 # create the axes with `projection="csdm"`
 ax = plt.subplot(projection="csdm")
-# using matplotlib plot function with csdm object.
+# use matplotlib imshow function with csdm object.
 ax.imshow(csdm, origin="upper", aspect="auto", cmaps=["Blues", "Reds"], alpha=0.5)
+plt.tight_layout()
+plt.show()
+
+
+# Plot contourf ===============================================================
+plt.figure(figsize=(5, 3.5))
+# create the axes with `projection="csdm"`
+ax = plt.subplot(projection="csdm")
+# use matplotlib contourf function with csdm object.
+ax.contourf(csdm, cmaps=["Blues", "Reds"], alpha=0.5)
 plt.tight_layout()
 plt.show()

@@ -1,9 +1,7 @@
 
-
 ===========
 Enumeration
 ===========
-
 
 .. _dimObjectSubtype_uml:
 

@@ -16,7 +16,7 @@ Plotting on the same Axes
 """""""""""""""""""""""""
 
 When multiple single-component dependent variables are present within the CSDM object,
-the data from all dependent-variables are plotted on the same axes. The name of each
+the data from all dependent-variables is plotted on the same axes. The name of each
 dependent variable is displayed within the legend.
 
 Plotting on separate Axes

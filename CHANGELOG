@@ -8,6 +8,8 @@ Whats new!
 - Support for ``matplotlib.pyplot`` functions from ``CSDM`` objects.
     - ``plot``
     - ``imshow``
+    - ``contour``
+    - ``contourf``
 
   Now you can directly plot CSDM objects as an argument to the above matplotlib
   methods.

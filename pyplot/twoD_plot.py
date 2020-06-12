@@ -19,11 +19,20 @@ y = cp.as_dependent_variable(np.diag(np.ones(10)), name="body-diagonal")
 csdm.add_dependent_variable(y)
 
 
-# Plot ========================================================================
+# Plot imshow =================================================================
 plt.figure(figsize=(5, 3.5))
 # create the axes with `projection="csdm"`
 ax = plt.subplot(projection="csdm")
-# using matplotlib plot function with csdm object.
+# use matplotlib imshow function with csdm object.
 ax.imshow(csdm, origin="upper", aspect="auto")
+plt.tight_layout()
+plt.show()
+
+# Plot contour ================================================================
+plt.figure(figsize=(5, 3.5))
+# create the axes with `projection="csdm"`
+ax = plt.subplot(projection="csdm")
+# use matplotlib contour function with csdm object.
+ax.contour(csdm)
 plt.tight_layout()
 plt.show()

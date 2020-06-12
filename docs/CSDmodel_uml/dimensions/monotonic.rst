@@ -1,7 +1,4 @@
 
-
-.. _monotonicDimension_uml:
-
 MonotonicDimension
 ^^^^^^^^^^^^^^^^^^
 

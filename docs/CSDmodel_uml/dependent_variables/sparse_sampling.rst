@@ -1,6 +1,4 @@
 
-.. _sparseSampling_uml:
-
 SparseSampling
 ^^^^^^^^^^^^^^
 

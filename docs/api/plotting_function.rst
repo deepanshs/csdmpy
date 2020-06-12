@@ -18,6 +18,8 @@ CSDMAxes
 
         ~CSDMAxes.plot
         ~CSDMAxes.imshow
+        ~CSDMAxes.contour
+        ~CSDMAxes.contourf
 
     .. rubric:: Method Documentation
 

@@ -1,8 +1,4 @@
 
-
-.. _linearDimension_uml:
-
-
 LinearDimension
 ^^^^^^^^^^^^^^^
 

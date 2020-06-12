@@ -21,7 +21,7 @@ csdm.add_dependent_variable(y)
 plt.figure(figsize=(5, 3.5))
 # create the axes with `projection="csdm"`
 ax = plt.subplot(projection="csdm")
-# using matplotlib plot function with csdm object.
+# use matplotlib plot function with csdm object.
 ax.plot(csdm)
 plt.tight_layout()
 plt.show()

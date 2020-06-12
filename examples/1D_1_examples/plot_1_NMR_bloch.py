@@ -110,7 +110,7 @@ plt.show()
 # %%
 # To return to time domain signal, once again use the :meth:`~csdmpy.CSDM.fft` method
 # on the ``fft_NMR_data`` object. We use the CSDM object's
-# :attr:`~csdmpy.CSDM.complex_fft`attribute to determine the FFT ot iFFT operation.
+# :attr:`~csdmpy.CSDM.complex_fft` attribute to determine the FFT ot iFFT operation.
 NMR_data_2 = fft_NMR_data.fft()
 
 # plot of the frequency domain data.

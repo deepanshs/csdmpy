@@ -6,7 +6,8 @@ Sparse along one dimension, 2D{1,1} dataset
 # %%
 # The following is an example [#f2]_ of a 2D{1,1} sparse dataset with two-dimensions,
 # :math:`d=2`, and two, :math:`p=2`, sparse single-component dependent-variables,
-# where the component is sparsely sampled along one dimension.
+# where the component is sparsely sampled along one dimension. The following is an
+# example of a hypercomplex acquisition of the NMR dataset.
 #
 # Let's import the CSD model data-file.
 import csdmpy as cp
@@ -36,15 +37,25 @@ x[1].to("ms")
 # **Visualizing the dataset**
 import matplotlib.pyplot as plt
 
-plt.contourf(
-    x[0].coordinates.value,
-    x[1].coordinates.value,
-    y[0].components[0].real,
-    cmap="gray_r",
-)
-plt.xlabel(x[0].axis_label)
-plt.ylabel(x[1].axis_label)
-plt.title(y[0].name)
+# split the CSDM object with two dependent variables into two CSDM objects with single
+# dependent variables.
+
+cos, sin = sparse_1d.split()
+
+# cosine data
+plt.figure(figsize=(5, 3.5))
+ax = plt.subplot(projection="csdm")
+ax.contourf(cos.real)
+plt.tight_layout()
+plt.show()
+
+# %%
+
+# sine data
+plt.figure(figsize=(5, 3.5))
+ax = plt.subplot(projection="csdm")
+ax.contourf(sin.real)
+plt.tight_layout()
 plt.show()
 
 # %%

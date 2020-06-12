@@ -62,8 +62,14 @@ Attributes
   Specialized Class
   -----------------
 
+  .. _linearDimension_uml:
+
   .. include:: linear.rst
 
+  .. _monotonicDimension_uml:
+
   .. include:: monotonic.rst
+
+  .. _labeledDimension_uml:
 
   .. include:: labeled.rst

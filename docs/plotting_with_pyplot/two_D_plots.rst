@@ -1,6 +1,6 @@
 
-2D CSDM objects with ``imshow()``
----------------------------------
+2D CSDM objects with ``imshow()\contour()\contourf()``
+------------------------------------------------------
 
 2D{1} datasets
 ''''''''''''''
@@ -16,8 +16,8 @@ Plotting on the same Axes
 """""""""""""""""""""""""
 
 When multiple single-component dependent variables are present within the CSDM object,
-the data from all dependent-variables are plotted on the same axes. The name of each
-dependent variable is displayed along the colorbar.
+the data from all dependent-variables is plotted on the same axes. The name of each
+dependent variable is displayed along the color bar.
 
 .. plot:: ../pyplot/twoD111_plot.py
    :include-source:

@@ -1,8 +1,4 @@
 
-
-.. _labeledDimension_uml:
-
-
 LabeledDimension
 ^^^^^^^^^^^^^^^^
 
