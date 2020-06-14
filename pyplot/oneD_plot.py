@@ -25,3 +25,13 @@ ax = plt.subplot(projection="csdm")
 ax.plot(csdm)
 plt.tight_layout()
 plt.show()
+
+
+# Scatter =====================================================================
+plt.figure(figsize=(5, 3.5))
+# create the axes with `projection="csdm"`
+ax = plt.subplot(projection="csdm")
+# use matplotlib plot function with csdm object.
+ax.scatter(csdm, marker="x", color="red")
+plt.tight_layout()
+plt.show()
