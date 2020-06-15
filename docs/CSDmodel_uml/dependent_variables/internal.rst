@@ -1,8 +1,4 @@
 
-
-.. _internal_uml:
-
-
 InternalDependentVariable
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 

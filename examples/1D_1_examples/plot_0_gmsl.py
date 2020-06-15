@@ -61,8 +61,12 @@ print(y[0].components[0])
 #     any plotting library to visualize their datasets.
 import matplotlib.pyplot as plt
 
-plt.figure(figsize=(6, 4))
-cp.plot(sea_level)
+plt.figure(figsize=(5, 3.5))
+ax = plt.subplot(projection="csdm")
+
+# csdmpy is compatible with matplotlib function. Use the csdm object as the argument
+# of the matplotlib function.
+ax.plot(sea_level)
 plt.tight_layout()
 plt.show()
 
@@ -88,5 +92,5 @@ plt.show()
 # %%
 # .. rubric:: Citation
 #
-# .. [#f0] Church JA, White NJ. Sea-Level Rise from the Late 19th to the Early 21st Century.
-#          Surveys in Geophysics. 2011;32:585–602. DOI:10.1007/s10712-011-9119-1
+# .. [#f0] Church JA, White NJ. Sea-Level Rise from the Late 19th to the Early 21st
+#       Century. Surveys in Geophysics. 2011;32:585–602. DOI:10.1007/s10712-011-9119-1.

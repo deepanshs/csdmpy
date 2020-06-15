@@ -1,7 +1,4 @@
 
-
-.. _external_uml:
-
 ExternalDependentVariable
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 

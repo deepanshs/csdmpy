@@ -18,7 +18,8 @@ print(GCData.data_structure)
 
 # %%
 # and the corresponding plot
-plt.figure(figsize=(6, 4))
-cp.plot(GCData)
+plt.figure(figsize=(5, 3.5))
+ax = plt.subplot(projection="csdm")
+ax.plot(GCData)
 plt.tight_layout()
 plt.show()

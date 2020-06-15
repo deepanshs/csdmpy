@@ -257,9 +257,6 @@ class BaseDependentVariable:
                 obj["component_labels"] = self._component_labels
                 break
 
-        # if print_label:
-        #     obj["component_labels"] = self._component_labels
-
         if self._application != {}:
             obj["application"] = self._application
 
@@ -268,6 +265,11 @@ class BaseDependentVariable:
             del obj["encoding"]
             return obj
 
+        self.get_proper_encoded_data(obj, filename, dataset_index)
+
+        return obj
+
+    def get_proper_encoded_data(self, obj, filename=None, dataset_index=None):
         c = self.ravel_data()
 
         if self.encoding == "none":

@@ -56,7 +56,6 @@ plt.show()
 # %%
 # .. rubric:: Citation
 #
-# .. [#f3]
-#       Srivastava DJ, Florian P, Baltisberger JH, Grandinetti PJ. Correlating geminal
-#       couplings to structure in framework silicates. Phys Chem Chem Phys. 2018;20:562–571.
-#       DOI:10.1039/C7CP06486A
+# .. [#f3] Srivastava DJ, Florian P, Baltisberger JH, Grandinetti PJ. Correlating
+#       geminal couplings to structure in framework silicates. Phys Chem Chem Phys.
+#       2018;20:562–571. DOI:10.1039/C7CP06486A

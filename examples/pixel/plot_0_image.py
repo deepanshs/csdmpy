@@ -93,6 +93,8 @@ print(y[0].component_labels[2], y[0].components[2].shape)
 # Now, to visualize the dataset as an RGB image,
 import matplotlib.pyplot as plt
 
-cp.plot(ImageData)
+ax = plt.subplot(projection="csdm")
+ax.imshow(ImageData, origin="upper")
 plt.tight_layout()
+
 plt.show()

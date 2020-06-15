@@ -1,13 +1,16 @@
 
-Upcoming additions and changes
-------------------------------
+v0.3.0
+------
 
 Whats new!
 ''''''''''
 
 - Support for ``matplotlib.pyplot`` functions from ``CSDM`` objects.
-    - ``plot``
-    - ``imshow``
+    - ``plot``,
+    - ``scatter``,
+    - ``imshow``,
+    - ``contour``, and
+    - ``contourf``
 
   Now you can directly plot CSDM objects as an argument to the above matplotlib
   methods.
@@ -30,6 +33,12 @@ Other changes
 - Added ``dict()`` as an alias to the ``to_dict()`` method for all objects.
 - Added an alias of the ``cp.plot()`` function to the CSDM object as the
   ``plot()`` method.
+
+Bug fixes
+'''''''''
+
+- Fixed a bug where the transpose of a CSDM object failed to retain the quantity_type
+  information after the transpose.
 
 v0.2.1
 ------

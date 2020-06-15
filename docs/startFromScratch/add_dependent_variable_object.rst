@@ -1,7 +1,8 @@
+.. _adding_dv:
 
-----------------------------------------------------------
-Adding instances of DependentVariable class to CSDM object
-----------------------------------------------------------
+-----------------------------------------------
+Adding DependentVariable objects to CSDM object
+-----------------------------------------------
 
 Create a new empty CSDM object following,
 

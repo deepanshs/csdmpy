@@ -223,7 +223,7 @@ def attribute_error(a, b):
 
 
 def _axis_label(label, unit=None, label_type=""):
-    if unit is not None:
+    if unit not in [None, ""]:
         if label_type == "":
             return f"{label} / ({unit})"
         # if label_type == "latex":

@@ -57,7 +57,8 @@ or appropriately multiplying the dimension object ``x2`` with a
     >>> print(x2)
     LinearDimension([0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s)
 
-The coordinates of the ``x2`` LinearDimension object,
+The coordinates of the ``x2`` LinearDimension object are
+
 .. doctest::
 
     >>> x2.coordinates

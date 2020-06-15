@@ -2,8 +2,8 @@
 """Test for the csdm object
     1) generate csdm object.
     2) split multiple dependent variables to individual objects.
-    3) add, sub, iadd, radd, isub, rsub for scalar and ScalarQuantity.
-    4) mul, imul, rmul, truediv, itruediv, rtruediv, pow, ipow for scalar and ScalarQuantity.
+    3) add, sub, iadd, radd, isub, rsub, mul, imul, for scalar and ScalarQuantity.
+    4) rmul, truediv, itruediv, rtruediv, pow, ipow for scalar and ScalarQuantity.
     5) min, max, clip, real, imag, conj, round, angle functions.
 """
 import json

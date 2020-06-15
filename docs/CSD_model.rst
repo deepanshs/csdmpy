@@ -1,6 +1,6 @@
-#######################################
-The core scientific dataset (CSD) model
-#######################################
+###########################
+Introduction to CSDM format
+###########################
 
 The core scientific dataset (CSD) model is a *light-weight*, *portable*,
 *versatile*, and *standalone* data model capable of handling a variety of

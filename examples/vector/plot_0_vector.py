@@ -42,7 +42,7 @@ print(y[0].quantity_type)
 # %%
 # **Visualizing the dataset**
 
-plt.figure(figsize=(6, 4))
+plt.figure(figsize=(5, 3.5))
 cp.plot(vector_data)
 plt.tight_layout()
 plt.show()

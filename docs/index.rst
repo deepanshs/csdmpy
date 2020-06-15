@@ -132,10 +132,11 @@ compatible with Numpy.
     installation
     getting_started
     auto_examples/index
-    startFromScratch/start
-    auto_tutorials/index
-    startFromScratch/interacting_with_csdmpy_objects
     startFromScratch/save_dataset
+    startFromScratch/start
+    startFromScratch/interacting_with_csdmpy_objects
+    using_csdm_with_pyplot
+    auto_tutorials/index
     startFromScratch/A fun example
     referenceAPI
     changelog
@@ -145,7 +146,10 @@ compatible with Numpy.
 Citation
 ^^^^^^^^
 
-.. [#f10] Srivastava D.J., Vosegaard T., Massiot D., Grandinetti P.J. (2020) Core Scientific Dataset Model: A lightweight and portable model and file format for multi-dimensional scientific data. `PLOS ONE 15(1): e0225953. <https://doi.org/10.1371/journal.pone.0225953>`_
+.. [#f10] Srivastava D.J., Vosegaard T., Massiot D., Grandinetti P.J. (2020) Core
+    Scientific Dataset Model: A lightweight and portable model and file format for
+    multi-dimensional scientific data.
+    `PLOS ONE 15(1): e0225953. <https://doi.org/10.1371/journal.pone.0225953>`_
 
 
 .. only:: html

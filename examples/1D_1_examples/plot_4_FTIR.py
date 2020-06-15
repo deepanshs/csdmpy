@@ -18,8 +18,10 @@ print(FTIR_data.data_structure)
 
 # %%
 # and the corresponding plot.
-plt.figure(figsize=(6, 4))
-cp.plot(FTIR_data, reverse_axis=[True])
+plt.figure(figsize=(5, 3.5))
+ax = plt.subplot(projection="csdm")
+ax.plot(FTIR_data)
+ax.invert_xaxis()
 plt.tight_layout()
 plt.show()
 

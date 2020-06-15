@@ -872,24 +872,16 @@ def check_sparse_sampling_key_value(input_dict):
         )
 
 
-def as_dependent_variable(
-    array, quantity_type="scalar", unit="", description="", application={}
-):
+def as_dependent_variable(array, **kwargs):
     """Generate and return a DependentVariable object from a 1D or 2D numpy array.
 
     Args:
         array: A 1D or 2D numpy array.
-        quantity_type: The quantity type of the dependent variable. See
-                :ref:`quantityType_uml` for valid quantity types.
-        unit: The unit of the dependent variable components.
-        label: The label along the dimension. The default value is an empty string.
-        description: A description of the dimension. The default value is an empty
-                string.
-        application: An application dictionary. The default is an empty dictionary.
+        kwargs: Additional keyword arguments from the DependentVariable class.
 
     Example:
         >>> array = np.arange(1e4).astype(np.complex128)
-        >>> dim_object = cp.as_dependent_variable(array, )
+        >>> dim_object = cp.as_dependent_variable(array)
         >>> print(dim_object)
         DependentVariable(
         [[0.000e+00+0.j 1.000e+00+0.j 2.000e+00+0.j ... 9.997e+03+0.j
@@ -906,10 +898,7 @@ def as_dependent_variable(
             f"Cannot convert a {array.ndim} dimensional array to a DependentVariable "
             "object."
         )
-    kwargs = {
-        "quantity_type": quantity_type,
-        "unit": unit,
-        "description": description,
-        "application": application,
-    }
+    if "quantity_type" not in kwargs.keys():
+        kwargs["quantity_type"] = "scalar"
+
     return DependentVariable(type="internal", components=array, **kwargs)

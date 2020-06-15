@@ -1,7 +1,7 @@
 
---------------------------------
-Serializing CSDM object to files
---------------------------------
+-------------------------------
+Serializing CSDM object to file
+-------------------------------
 
 An instance of a :ref:`csdm_api` object is serialized as a csdf/csdfe
 JSON-format file with the :meth:`~csdmpy.CSDM.save` method.
@@ -11,9 +11,9 @@ the `csdmpy` module uses the value of the dependent variable's
 determine the encoding type of the serialized data. There are three encoding
 types for the dependent variables:
 
-- none
-- base64
-- raw
+- ``none``
+- ``base64``
+- ``raw``
 
 .. note:: By default, all instances of
     :attr:`~csdmpy.DependentVariable` from a

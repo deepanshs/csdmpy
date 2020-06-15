@@ -53,6 +53,7 @@ needs_sphinx = "2.0"
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
+    "matplotlib.sphinxext.plot_directive",
     "sphinx.ext.doctest",
     "sphinx.ext.mathjax",
     "sphinx.ext.autosummary",

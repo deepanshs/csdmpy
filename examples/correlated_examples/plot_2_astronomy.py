@@ -3,7 +3,7 @@
 Astronomy, 2D{1,1,1} dataset (Creating image composition)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
-# sphinx_gallery_thumbnail_number = 4
+# sphinx_gallery_thumbnail_number = 2
 # %%
 # More often, the images in astronomy are a composition of datasets measured
 # at different wavelengths over an area of the sky. In this example, we
@@ -41,56 +41,31 @@ y[1].name
 y[2].name
 
 # %%
-# We use the following script to plot the dependent variables.
+# Data Visualization
+# ------------------
+#
+# For convince, let’s view this CSDM object with three dependent-variables as three
+# CSDM objects, each with a single dependent variable. We use the split() method.
+data0, data1, data2 = eagle_nebula.split()
+
+# %%
+# Here, ``data0``, ``data1``, and ``data2`` contain the dependent-variable at index
+# 0, 1, 2 of the ``eagle_nebula`` object. Let's plot the data from these dependent
+# variables.
 import matplotlib.pyplot as plt
 
+_, ax = plt.subplots(3, 1, figsize=(6, 14), subplot_kw={"projection": "csdm"})
 
-def plot_scalar(yx):
+ax[0].imshow(data0 / data0.max(), cmap="bone", vmax=0.1, aspect="auto")
+ax[1].imshow(data1 / data1.max(), cmap="bone", vmax=0.1, aspect="auto")
+ax[2].imshow(data2 / data1.max(), cmap="bone", vmax=0.1, aspect="auto")
 
-    # Set the extents of the image plot.
-    extent = [
-        x[0].coordinates[0].value,
-        x[0].coordinates[-1].value,
-        x[1].coordinates[0].value,
-        x[1].coordinates[-1].value,
-    ]
-
-    # Add the image plot.
-    y0 = yx.components[0]
-    y0 = y0 / y0.max()
-    im = plt.imshow(y0, origin="lower", extent=extent, cmap="bone", vmax=0.1)
-
-    # Add a colorbar.
-    cbar = plt.gca().figure.colorbar(im)
-    cbar.ax.set_ylabel(yx.axis_label[0])
-
-    # Set up the axes label and figure title.
-    plt.xlabel(x[0].axis_label)
-    plt.ylabel(x[1].axis_label)
-    plt.title(yx.name)
-
-    # Set up the grid lines.
-    plt.grid(color="k", linestyle="--", linewidth=0.5)
-
-    plt.tight_layout()
-    plt.show()
-
-
-# %%
-# Let's plot the dependent variables, first dependent variable,
-plot_scalar(y[0])
-
-# %%
-# second dependent variable, and
-plot_scalar(y[1])
-
-# %%
-# the third dependent variable.
-plot_scalar(y[2])
+plt.tight_layout()
+plt.show()
 
 # %%
 # Image composition
-# *****************
+# -----------------
 import numpy as np
 
 # %%

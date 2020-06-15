@@ -1,5 +1,5 @@
 =========
-CHANGELOG
+Changelog
 =========
 
 .. include:: ../CHANGELOG

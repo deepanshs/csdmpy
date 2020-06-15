@@ -95,9 +95,14 @@ Attributes
 
   Specialized Class
   -----------------
+  .. _internal_uml:
 
   .. include:: internal.rst
 
+  .. _external_uml:
+
   .. include:: external.rst
+
+  .. _sparseSampling_uml:
 
   .. include:: sparse_sampling.rst

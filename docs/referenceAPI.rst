@@ -9,6 +9,7 @@ API-Reference
     api/Dimensions
     api/DependentVariable
     api/statistics
+    api/plotting_function
     api/numpy_wrappers
 
 

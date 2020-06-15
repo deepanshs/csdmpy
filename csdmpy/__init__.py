@@ -4,28 +4,26 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import warnings
 from urllib.parse import urlparse
 
 import numpy as np
 
-from csdmpy.csdm import as_dependent_variable  # lgtm [py/import-own-module]
-from csdmpy.csdm import as_dimension  # lgtm [py/import-own-module]
-from csdmpy.csdm import CSDM  # lgtm [py/import-own-module]
-from csdmpy.csdm import DependentVariable  # lgtm [py/import-own-module]
-from csdmpy.csdm import Dimension  # lgtm [py/import-own-module]
-from csdmpy.csdm import LabeledDimension  # lgtm [py/import-own-module]
-from csdmpy.csdm import LinearDimension  # lgtm [py/import-own-module]
-from csdmpy.csdm import MonotonicDimension  # lgtm [py/import-own-module]
-from csdmpy.dependent_variables import download  # lgtm [py/import-own-module]
-from csdmpy.helper_functions import _preview  # lgtm [py/import-own-module]
-from csdmpy.numpy_wrapper import apodize  # lgtm [py/import-own-module]
-from csdmpy.tests import *  # lgtm [py/import-own-module]
-from csdmpy.units import ScalarQuantity  # lgtm [py/import-own-module]
-from csdmpy.units import string_to_quantity  # lgtm [py/import-own-module]
-from csdmpy.utils import QuantityType  # lgtm [py/import-own-module]
-from csdmpy.utils import validate  # lgtm [py/import-own-module]
-
+from .csdm import as_dependent_variable  # lgtm [py/import-own-module] # NOQA
+from .csdm import as_dimension  # lgtm [py/import-own-module] # NOQA
+from .csdm import CSDM  # lgtm [py/import-own-module] # NOQA
+from .csdm import DependentVariable  # lgtm [py/import-own-module] # NOQA
+from .csdm import Dimension  # lgtm [py/import-own-module] # NOQA
+from .csdm import LabeledDimension  # lgtm [py/import-own-module] # NOQA
+from .csdm import LinearDimension  # lgtm [py/import-own-module] # NOQA
+from .csdm import MonotonicDimension  # lgtm [py/import-own-module] # NOQA
+from .dependent_variables import download  # lgtm [py/import-own-module] # NOQA
+from .helper_functions import _preview  # lgtm [py/import-own-module] # NOQA
+from .numpy_wrapper import apodize  # lgtm [py/import-own-module] # NOQA
+from .tests import *  # lgtm [py/import-own-module] # NOQA
+from .units import ScalarQuantity  # lgtm [py/import-own-module] # NOQA
+from .units import string_to_quantity  # lgtm [py/import-own-module] # NOQA
+from .utils import QuantityType  # lgtm [py/import-own-module] # NOQA
+from .utils import validate  # lgtm [py/import-own-module] # NOQA
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -34,7 +32,7 @@ __credits__ = ["Deepansh J. Srivastava"]
 __license__ = "BSD License"
 __maintainer__ = "Deepansh J. Srivastava"
 __status__ = "Development"
-__version__ = "0.2.2"
+__version__ = "0.3.0"
 
 __all__ = [
     "parse_dict",
@@ -57,12 +55,8 @@ def _import_json(filename, verbose=False):
         return json.loads(str(content, encoding="UTF-8"))
 
 
-def parse_dict(dictionary):
-    """Parse a CSDM compliant python dictionary and return a CSDM object.
-
-        Args:
-            dictionary: A CSDM compliant python dictionary.
-    """
+def _check_csdm_root_key_value(dictionary):
+    """Check the root level key and value type of the csdm object"""
     key_list_root = dictionary.keys()
     if "CSDM" in key_list_root:
         raise KeyError(
@@ -101,27 +95,48 @@ def parse_dict(dictionary):
     _version = dictionary["csdm"]["version"]
     validate(_version, "version", str)
 
+
+def parse_dict(dictionary):
+    """Parse a CSDM compliant python dictionary and return a CSDM object.
+
+    Args:
+        dictionary: A CSDM compliant python dictionary.
+    """
+    optional_keys = [
+        "read_only",
+        "timestamp",
+        "geographic_coordinate",
+        "application",
+        "tags",
+        "description",
+    ]
+
+    _check_csdm_root_key_value(dictionary)
+
+    _version = dictionary["csdm"]["version"]
+
     if "filename" in dictionary.keys():
         filename = dictionary["filename"]
     else:
         filename = None
     csdm = CSDM(filename=filename, version=_version)
 
-    if "timestamp" in dictionary["csdm"].keys():
+    keys = dictionary["csdm"].keys()
+    if "timestamp" in keys:
         _timestamp = dictionary["csdm"]["timestamp"]
         validate(_timestamp, "timestamp", str)
         csdm._timestamp = _timestamp
 
-    if "dimensions" in key_list_csdm:
+    if "dimensions" in keys:
         for dim in dictionary["csdm"]["dimensions"]:
             csdm.add_dimension(dim)
 
-    if "dependent_variables" in key_list_csdm:
+    if "dependent_variables" in keys:
         for dat in dictionary["csdm"]["dependent_variables"]:
             csdm.add_dependent_variable(dat)
 
     for key in optional_keys:
-        if key in key_list_csdm:
+        if key in keys:
             setattr(csdm, "_" + key, dictionary["csdm"][key])
 
     return csdm
@@ -291,9 +306,12 @@ def plot(csdm_object, reverse_axis=None, range=None, **kwargs):
 
             - The 1D{1} scalar dataset use the plt.plot() method.
             - The 1D{2} vector dataset use the plt.quiver() method.
-            - The 2D{1} scalar dataset use the plt.imshow() method if the two dimensions have a `linear` subtype. If any one of the dimension is `monotonic`, plt.NonUniformImage() method is used instead.
+            - The 2D{1} scalar dataset use the plt.imshow() method if the two
+              dimensions have a `linear` subtype. If any one of the dimension is
+              `monotonic`, plt.NonUniformImage() method is used instead.
             - The 2D{2} vector dataset use the plt.quiver() method.
-            - The 2D{3} pixel dataset use the plt.imshow(), assuming the pixel dataset as an RGB image.
+            - The 2D{3} pixel dataset use the plt.imshow(), assuming the pixel dataset
+              as an RGB image.
 
     Returns:
         A matplotlib figure instance.
