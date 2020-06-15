@@ -1,14 +1,15 @@
 
-Upcoming additions and changes
-------------------------------
+v0.3.0
+------
 
 Whats new!
 ''''''''''
 
 - Support for ``matplotlib.pyplot`` functions from ``CSDM`` objects.
-    - ``plot``
-    - ``imshow``
-    - ``contour``
+    - ``plot``,
+    - ``scatter``,
+    - ``imshow``,
+    - ``contour``, and
     - ``contourf``
 
   Now you can directly plot CSDM objects as an argument to the above matplotlib

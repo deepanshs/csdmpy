@@ -28,4 +28,4 @@ and higher. PIP is the easiest way to install python packages.
 
 .. code-block:: bash
 
-    $ pip install csdmpy
+    $ pip install csdmpy -U
