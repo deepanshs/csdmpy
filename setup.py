@@ -15,13 +15,12 @@ with open("csdmpy/__init__.py", "r") as f:
 
 # What packages are required for this module to be executed?
 required = [
-    "numpy>=1.16",
+    "numpy>=1.17",
     "setuptools>=27.3",
     "astropy>=3.0",
     "requests>=2.21.0",
-    "matplotlib>=3.0",
 ]
-
+extras = {"matplotlib": ["matplotlib>=3.0"]}
 setup_requires = ["setuptools>=27.3"]
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -33,6 +32,7 @@ try:
         long_description = "\n" + f.read()
 except FileNotFoundError:
     long_description = ""
+
 
 setup(
     name="csdmpy",
@@ -47,6 +47,7 @@ setup(
     packages=find_packages(),
     install_requires=required,
     setup_requires=setup_requires,
+    extras_require=extras,
     tests_require=["pytest", "pytest-runner"],
     include_package_data=True,
     license="BSD-3-Clause",
