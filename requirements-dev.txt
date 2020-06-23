@@ -25,4 +25,4 @@ sphinxjp.themes.basicstrap
 sphinx>=2.0
 sphinx-gallery>=0.6.2
 pillow>=7.1.2  # for sphinx-gallery images
-sphinx_copybutton>=0.2.11
+sphinx_copybutton>=0.2.12
