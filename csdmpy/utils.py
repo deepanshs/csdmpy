@@ -33,6 +33,21 @@ literals_quantity_type_ = [
     "symmetric_matrix_n",
 ]
 
+numpy_scalars = (
+    np.uint8,
+    np.uint16,
+    np.uint32,
+    np.uint64,
+    np.int8,
+    np.int16,
+    np.int32,
+    np.int64,
+    np.float32,
+    np.float64,
+    np.complex64,
+    np.complex128,
+)
+
 
 class QuantityType:
     """
@@ -330,6 +345,9 @@ def check_scalar_object(other, operator=""):
         int, float, complex, np.ndarray, Quantity, or ScalarQuantity.
         Returns: The other object.
     """
+    if isinstance(other, numpy_scalars):
+        return other
+
     if not isinstance(
         other, (int, float, complex, np.ndarray, Quantity, ScalarQuantity)
     ):
