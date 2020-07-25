@@ -1,3 +1,11 @@
+v0.3.1
+------
+
+Bug fixes
+'''''''''
+
+- Bugfix regarding the phase multiplier for the ``CSDM.fft()`` methods where an
+  incorrect phase was multiplied to the signal vector.
 
 v0.3.0
 ------
@@ -24,7 +32,8 @@ Bug fixes
 
 - Fixed bug where the metadata from the ``csdm.application`` key was not serialized
   to the file when using ``csdm.save()`` method.
-
+- Fixed a bug where the transpose of a CSDM object failed to retain the quantity_type
+  information after the transpose.
 
 Other changes
 '''''''''''''
@@ -34,11 +43,6 @@ Other changes
 - Added an alias of the ``cp.plot()`` function to the CSDM object as the
   ``plot()`` method.
 
-Bug fixes
-'''''''''
-
-- Fixed a bug where the transpose of a CSDM object failed to retain the quantity_type
-  information after the transpose.
 
 v0.2.1
 ------
