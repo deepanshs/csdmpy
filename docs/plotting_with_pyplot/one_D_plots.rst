@@ -1,5 +1,5 @@
 
-1D CSDM objects with ``plot()/scatter()``
+1D CSDM objects with ``plot()|scatter()``
 -----------------------------------------
 
 1D{1} datasets

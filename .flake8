@@ -1,7 +1,6 @@
 [flake8]
 ignore= E402
 max-line-length = 88
-; exclude = .eggs,*.egg,build, csdmpy/__init__.py,
 max-complexity = 10
 select = C,E,F,W,N8
 count = True

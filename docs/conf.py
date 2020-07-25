@@ -142,6 +142,9 @@ intersphinx_mapping = {
     "astropy": ("https://docs.astropy.org/en/stable/", None),
 }
 
+copybutton_prompt_text = ">>> |\\$ |\\[\\d*\\]: |\\.\\.\\.: |[.][.][.] "
+copybutton_prompt_is_regexp = True
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
@@ -338,4 +341,4 @@ epub_exclude_files = ["search.html"]
 
 
 def setup(app):
-    app.add_stylesheet("style.css")
+    app.add_css_file("style.css")

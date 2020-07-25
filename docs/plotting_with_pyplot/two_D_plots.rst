@@ -1,5 +1,5 @@
 
-2D CSDM objects with ``imshow()\contour()\contourf()``
+2D CSDM objects with ``imshow()|contour()|contourf()``
 ------------------------------------------------------
 
 2D{1} datasets
