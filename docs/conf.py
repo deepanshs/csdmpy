@@ -142,7 +142,7 @@ intersphinx_mapping = {
     "astropy": ("https://docs.astropy.org/en/stable/", None),
 }
 
-copybutton_prompt_text = ">>> |\\\\$ |\\[\\d*\\]: |\\.\\.\\.: |[.][.][.] "
+copybutton_prompt_text = ">>> |\\$ |\\[\\d*\\]: |\\.\\.\\.: |[.][.][.] "
 copybutton_prompt_is_regexp = True
 
 # Add any paths that contain templates here, relative to this directory.

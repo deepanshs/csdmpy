@@ -467,3 +467,7 @@ tr td {
     overflow-x: hidden;
   }
 }
+
+.doctest.highlight-default {
+  margin: 1em 0;
+}

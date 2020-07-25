@@ -295,10 +295,20 @@ class LinearDimension(BaseQuantitativeDimension):
 
     def reciprocal_coordinates(self):
         """Return reciprocal coordinates assuming Nyquist-shannan theorem."""
+        # count = self._count
+        # increment = 1.0 / (count * self._increment)
+        coordinates_offset = self.reciprocal._coordinates_offset
+        # coordinates = np.arange(count) * increment + coordinates_offset
+        # if self.complex_fft:
+        #     return coordinates
+        return self._reciprocal_coordinates() + coordinates_offset
+
+    def _reciprocal_coordinates(self):
+        """Return reciprocal coordinates assuming Nyquist-shannan theorem
+        without the coordinates offset."""
         count = self._count
         increment = 1.0 / (count * self._increment)
-        coordinates_offset = self.reciprocal._coordinates_offset
-        coordinates = np.arange(count) * increment + coordinates_offset
+        coordinates = np.arange(count) * increment
         if self.complex_fft:
             return coordinates
         return coordinates - int(count / 2) * increment

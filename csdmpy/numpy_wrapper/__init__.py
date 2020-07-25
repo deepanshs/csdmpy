@@ -22,14 +22,17 @@ def fft(csdm, axis=0):
         dimension_object = dimension_object.subtype
 
     unit_in = dimension_object._unit
+    # the following coordinates does not include the coordinates offset and have are
+    # given in the vase unit of the dimension.
     coordinates = dimension_object._coordinates.to(unit_in).value
     coordinates_offset = dimension_object._coordinates_offset.to(unit_in).value
 
     unit_out = (1 / unit_in).unit
-    coordinates_res = dimension_object.reciprocal_coordinates().to(unit_out).value
-    coordinates_offset_res = dimension_object.reciprocal._coordinates_offset.to(
-        unit_out
-    ).value
+    # the following coordinates does not include the coordinates offset and have are
+    # given in the vase unit of the dimension.
+    coordinates_res = dimension_object._reciprocal_coordinates().to(unit_out).value
+    coordinates_offset_res = dimension_object.reciprocal._coordinates_offset
+    coordinates_offset_res = coordinates_offset_res.to(unit_out).value
 
     ndim = len(csdm_new.dimensions)
 
