@@ -914,6 +914,9 @@ def _linear_dimension(array, unit, className="LinearDimension", **kwargs):
         raise ValueError(f"Invalid array for {className} object.")
 
     if np.allclose(np.diff(array, 1), increment):
+
+        if str(unit) != "":
+            unit = f"({unit})"
         return LinearDimension(
             count=array.size,
             increment=f"{increment} {unit}",

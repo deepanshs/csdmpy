@@ -85,3 +85,38 @@ def test_fft_2():
         )
 
         ifft_process(csdm)
+
+
+def test_fft_2D_1():
+    test_data = np.ones((40, 50))
+    csdm_object = cp.CSDM(
+        dependent_variables=[cp.as_dependent_variable(test_data)],
+        dimensions=[
+            cp.LinearDimension(count=50, increment="1 m"),
+            cp.LinearDimension(count=40, increment="1 s"),
+        ],
+    )
+    csdm_object_fft = csdm_object.fft(axis=0)
+    csdm_object_2 = cp.CSDM(
+        dependent_variables=[cp.as_dependent_variable(np.ones(50))],
+        dimensions=[cp.LinearDimension(count=50, increment="1 m")],
+    )
+    csdm_object_2_fft = csdm_object_2.fft()
+
+    assert np.allclose(
+        csdm_object_fft[:, 0].dependent_variables[0].components,
+        csdm_object_2_fft.dependent_variables[0].components,
+    )
+
+    csdm_object_fft = csdm_object.fft(axis=1)
+
+    csdm_object_1 = cp.CSDM(
+        dependent_variables=[cp.as_dependent_variable(np.ones(40))],
+        dimensions=[cp.LinearDimension(count=40, increment="1 s")],
+    )
+    csdm_object_1_fft = csdm_object_1.fft()
+
+    assert np.allclose(
+        csdm_object_fft[0].dependent_variables[0].components,
+        csdm_object_1_fft.dependent_variables[0].components,
+    )

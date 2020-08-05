@@ -10,14 +10,14 @@ def fft(csdm, axis=0):
     """Perform a FFT along the given `dimension=axis`."""
     index = _check_dimension_indices(len(csdm.dimensions), axis)[0]
     # for index in indexes:
-    if csdm.dimensions[index].type != "linear":
+    if csdm.dimensions[axis].type != "linear":
         raise NotImplementedError(
             f"The FFT method is not available for Dimension objects with "
-            f"subtype, {csdm.dimensions[index].type}."
+            f"subtype, {csdm.dimensions[axis].type}."
         )
 
     csdm_new = csdm.astype(np.complex128)
-    dimension_object = csdm_new.dimensions[index]
+    dimension_object = csdm_new.dimensions[axis]
     if not isinstance(dimension_object, cp.LinearDimension):
         dimension_object = dimension_object.subtype
 
