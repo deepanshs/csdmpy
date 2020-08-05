@@ -1,3 +1,13 @@
+
+v0.3.2
+------
+
+Bug fixes
+'''''''''
+
+- Bugfix in fft method when applied to multi-dimensional CSDM objects.
+- Added new tutorial examples.
+
 v0.3.1
 ------
 
