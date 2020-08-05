@@ -127,7 +127,8 @@ sphinx_gallery_conf = {
             "../examples/pixel",
             "../examples/correlated_examples",
             "../examples/sparse",
-            "../tutorials/generating_dataset",
+            "../tutorials/1D_datasets",
+            "../tutorials/2D_datasets",
         ]
     ),
     "reference_url": {

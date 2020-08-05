@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Linear and Monotonic dimensions
--------------------------------
+2D{1} dataset with linear and monotonic dimensions
+--------------------------------------------------
 """
 # %%
 # In the following example, we illustrate how one can covert a Numpy array into
@@ -15,19 +15,13 @@ import csdmpy as cp
 # Let's generate a 2D NumPy array of random numbers as our dataset.
 data = np.random.rand(8192).reshape(32, 256)
 
-# %%
-# To convert this array into a csdm object, use the :meth:`~csdmpy.as_csdm`
-# method,
-data_csdm = cp.as_csdm(data)
-print(data_csdm.dimensions)
 
 # %%
-# This generates a 2D{1} dataset, that is, a two-dimensional dataset with a
-# single one-component dependent variable. The two dimensions are, by default,
-# set as the LinearDimensions of the unit interval.
-#
-# You may set the proper dimensions by generating the appropriate Dimension
-# objects and replacing the default dimensions in the ``data_csdm`` object.
+# Create the DependentVariable object from the numpy object.
+dv = cp.as_dependent_variable(data, unit="J/(mol K)")
+
+# %%
+# Create the two Dimension objects.
 d0 = cp.LinearDimension(
     count=256, increment="15.23 µs", coordinates_offset="-1.95 ms", label="t1"
 )
@@ -45,20 +39,17 @@ d1 = cp.as_dimension(array, unit="µs", label="t2")
 # scale. To convert this array into a Dimension object, we use the
 # :meth:`~csdmpy.as_dimension` method.
 #
-# Now, replace the dimension objects in ``data_csdm`` with the new ones.
-data_csdm.dimensions[0] = d0
-data_csdm.dimensions[1] = d1
-
-# %%
-print(data_csdm.dimensions)
+# Creating the CSDM object.
+csdm_object = cp.CSDM(dependent_variables=[dv], dimensions=[d0, d1])
+print(csdm_object.dimensions)
 
 # %%
 # Plot of the dataset.
 plt.figure(figsize=(5, 3.5))
-cp.plot(data_csdm)
+cp.plot(csdm_object)
 plt.tight_layout()
 plt.show()
 
 # %%
 # To serialize the file, use the save method.
-data_csdm.save("filename.csdf")
+csdm_object.save("2D_1_dataset.csdf")
