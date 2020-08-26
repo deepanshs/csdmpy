@@ -19,7 +19,9 @@ CSDM
       ~CSDM.timestamp
       ~CSDM.geographic_coordinate
       ~CSDM.dimensions
+      ~CSDM.x
       ~CSDM.dependent_variables
+      ~CSDM.y
       ~CSDM.application
       ~CSDM.data_structure
       ~CSDM.filename
@@ -29,7 +31,9 @@ CSDM
       :nosignatures:
 
       ~CSDM.add_dimension
+      ~CSDM.add_x
       ~CSDM.add_dependent_variable
+      ~CSDM.add_y
       ~CSDM.dict
       ~CSDM.to_dict
       ~CSDM.dumps
@@ -45,6 +49,7 @@ CSDM
       ~CSDM.real
       ~CSDM.imag
       ~CSDM.shape
+      ~CSDM.size
       ~CSDM.T
 
    .. rubric:: Numpy compatible method summary
@@ -71,7 +76,9 @@ CSDM
    .. autoattribute:: timestamp
    .. autoattribute:: geographic_coordinate
    .. autoattribute:: dimensions
+   .. autoattribute:: x
    .. autoattribute:: dependent_variables
+   .. autoattribute:: y
    .. autoattribute:: application
    .. autoattribute:: data_structure
    .. autoattribute:: filename
@@ -81,12 +88,15 @@ CSDM
    .. autoattribute:: real
    .. autoattribute:: imag
    .. autoattribute:: shape
+   .. autoattribute:: size
    .. autoattribute:: T
 
    .. rubric:: Methods documentation
 
    .. automethod:: add_dimension
+   .. automethod:: add_x
    .. automethod:: add_dependent_variable
+   .. automethod:: add_y
    .. automethod:: dict
    .. automethod:: to_dict
    .. automethod:: dumps

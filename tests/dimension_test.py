@@ -24,6 +24,9 @@ def test_linear_new():
 
     # test for attributes
 
+    assert data.dependent_variables == data.y
+    assert data.dimensions == data.x
+
     # type
     assert data.dimensions[0].type == "linear"
 
@@ -68,12 +71,14 @@ def test_linear_new():
     assert str(data.dimensions[0].period) == "inf m / s"
     assert data.dimensions[0].complex_fft is False
     assert np.all(data.dimensions[0].coordinates.value == np.arange(10) * 10.0 + 5.0)
+    assert np.all(data.x[0].coords.value == np.arange(10) * 10.0 + 5.0)
 
     # count
     assert data.dimensions[0].count == 10
     data.dimensions[0].count = 12
     assert data.dimensions[0].count == 12
     assert np.all(data.dimensions[0].coordinates.value == np.arange(12) * 10.0 + 5.0)
+    assert np.all(data.x[0].coords.value == np.arange(12) * 10.0 + 5.0)
     assert np.all(
         data.dimensions[0].absolute_coordinates.value == np.arange(12) * 10.0 + 5.0
     )
@@ -83,6 +88,7 @@ def test_linear_new():
     data.dimensions[0].origin_offset = "1 km/s"
     assert str(data.dimensions[0].origin_offset) == "1.0 km / s"
     assert np.all(data.dimensions[0].coordinates.value == np.arange(12) * 10.0 + 5.0)
+    assert np.all(data.x[0].coords.value == np.arange(12) * 10.0 + 5.0)
 
     test_with = np.arange(12) * 10.0 + 5.0 + 1000.0
     assert np.all(data.dimensions[0].absolute_coordinates.value == test_with)
@@ -90,6 +96,7 @@ def test_linear_new():
     data.dimensions[0].increment = "20 m/s"
     assert str(data.dimensions[0].increment) == "20.0 m / s"
     assert np.all(data.dimensions[0].coordinates.value == np.arange(12) * 20.0 + 5.0)
+    assert np.all(data.x[0].coords.value == np.arange(12) * 20.0 + 5.0)
 
     test_with = np.arange(12) * 20.0 + 5.0 + 1000.0
     assert np.all(data.dimensions[0].absolute_coordinates.value == test_with)
@@ -100,6 +107,7 @@ def test_linear_new():
     assert np.all(
         data.dimensions[0].coordinates.value == (np.arange(12) - 6) * 20.0 + 5.0
     )
+    assert np.all(data.x[0].coords.value == (np.arange(12) - 6) * 20.0 + 5.0)
 
     test_with = (np.arange(12) - 6) * 20.0 + 5.0 + 1000.0
     assert np.all(data.dimensions[0].absolute_coordinates.value == test_with)
@@ -107,6 +115,9 @@ def test_linear_new():
     error = "The attribute cannot be modifed for Dimension objects with"
     with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
         data.dimensions[0].coordinates = [1, 3]
+
+    with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
+        data.x[0].coords = [1, 3]
 
     data.dimensions[0].reciprocal.description = "blah blah"
 
@@ -212,11 +223,13 @@ def test_linearDimension():
 
     freq.to("kHz")
     assert np.allclose(freq.coordinates.value, (np.arange(10) * 0.1 + 1))
+    assert np.allclose(freq.coords.value, (np.arange(10) * 0.1 + 1))
 
     freq.to("ppm", "nmr_frequency_ratio")
     assert np.allclose(
         freq.coordinates.value, (np.arange(10) * 100 + 1000) / (1 - 0.001)
     )
+    assert np.allclose(freq.coords.value, (np.arange(10) * 100 + 1000) / (1 - 0.001))
 
     freq.origin_offset = "0 Hz"
     assert str(freq.origin_offset) == "0.0 Hz"
@@ -231,6 +244,9 @@ def test_linearDimension():
     with pytest.raises(ZeroDivisionError, match=error):
         freq.coordinates
 
+    with pytest.raises(ZeroDivisionError, match=error):
+        freq.coords
+
 
 # monotonic dimension
 def test_monotonic_new():
@@ -241,106 +257,116 @@ def test_monotonic_new():
         "coordinates": ["1 m", "100 m", "1 km", "1 Gm", "0.25 lyr"],
     }
     data.add_dimension(dim)
+    data.add_x(dim)
 
-    assert data.dimensions[0].is_quantitative() is True
+    for dim in data.dimensions:
+        assert dim.is_quantitative() is True
 
-    # description
-    assert data.dimensions[0].description == "Far far away."
-    data.dimensions[0].description = "A galaxy far far away."
-    assert data.dimensions[0].description == "A galaxy far far away."
+        # description
+        assert dim.description == "Far far away."
+        dim.description = "A galaxy far far away."
+        assert dim.description == "A galaxy far far away."
 
-    error = "Expecting an instance of type"
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
-        data.dimensions[0].description = 12
+        error = "Expecting an instance of type"
+        with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+            dim.description = 12
 
-    # dimension type
-    assert data.dimensions[0].type == "monotonic"
+        # dimension type
+        assert dim.type == "monotonic"
 
-    # values
-    assert data.dimensions[0].subtype._values == [
-        "1 m",
-        "100 m",
-        "1 km",
-        "1 Gm",
-        "0.25 lyr",
-    ]
+        # values
+        assert dim.subtype._values == [
+            "1 m",
+            "100 m",
+            "1 km",
+            "1 Gm",
+            "0.25 lyr",
+        ]
 
-    # increment
-    error = "'MonotonicDimension' object has no attribute 'increment'"
-    with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
-        data.dimensions[0].increment
+        # increment
+        error = "'MonotonicDimension' object has no attribute 'increment'"
+        with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
+            dim.increment
 
-    # label
-    assert data.dimensions[0].label == ""
-    data.dimensions[0].label = "some string"
-    assert data.dimensions[0].label == "some string"
+        # label
+        assert dim.label == ""
+        dim.label = "some string"
+        assert dim.label == "some string"
 
-    error = "Expecting an instance of type"
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
-        data.dimensions[0].label = {}
+        error = "Expecting an instance of type"
+        with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+            dim.label = {}
 
-    # count
-    assert data.dimensions[0].count == 5
-    error = "Cannot set the count,"
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
-        data.dimensions[0].count = 12
+        # count
+        assert dim.count == 5
+        error = "Cannot set the count,"
+        with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+            dim.count = 12
 
-    error = "Expecting an instance of type"
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
-        data.dimensions[0].count = "12"
+        error = "Expecting an instance of type"
+        with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+            dim.count = "12"
 
-    # coordinates_offset
-    error = "`MonotonicDimension` has no attribute `coordinates_offset`."
-    with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
-        data.dimensions[0].coordinates_offset
+        # coordinates_offset
+        error = "`MonotonicDimension` has no attribute `coordinates_offset`."
+        with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
+            dim.coordinates_offset
 
-    error = "can't set attribute"
-    with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
-        data.dimensions[0].coordinates_offset = "1"
+        error = "can't set attribute"
+        with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
+            dim.coordinates_offset = "1"
 
-    # origin offset
-    assert str(data.dimensions[0].origin_offset) == "0.0 m"
+        # origin offset
+        assert str(dim.origin_offset) == "0.0 m"
 
-    data.dimensions[0].origin_offset = ScalarQuantity("3.1415 m")
-    assert str(data.dimensions[0].origin_offset) == "3.1415 m"
+        dim.origin_offset = ScalarQuantity("3.1415 m")
+        assert str(dim.origin_offset) == "3.1415 m"
 
-    data.dimensions[0].origin_offset = "1 lyr"
-    assert str(data.dimensions[0].origin_offset) == "1.0 lyr"
+        dim.origin_offset = "1 lyr"
+        assert str(dim.origin_offset) == "1.0 lyr"
 
-    error = "Expecting an instance of type"
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
-        data.dimensions[0].origin_offset = {"12 m"}
+        error = "Expecting an instance of type"
+        with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+            dim.origin_offset = {"12 m"}
 
-    # quantity_name
-    assert data.dimensions[0].quantity_name == "length"
+        # quantity_name
+        assert dim.quantity_name == "length"
 
-    error = "This attribute is not yet implemented"
-    with pytest.raises(NotImplementedError, match=".*{0}.*".format(error)):
-        data.dimensions[0].quantity_name = "area/length"
+        error = "This attribute is not yet implemented"
+        with pytest.raises(NotImplementedError, match=".*{0}.*".format(error)):
+            dim.quantity_name = "area/length"
 
-    # period
-    assert str(data.dimensions[0].period) == "inf m"
-    data.dimensions[0].period = "Infinity m"
-    assert str(data.dimensions[0].period) == "inf m"
-    data.dimensions[0].period = "20 m^2/m"
-    assert str(data.dimensions[0].period) == "20.0 m"
-    data.dimensions[0].period = "(1/0) m^5/m^4"
-    assert str(data.dimensions[0].period) == "inf m"
-    data.dimensions[0].period = 1 * u.Unit("m^5/m^4")
-    assert str(data.dimensions[0].period) == "1.0 m"
+        # period
+        assert str(dim.period) == "inf m"
+        dim.period = "Infinity m"
+        assert str(dim.period) == "inf m"
+        dim.period = "20 m^2/m"
+        assert str(dim.period) == "20.0 m"
+        dim.period = "(1/0) m^5/m^4"
+        assert str(dim.period) == "inf m"
+        dim.period = 1 * u.Unit("m^5/m^4")
+        assert str(dim.period) == "1.0 m"
 
-    error = "Expecting an instance of type `str` for period, got `int`."
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
-        data.dimensions[0].period = 1
+        error = "Expecting an instance of type `str` for period, got `int`."
+        with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+            dim.period = 1
 
-    # fft output order
-    error = "'MonotonicDimension' object has no attribute 'complex_fft'"
-    with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
-        data.dimensions[0].complex_fft
+        # fft output order
+        error = "'MonotonicDimension' object has no attribute 'complex_fft'"
+        with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
+            dim.complex_fft
 
     # coordinates
     assert np.allclose(
         data.dimensions[0].coordinates.value,
+        np.asarray(
+            [1.00000000e00, 1.00000000e02, 1.00000000e03, 1.00000000e09, 2.36518262e15]
+        ),
+    )
+
+    # coords
+    assert np.allclose(
+        data.x[0].coords.value,
         np.asarray(
             [1.00000000e00, 1.00000000e02, 1.00000000e03, 1.00000000e09, 2.36518262e15]
         ),
@@ -355,7 +381,9 @@ def test_monotonic_new():
     )
 
     data.dimensions[0].application = {"go": "in"}
+    data.dimensions[1].application = {"go": "out"}
     data.dimensions[0].reciprocal.description = "blah"
+    data.dimensions[1].reciprocal.description = "1/blah"
 
     assert data.dimensions[0].reciprocal.description == "blah"
 
@@ -376,7 +404,21 @@ def test_monotonic_new():
                         "description": "blah",
                         "quantity_name": "wavenumber",
                     },
-                }
+                },
+                {
+                    "type": "monotonic",
+                    "description": "A galaxy far far away.",
+                    "coordinates": ["1 m", "100 m", "1 km", "1 Gm", "0.25 lyr"],
+                    "origin_offset": "1.0 lyr",
+                    "quantity_name": "length",
+                    "period": "1.0 m",
+                    "label": "some string",
+                    "application": {"go": "out"},
+                    "reciprocal": {
+                        "description": "1/blah",
+                        "quantity_name": "wavenumber",
+                    },
+                },
             ],
             "dependent_variables": [],
         }
@@ -394,9 +436,12 @@ def test_monotonic_new():
     error = r"The unit 's' \(time\) is inconsistent with the unit 'm' \(length\)"
     with pytest.raises(Exception, match=".*{0}.*".format(error)):
         data.dimensions[0].coordinates = ["1s", "2s"]
+    with pytest.raises(Exception, match=".*{0}.*".format(error)):
+        data.x[0].coords = ["1s", "2s"]
 
     data.dimensions[0].coordinates = ["1m", "2m"]
     assert np.allclose(data.dimensions[0].coordinates.value, np.asarray([1, 2]))
+    assert np.allclose(data.x[0].coords.value, np.asarray([1, 2]))
 
     # check equality
     dim1 = data.dimensions[0].copy()
@@ -431,6 +476,7 @@ def test_monotonicDimension():
 
     b.count = 1
     assert b.coordinates.value == [1]
+    assert b.coords.value == [1]
 
     ratio = cp.as_dimension([1, 10], type="monotonic") * cp.ScalarQuantity("Hz")
     ratio.origin_offset = "1 MHz"
@@ -439,19 +485,26 @@ def test_monotonicDimension():
     ratio.to("ppm", "nmr_frequency_ratio")
 
     assert np.allclose(ratio.coordinates.value, np.asarray([1.0, 10.0]) / (1.0 - 1e-6))
+    assert np.allclose(ratio.coords.value, np.asarray([1.0, 10.0]) / (1.0 - 1e-6))
 
     ratio.coordinates = ["0 Hz", "10 Hz"]
+    ratio.coords = ["0 Hz", "10 Hz"]
 
     assert np.allclose(ratio.coordinates.value, [0.0, 10])
+    assert np.allclose(ratio.coords.value, [0.0, 10])
 
     error = r"The unit '' \(dimensionless\) is inconsistent with the unit 'Hz'"
     with pytest.raises(Exception, match=".*{0}.*".format(error)):
         ratio.coordinates = ["0 ", "10 "]
+    with pytest.raises(Exception, match=".*{0}.*".format(error)):
+        ratio.coords = ["0 ", "10 "]
 
     ratio.origin_offset = "0 Hz"
     error = "Cannot convert the coordinates to ppm."
     with pytest.raises(ZeroDivisionError, match=".*{0}.*".format(error)):
         ratio.coordinates
+    with pytest.raises(ZeroDivisionError, match=".*{0}.*".format(error)):
+        ratio.coords
 
     assert ratio.axis_label == "frequency / (ppm)"
 
@@ -463,6 +516,7 @@ def test_monotonicDimension():
 
     ratio.to("MHz")
     assert np.allclose(ratio.coordinates.value, np.asarray([0.0, 10.0e-6]))
+    assert np.allclose(ratio.coords.value, np.asarray([0.0, 10.0e-6]))
 
     assert ratio.axis_label == "shift / (MHz)"
 
@@ -490,6 +544,7 @@ def test_labeled_new():
 
     assert data.dimensions[0].labels[0] == "m"
     assert data.dimensions[0].coordinates[-1] == "a"
+    assert data.x[0].coords[-1] == "a"
 
     error = "A list of labels is required"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
@@ -507,6 +562,7 @@ def test_labeled_new():
 
     data.dimensions[0].coordinates = ["a", "b", "c"]
     assert data.dimensions[0].coordinates[-1] == "c"
+    assert data.x[0].coords[-1] == "c"
 
     dict1 = {
         "csdm": {
@@ -573,6 +629,7 @@ def test_as_dimension():
 
     dim = cp.as_dimension(a, unit="s")
     assert np.allclose(dim.coordinates.value, a)
+    assert np.allclose(dim.coords.value, a)
 
     # linear
     error = "Invalid array for Dimension object."
@@ -595,9 +652,11 @@ def test_as_dimension():
 
     dim = cp.as_dimension(monotonic, unit="s")
     assert np.allclose(dim.coordinates.value, monotonic)
+    assert np.allclose(dim.coords.value, monotonic)
 
     dim = cp.as_dimension(monotonic, unit="s", type="monotonic")
     assert np.allclose(dim.coordinates.value, monotonic)
+    assert np.allclose(dim.coords.value, monotonic)
 
     error = "Invalid array for Dimension object."
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
@@ -611,9 +670,11 @@ def test_as_dimension():
 
     dim = cp.as_dimension(list("abcd"))
     assert np.all(dim.coordinates == list("abcd"))
+    assert np.all(dim.coords == list("abcd"))
 
     dim = cp.as_dimension(list("abcd"), type="labeled")
     assert np.all(dim.coordinates == list("abcd"))
+    assert np.all(dim.coords == list("abcd"))
 
     # error
     error = "Invalid value for `type`. Allowed values are"

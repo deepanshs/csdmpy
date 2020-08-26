@@ -366,6 +366,15 @@ class Dimension:
         self.subtype.coordinates = value
 
     @property
+    def coords(self):
+        """Alias for the `coordinates` attribute."""
+        return self.coordinates
+
+    @coords.setter
+    def coords(self, value):
+        self.coordinates = value
+
+    @property
     def data_structure(self):
         r"""
         Json serialized string describing the Dimension class instance.

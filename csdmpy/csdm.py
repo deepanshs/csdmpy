@@ -631,8 +631,18 @@ class CSDM:
         return self._dimensions
 
     @property
+    def x(self):
+        """Alias for the dimensions attribute."""
+        return self._dimensions
+
+    @property
     def dependent_variables(self):
         """Tuple of the :ref:`dv_api` instances."""
+        return self._dependent_variables
+
+    @property
+    def y(self):
+        """Alias for the dependent_variables attribute."""
         return self._dependent_variables
 
     @property
@@ -736,6 +746,11 @@ class CSDM:
         return tuple([item.count for item in self.dimensions])
 
     @property
+    def size(self):
+        """Return the size of the dependent_variable components."""
+        return np.prod([item.count for item in self.dimensions])
+
+    @property
     def ndim(self):
         """Return the total number of dimensions."""
         return len(self.dimensions)
@@ -814,6 +829,10 @@ class CSDM:
 
         self._dimensions += [Dimension(*args, **kwargs)]
 
+    def add_x(self, *args, **kwargs):
+        """Alias to the ``add_dimension`` method."""
+        self.add_dimension(*args, **kwargs)
+
     def add_dependent_variable(self, *args, **kwargs):
         """
         Add a new :ref:`dv_api` instance to the :ref:`csdm_api` instance.
@@ -878,6 +897,10 @@ class CSDM:
 
         self._dependent_variables += [dv]
         return
+
+    def add_y(self, *args, **kwargs):
+        """Alias for ``add_dependent_variable`` method."""
+        return self.add_dependent_variable(*args, **kwargs)
 
     def to_dict(self, update_timestamp=False, read_only=False):
         """Alias to the `dict()` method of the class."""

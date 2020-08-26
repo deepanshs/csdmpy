@@ -45,6 +45,7 @@ def test_csdm():
 
     assert data != "sd"
 
+    assert data.size == 1
     # read_only
     assert data.read_only is False
     data.read_only = True

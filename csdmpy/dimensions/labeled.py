@@ -113,6 +113,15 @@ class LabeledDimension(BaseDimension):
         self.labels = value
 
     @property
+    def coords(self):
+        """Alias for the `coordinates` attribute."""
+        return self.coordinates
+
+    @coords.setter
+    def coords(self, value):
+        self.coordinates = value
+
+    @property
     def axis_label(self):
         """Return a formatted string for displaying label along the dimension axis."""
         return self.label

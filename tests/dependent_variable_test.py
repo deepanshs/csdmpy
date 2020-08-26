@@ -18,6 +18,9 @@ def test_internal_new():
     }
     data.add_dependent_variable(dim)
 
+    assert data.dependent_variables == data.y
+    assert data.dimensions == data.x
+
     # check type
     assert data.dependent_variables[0].type == "internal"
     data.dependent_variables[0].type = "external"
@@ -193,49 +196,51 @@ def test_external_new():
         "quantity_type": "scalar",
     }
     data.add_dependent_variable(dim)
+    data.add_y(dim)
 
-    # check type
-    assert data.dependent_variables[0].type == "internal"
-    data.dependent_variables[0].type = "external"
-    assert data.dependent_variables[0].type == "external"
+    for dv in data.dependent_variables:
+        # check type
+        assert dv.type == "internal"
+        dv.type = "external"
+        assert dv.type == "external"
 
-    # check components
-    assert data.dependent_variables[0].numeric_type == "float32"
+        # check components
+        assert dv.numeric_type == "float32"
 
-    # assign and check components
-    data.dependent_variables[0].numeric_type = "int32"
-    assert data.dependent_variables[0].numeric_type == "int32"
-    assert data.dependent_variables[0].components.dtype == "int32"
+        # assign and check components
+        dv.numeric_type = "int32"
+        assert dv.numeric_type == "int32"
+        assert dv.components.dtype == "int32"
 
-    # check name
-    assert data.dependent_variables[0].name == "Headspace from cinnamon stick"
+        # check name
+        assert dv.name == "Headspace from cinnamon stick"
 
-    # check unit
-    assert data.dependent_variables[0].unit == ""
+        # check unit
+        assert dv.unit == ""
 
-    # check component_url
-    assert data.dependent_variables[0].components_url == (
-        "https://osu.box.com/shared/static/b967zfl7efcvf471wm9a7tqb74kqomuh.dat"
-    )
+        # check component_url
+        assert dv.components_url == (
+            "https://osu.box.com/shared/static/b967zfl7efcvf471wm9a7tqb74kqomuh.dat"
+        )
 
-    # component names
-    assert data.dependent_variables[0].component_labels == ["monotonic"]
+        # component names
+        assert dv.component_labels == ["monotonic"]
 
-    # quantity type
-    assert data.dependent_variables[0].quantity_type == "scalar"
+        # quantity type
+        assert dv.quantity_type == "scalar"
 
-    # encoding
-    assert data.dependent_variables[0].encoding == "base64"
-    data.dependent_variables[0].encoding = "raw"
-    assert data.dependent_variables[0].encoding == "raw"
+        # encoding
+        assert dv.encoding == "base64"
+        dv.encoding = "raw"
+        assert dv.encoding == "raw"
 
-    # description
-    assert data.dependent_variables[0].description == ""
-    data.dependent_variables[0].description = "This is also a test"
-    assert data.dependent_variables[0].description == "This is also a test"
+        # description
+        assert dv.description == ""
+        dv.description = "This is also a test"
+        assert dv.description == "This is also a test"
 
-    # application
-    assert data.dependent_variables[0].application == {}
+        # application
+        assert dv.application == {}
 
     dict1 = {
         "csdm": {
@@ -250,7 +255,16 @@ def test_external_new():
                     "quantity_type": "scalar",
                     "component_labels": ["monotonic"],
                     "components": [["48453, 48444, ..., 48040, 48040"]],
-                }
+                },
+                {
+                    "type": "internal",
+                    "description": "This is also a test",
+                    "name": "Headspace from cinnamon stick",
+                    "numeric_type": "int32",
+                    "quantity_type": "scalar",
+                    "component_labels": ["monotonic"],
+                    "components": [["48453, 48444, ..., 48040, 48040"]],
+                },
             ],
         }
     }

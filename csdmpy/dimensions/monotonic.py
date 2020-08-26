@@ -186,6 +186,15 @@ class MonotonicDimension(BaseQuantitativeDimension):
         self._get_coordinates(value)
 
     @property
+    def coords(self):
+        """Alias for the `coordinates` attribute."""
+        return self.coordinates
+
+    @coords.setter
+    def coords(self, value):
+        self.coordinates = value
+
+    @property
     def absolute_coordinates(self):
         """Return the absolute coordinates along the dimensions."""
         return (self.coordinates + self.origin_offset).to(self._unit)

@@ -75,6 +75,8 @@ def test02():
 
     assert dataset.dimensions[0].quantity_name == "length"
 
+    assert dataset.size == dataset.dependent_variables[0].components[0].size
+
 
 # def test03():
 #     dataset1 = cp.load(cp.tests.test03, sort_fft_order=False)
