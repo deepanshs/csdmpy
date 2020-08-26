@@ -1,3 +1,5 @@
+Upcoming changes
+----------------
 
 What's new!
 '''''''''''
@@ -9,6 +11,7 @@ What's new!
   - `dimensions` -> `x`
   - `add_dependent_variable` -> `add_x`
   - `add_dimension` -> `add_x`
+  - `coordinates` -> `coords`
 
 v0.3.2
 ------
