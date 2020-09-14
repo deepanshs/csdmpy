@@ -860,16 +860,18 @@ def check_sparse_sampling_key_value(input_dict):
         raise KeyError(message2("dimension_indexes"))
     if "sparse_grid_vertexes" not in sparse_keys:
         raise KeyError(message2("sparse_grid_vertexes"))
-    if "unsigned_integer_type" not in sparse_keys:
-        raise KeyError(message2("unsigned_integer_type"))
+    if "encoding" in sparse_keys:
+        code = input_dict["sparse_sampling"]["encoding"]
+        if code != "none" and "unsigned_integer_type" not in sparse_keys:
+            raise KeyError(message2("unsigned_integer_type"))
 
-    uint_value = input_dict["sparse_sampling"]["unsigned_integer_type"]
-    if uint_value not in ["uint8", "uint16", "uint32", "uint64"]:
-        raise ValueError(
-            f"{uint_value} is an invalid `unsigned_integer_type` enumeration ",
-            "literal. The allowed values are `uint8`, `uint16`, `uint32`, ",
-            "and `uint64`.",
-        )
+        uint_value = input_dict["sparse_sampling"]["unsigned_integer_type"]
+        if uint_value not in ["uint8", "uint16", "uint32", "uint64"]:
+            raise ValueError(
+                f"{uint_value} is an invalid `unsigned_integer_type` enumeration ",
+                "literal. The allowed values are `uint8`, `uint16`, `uint32`, ",
+                "and `uint64`.",
+            )
 
 
 def as_dependent_variable(array, **kwargs):
