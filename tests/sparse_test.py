@@ -55,6 +55,18 @@ def test_04():
 
 
 def test_05():
+    sparse_sampling = {
+        "encoding": "base64",
+        "unsigned_integer_type": "float32",
+        "dimension_indexes": [0],
+        "sparse_grid_vertexes": [0, 5, 10, 15, 20, 25],
+    }
+    error = "float32 is an invalid `unsigned_integer_type` enumeration"
+    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+        check_sparse_sampling_key_value({"sparse_sampling": sparse_sampling})
+
+
+def test_06():
     sp1 = SparseSampling(**sparse_sampling)
     sp2 = SparseSampling(**sparse_sampling)
 
