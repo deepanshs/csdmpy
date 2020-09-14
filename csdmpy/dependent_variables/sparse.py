@@ -113,11 +113,11 @@ class SparseSampling:
         self._description = validate(value, "description", str)
 
     @property
-    def sparse_dimensions_indexes(self):
+    def dimension_indexes(self):
         """List of dimension indexes corresponding to sparse dimensions."""
         return deepcopy(self._sparse_dimensions_indexes)
 
     @property
     def sparse_grid_vertexes(self):
         """List of grid vertexes corresponding to sparse dimensions."""
-        return deepcopy(self._sparse_dimensions_indexes)
+        return deepcopy(self._sparse_grid_vertexes)
