@@ -7,6 +7,7 @@
 | License      | [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | Metrics      | [![PyPI - Downloads](https://img.shields.io/pypi/dm/csdmpy.svg)](https://img.shields.io/pypi/dm/csdmpy)[![Total alerts](https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DeepanshS/csdmpy/context:python) [![codecov](https://codecov.io/gh/DeepanshS/csdmpy/branch/master/graph/badge.svg)](https://codecov.io/gh/DeepanshS/csdmpy) |
 | GitHub       | ![GitHub issues](https://img.shields.io/github/issues-raw/deepanshs/csdmpy)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Citations    | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3973603.svg)](https://doi.org/10.5281/zenodo.3973603) [![DOI](<https://img.shields.io/badge/DOI-PLOS%20ONE%2015(1):%20e0225953-blueviolet>)](https://doi.org/10.1371/journal.pone.0225953)                                                                                                                                                                                                                                                                                                                               |
 
 The _csdmpy_ package is a Python support for the core scientific
 dataset (CSD) model file exchange-format.
@@ -26,11 +27,11 @@ For further reading, refer to the [documentation](https://csdmpy.readthedocs.io/
 
 > **Download the examples files using in this package**
 >
-> [![](https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet)](https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u)
+> [![Download](https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet)](https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u)
 
 > **See example gallery**
 >
-> [![](https://img.shields.io/badge/View-Example%20Gallery-Purple?size=large)](https://csdmpy.readthedocs.io/en/latest/auto_examples/index.html)
+> [![View](https://img.shields.io/badge/View-Example%20Gallery-Purple?size=large)](https://csdmpy.readthedocs.io/en/latest/auto_examples/index.html)
 
 ## The core scientific dataset (CSD) model
 
@@ -78,9 +79,12 @@ python version 3.4 and higher.
 
     $ pip install csdmpy
 
-## Citation
+## Citations
 
-Srivastava D.J., Vosegaard T., Massiot D., Grandinetti P.J. (2020) Core Scientific Dataset Model: A lightweight and portable model and file format for multi-dimensional scientific data. [PLOS ONE 15(1): e0225953.](https://doi.org/10.1371/journal.pone.0225953)
+1. Srivastava D.J., Vosegaard T., Massiot D., Grandinetti P.J. (2020) Core Scientific Dataset Model: A lightweight and portable model and file format for multi-dimensional scientific data. [PLOS ONE 15(1): e0225953.](https://doi.org/10.1371/journal.pone.0225953)
+
+2. Additionally, if you use the csdmpy python package, please find the citation for the respective
+   version from [zenodo](https://zenodo.org/record/3973603).
 
 ## Check out the media coverage.
 

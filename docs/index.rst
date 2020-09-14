@@ -42,20 +42,27 @@ Welcome to the csdmpy documentation
             :alt: PyPI - Downloads
 
           .. image:: https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm
-              :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/
-              :alt: Total alerts
+            :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/
+            :alt: Total alerts
 
           .. image:: https://img.shields.io/lgtm/grade/python/g/DeepanshS/csdmpy.svg?logo=lgtm
-              :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/context:python
-              :alt: Language grade: Python
+            :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/context:python
+            :alt: Language grade: Python
 
           .. image:: https://codecov.io/gh/DeepanshS/csdmpy/branch/master/graph/badge.svg
-              :target: https://codecov.io/gh/DeepanshS/csdmpy
+            :target: https://codecov.io/gh/DeepanshS/csdmpy
 
       * - GitHub
         - .. image:: https://img.shields.io/github/issues-raw/deepanshs/csdmpy?logo=github
-              :target: https://github.com/DeepanshS/csdmpy/issues
-              :alt: GitHub issues
+            :target: https://github.com/DeepanshS/csdmpy/issues
+            :alt: GitHub issues
+
+      * - Citation
+        - .. image:: https://img.shields.io/badge/DOI-PLOS%20ONE%2015(1):%20e0225953-Purple?size=large
+            :target: https://doi.org/10.1371/journal.pone.0225953
+
+          .. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3973603.svg
+            :target: https://doi.org/10.5281/zenodo.3973603
 
 .. .. image:: https://img.shields.io/github/contributors/DeepanshS/csdmpy.svg?style=flat&logo=github
 ..     :target: https://github.com/DeepanshS/csdmpy/graphs/contributors
@@ -129,8 +136,8 @@ compatible with Numpy.
 
 .. only:: html
 
-	Table of Contents
-	-----------------
+  Table of Contents
+  -----------------
 
 .. toctree::
     :maxdepth: 2
@@ -150,14 +157,15 @@ compatible with Numpy.
 
 ----
 
-Citation
-^^^^^^^^
+Citations
+^^^^^^^^^
 
 .. [#f10] Srivastava D.J., Vosegaard T., Massiot D., Grandinetti P.J. (2020) Core
     Scientific Dataset Model: A lightweight and portable model and file format for
     multi-dimensional scientific data.
     `PLOS ONE 15(1): e0225953. <https://doi.org/10.1371/journal.pone.0225953>`_
 
+Additionally, if you use the csdmpy python package, please find the citation for the respective version from `zenodo <https://zenodo.org/record/3973603>`_.
 
 .. only:: html
 

@@ -1,17 +1,22 @@
-Upcoming changes
-----------------
+v0.3.3
+------
 
 What's new!
 '''''''''''
 
 - Add ``size`` method to the CSDM object.
-- Added alias for the csdm keywords that are short and easy for coding.
-  The following is the list of aliases
+- Added alias for the csdm keywords that are short and easy for coding. The following is the list of aliases
+
   - `dependent_variables` -> `y`
   - `dimensions` -> `x`
   - `add_dependent_variable` -> `add_x`
   - `add_dimension` -> `add_x`
   - `coordinates` -> `coords`
+
+Bug fixes
+'''''''''
+
+- Fixed bug causing a false error when reading sparse datasets.
 
 v0.3.2
 ------
