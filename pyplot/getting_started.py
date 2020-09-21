@@ -3,21 +3,21 @@ import csdmpy as cp
 
 filename = cp.tests.test01  # replace this with your file's name.
 testdata1 = cp.load(filename)
-testdata1.description
+print(testdata1.description)
 
 # Accessing dimensions and dependent variables of the dataset
 x = testdata1.dimensions
 y = testdata1.dependent_variables
-x[0].description
-y[0].description
+print(x[0].description)
+print(y[0].description)
 
 # Coordinates along the dimension
-x[0].coordinates
-x[0].coordinates.value
+print(x[0].coordinates)
+print(x[0].coordinates.value)
 
 # Components of the dependent variable¶
-y[0].components
-y[0].components.shape
+print(y[0].components)
+print(y[0].components.shape)
 
 import matplotlib.pyplot as plt
 

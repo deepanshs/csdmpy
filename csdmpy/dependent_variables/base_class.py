@@ -330,8 +330,8 @@ def reduced_display(_components):
         The method shows the first and the last two data values.
     """
     _string = []
-    for i in range(len(_components)):
-        temp = _components[i].ravel()
+    for i, item in enumerate(_components):
+        temp = item.ravel()
         lst = [str(temp[0]), str(temp[1]), str(temp[-2]), str(temp[-1])]
         _string.append([("{0}, {1}, ..., {2}, {3}").format(*lst)])
     return _string

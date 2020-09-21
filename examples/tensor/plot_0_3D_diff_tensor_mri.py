@@ -33,7 +33,7 @@ print(y[0].component_labels)
 # %%
 # The symmetric matrix information is also found with the
 # :attr:`~csdmpy.DependentVariable.quantity_type` attribute,
-y[0].quantity_type
+print(y[0].quantity_type)
 
 # %%
 # which implies a 3x3 symmetric matrix.

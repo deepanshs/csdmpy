@@ -53,7 +53,7 @@ def test_internal_new():
     # check component_url
     error = r"DependentVariable' object has no attribute 'component_url"
     with pytest.raises(AttributeError, match=error):
-        data.dependent_variables[0].component_url
+        _ = data.dependent_variables[0].component_url
 
     # component names
     assert data.dependent_variables[0].component_labels == ["", ""]

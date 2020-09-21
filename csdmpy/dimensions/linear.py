@@ -176,7 +176,6 @@ class LinearDimension(BaseQuantitativeDimension):
         value = validate(value, "count", int)
         self._count = value
         self._get_coordinates()
-        return
 
     @property
     def increment(self):

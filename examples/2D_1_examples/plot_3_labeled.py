@@ -25,14 +25,14 @@ y = labeled_data.dependent_variables
 # Since one of the dimensions is a `labeled` dimension, let's make use of the
 # :attr:`~csdmpy.Dimension.type` attribute of the dimension instances
 # to find out which dimension is `labeled`.
-x[0].type
+print(x[0].type)
 
 # %%
-x[1].type
+print(x[1].type)
 
 # %%
 # Here, the second dimension is the `labeled` dimension with [#f1]_
-x[1].count
+print(x[1].count)
 
 # %%
 # labels, where the first five labels are

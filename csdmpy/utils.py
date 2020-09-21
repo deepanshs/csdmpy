@@ -256,8 +256,7 @@ def _get_dictionary(*arg, **kwargs):
             "The argument is either a dictionary with the allowed keywords or a "
             "collection of valid arguments."
         )
-    else:
-        input_dict = kwargs
+    input_dict = kwargs
     return input_dict
 
 
@@ -398,7 +397,6 @@ def _check_dimension_indices(d, index=-1):
         for i, item in enumerate(index):
             index[i] = _correct_index(item, d)
         return tuple(index)
-    elif isinstance(index, int):
+    if isinstance(index, int):
         return tuple([_correct_index(index, d)])
-    else:
-        raise TypeError(f"{message}, found {type(index)}")
+    raise TypeError(f"{message}, found {type(index)}")

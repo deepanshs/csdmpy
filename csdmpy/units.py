@@ -9,6 +9,7 @@ Astropy unit library.
 """
 import warnings
 
+import numexpr as ne
 from astropy import units as u
 from astropy.units import cds
 from astropy.units import Quantity
@@ -68,7 +69,7 @@ def string_to_quantity(string, dtype=float):
     # the string has numerical value and unit
     if index != -1:
         try:
-            number = eval(string[:index])
+            number = float(ne.evaluate(string[:index]))
         except ZeroDivisionError:
             number = inf
         except Exception as e:
@@ -201,8 +202,7 @@ class ScalarQuantity:
             quantity = string_to_quantity(quantity_string)
             if unit is not None:
                 return check_unit_consistency(quantity, unit)
-            else:
-                return quantity
+            return quantity
 
     def __str__(self):
         return self.__format__()

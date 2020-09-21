@@ -24,14 +24,14 @@ print(NMR_data.data_structure)
 # attribute through,
 
 # %%
-NMR_data.geographic_coordinate
+print(NMR_data.geographic_coordinate)
 
 # %%
 # The `tags` attribute is a list of keywords that best describe the dataset.
 # The `tags` attribute is accessed through,
 
 # %%
-NMR_data.tags
+print(NMR_data.tags)
 
 # %%
 # You may add additional tags, if so desired, using the `append`
@@ -39,7 +39,7 @@ NMR_data.tags
 
 # %%
 NMR_data.tags.append("Bloch decay")
-NMR_data.tags
+print(NMR_data.tags)
 
 # %%
 # The coordinates along the dimension are

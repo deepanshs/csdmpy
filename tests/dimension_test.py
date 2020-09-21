@@ -242,10 +242,10 @@ def test_linearDimension():
     freq.to("ppm", "nmr_frequency_ratio")
     error = "Cannot convert the coordinates to ppm."
     with pytest.raises(ZeroDivisionError, match=error):
-        freq.coordinates
+        _ = freq.coordinates
 
     with pytest.raises(ZeroDivisionError, match=error):
-        freq.coords
+        _ = freq.coords
 
 
 # monotonic dimension
@@ -286,7 +286,7 @@ def test_monotonic_new():
         # increment
         error = "'MonotonicDimension' object has no attribute 'increment'"
         with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
-            dim.increment
+            _ = dim.increment
 
         # label
         assert dim.label == ""
@@ -310,7 +310,7 @@ def test_monotonic_new():
         # coordinates_offset
         error = "`MonotonicDimension` has no attribute `coordinates_offset`."
         with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
-            dim.coordinates_offset
+            _ = dim.coordinates_offset
 
         error = "can't set attribute"
         with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
@@ -354,7 +354,7 @@ def test_monotonic_new():
         # fft output order
         error = "'MonotonicDimension' object has no attribute 'complex_fft'"
         with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
-            dim.complex_fft
+            _ = dim.complex_fft
 
     # coordinates
     assert np.allclose(
@@ -502,9 +502,9 @@ def test_monotonicDimension():
     ratio.origin_offset = "0 Hz"
     error = "Cannot convert the coordinates to ppm."
     with pytest.raises(ZeroDivisionError, match=".*{0}.*".format(error)):
-        ratio.coordinates
+        _ = ratio.coordinates
     with pytest.raises(ZeroDivisionError, match=".*{0}.*".format(error)):
-        ratio.coords
+        _ = ratio.coords
 
     assert ratio.axis_label == "frequency / (ppm)"
 

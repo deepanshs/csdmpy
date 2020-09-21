@@ -32,13 +32,13 @@ y = eagle_nebula.dependent_variables
 # information is also listed in the
 # :attr:`~csdmpy.DependentVariable.name` attribute of the
 # respective dependent variable instances,
-y[0].name
+print(y[0].name)
 
 # %%
-y[1].name
+print(y[1].name)
 
 # %%
-y[2].name
+print(y[2].name)
 
 # %%
 # Data Visualization

@@ -142,4 +142,4 @@ def test_index_7():
 def test_index_8():
     error = "Fancy indexing using tuples or lists may result in"
     with pytest.raises(NotImplementedError, match=".*{0}.*".format(error)):
-        a_obj[(1, 3, 9), 10]
+        _ = a_obj[(1, 3, 9), 10]

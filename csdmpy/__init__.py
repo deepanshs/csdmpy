@@ -81,10 +81,10 @@ def _check_csdm_root_key_value(dictionary):
     key_list_csdm = list(dictionary["csdm"].keys())
     key_list_csdm_lower_case = [item.lower() for item in key_list_csdm]
 
-    for i in range(len(key_list_csdm)):
-        if key_list_csdm[i] not in all_keys and key_list_csdm_lower_case[i] in all_keys:
+    for i, item in enumerate(key_list_csdm):
+        if item not in all_keys and key_list_csdm_lower_case[i] in all_keys:
             raise KeyError(
-                f"{key_list_csdm[i]} is an invalid key for the CSDM object. "
+                f"{item} is an invalid key for the CSDM object. "
                 f"Did you mean '{key_list_csdm_lower_case[i]}'?"
             )
 

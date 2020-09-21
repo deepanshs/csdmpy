@@ -896,7 +896,6 @@ class CSDM:
             dv._reshape(shape[::-1])
 
         self._dependent_variables += [dv]
-        return
 
     def add_y(self, *args, **kwargs):
         """Alias for ``add_dependent_variable`` method."""

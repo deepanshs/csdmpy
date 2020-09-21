@@ -31,10 +31,10 @@ y = multi_dataset.dependent_variables
 # %%
 # The dataset contains two dimension objects representing the `longitude` and
 # `latitude` of the earth's surface. The labels along thee respective dimensions are
-x[0].label
+print(x[0].label)
 
 # %%
-x[1].label
+print(x[1].label)
 
 # %%
 # There are a total of five dependent variables stored in this dataset. The first
@@ -92,19 +92,19 @@ plot_scalar(y[0])
 
 # %%
 # Similarly, other dependent variables with their respective plots are
-y[1].name
+print(y[1].name)
 
 # %%
 plot_scalar(y[1])
 
 # %%
-y[3].name
+print(y[3].name)
 
 # %%
 plot_scalar(y[3])
 
 # %%
-y[4].name
+print(y[4].name)
 
 # %%
 plot_scalar(y[4])
@@ -112,10 +112,10 @@ plot_scalar(y[4])
 # %%
 # Notice, we skipped the dependent variable at index two. The reason is that
 # this particular dependent variable is a vector dataset,
-y[2].quantity_type
+print(y[2].quantity_type)
 
 # %%
-y[2].name
+print(y[2].name)
 
 # %%
 # which represents the wind velocity, and requires a vector visualization
