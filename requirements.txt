@@ -2,6 +2,7 @@
 # required
 numpy>=1.17
 setuptools>=27.3
+numexpr>=2.7.0
 
 # for units
 astropy>=3.0
