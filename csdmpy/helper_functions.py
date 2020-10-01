@@ -230,10 +230,10 @@ class CSDMAxes(plt.Axes):
                 if fn == "contourf":
                     r_plt = super().contourf(x0, x1, y[0], *args, **kwargs)
 
-                label = dv.axis_label[0] if one else f"{dv.name} - {dv.axis_label[0]}"
-                cbar = plt.gcf().colorbar(r_plt, ax=self)
-                cbar.ax.minorticks_off()
-                cbar.set_label(label)
+                # label = dv.axis_label[0] if one else f"{dv.name} - {dv.axis_label[0]}"
+                # cbar = plt.gcf().colorbar(r_plt, ax=self)
+                # cbar.ax.minorticks_off()
+                # cbar.set_label(label)
 
         self.set_xlim(x0.min(), x0.max())
         self.set_ylim(x1.min(), x1.max())
@@ -275,10 +275,10 @@ class CSDMAxes(plt.Axes):
 
                 r_plt = super().imshow(y[0], *args, **kwargs)
 
-                label = dv.axis_label[0] if one else f"{dv.name} - {dv.axis_label[0]}"
-                cbar = plt.gcf().colorbar(r_plt, ax=self)
-                cbar.ax.minorticks_off()
-                cbar.set_label(label)
+                # label = dv.axis_label[0] if one else f"{dv.name} - {dv.axis_label[0]}"
+                # cbar = plt.gcf().colorbar(r_plt, ax=self)
+                # cbar.ax.minorticks_off()
+                # cbar.set_label(label)
 
             if dv.quantity_type == "pixel_3":
                 r_plt = super().imshow(np.moveaxis(y.copy(), 0, -1), *args, **kwargs)

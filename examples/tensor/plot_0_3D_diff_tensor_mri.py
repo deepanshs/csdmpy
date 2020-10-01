@@ -71,7 +71,8 @@ import matplotlib.pyplot as plt
 # projection along the x-axis.
 plt.figure(figsize=(5, 4))
 ax = plt.subplot(projection="csdm")
-ax.imshow(new_csdm.sum(axis=0), cmap="gray_r", origin="upper", aspect="auto")
+cb = ax.imshow(new_csdm.sum(axis=0), cmap="gray_r", origin="upper", aspect="auto")
+plt.colorbar(cb)
 plt.tight_layout()
 plt.show()
 
@@ -80,7 +81,8 @@ plt.show()
 # projection along the y-axis.
 plt.figure(figsize=(5, 4))
 ax = plt.subplot(projection="csdm")
-ax.imshow(new_csdm.sum(axis=1), cmap="gray_r", origin="upper", aspect="auto")
+cb = ax.imshow(new_csdm.sum(axis=1), cmap="gray_r", origin="upper", aspect="auto")
+plt.colorbar(cb)
 plt.tight_layout()
 plt.show()
 
@@ -89,7 +91,8 @@ plt.show()
 # projection along the z-axis.
 plt.figure(figsize=(5, 4))
 ax = plt.subplot(projection="csdm")
-ax.imshow(new_csdm.sum(axis=2), cmap="gray_r", origin="upper", aspect="auto")
+cb = ax.imshow(new_csdm.sum(axis=2), cmap="gray_r", origin="upper", aspect="auto")
+plt.colorbar(cb)
 plt.tight_layout()
 plt.show()
 

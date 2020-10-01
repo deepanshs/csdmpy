@@ -43,6 +43,7 @@ x[1].to("µm")
 # and plot the data.
 plt.figure(figsize=(5, 3.5))
 ax = plt.subplot(projection="csdm")
-ax.imshow(TEM, aspect="auto")
+cb = ax.imshow(TEM, aspect="auto")
+plt.colorbar(cb)
 plt.tight_layout()
 plt.show()

@@ -45,7 +45,8 @@ cos, sin = sparse_1d.split()
 # cosine data
 plt.figure(figsize=(5, 3.5))
 ax = plt.subplot(projection="csdm")
-ax.contourf(cos.real)
+cb = ax.contourf(cos.real)
+plt.colorbar(cb)
 plt.tight_layout()
 plt.show()
 
@@ -54,7 +55,8 @@ plt.show()
 # sine data
 plt.figure(figsize=(5, 3.5))
 ax = plt.subplot(projection="csdm")
-ax.contourf(sin.real)
+cb = ax.contourf(sin.real)
+plt.colorbar(cb)
 plt.tight_layout()
 plt.show()
 
