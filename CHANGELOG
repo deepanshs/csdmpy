@@ -1,3 +1,12 @@
+v0.3.4
+------
+
+Changes
+'''''''
+
+- Image and Contour plots of csdm objects no longer draw colorbar. Colorbar can be
+  requested separately using `plt.colorbar()`.
+
 v0.3.3
 ------
 
