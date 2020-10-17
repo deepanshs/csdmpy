@@ -207,11 +207,11 @@ class CSDM:
 
     def __check_csdm_object_additive_compatibility(self, other):
         """
-            Check if the two objects are compatible for additive operations
-                1) csdm objects,
-                2) with identical dimension objects,
-                3) same number of dependent-variables, and
-                4) each dependent variables with identical dimensionality.
+        Check if the two objects are compatible for additive operations
+            1) csdm objects,
+            2) with identical dimension objects,
+            3) same number of dependent-variables, and
+            4) each dependent variables with identical dimensionality.
         """
         # self.__check_csdm_object(other)
         self.__check_dimension_equality(other)

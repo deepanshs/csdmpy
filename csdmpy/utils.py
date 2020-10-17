@@ -340,9 +340,10 @@ def check_and_assign_bool(element):
 
 
 def check_scalar_object(other, operator=""):
-    """Check if the object is scalar:
-        int, float, complex, np.ndarray, Quantity, or ScalarQuantity.
-        Returns: The other object.
+    """Check if the object is scalar: int, float, complex, np.ndarray, Quantity, or
+    ScalarQuantity.
+
+    Returns: The other object.
     """
     if isinstance(other, numpy_scalars):
         return other

@@ -3,7 +3,6 @@
 Astronomy, 2D{1,1,1} dataset (Creating image composition)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
-# sphinx_gallery_thumbnail_number = 2
 # %%
 # More often, the images in astronomy are a composition of datasets measured
 # at different wavelengths over an area of the sky. In this example, we
@@ -18,6 +17,7 @@ import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/of3wmoxcqungkp6ndbplnbxtgu6jaahh.csdf"
 eagle_nebula = cp.load(filename)
+# sphinx_gallery_thumbnail_number = 2
 
 # %%
 # Let's get the tuple of dimension and dependent variable objects from

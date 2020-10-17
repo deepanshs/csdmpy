@@ -437,7 +437,7 @@ class DependentVariable:
             AttributeError: When modified.
         """
         return json.dumps(
-            self._dict(for_display=True), ensure_ascii=False, sort_keys=False, indent=2,
+            self._dict(for_display=True), ensure_ascii=False, sort_keys=False, indent=2
         )
 
     @property

@@ -444,12 +444,7 @@ class Dimension:
 
         .. doctest::
 
-            >>> test = Dimension(
-            ...            type='linear',
-            ...	           increment = '1',
-            ...            count = 10
-            ...        )
-
+            >>> test = Dimension(type='linear', increment = '1', count = 10)
             >>> test.complex_fft
             False
             >>> print(test.coordinates)

@@ -32,7 +32,7 @@ __credits__ = ["Deepansh J. Srivastava"]
 __license__ = "BSD License"
 __maintainer__ = "Deepansh J. Srivastava"
 __status__ = "Development"
-__version__ = "0.3.4"
+__version__ = "0.3.5"
 
 __all__ = [
     "parse_dict",
@@ -187,26 +187,26 @@ def load(filename=None, application=False, verbose=False):
 
 def loads(string):
     """
-        Loads a JSON serialized string as a CSDM object.
+    Loads a JSON serialized string as a CSDM object.
 
-        Args:
-            string: A JSON serialized CSDM string.
-        Returns:
-            A CSDM object.
+    Args:
+        string: A JSON serialized CSDM string.
+    Returns:
+        A CSDM object.
 
-        Example:
-            >>> object_from_string = cp.loads(cp.new('A test dump').dumps())
-            >>> print(object_from_string.data_structure)  # doctest: +SKIP
-            {
-              "csdm": {
-                "version": "1.0",
-                "timestamp": "2019-10-21T20:33:17Z",
-                "description": "A test dump",
-                "dimensions": [],
-                "dependent_variables": []
-              }
-            }
-        """
+    Example:
+        >>> object_from_string = cp.loads(cp.new('A test dump').dumps())
+        >>> print(object_from_string.data_structure)  # doctest: +SKIP
+        {
+          "csdm": {
+            "version": "1.0",
+            "timestamp": "2019-10-21T20:33:17Z",
+            "description": "A test dump",
+            "dimensions": [],
+            "dependent_variables": []
+          }
+        }
+    """
     dictionary = json.loads(string)
     csdm_object = parse_dict(dictionary)
     return csdm_object

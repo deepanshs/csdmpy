@@ -325,9 +325,8 @@ class BaseDependentVariable:
 
 def reduced_display(_components):
     r"""
-        Reduced display for quick view of the data structure.
-
-        The method shows the first and the last two data values.
+    Reduced display for quick view of the data structure. The method shows the first and
+    the last two data values.
     """
     _string = []
     for i, item in enumerate(_components):

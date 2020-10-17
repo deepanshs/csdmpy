@@ -3,7 +3,6 @@
 Meteorological, 2D{1,1,2,1,1} dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
-# sphinx_gallery_thumbnail_number = 5
 # %%
 # The following dataset is obtained from `NOAA/NCEP Global Forecast System (GFS)
 # Atmospheric Model
@@ -21,6 +20,7 @@ import csdmpy as cp
 
 filename = "https://osu.box.com/shared/static/6uhrtdxfisl4a14x9pndyze2mv414zyg.csdf"
 multi_dataset = cp.load(filename)
+# sphinx_gallery_thumbnail_number = 5
 
 # %%
 # The tuple of dimension and dependent variable objects from
