@@ -3,10 +3,16 @@
 from copy import deepcopy
 from warnings import warn
 
-import matplotlib.projections as proj
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.projections as proj
+    import matplotlib.pyplot as plt
+    from matplotlib.pyplot import Axes
+    from matplotlib.image import NonUniformImage
+except ImportError:
+    Axes = int
+
 import numpy as np
-from matplotlib.image import NonUniformImage
+
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -27,7 +33,7 @@ def _get_label_from_dv(dv, i):
     return label
 
 
-class CSDMAxes(plt.Axes):
+class CSDMAxes(Axes):
     """A custom CSDM data plot axes."""
 
     name = "csdm"
@@ -295,7 +301,10 @@ class CSDMAxes(plt.Axes):
         return r_plt
 
 
-proj.register_projection(CSDMAxes)
+try:
+    proj.register_projection(CSDMAxes)
+except NameError:
+    pass
 
 
 def _check_1D_dataset(csdm):
