@@ -19,6 +19,7 @@ required = [
     "setuptools>=27.3",
     "astropy>=3.0",
     "requests>=2.21.0",
+    "numexpr>=2.7.0",
 ]
 extras = {"matplotlib": ["matplotlib>=3.0"]}
 setup_requires = ["setuptools>=27.3"]
