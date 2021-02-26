@@ -89,8 +89,7 @@ class LinearDimension(BaseQuantitativeDimension):
                 self.reciprocal == other.reciprocal,
                 super().__eq__(other),
             ]
-            if np.all(check):
-                return True
+            return np.all(check)
         return False
 
     def __mul__(self, other):

@@ -175,13 +175,9 @@ class Dimension:
     def __eq__(self, other):
         """Overrides the default implementation."""
         if isinstance(other, Dimension):
-            if self.subtype == other.subtype:
-                return True
-            return False
+            return True if self.subtype == other.subtype else False
         if isinstance(other, (LinearDimension, LabeledDimension, MonotonicDimension)):
-            if self.subtype == other:
-                return True
-            return False
+            return True if self.subtype == other else False
         return False
 
     def __mul__(self, other):

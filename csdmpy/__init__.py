@@ -3,6 +3,7 @@
 from __future__ import division
 from __future__ import print_function
 
+import datetime
 import json
 from urllib.parse import urlparse
 
@@ -25,9 +26,12 @@ from .units import string_to_quantity  # lgtm [py/import-own-module] # NOQA
 from .utils import QuantityType  # lgtm [py/import-own-module] # NOQA
 from .utils import validate  # lgtm [py/import-own-module] # NOQA
 
+now = datetime.datetime.now()
+year = now.year
+
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-__copyright__ = "Copyright 2019-2021, The CSDMpy Project."
+__copyright__ = f"Copyright 2019-{year}, The CSDMpy Project."
 __credits__ = ["Deepansh J. Srivastava"]
 __license__ = "BSD License"
 __maintainer__ = "Deepansh J. Srivastava"

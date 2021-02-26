@@ -72,12 +72,10 @@ class BaseQuantitativeDimension(BaseDimension):
             self._quantity_name == other._quantity_name,
             self._period == other._period,
             self._unit == other._unit,
-            self._equivalencies == other._equivalencies,
+            # self._equivalencies == other._equivalencies,
             super().__eq__(other),
         ]
-        if False in check:
-            return False
-        return True
+        return False if False in check else True
 
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #

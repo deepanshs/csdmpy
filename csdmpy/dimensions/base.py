@@ -26,9 +26,7 @@ class BaseDimension:
             self._application == other._application,
             self._label == other._label,
         ]
-        if False in check:
-            return False
-        return True
+        return False if False in check else True
 
     @property
     def label(self):
