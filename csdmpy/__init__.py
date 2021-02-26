@@ -27,12 +27,12 @@ from .utils import validate  # lgtm [py/import-own-module] # NOQA
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
-__copyright__ = "Copyright 2019-2020, The CSDMpy Project."
+__copyright__ = "Copyright 2019-2021, The CSDMpy Project."
 __credits__ = ["Deepansh J. Srivastava"]
 __license__ = "BSD License"
 __maintainer__ = "Deepansh J. Srivastava"
-__status__ = "Development"
-__version__ = "0.3.5"
+__status__ = "Beta"
+__version__ = "0.3.6"
 
 __all__ = [
     "parse_dict",

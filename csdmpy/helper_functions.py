@@ -202,7 +202,7 @@ class CSDMAxes(Axes):
 
         ylabel = dv.axis_label[0] if one else "dimensionless"
         self.set_ylabel(ylabel)
-        self.grid(color="gray", linestyle="--", linewidth=0.5)
+        # self.grid(color="gray", linestyle="--", linewidth=0.5)
 
         if legend:
             self.legend()
@@ -247,7 +247,7 @@ class CSDMAxes(Axes):
         self.set_ylabel(x[1].axis_label)
         if one:
             self.set_title(dv.name)
-        self.grid(color="gray", linestyle="--", linewidth=0.5)
+        # self.grid(color="gray", linestyle="--", linewidth=0.5)
 
         return r_plt
 
@@ -296,7 +296,7 @@ class CSDMAxes(Axes):
         self.set_ylabel(x[1].axis_label)
         if one:
             self.set_title(dv.name)
-        self.grid(color="gray", linestyle="--", linewidth=0.5)
+        # self.grid(color="gray", linestyle="--", linewidth=0.5)
 
         return r_plt
 
