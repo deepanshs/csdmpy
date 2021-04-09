@@ -28,9 +28,7 @@ The data structure from the above example is
     {
       "csdm": {
         "version": "1.0",
-        "description": "A new test dataset",
-        "dimensions": [],
-        "dependent_variables": []
+        "description": "A new test dataset"
       }
     }
 

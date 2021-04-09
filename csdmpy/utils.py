@@ -73,9 +73,7 @@ class QuantityType:
     def __eq__(self, other):
         """Overrides the default implementation"""
         check = [self.value == other.value, self.p == other.p]
-        if False in check:
-            return False
-        return True
+        return False if False in check else True
 
     def update(self, element):
         """Update the quantity type."""
@@ -93,15 +91,10 @@ class QuantityType:
         lst = literals_quantity_type
         if keyword not in lst:
             message = (
-                "The value, `{0}`, is an invalid `quantity_type` enumeration literal. "
-                "The allowed values are {1}."
+                f"The value, `{keyword}`, is an invalid `quantity_type` enumeration "
+                f"literal. The allowed values are {literals_quantity_type_}."
             )
-
-            raise ValueError(
-                message.format(
-                    keyword, "'" + "', '".join(literals_quantity_type_) + "'"
-                )
-            )
+            raise ValueError(message)
 
         components = self._get_number_of_components(keyword, numbers)
         self.value = element

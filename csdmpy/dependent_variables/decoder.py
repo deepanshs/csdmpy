@@ -12,12 +12,10 @@ __all__ = ["Decoder"]
 
 class Decoder:
     def __new__(self, encoding, quantity_type, components, dtype):
-        """
-        Decode the components based on the encoding key value.
+        """Decode the components based on the encoding key value.
 
         The valid encodings are 'base64', 'none' (text), and 'raw' (binary).
         """
-
         if encoding != "raw":
             check_number_of_components_and_encoding_type(len(components), quantity_type)
         component_len = quantity_type.p
@@ -33,20 +31,17 @@ class Decoder:
 
     @staticmethod
     def decode_none(components, dtype, component_len=None):
-        if dtype in ["<c8", "<c16", ">c8", ">c16"]:
-            components = np.asarray(
+        return (
+            np.asarray(
                 [
                     np.asarray(item[0::2]) + 1j * np.asarray(item[1::2])
                     for item in components
                 ],
                 dtype=dtype,
             )
-        else:
-            # components = np.asarray(
-            #     [np.asarray(item) for item in components], dtype=dtype
-            # )
-            components = np.asarray(components, dtype=dtype)
-        return components
+            if dtype in ["<c8", "<c16", ">c8", ">c16"]
+            else np.asarray(components, dtype=dtype)
+        )
 
     @staticmethod
     def decode_raw(components, dtype, component_len=None):

@@ -21,17 +21,12 @@ def parse_url(url):
 def download_file_from_url(url, verbose=False):
     res = parse_url(url)
     filename = path.split(res[2])[1]
-    # name, extension = path.splitext(filename)
-    # original_name = name
-    # i = 0
     if path.isfile(filename):
         if verbose:
             sys.stdout.write(
                 f"Found a local file with the filename, {0}. Skipping download."
             )
         return filename
-        # filename = "{0}_{1}{2}".format(original_name, str(i), extension)
-        # i += 1
 
     with open(filename, "wb") as f:
         response = requests.get(url, stream=True)

@@ -7,7 +7,6 @@ import numpy as np
 
 from csdmpy.dependent_variables.base_class import BaseDependentVariable
 from csdmpy.dependent_variables.decoder import Decoder
-from csdmpy.dependent_variables.sparse import SparseSampling
 from csdmpy.utils import numpy_dtype_to_numeric_type
 
 
@@ -19,12 +18,8 @@ __all__ = ["InternalDataset"]
 class InternalDataset(BaseDependentVariable):
     """InternalDataset class."""
 
-    __slots__ = "_sparse_sampling"
-
     def __init__(self, **kwargs):
         """Initialize."""
-        self._sparse_sampling = {}
-
         components = kwargs["components"]
         if isinstance(components, list) and components != []:
             if isinstance(components[0], np.ndarray):
@@ -50,41 +45,21 @@ class InternalDataset(BaseDependentVariable):
         super().__init__(**kwargs)
 
         if not isinstance(components, np.ndarray):
-            components = Decoder(
+            self._components = Decoder(
                 self._encoding,
                 self._quantity_type,
                 components,
                 self._numeric_type.dtype,
             )
-            self._components = components
 
         size = self._components.size
         p = self.quantity_type.p
-
         self._components.shape = (p, int(size / p))
-
-        if kwargs["sparse_sampling"] != {}:
-            self._sparse_sampling = SparseSampling(**kwargs["sparse_sampling"])
-
-    def __eq__(self, other):
-        """Overrides the default implementation"""
-        check = [super().__eq__(other), self._sparse_sampling == other._sparse_sampling]
-        if False in check:
-            return False
-        return True
-
-    def to_dict(
-        self, filename=None, dataset_index=None, for_display=False, version=None
-    ):
-        """Alias to the `dict()` method of the class."""
-        return self.dict(filename, dataset_index, for_display, version)
 
     def dict(self, filename=None, dataset_index=None, for_display=False, version=None):
         """Return InternalDataset object as a python dictionary."""
         dictionary = {}
 
         dictionary["type"] = "internal"
-        dictionary.update(
-            self._get_dictionary(filename, dataset_index, for_display, version)
-        )
+        dictionary.update(super().dict(filename, dataset_index, for_display, version))
         return dictionary

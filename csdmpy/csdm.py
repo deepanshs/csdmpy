@@ -74,8 +74,7 @@ __shape_manipulation_functions__ = [np.transpose]
 
 
 class CSDM:
-    r"""
-    Create an instance of a CSDM class.
+    """Create an instance of a CSDM class.
 
     This class is based on the root CSDM object of the core scientific dataset
     (CSD) model. The class is a composition of the :ref:`dv_api` and
@@ -184,8 +183,8 @@ class CSDM:
             raise Exception("Cannot operate on CSDM objects with different dimensions.")
 
     def __check_dependent_variable_len_equality(self, other):
-        """
-        Check if the length of dependent variables from the two csdm objects is equal.
+        """Check if the length of dependent variables from the two csdm objects are
+        equal.
         """
         if len(self.dependent_variables) != len(other.dependent_variables):
             raise Exception(
@@ -194,8 +193,7 @@ class CSDM:
             )
 
     def __check_dependent_variable_dimensionality(self, other):
-        """
-        Check if the dependent variables from the two csdm objects have the same
+        """Check if the dependent variables from the two csdm objects have the same
         dimensionality.
         """
         for v1, v2 in zip(self.dependent_variables, other.dependent_variables):
@@ -234,9 +232,7 @@ class CSDM:
             self.description == other.description,
             self.application == other.application,
         ]
-        if np.all(check):
-            return True
-        return False
+        return np.all(check)
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -485,9 +481,7 @@ class CSDM:
         for i, dim in enumerate(self.dimensions):
             s_ = indices[i]
 
-            dim_ = dim
-            if hasattr(dim, "subtype"):
-                dim_ = dim.subtype
+            dim_ = dim.subtype if hasattr(dim, "subtype") else dim
 
             length_ = dim.coordinates[s_].size
             if length_ > 1:
@@ -537,15 +531,6 @@ class CSDM:
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
     # ----------------------------------------------------------------------- #
-    # @property
-    # def name(self):
-    #     """Name of the CSDM object."""
-    #     return self._name
-
-    # @name.setter
-    # def name(self, name):
-    #     self._name = validate(name, "name", str)
-
     @property
     def version(self):
         """Version number of the CSD model on file."""
@@ -573,8 +558,7 @@ class CSDM:
 
     @property
     def read_only(self):
-        """
-        If True, the data-file is serialized as read only, otherwise, False.
+        """If True, the data-file is serialized as read only, otherwise, False.
 
         By default, the :ref:`csdm_api` object loads a copy of the .csdf(e) file,
         irrespective of the value of the `read_only` attribute. The value of this
@@ -599,8 +583,7 @@ class CSDM:
 
     @property
     def timestamp(self):
-        """
-        Timestamp from when the file was last serialized. This attribute is real only.
+        """Timestamp from when the file was last serialized. Attribute is real only.
 
         The timestamp stamp is a string representation of the Coordinated Universal
         Time (UTC) formatted according to the iso-8601 standard.
@@ -612,8 +595,7 @@ class CSDM:
 
     @property
     def geographic_coordinate(self):
-        """
-        Geographic coordinate, if present, from where the file was last serialized.
+        """Geographic coordinate, if present, from where the file was last serialized.
         This attribute is read-only.
 
         The geographic coordinates correspond to the location where the file was last
@@ -647,8 +629,7 @@ class CSDM:
 
     @property
     def application(self):
-        """
-        Application metadata dictionary of the CSDM object.
+        """Application metadata dictionary of the CSDM object.
 
         .. doctest::
 
@@ -689,8 +670,7 @@ class CSDM:
 
     @property
     def data_structure(self):
-        r"""
-        Json serialized string describing the CSDM class instance.
+        """Json serialized string describing the CSDM class instance.
 
         The data_structure attribute is only intended for a quick preview of
         the dataset. This JSON serialized string from this attribute avoids
@@ -760,11 +740,9 @@ class CSDM:
     # ----------------------------------------------------------------------- #
 
     def add_dimension(self, *args, **kwargs):
-        """
-        Add a new :ref:`dim_api` instance to the :ref:`csdm_api` object.
+        """Add a new :ref:`dim_api` instance to the :ref:`csdm_api` object.
 
         There are several ways to add a new independent variable.
-
         *From a python dictionary containing valid keywords.*
 
         .. doctest::
@@ -834,11 +812,9 @@ class CSDM:
         self.add_dimension(*args, **kwargs)
 
     def add_dependent_variable(self, *args, **kwargs):
-        """
-        Add a new :ref:`dv_api` instance to the :ref:`csdm_api` instance.
+        """Add a new :ref:`dv_api` instance to the :ref:`csdm_api` instance.
 
         There are again several ways to add a new dependent variable instance.
-
         *From a python dictionary containing valid keywords.*
 
         .. doctest::
@@ -906,8 +882,7 @@ class CSDM:
         return self.dict(update_timestamp, read_only)
 
     def dict(self, update_timestamp=False, read_only=False):
-        """
-        Serialize the :ref:`CSDM_api` instance as a python dictionary.
+        """Serialize the :ref:`CSDM_api` instance as a python dictionary.
 
         Args:
             update_timestamp(bool): If True, timestamp is updated to current time.
@@ -936,52 +911,33 @@ class CSDM:
         version=__latest_CSDM_version__,
         for_display=False,
     ):
-        dictionary = {}
-
-        dictionary["version"] = self.version
-
-        if self.read_only:
-            dictionary["read_only"] = self.read_only
-
-        if update_timestamp:
-            timestamp = datetime.datetime.utcnow().isoformat()[:-7] + "Z"
-            dictionary["timestamp"] = timestamp
-        else:
-            if self.timestamp != "":
-                dictionary["timestamp"] = self.timestamp
-
-        if self.geographic_coordinate != {}:
-            dictionary["geographic_coordinate"] = self.geographic_coordinate
-
-        if self.tags != []:
-            dictionary["tags"] = self.tags
-
-        if self.description.strip() != "":
-            dictionary["description"] = self.description
-
-        if self.application != {}:
-            dictionary["application"] = self.application
-
-        dictionary["dimensions"] = []
-        dictionary["dependent_variables"] = []
-
-        for i in range(len(self.dimensions)):
-            dictionary["dimensions"].append(self.dimensions[i].dict())
-
-        _length_of_dependent_variables = len(self.dependent_variables)
-        for i in range(_length_of_dependent_variables):
-            dictionary["dependent_variables"].append(
-                self.dependent_variables[i]._dict(
-                    filename=filename,
-                    dataset_index=i,
-                    for_display=for_display,
-                    version=self.__latest_CSDM_version__,
-                )
+        obj = {}
+        obj["version"] = self.version
+        obj["read_only"] = self.read_only
+        obj["timestamp"] = (
+            datetime.datetime.utcnow().isoformat()[:-7] + "Z"
+            if update_timestamp
+            else self.timestamp
+        )
+        obj["geographic_coordinate"] = self.geographic_coordinate
+        obj["tags"] = self.tags
+        obj["description"] = self.description.strip()
+        obj["application"] = self.application
+        obj["dimensions"] = [dim.dict() for dim in self.dimensions]
+        obj["dependent_variables"] = [
+            dv._dict(
+                filename=filename,
+                dataset_index=i,
+                for_display=for_display,
+                version=self.__latest_CSDM_version__,
             )
+            for i, dv in enumerate(self.dependent_variables)
+        ]
 
-        csdm = {}
-        csdm["csdm"] = dictionary
-        return csdm
+        empty_values = [[], "", {}, False]
+        _ = [obj.pop(_) for _ in [k for k, v in obj.items() if v in empty_values]]
+
+        return {"csdm": obj}
 
     def dumps(
         self,
@@ -1123,8 +1079,7 @@ class CSDM:
         return copy_
 
     def copy(self):
-        """
-        Create a copy of the current CSDM instance.
+        """Create a copy of the current CSDM instance.
 
         Returns:
             A CSDM instance.
@@ -1173,8 +1128,7 @@ class CSDM:
         return self.T
 
     def fft(self, axis=0):
-        """
-        Perform a FFT along the given `dimension=axis`, for linear dimension assuming
+        """Perform a FFT along the given `dimension=axis`, for linear dimension assuming
         Nyquist-shannan relation.
 
         Args:
@@ -1212,15 +1166,14 @@ class CSDM:
     #                            NumPy-like functions                         #
     # ----------------------------------------------------------------------- #
     def max(self, axis=None):
-        """
-        Return a csdm object with the maximum dependent variable component along a
+        """Return a csdm object with the maximum dependent variable component along a
         given axis.
 
         Args:
-            axis: An integer or None or a tuple of `m` integers cooresponding to
-                    the index/indices of dimensions along which the sum of the
-                    dependent variable components is performed. If None, the output is
-                    the sum over all dimensions per dependent variable.
+            axis: An integer or None or a tuple of `m` integers cooresponding to the
+                index/indices of dimensions along which the sum of the dependent
+                variable components is performed. If None, the output is the sum over
+                all dimensions per dependent variable.
         Return:
             A CSDM object with `m` dimensions removed, or a numpy array when dimension
             is None.
@@ -1234,15 +1187,14 @@ class CSDM:
         raise NotImplementedError("")
 
     def min(self, axis=None):
-        """
-        Return a csdm object with the minimum dependent variable component along a
+        """Return a csdm object with the minimum dependent variable component along a
         given axis.
 
         Args:
-            axis: An integer or None or a tuple of `m` integers cooresponding to
-                    the index/indices of dimensions along which the sum of the
-                    dependent variable components is performed. If None, the output is
-                    over all dimensions per dependent variable.
+            axis: An integer or None or a tuple of `m` integers cooresponding to the
+                index/indices of dimensions along which the sum of the dependent
+                variable components is performed. If None, the output is over all
+                dimensions per dependent variable.
         Return:
             A CSDM object with `m` dimensions removed, or a list when `axis` is None.
         """
@@ -1255,8 +1207,7 @@ class CSDM:
         raise NotImplementedError("")
 
     def clip(self, min=None, max=None):
-        """
-        Clip the dependent variable components between the `min` and `max` values.
+        """Clip the dependent variable components between the `min` and `max` values.
 
         Args:
             min: The minimum clip value.
@@ -1297,10 +1248,10 @@ class CSDM:
         a given `dimension=axis`.
 
         Args:
-            axis: An integer or None or a tuple of `m` integers cooresponding to
-                    the index/indices of dimensions along which the sum of the
-                    dependent variable components is performed. If None, the output is
-                    over all dimensions per dependent variable.
+            axis: An integer or None or a tuple of `m` integers cooresponding to the
+                index/indices of dimensions along which the sum of the dependent
+                variable components is performed. If None, the output is over all
+                dimensions per dependent variable.
         Return:
             A CSDM object with `m` dimensions removed, or a list when `axis` is None.
         """
@@ -1314,10 +1265,10 @@ class CSDM:
         a given `dimension=axis`.
 
         Args:
-            axis: An integer or None or a tuple of `m` integers cooresponding to
-                    the index/indices of dimensions along which the sum of the
-                    dependent variable components is performed. If None, the output is
-                    over all dimensions per dependent variable.
+            axis: An integer or None or a tuple of `m` integers cooresponding to the
+                index/indices of dimensions along which the sum of the dependent
+                variable components is performed. If None, the output is over all
+                dimensions per dependent variable.
         Return:
             A CSDM object with `m` dimensions removed, or a list when `axis` is None.
         """
@@ -1328,10 +1279,10 @@ class CSDM:
         over a given `dimension=axis`.
 
         Args:
-            axis: An integer or None or a tuple of `m` integers cooresponding to
-                    the index/indices of dimensions along which the sum of the
-                    dependent variable components is performed. If None, the output is
-                    over all dimensions per dependent variable.
+            axis: An integer or None or a tuple of `m` integers cooresponding to the
+                index/indices of dimensions along which the sum of the dependent
+                variable components is performed. If None, the output is over all
+                dimensions per dependent variable.
         Return:
             A CSDM object with `m` dimensions removed, or a list when `axis` is None.
         """
@@ -1342,10 +1293,10 @@ class CSDM:
         components over a given `dimension=axis`.
 
         Args:
-            axis: An integer or None or a tuple of `m` integers cooresponding to
-                    the index/indices of dimensions along which the sum of the
-                    dependent variable components is performed. If None, the output is
-                    over all dimensions per dependent variable.
+            axis: An integer or None or a tuple of `m` integers cooresponding to the
+                index/indices of dimensions along which the sum of the dependent
+                variable components is performed. If None, the output is over all
+                dimensions per dependent variable.
         Return:
             A CSDM object with `m` dimensions removed, or a list when `axis` is None.
         """
@@ -1356,10 +1307,10 @@ class CSDM:
         over a given `dimension=axis`.
 
         Args:
-            axis: An integer or None or a tuple of `m` integers cooresponding to
-                    the index/indices of dimensions along which the product of the
-                    dependent variable components is performed. If None, the output is
-                    over all dimensions per dependent variable.
+            axis: An integer or None or a tuple of `m` integers cooresponding to the
+                index/indices of dimensions along which the product of the dependent
+                variable components is performed. If None, the output is over all
+                dimensions per dependent variable.
         Return:
             A CSDM object with `m` dimensions removed, or a list when `axis` is None.
         """
@@ -1369,10 +1320,6 @@ class CSDM:
         raise NotImplementedError("")
 
     def __array_ufunc__(self, function, method, *inputs, **kwargs):
-        # print("__array_ufunc__")
-        # print(inputs)
-        # print(kwargs)
-
         csdm = inputs[0]
         input_ = []
         if len(inputs) > 1:
@@ -1409,11 +1356,6 @@ class CSDM:
         raise NotImplementedError(f"Function {function} is not implemented.")
 
     def __array_function__(self, function, types, *args, **kwargs):
-        # print("__array_function__")
-        # print(types)
-        # print(kwargs)
-        # print(function)
-        # print(args)
         if function in __function_reduction_list__:
             return _get_new_csdm_object_after_dimension_reduction_func(
                 function, *args[0], **args[1], **kwargs
@@ -1576,7 +1518,7 @@ def _get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
 
         if function_arguments.unit.physical_type != "dimensionless":
             raise ValueError(
-                f"The value of the argument, `arg`, must have the dimensionality "
+                "The value of the argument, `arg`, must have the dimensionality "
                 f"`1/{dimension_coordinates.unit.physical_type}`, instead found "
                 f"`{quantity.unit.physical_type}`."
             )

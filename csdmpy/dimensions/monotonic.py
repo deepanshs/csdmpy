@@ -3,9 +3,6 @@
 from __future__ import division
 from __future__ import print_function
 
-import json
-from copy import deepcopy
-
 import numpy as np
 from astropy.units import Quantity
 
@@ -16,7 +13,6 @@ from csdmpy.dimensions.quantitative import ReciprocalDimension
 from csdmpy.units import frequency_ratio
 from csdmpy.units import scalar_quantity_format
 from csdmpy.units import ScalarQuantity
-from csdmpy.utils import _axis_label
 from csdmpy.utils import attribute_error
 from csdmpy.utils import check_scalar_object
 
@@ -25,14 +21,13 @@ __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 __all__ = ["MonotonicDimension"]
 
-# =========================================================================== #
-#                     MonotonicDimension Class                       #
-# =========================================================================== #
+# =================================================================================== #
+#                            MonotonicDimension Class                                 #
+# =================================================================================== #
 
 
 class MonotonicDimension(BaseQuantitativeDimension):
-    r"""
-    A monotonic grid dimension.
+    """Monotonic grid dimension.
 
     Generates an object representing a physical dimension whose coordinates are
     monotonically sampled along a grid dimension. See :ref:`monotonicDimension_uml`
@@ -64,39 +59,31 @@ class MonotonicDimension(BaseQuantitativeDimension):
             }
         super().__init__(unit=_unit, **kwargs)
 
-        _reciprocal_unit = self._unit ** -1
-        self.reciprocal = ReciprocalDimension(
-            unit=_reciprocal_unit, **kwargs["reciprocal"]
-        )
-
+        r_unit = self._unit ** -1
+        self.reciprocal = ReciprocalDimension(unit=r_unit, **kwargs["reciprocal"])
         self._get_coordinates(coordinates)
 
     def __eq__(self, other):
         """Overrides the default implementation"""
-        if hasattr(other, "subtype"):
-            other = other.subtype
-        if isinstance(other, MonotonicDimension):
-            check = [
-                self._count == other._count,
-                np.all(self._coordinates == other._coordinates),
-                self.reciprocal == other.reciprocal,
-                super().__eq__(other),
-            ]
-            if np.all(check):
-                return True
-        return False
+        other = other.subtype if hasattr(other, "subtype") else other
+        if not isinstance(other, MonotonicDimension):
+            return False
+
+        check = [
+            self._count == other._count,
+            np.all(self._coordinates == other._coordinates),
+            self.reciprocal == other.reciprocal,
+            super().__eq__(other),
+        ]
+        return np.all(check)
 
     def __repr__(self):
-        properties = ", ".join(
-            [
-                f"coordinates={self._coordinates.__str__()}",
-                *[
-                    f"{k}={v}"
-                    for k, v in self.dict().items()
-                    if k not in ["type", "coordinates"]
-                ],
-            ]
-        )
+        meta = [
+            f"{k}={v}"
+            for k, v in self.dict().items()
+            if k not in ["type", "coordinates"]
+        ]
+        properties = ", ".join([f"coordinates={self._coordinates.__str__()}", *meta])
         return f"MonotonicDimension({properties})"
 
     def __str__(self):
@@ -166,7 +153,6 @@ class MonotonicDimension(BaseQuantitativeDimension):
         """Return the coordinates along the dimensions."""
         n = self._count
         coordinates = self._coordinates[:n]
-
         equivalent_fn = self._equivalencies
 
         if equivalent_fn is None:
@@ -185,75 +171,27 @@ class MonotonicDimension(BaseQuantitativeDimension):
     def coordinates(self, value):
         self._get_coordinates(value)
 
-    @property
-    def coords(self):
-        """Alias for the `coordinates` attribute."""
-        return self.coordinates
-
-    @coords.setter
-    def coords(self, value):
-        self.coordinates = value
-
-    @property
-    def absolute_coordinates(self):
-        """Return the absolute coordinates along the dimensions."""
-        return (self.coordinates + self.origin_offset).to(self._unit)
-
-    @property
-    def axis_label(self):
-        """Return a formatted string for displaying label along the dimension axis."""
-        label = self.quantity_name if self.label.strip() == "" else self.label
-        unit = (
-            self._equivalent_unit if self._equivalent_unit is not None else self._unit
-        )
-        return _axis_label(label, unit)
-
-    @property
-    def data_structure(self):
-        """Json serialized string describing the MonotonicDimension class instance."""
-        return json.dumps(self.dict(), ensure_ascii=False, sort_keys=False, indent=2)
-
-    # ----------------------------------------------------------------------- #
-    #                                 Methods                                 #
-    # ----------------------------------------------------------------------- #
+    # ------------------------------------------------------------------------------- #
+    #                                     Methods                                     #
+    # ------------------------------------------------------------------------------- #
 
     def _copy_metadata(self, obj, copy=False):
         """Copy MonotonicDimension metadata."""
-        if hasattr(obj, "subtype"):
-            obj = obj.subtype
+        obj = obj.subtype if hasattr(obj, "subtype") else obj
         if isinstance(obj, MonotonicDimension):
             _copy_core_metadata(self, obj, "monotonic")
-
-    def to_dict(self):
-        """Alias to the `dict()` method of the class."""
-        return self.dict()
 
     def dict(self):
         """Return the MonotonicDimension as a python dictionary."""
         dictionary = {}
-
         dictionary["type"] = self.__class__._type
-
-        if self._description.strip() != "":
-            dictionary["description"] = self._description.strip()
-
         dictionary["coordinates"] = self._values
-        dictionary.update(self._dict())
-
-        reciprocal_dictionary = {}
-        if self.reciprocal._description.strip() != "":
-            reciprocal_dictionary["description"] = self.reciprocal._description.strip()
-        reciprocal_dictionary.update(self.reciprocal._dict())
-        if reciprocal_dictionary == {}:
-            del reciprocal_dictionary
-        else:
+        dictionary.update(super().dict())
+        reciprocal_dictionary = self.reciprocal.dict()
+        if reciprocal_dictionary != {}:
             dictionary["reciprocal"] = reciprocal_dictionary
 
         return dictionary
-
-    def copy(self):
-        """Return a copy of the object."""
-        return deepcopy(self)
 
 
 def _update_monotonic_dimension_object_by_scalar(object_, other, type_):

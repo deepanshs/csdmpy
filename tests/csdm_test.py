@@ -98,8 +98,6 @@ def test_csdm():
             "tags": ["1", "2", "3"],
             "description": "Enough with the tests",
             "application": {"csdmpy": "Some day"},
-            "dimensions": [],
-            "dependent_variables": [],
         }
     }
     assert data.data_structure == str(

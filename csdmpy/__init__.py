@@ -114,41 +114,29 @@ def parse_dict(dictionary):
         "tags",
         "description",
     ]
-
     _check_csdm_root_key_value(dictionary)
-
-    _version = dictionary["csdm"]["version"]
-
-    if "filename" in dictionary.keys():
-        filename = dictionary["filename"]
-    else:
-        filename = None
+    csdm_dict = dictionary["csdm"]
+    _version = csdm_dict["version"]
+    filename = dictionary["filename"] if "filename" in dictionary.keys() else None
     csdm = CSDM(filename=filename, version=_version)
 
-    keys = dictionary["csdm"].keys()
+    keys = csdm_dict.keys()
+
     if "timestamp" in keys:
-        _timestamp = dictionary["csdm"]["timestamp"]
-        validate(_timestamp, "timestamp", str)
-        csdm._timestamp = _timestamp
+        csdm._timestamp = validate(csdm_dict["timestamp"], "timestamp", str)
 
     if "dimensions" in keys:
-        for dim in dictionary["csdm"]["dimensions"]:
-            csdm.add_dimension(dim)
+        _ = [csdm.add_dimension(dim) for dim in csdm_dict["dimensions"]]
 
     if "dependent_variables" in keys:
-        for dat in dictionary["csdm"]["dependent_variables"]:
-            csdm.add_dependent_variable(dat)
+        [csdm.add_dependent_variable(dv) for dv in csdm_dict["dependent_variables"]]
 
-    for key in optional_keys:
-        if key in keys:
-            setattr(csdm, "_" + key, dictionary["csdm"][key])
-
+    _ = [setattr(csdm, "_" + k, csdm_dict[k]) for k in optional_keys if k in keys]
     return csdm
 
 
 def load(filename=None, application=False, verbose=False):
-    r"""
-    Loads a .csdf/.csdfe file and returns an instance of the :ref:`csdm_api` class.
+    r"""Loads a .csdf/.csdfe file and returns an instance of the :ref:`csdm_api` class.
 
     The file must be a JSON serialization of the CSD Model.
 
@@ -190,8 +178,7 @@ def load(filename=None, application=False, verbose=False):
 
 
 def loads(string):
-    """
-    Loads a JSON serialized string as a CSDM object.
+    """Loads a JSON serialized string as a CSDM object.
 
     Args:
         string: A JSON serialized CSDM string.
@@ -217,7 +204,7 @@ def loads(string):
 
 
 def new(description=""):
-    r"""
+    """
     Creates a new instance of the :ref:`csdm_api` class containing a 0D{0} dataset.
 
     Args:
@@ -230,9 +217,7 @@ def new(description=""):
         {
           "csdm": {
             "version": "1.0",
-            "description": "Testing Testing 1 2 3",
-            "dimensions": [],
-            "dependent_variables": []
+            "description": "Testing Testing 1 2 3"
           }
         }
 

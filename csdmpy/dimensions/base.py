@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import warnings
 from copy import deepcopy
 
@@ -21,11 +22,7 @@ class BaseDimension:
 
     def __eq__(self, other):
         """Check if two objects are equal"""
-        check = [
-            self._description == other._description,
-            self._application == other._application,
-            self._label == other._label,
-        ]
+        check = [getattr(self, _) == getattr(other, _) for _ in __class__.__slots__]
         return False if False in check else True
 
     @property
@@ -54,6 +51,50 @@ class BaseDimension:
     @description.setter
     def description(self, value):
         self._description = validate(value, "description", str)
+
+    @property
+    def coordinates(self):
+        pass
+
+    @coordinates.setter
+    def coordinates(self, value):
+        pass
+
+    @property
+    def coords(self):
+        """Alias for the `coordinates` attribute."""
+        return self.coordinates
+
+    @coords.setter
+    def coords(self, value):
+        self.coordinates = value
+
+    @property
+    def axis_label(self):
+        """Return a formatted string for displaying label along the dimension axis."""
+        return self.label
+
+    def to_dict(self):
+        """Alias to the `dict()` method of the class."""
+        return self.dict()
+
+    def dict(self):
+        """Return BaseDimension as a python dictionary"""
+        obj = {}
+        obj["label"] = self._label.strip()
+        obj["description"] = self._description.strip()
+        obj["application"] = self._application
+        _ = [obj.pop(item) for item in [k for k, v in obj.items() if v in ["", {}]]]
+        return obj
+
+    def copy(self):
+        """Return a copy of the object."""
+        return deepcopy(self)
+
+    @property
+    def data_structure(self):
+        """Json serialized string describing the Dimension object class instance."""
+        return json.dumps(self.dict(), ensure_ascii=False, sort_keys=False, indent=2)
 
 
 def check_count(value, total_count, dimension_type):

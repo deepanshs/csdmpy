@@ -55,22 +55,14 @@ class SparseSampling:
 
     def __eq__(self, other):
         """Overrides the default implementation"""
-        if isinstance(other, SparseSampling):
-            check = [
-                np.all(
-                    self._sparse_dimensions_indexes == other._sparse_dimensions_indexes
-                ),
-                np.all(self._sparse_grid_vertexes == other._sparse_grid_vertexes),
-                self._encoding == other._encoding,
-                self._quantity_type == other._quantity_type,
-                self._unsigned_integer_type == other._unsigned_integer_type,
-                self._description == other._description,
-                self._application == other._application,
-            ]
-            if False in check:
-                return False
-            return True
-        return False
+        if not isinstance(other, SparseSampling):
+            return False
+        check = [
+            np.all(self._sparse_dimensions_indexes == other._sparse_dimensions_indexes),
+            np.all(self._sparse_grid_vertexes == other._sparse_grid_vertexes),
+            *[getattr(self, _) == getattr(other, _) for _ in __class__.__slots__[2:]],
+        ]
+        return False if False in check else True
 
     # ----------------------------------------------------------------------- #
     #                                 Attributes                              #
@@ -78,7 +70,7 @@ class SparseSampling:
 
     @property
     def encoding(self):
-        r"""Return the data encoding method."""
+        """Return the data encoding method."""
         return deepcopy(self._encoding)
 
     @encoding.setter
@@ -87,7 +79,7 @@ class SparseSampling:
 
     @property
     def unsigned_integer_type(self):
-        r"""Return the unsigned integer type of data values."""
+        """Return the unsigned integer type of data values."""
         return deepcopy(self._unsigned_integer_type)
 
     @unsigned_integer_type.setter
@@ -105,7 +97,7 @@ class SparseSampling:
 
     @property
     def description(self):
-        r"""Return the description of the object."""
+        """Return the description of the object."""
         return deepcopy(self._description)
 
     @description.setter

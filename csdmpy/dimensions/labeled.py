@@ -3,9 +3,6 @@
 from __future__ import division
 from __future__ import print_function
 
-import json
-from copy import deepcopy
-
 import numpy as np
 
 from csdmpy.dimensions.base import _copy_core_metadata
@@ -112,55 +109,20 @@ class LabeledDimension(BaseDimension):
     def coordinates(self, value):
         self.labels = value
 
-    @property
-    def coords(self):
-        """Alias for the `coordinates` attribute."""
-        return self.coordinates
-
-    @coords.setter
-    def coords(self, value):
-        self.coordinates = value
-
-    @property
-    def axis_label(self):
-        """Return a formatted string for displaying label along the dimension axis."""
-        return self.label
-
-    @property
-    def data_structure(self):
-        """Json serialized string describing the LabeledDimension class instance."""
-        return json.dumps(self.dict(), ensure_ascii=False, sort_keys=False, indent=2)
-
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
     # ----------------------------------------------------------------------- #
 
     def _copy_metadata(self, obj, copy=False):
         """Copy LabeledDimension metadata."""
-        if hasattr(obj, "subtype"):
-            obj = obj.subtype
+        obj = obj.subtype if hasattr(obj, "subtype") else obj
         if isinstance(obj, LabeledDimension):
             _copy_core_metadata(self, obj, "labeled")
-
-    def to_dict(self):
-        """Alias to the `dict()` method of the class."""
-        return self.dict()
 
     def dict(self):
         """Return the LabeledDimension as a python dictionary."""
         dictionary = {}
         dictionary["type"] = self.__class__._type
-        if self._description.strip() != "":
-            dictionary["description"] = self._description.strip()
         dictionary["labels"] = self._labels.tolist()
-
-        if self._label.strip() != "":
-            dictionary["label"] = self._label.strip()
-
-        if self._application != {}:
-            dictionary["application"] = self._application
+        dictionary.update(super().dict())
         return dictionary
-
-    def copy(self):
-        """Return a copy of the object."""
-        return deepcopy(self)

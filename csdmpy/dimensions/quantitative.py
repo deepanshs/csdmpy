@@ -3,19 +3,21 @@
 from copy import deepcopy
 
 from astropy.units import Quantity
+from numpy import all
 from numpy import inf
 
 from csdmpy.dimensions.base import BaseDimension
 from csdmpy.units import check_quantity_name
 from csdmpy.units import ScalarQuantity
+from csdmpy.utils import _axis_label
 from csdmpy.utils import type_error
 from csdmpy.utils import validate
-
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 __all__ = ["BaseQuantitativeDimension", "ReciprocalDimension"]
 
+ALLOWED_TYPES = (Quantity, str, ScalarQuantity)
 # =========================================================================== #
 #                          Base Quantitative Class                            #
 # =========================================================================== #
@@ -46,7 +48,7 @@ class BaseQuantitativeDimension(BaseDimension):
         unit=None,
         **kwargs,
     ):
-        r"""Instantiate a BaseIndependentVariable class."""
+        """Instantiate a BaseIndependentVariable class."""
 
         super().__init__(label, application, description)
 
@@ -55,9 +57,7 @@ class BaseQuantitativeDimension(BaseDimension):
         self._quantity_name = check_quantity_name(quantity_name, unit)
 
         value = ScalarQuantity(period, unit).quantity
-        if value.value == 0.0:
-            value = inf * value.unit
-        self._period = value
+        self._period = inf * value.unit if value.value == 0.0 else value
 
         self._unit = unit
         self._equivalent_unit = None
@@ -65,17 +65,9 @@ class BaseQuantitativeDimension(BaseDimension):
 
     def __eq__(self, other):
         """Overrides the default implementation"""
-        check = [
-            # super class
-            self._coordinates_offset == other._coordinates_offset,
-            self._origin_offset == other._origin_offset,
-            self._quantity_name == other._quantity_name,
-            self._period == other._period,
-            self._unit == other._unit,
-            # self._equivalencies == other._equivalencies,
-            super().__eq__(other),
-        ]
-        return False if False in check else True
+        check = [getattr(self, _) == getattr(other, _) for _ in __class__.__slots__]
+        check += [super().__eq__(other)]
+        return all(check)
 
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
@@ -83,30 +75,27 @@ class BaseQuantitativeDimension(BaseDimension):
 
     @property
     def coordinates_offset(self):
-        r"""Value at index zero, :math:`c_k`, along the dimension."""
+        """Value at index zero, :math:`c_k`, along the dimension."""
         return deepcopy(self._coordinates_offset)
 
     @coordinates_offset.setter
     def coordinates_offset(self, value):
-        allowed_types = (Quantity, str, ScalarQuantity)
-        value = validate(value, "coordinates_offset", allowed_types)
-        value = ScalarQuantity(value, self._unit).quantity
-        self._coordinates_offset = value
+        value = validate(value, "coordinates_offset", ALLOWED_TYPES)
+        self._coordinates_offset = ScalarQuantity(value, self._unit).quantity
 
     @property
     def origin_offset(self):
-        r"""Origin offset, :math:`o_k`, along the dimension."""
+        """Origin offset, :math:`o_k`, along the dimension."""
         return deepcopy(self._origin_offset)
 
     @origin_offset.setter
     def origin_offset(self, value):
-        allowed_types = (Quantity, str, ScalarQuantity)
-        value = validate(value, "origin_offset", allowed_types)
+        value = validate(value, "origin_offset", ALLOWED_TYPES)
         self._origin_offset = ScalarQuantity(value, self._unit).quantity
 
     @property
     def period(self):
-        r"""Period of the data along this dimension."""
+        """Period of the data along this dimension."""
         return deepcopy(self._period)
 
     @period.setter
@@ -117,27 +106,38 @@ class BaseQuantitativeDimension(BaseDimension):
             raise TypeError(type_error(str, "period", value))
 
         lst = ["inf", "Inf", "infinity", "Infinity", "∞"]
-        if value.strip().split()[0] in lst:
-            value = inf * self._unit
-            self._period = value
-        else:
-            self._period = ScalarQuantity(value, self._unit).quantity
+        is_inf = value.strip().split()[0] in lst
+        self._period = (
+            inf * self._unit if is_inf else ScalarQuantity(value, self._unit).quantity
+        )
 
     @property
     def quantity_name(self):
-        r"""Quantity name associated with this dimension."""
+        """Quantity name associated with this dimension."""
         return deepcopy(self._quantity_name)
 
     @quantity_name.setter
     def quantity_name(self, value):
         raise NotImplementedError("This attribute is not yet implemented.")
 
+    @property
+    def absolute_coordinates(self):
+        """Return the absolute coordinates along the dimensions."""
+        return (self.coordinates + self.origin_offset).to(self._unit)
+
+    @property
+    def axis_label(self):
+        """Return a formatted string for displaying label along the dimension axis."""
+        label = self.quantity_name if self.label.strip() == "" else self.label
+        unit = self._equivalent_unit or self._unit
+        return _axis_label(label, unit)
+
     # ----------------------------------------------------------------------- #
     #                                  Methods                                #
     # ----------------------------------------------------------------------- #
 
-    def _dict(self):
-        r"""Return the object as a python dictionary."""
+    def dict(self):
+        """Return the object as a python dictionary."""
         obj = {}
 
         # The description key is added at the child class level.
@@ -153,22 +153,17 @@ class BaseQuantitativeDimension(BaseDimension):
         if self._period.value not in [0.0, inf]:
             obj["period"] = str(ScalarQuantity(self._period))
 
-        if self.label.strip() != "":
-            obj["label"] = self.label
-
-        if self._application != {}:
-            obj["application"] = self._application
-
+        obj.update(super().dict())
         return obj
 
     def is_quantitative(self):
-        r"""Return `True`, if the dimension is quantitative, otherwise `False`.
+        """Return `True`, if the dimension is quantitative, otherwise `False`.
         :returns: A Boolean.
         """
         return True
 
     def to(self, unit="", equivalencies=None):
-        r"""Convert the unit to given value `unit`."""
+        """Convert the unit to given value `unit`."""
         unit = validate(unit, "unit", str)
         if equivalencies is None:
             self._unit = ScalarQuantity(unit, self._unit).quantity.unit
@@ -187,7 +182,6 @@ class BaseQuantitativeDimension(BaseDimension):
 
 
 class ReciprocalDimension(BaseQuantitativeDimension):
-    r"""Declare a ReciprocalDimension class."""
+    """ReciprocalDimension class."""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass
