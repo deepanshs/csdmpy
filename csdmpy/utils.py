@@ -179,9 +179,7 @@ class NumericType:
     def __eq__(self, other):
         """Overrides the default implementation"""
         check = [self.value == other.value, self.dtype == other.dtype]
-        if False in check:
-            return False
-        return True
+        return False if False in check else True
 
     def _check_numeric_type(self, element):
         if isinstance(element, np.dtype):
@@ -215,28 +213,19 @@ def validate(value, attr, types, method=None):
     raise TypeError(type_error(types, attr, value))
 
 
-def type_error(a, b, c):
-    if isinstance(a, tuple):
-        a = [item.__name__ for item in a]
-        a = " or ".join(a)
-    else:
-        a = a.__name__
-    return ("Expecting an instance of type `{0}` for {1}, got `{2}`.").format(
-        a, b, type(c).__name__
+def type_error(types, attr, value):
+    types = (
+        " or ".join([item.__name__ for item in types])
+        if isinstance(types, tuple)
+        else types.__name__
     )
+    val_type = type(value).__name__
+    return f"Expecting an instance of type `{types}` for {attr}, got `{val_type}`."
 
 
-def attribute_error(a, b):
-    return "`{0}` has no attribute `{1}`.".format(a.__class__.__name__, b)
-
-
-def _axis_label(label, unit=None, label_type=""):
-    if unit not in [None, ""]:
-        if label_type == "":
-            return f"{label} / ({unit})"
-        # if label_type == "latex":
-        #     return "{0} / ({1})".format(label, unit.to_string("latex"))
-    return label
+def _axis_label(label, unit=None):
+    """Return a formatted label with units."""
+    return f"{label} / ({unit})" if unit not in [None, ""] else label
 
 
 def _get_dictionary(*arg, **kwargs):

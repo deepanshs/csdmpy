@@ -2,9 +2,8 @@
 """Base Quantitative class."""
 from copy import deepcopy
 
+import numpy as np
 from astropy.units import Quantity
-from numpy import all
-from numpy import inf
 
 from csdmpy.dimensions.base import BaseDimension
 from csdmpy.units import check_quantity_name
@@ -24,7 +23,7 @@ ALLOWED_TYPES = (Quantity, str, ScalarQuantity)
 
 
 class BaseQuantitativeDimension(BaseDimension):
-    r"""A BaseQuantitativeDimension class."""
+    """A BaseQuantitativeDimension class."""
 
     __slots__ = (
         "_coordinates_offset",
@@ -57,7 +56,7 @@ class BaseQuantitativeDimension(BaseDimension):
         self._quantity_name = check_quantity_name(quantity_name, unit)
 
         value = ScalarQuantity(period, unit).quantity
-        self._period = inf * value.unit if value.value == 0.0 else value
+        self._period = np.inf * value.unit if value.value == 0.0 else value
 
         self._unit = unit
         self._equivalent_unit = None
@@ -67,7 +66,7 @@ class BaseQuantitativeDimension(BaseDimension):
         """Overrides the default implementation"""
         check = [getattr(self, _) == getattr(other, _) for _ in __class__.__slots__]
         check += [super().__eq__(other)]
-        return all(check)
+        return np.all(check)
 
     # ----------------------------------------------------------------------- #
     #                                Attributes                               #
@@ -108,7 +107,9 @@ class BaseQuantitativeDimension(BaseDimension):
         lst = ["inf", "Inf", "infinity", "Infinity", "∞"]
         is_inf = value.strip().split()[0] in lst
         self._period = (
-            inf * self._unit if is_inf else ScalarQuantity(value, self._unit).quantity
+            np.inf * self._unit
+            if is_inf
+            else ScalarQuantity(value, self._unit).quantity
         )
 
     @property
@@ -150,7 +151,7 @@ class BaseQuantitativeDimension(BaseDimension):
         if self._quantity_name not in [None, "unknown", "dimensionless"]:
             obj["quantity_name"] = self._quantity_name
 
-        if self._period.value not in [0.0, inf]:
+        if self._period.value not in [0.0, np.inf]:
             obj["period"] = str(ScalarQuantity(self._period))
 
         obj.update(super().dict())
@@ -183,5 +184,3 @@ class BaseQuantitativeDimension(BaseDimension):
 
 class ReciprocalDimension(BaseQuantitativeDimension):
     """ReciprocalDimension class."""
-
-    pass

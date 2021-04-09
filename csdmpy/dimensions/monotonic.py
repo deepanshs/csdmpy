@@ -13,7 +13,6 @@ from csdmpy.dimensions.quantitative import ReciprocalDimension
 from csdmpy.units import frequency_ratio
 from csdmpy.units import scalar_quantity_format
 from csdmpy.units import ScalarQuantity
-from csdmpy.utils import attribute_error
 from csdmpy.utils import check_scalar_object
 
 
@@ -146,7 +145,9 @@ class MonotonicDimension(BaseQuantitativeDimension):
 
     @property
     def coordinates_offset(self):
-        raise AttributeError(attribute_error(self, "coordinates_offset"))
+        raise AttributeError(
+            f"`{self.__class__.__name__}` has no attribute `coordinates_offset`."
+        )
 
     @property
     def coordinates(self):

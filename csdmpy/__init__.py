@@ -129,7 +129,7 @@ def parse_dict(dictionary):
         _ = [csdm.add_dimension(dim) for dim in csdm_dict["dimensions"]]
 
     if "dependent_variables" in keys:
-        [csdm.add_dependent_variable(dv) for dv in csdm_dict["dependent_variables"]]
+        _ = [csdm.add_dependent_variable(dv) for dv in csdm_dict["dependent_variables"]]
 
     _ = [setattr(csdm, "_" + k, csdm_dict[k]) for k in optional_keys if k in keys]
     return csdm
