@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 
-from csdmpy.utils import _get_broadcast_shape
+from .utils import _get_broadcast_shape
 
 
 def _check_dimension_type(csdm):

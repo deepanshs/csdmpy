@@ -5,9 +5,9 @@ from __future__ import print_function
 
 import numpy as np
 
-from csdmpy.dimensions.base import _copy_core_metadata
-from csdmpy.dimensions.base import BaseDimension
-from csdmpy.dimensions.base import check_count
+from .base import _copy_core_metadata
+from .base import BaseDimension
+from .base import check_count
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -27,35 +27,31 @@ class LabeledDimension(BaseDimension):
     _type = "labeled"
 
     def __init__(self, labels, label="", description="", application={}, **kwargs):
-        r"""Instantiate a LabeledDimension class."""
+        """Instantiate a LabeledDimension class."""
         super().__init__(label, application, description)
         self.labels = labels
 
     def __repr__(self):
-        properties = ", ".join(
-            [f"{k}={v}" for k, v in self.dict().items() if k != "type"]
-        )
+        content = [f"{k}={v}" for k, v in self.dict().items() if k != "type"]
+        properties = ", ".join(content)
         return f"LabeledDimension({properties})"
 
     def __str__(self):
         return f"LabeledDimension({self.coordinates.__str__()})"
 
     def __eq__(self, other):
-        """Overrides the default implementation"""
-        if hasattr(other, "subtype"):
-            other = other.subtype
-        if isinstance(other, LabeledDimension):
-            check = [
-                self._count == other._count,
-                np.all(self._labels == other._labels),
-                super().__eq__(other),
-            ]
-            if np.all(check):
-                return True
-        return False
+        other = other.subtype if hasattr(other, "subtype") else other
+        if not isinstance(other, LabeledDimension):
+            return False
+        check = [
+            self._count == other._count,
+            np.all(self._labels == other._labels),
+            super().__eq__(other),
+        ]
+        return np.all(check)
 
     def is_quantitative(self):
-        r"""Return `True`, if the dimension is quantitative, otherwise `False`.
+        """Return `True`, if the dimension is quantitative, otherwise `False`.
         :returns: A Boolean.
         """
         return False
@@ -71,7 +67,7 @@ class LabeledDimension(BaseDimension):
 
     @property
     def count(self):
-        r"""Total number of labels along the dimension."""
+        """Total number of labels along the dimension."""
         return self._count
 
     @count.setter
@@ -80,7 +76,7 @@ class LabeledDimension(BaseDimension):
 
     @property
     def labels(self):
-        r"""Return a list of labels along the dimension."""
+        """Return a list of labels along the dimension."""
         return self._labels
 
     @labels.setter
@@ -91,13 +87,14 @@ class LabeledDimension(BaseDimension):
         items = np.asarray([isinstance(item, str) for item in labels])
         if np.all(items):
             self._labels = np.asarray(labels)
-            self._count = len(labels)
-        else:
-            i = np.where(items == 0)[0][0]
-            raise ValueError(
-                "A list of string labels are required, found "
-                f"{labels[i].__class__.__name__} at index {i}."
-            )
+            self._count = self._labels.size
+            return
+
+        i = np.where(items == 0)[0][0]
+        name = labels[i].__class__.__name__
+        raise ValueError(
+            f"A list of string labels are required, found {name} at index {i}."
+        )
 
     @property
     def coordinates(self):

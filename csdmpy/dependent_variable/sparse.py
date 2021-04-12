@@ -4,7 +4,7 @@ from copy import deepcopy
 
 import numpy as np
 
-from csdmpy.dependent_variables.decoder import Decoder
+from .decoder import Decoder
 from csdmpy.utils import check_encoding
 from csdmpy.utils import NumericType
 from csdmpy.utils import QuantityType
@@ -16,7 +16,7 @@ __all__ = ["SparseSampling"]
 
 
 class SparseSampling:
-    r"""Declare a SparseSampling class."""
+    """Declare a SparseSampling class."""
 
     __slots__ = (
         "_sparse_dimensions_indexes",
@@ -30,26 +30,35 @@ class SparseSampling:
 
     def __init__(
         self,
-        dimension_indexes,
-        sparse_grid_vertexes,
-        encoding="none",
-        quantity_type="scalar",
-        unsigned_integer_type="int64",
-        description="",
-        application={},
+        # dimension_indexes,
+        # sparse_grid_vertexes,
+        # encoding="none",
+        # quantity_type="scalar",
+        # unsigned_integer_type="int64",
+        # description="",
+        # application={},
         **kwargs,
     ):
         """Initialize a SparseDimension class."""
-        self.encoding = encoding
-        self._unsigned_integer_type = NumericType(unsigned_integer_type)
-        self._quantity_type = QuantityType(quantity_type)
-        self.description = description
-        self.application = application
-        self._sparse_dimensions_indexes = dimension_indexes
+        default = {
+            "encoding": "none",
+            "quantity_type": "scalar",
+            "unsigned_integer_type": "uint64",
+            "description": "",
+            "application": {},
+        }
+        default.update(kwargs)
+        check_sparse_sampling_key_value(default)
+        self.encoding = default["encoding"]
+        self._unsigned_integer_type = NumericType(default["unsigned_integer_type"])
+        self._quantity_type = QuantityType(default["quantity_type"])
+        self.description = default["description"]
+        self.application = default["application"]
+        self._sparse_dimensions_indexes = default["dimension_indexes"]
         self._sparse_grid_vertexes = Decoder(
             self._encoding,
             self._quantity_type,
-            [sparse_grid_vertexes],
+            [default["sparse_grid_vertexes"]],
             self._unsigned_integer_type.dtype,
         )
 
@@ -62,7 +71,7 @@ class SparseSampling:
             np.all(self._sparse_grid_vertexes == other._sparse_grid_vertexes),
             *[getattr(self, _) == getattr(other, _) for _ in __class__.__slots__[2:]],
         ]
-        return False if False in check else True
+        return np.all(check)
 
     # ----------------------------------------------------------------------- #
     #                                 Attributes                              #
@@ -113,3 +122,29 @@ class SparseSampling:
     def sparse_grid_vertexes(self):
         """List of grid vertexes corresponding to sparse dimensions."""
         return deepcopy(self._sparse_grid_vertexes)
+
+
+def check_sparse_sampling_key_value(input_dict):
+    def message(item):
+        return (
+            f"Missing a required `{item}` key from the SparseSampling object of the "
+            "DependentVariable object."
+        )
+
+    sparse_keys = input_dict.keys()
+    if "dimension_indexes" not in sparse_keys:
+        raise KeyError(message("dimension_indexes"))
+    if "sparse_grid_vertexes" not in sparse_keys:
+        raise KeyError(message("sparse_grid_vertexes"))
+    if "encoding" in sparse_keys:
+        code = input_dict["encoding"]
+        if code != "none" and "unsigned_integer_type" not in sparse_keys:
+            raise KeyError(message("unsigned_integer_type"))
+
+        uint_value = input_dict["unsigned_integer_type"]
+        if uint_value not in ["uint8", "uint16", "uint32", "uint64"]:
+            raise ValueError(
+                f"{uint_value} is an invalid `unsigned_integer_type` enumeration ",
+                "literal. The allowed values are `uint8`, `uint16`, `uint32`, ",
+                "and `uint64`.",
+            )

@@ -3,11 +3,11 @@ from collections.abc import MutableSequence
 
 import numpy as np
 
-from csdmpy.dependent_variables import DependentVariable
-from csdmpy.dimensions import Dimension
-from csdmpy.dimensions import LabeledDimension
-from csdmpy.dimensions import LinearDimension
-from csdmpy.dimensions import MonotonicDimension
+from .dependent_variable import DependentVariable
+from .dimension import Dimension
+from .dimension import LabeledDimension
+from .dimension import LinearDimension
+from .dimension import MonotonicDimension
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"

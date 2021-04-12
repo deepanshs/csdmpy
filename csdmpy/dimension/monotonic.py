@@ -6,10 +6,10 @@ from __future__ import print_function
 import numpy as np
 from astropy.units import Quantity
 
-from csdmpy.dimensions.base import _copy_core_metadata
-from csdmpy.dimensions.base import check_count
-from csdmpy.dimensions.quantitative import BaseQuantitativeDimension
-from csdmpy.dimensions.quantitative import ReciprocalDimension
+from .base import _copy_core_metadata
+from .base import check_count
+from .quantitative import BaseQuantitativeDimension
+from .quantitative import ReciprocalDimension
 from csdmpy.units import frequency_ratio
 from csdmpy.units import scalar_quantity_format
 from csdmpy.units import ScalarQuantity
@@ -63,7 +63,6 @@ class MonotonicDimension(BaseQuantitativeDimension):
         self._get_coordinates(coordinates)
 
     def __eq__(self, other):
-        """Overrides the default implementation"""
         other = other.subtype if hasattr(other, "subtype") else other
         if not isinstance(other, MonotonicDimension):
             return False
@@ -117,10 +116,10 @@ class MonotonicDimension(BaseQuantitativeDimension):
             self._count = self._coordinates.size
             return
 
-        if isinstance(values, Quantity):
-            self._coordinates = values
-        elif isinstance(values, np.ndarray):
-            self._coordinates = values * _unit
+        # if isinstance(values, Quantity):
+        self._coordinates = values if isinstance(values, Quantity) else values * _unit
+        # elif isinstance(values, np.ndarray):
+        #     self._coordinates = values * _unit
 
         unit = scalar_quantity_format(self._coordinates[0], numerical_value=False)
         self._values = [f"{item.value} {unit}" for item in self._coordinates]

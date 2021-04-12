@@ -7,12 +7,12 @@ from copy import deepcopy
 import numpy as np
 from astropy.units.quantity import Quantity
 
-from csdmpy.units import ScalarQuantity
+from .units import ScalarQuantity
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 
-__all__ = ["literals_encoding", "QuantityType", "NumericType"]
+__all__ = ["LITERALS_ENCODING", "QuantityType", "NumericType"]
 
 literals_quantity_type = {
     "scalar": lambda n: 1,
@@ -23,7 +23,7 @@ literals_quantity_type = {
     "symmetric_matrix": lambda n: int(n * (n + 1) / 2),
 }
 
-literals_encoding = ("base64", "none", "raw")
+LITERALS_ENCODING = ("base64", "none", "raw")
 literals_quantity_type_ = [
     "scalar",
     "vector_n",
@@ -194,12 +194,12 @@ class NumericType:
 
         lst = self.__class__._lst
         if element not in lst.keys():
-            message = (
-                "The value, `{0}`, is an invalid `numeric_type` enumeration literal. "
-                "The allowed values are {1}."
-            )
             literals = self.__class__.literals
-            raise ValueError(message.format(element, "'" + "', '".join(literals) + "'"))
+            message = (
+                f"The value, `{element}`, is an invalid `numeric_type` enumeration "
+                f"literal. The allowed values are {literals}."
+            )
+            raise ValueError(message)
 
         self.value = element
         self.dtype = np.dtype(lst[element])
@@ -238,8 +238,7 @@ def _get_dictionary(*arg, **kwargs):
             "The argument is either a dictionary with the allowed keywords or a "
             "collection of valid arguments."
         )
-    input_dict = kwargs
-    return input_dict
+    return kwargs
 
 
 def check_encoding(element):
@@ -251,14 +250,14 @@ def check_encoding(element):
     :returns: The encoding key-value, if the value is valid.
     :raises KeyError: Otherwise.
     """
-    if element in literals_encoding:
+    if element in LITERALS_ENCODING:
         return element
 
     message = (
-        "The value, `{0}`, is an invalid `encoding` enumeration literal. "
-        "The allowed values are '{1}', '{2}' and '{3}'."
+        f"The value, `{element}`, is an invalid `encoding` enumeration literal. "
+        f"The allowed values are '{LITERALS_ENCODING}'."
     )
-    raise ValueError(message.format(element, *literals_encoding))
+    raise ValueError(message)
 
 
 def numpy_dtype_to_numeric_type(element):
@@ -308,11 +307,11 @@ def numpy_dtype_to_numeric_type(element):
         "complex128",
     )
 
-    if element in lst.keys():
+    if element in lst:
         return lst[element]
     if element in lst2:
         return element
-    raise ValueError("The dtype, {0}, is not supported.".format(element))
+    raise ValueError(f"The dtype, {element}, is not supported.")
 
 
 def check_and_assign_bool(element):

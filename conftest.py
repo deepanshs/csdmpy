@@ -4,8 +4,8 @@ import pytest
 
 import csdmpy as cp
 import csdmpy.statistics as stat
-from csdmpy.dependent_variables import DependentVariable
-from csdmpy.dimensions import Dimension
+from csdmpy.dependent_variable import DependentVariable
+from csdmpy.dimension import Dimension
 
 __all__ = []
 

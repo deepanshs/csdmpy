@@ -86,46 +86,22 @@ class DependentVariable:
             "components_url": None,
             "filename": __file__,
             "application": {},
-            "sparse_sampling": {
-                "dimensions": None,
-                "sparse_grid_vertexes": None,
-                "encoding": "none",
-                "numeric_type": "int64",
-                "application": {},
-                "description": "",
-            },
+            "sparse_sampling": {},
         }
-        default_keys = dictionary.keys()
         input_dict = _get_dictionary(*args, **kwargs)
-        input_keys = input_dict.keys()
+        self.__validate_key_value__(input_dict)
+        dictionary.update(input_dict)
 
-        self.__validate_key_value__(input_keys, input_dict)
-
-        if "filename" in kwargs.keys():
-            dictionary["filename"] = kwargs["filename"]
-
-        for key in input_keys:
-            if key in default_keys and key != "sparse_sampling":
-                dictionary[key] = input_dict[key]
-
-        if "sparse_sampling" in input_keys:
-            check_sparse_sampling_key_value(input_dict)
-            for key in input_dict["sparse_sampling"].keys():
-                dictionary["sparse_sampling"][key] = input_dict["sparse_sampling"][key]
-        else:
-            dictionary["sparse_sampling"] = {}
-
-        if dictionary["type"] == "internal":
-            self._type = "internal"
-            self.subtype = InternalDataset(**dictionary)
-
-        if dictionary["type"] == "external":
-            self._type = "external"
-            self.subtype = ExternalDataset(**dictionary)
+        self._type = "internal" if dictionary["type"] == "internal" else "external"
+        self.subtype = (
+            InternalDataset(**dictionary)
+            if dictionary["type"] == "internal"
+            else ExternalDataset(**dictionary)
+        )
 
     @staticmethod
-    def __validate_key_value__(input_keys, input_dict):
-        if "type" not in input_keys:
+    def __validate_key_value__(input_dict):
+        if "type" not in input_dict:
             raise KeyError(
                 "Missing a required `type` key from the DependentVariable object."
             )
@@ -137,11 +113,14 @@ class DependentVariable:
                 "objects. The allowed values are 'internal', 'external'."
             )
 
-        if "quantity_type" not in input_keys:
-            raise KeyError(
-                "Missing a required `quantity_type` key from the DependentVariable "
-                "object."
+        def message(item, subtype):
+            return (
+                f"Missing a required `{item}` key from the DependentVariable "
+                f"object of type, `{subtype}`."
             )
+
+        if "quantity_type" not in input_dict:
+            raise KeyError(message("quantity_type", input_dict["type"]))
 
         if input_dict["type"] == "external" and "encoding" in input_dict:
             raise KeyError(
@@ -149,58 +128,33 @@ class DependentVariable:
                 "`external` type."
             )
 
-        def message(item, subtype):
-            return (
-                f"Missing a required `{item}` key from the DependentVariable "
-                "object of type, `{subtype}`."
-            )
-
-        if input_dict["type"] == "internal" and "components" not in input_keys:
+        if input_dict["type"] == "internal" and "components" not in input_dict:
             raise KeyError(message("components", "internal"))
 
-        if input_dict["type"] == "external":
-            if "components_url" not in input_keys:
-                raise KeyError(message("components_url", "external"))
+        if input_dict["type"] == "external" and "components_url" not in input_dict:
+            raise KeyError(message("components_url", "external"))
 
     def __repr__(self):
-        if self.unit.physical_type == "dimensionless":
-            return (
-                f"DependentVariable({self.components.__repr__()}, "
-                f"quantity_type={self.quantity_type})"
-            )
-
-        return (
-            f"DependentVariable({self.components.__repr__()} {self.unit}, "
-            f"quantity_type={self.quantity_type})"
-        )
+        msg = f"{self.components.__repr__()} {self.unit}".strip()
+        return f"DependentVariable({msg}, quantity_type={self.quantity_type})"
 
     def __str__(self):
-        if self.unit.physical_type == "dimensionless":
-            return (
-                f"DependentVariable(\n{self.components.__str__()}, "
-                f"quantity_type={self.quantity_type}, numeric_type={self.numeric_type})"
-            )
-
-        return (
-            f"DependentVariable(\n{self.components.__str__()} {self.unit}, "
-            f"quantity_type={self.quantity_type}, numeric_type={self.numeric_type})"
-        )
+        msg = f"{self.components.__str__()} {self.unit}".strip()
+        qt = self.quantity_type
+        nt = self.numeric_type
+        return f"DependentVariable(\n{msg}, quantity_type={qt}, numeric_type={nt})"
 
     def __eq__(self, other):
-        """Overrides the default implementation"""
-        if isinstance(other, DependentVariable):
-            if self.subtype == other.subtype:
-                return True
+        if not isinstance(other, DependentVariable):
             return False
-        return False
+        return self.subtype == other.subtype
 
     # ======================================================================= #
     #                      DependentVariable  Attributes                      #
     # ======================================================================= #
     @property
     def application(self):
-        """
-        Application metadata of the DependentVariable object.
+        """Application metadata of the DependentVariable object.
 
         .. doctest::
 
@@ -235,8 +189,7 @@ class DependentVariable:
 
     @property
     def axis_label(self):
-        r"""
-        List of formatted string labels for each component of the dependent variable.
+        """List of formatted string labels for each component of the dependent variable.
 
         This attribute is not a part of the original core scientific dataset
         model, however, it is a convenient supplementary attribute that provides
@@ -269,8 +222,7 @@ class DependentVariable:
 
     @property
     def component_labels(self):
-        r"""
-        List of labels corresponding to the components of the dependent variable.
+        """List of labels corresponding to the components of the dependent variable.
 
         .. doctest::
 
@@ -305,8 +257,7 @@ class DependentVariable:
 
     @property
     def components(self):
-        r"""
-        Component array of the dependent variable.
+        r"""Component array of the dependent variable.
 
         The value of this attribute, :math:`\mathbb{U}`, is a Numpy array of
         shape :math:`(p \times N_{d-1} \times ... N_1 \times N_0)` where
@@ -380,8 +331,7 @@ class DependentVariable:
 
     @property
     def components_url(self):
-        r"""
-        URL where the data components of the dependent variable are stored.
+        """URL where the data components of the dependent variable are stored.
 
         This attribute is only informative and cannot be modified. Its value is a
         string containing the local or remote address of the file where the data values
@@ -398,8 +348,7 @@ class DependentVariable:
 
     @property
     def data_structure(self):
-        r"""
-        Json serialized string describing the DependentVariable class instance.
+        """Json serialized string describing the DependentVariable class instance.
 
         This supplementary attribute is useful for a quick preview of the dependent
         variable object. For convenience, the values from the `components` attribute
@@ -442,8 +391,7 @@ class DependentVariable:
 
     @property
     def description(self):
-        """
-        Brief description of the dependent variables.
+        """Brief description of the dependent variables.
 
         The default value is an empty string, ''.
 
@@ -469,8 +417,7 @@ class DependentVariable:
 
     @property
     def encoding(self):
-        r"""
-        The encoding method used in representing the dependent variable.
+        """The encoding method used in representing the dependent variable.
 
         The value of this attribute determines the method used when serializing or
         deserializing the data values to and from the file. Currently, there are three
@@ -509,8 +456,7 @@ class DependentVariable:
 
     @property
     def name(self):
-        r"""
-        Name of the dependent variable.
+        """Name of the dependent variable.
 
         .. doctest::
 
@@ -532,8 +478,7 @@ class DependentVariable:
 
     @property
     def numeric_type(self):
-        r"""
-        The numeric type of the component values from the dependent variable.
+        """The numeric type of the component values from the dependent variable.
 
         There are currently twelve *valid* numeric types in core scientific dataset
         model.
@@ -588,8 +533,7 @@ class DependentVariable:
 
     @property
     def quantity_name(self):
-        """
-        Quantity name of the physical quantities associated with the dependent variable.
+        """Quantity name of physical quantities associated with the dependent variable.
 
         .. doctest::
 
@@ -611,8 +555,7 @@ class DependentVariable:
 
     @property
     def quantity_type(self):
-        r"""
-        Quantity type of the dependent variable.
+        """Quantity type of the dependent variable.
 
         There are currently six *valid* quantity types,
 
@@ -645,8 +588,7 @@ class DependentVariable:
 
     @property
     def type(self):
-        """
-        The dependent variable subtype.
+        """The dependent variable subtype.
 
         There are two *valid* subtypes of DependentVariable class with the following
         enumeration literals,
@@ -693,8 +635,7 @@ class DependentVariable:
 
     @property
     def unit(self):
-        r"""
-        Unit associated with the dependent variable.
+        """Unit associated with the dependent variable.
 
         .. note::
             The attribute cannot be modified. To convert the unit, use the
@@ -726,8 +667,7 @@ class DependentVariable:
     # ======================================================================= #
 
     def to(self, unit):
-        r"""
-        Convert the unit of the dependent variable to the `unit`.
+        """Convert the unit of the dependent variable to the `unit`.
 
         Args:
             unit: A string containing a unit with the same dimensionality as the
@@ -760,8 +700,7 @@ class DependentVariable:
         return self.dict()
 
     def dict(self):
-        """
-        Return DependentVariable object as a python dictionary.
+        """Return DependentVariable object as a python dictionary.
 
         Example:
             >>> y.dict() # doctest: +SKIP
@@ -774,17 +713,16 @@ class DependentVariable:
         """
         return self.subtype.dict()
 
-    def _dict(self, filename=None, dataset_index=None, for_display=False, version=None):
+    def _dict(self, filename=None, dataset_index=None, for_display=False):
         """Return DependentVariable object as a python dictionary."""
-        return self.subtype.dict(filename, dataset_index, for_display, version)
+        return self.subtype.dict(filename, dataset_index, for_display)
 
     def copy(self):
         """Return a copy of the DependentVariable object."""
         return deepcopy(self)
 
     def _reshape(self, shape):
-        r"""
-        Reshapes the components array.
+        r"""Reshapes the components array.
 
         The array is reshaped to :math:`(p \times N_{d-1} \times ... N_1 \times N_0)`
         where :math:`p` is the number of components and :math:`N_k` is the number of
@@ -801,7 +739,7 @@ class DependentVariable:
         if grid_points != components_size and item._sparse_sampling == {}:
             warnings.warn(
                 (
-                    f"The number of elements in the components array, "
+                    "The number of elements in the components array, "
                     f"{components_size}, is not consistent with the total "
                     f"number of grid points, {grid_points}."
                 )
@@ -846,32 +784,6 @@ def fill_sparse_space(item, shape, dtype):
 
     components[vertexes] = item.components.reshape(_new_shape)
     return components
-
-
-def check_sparse_sampling_key_value(input_dict):
-    def message2(item):
-        return (
-            f"Missing a required `{item}` key from the SparseSampling object of the "
-            "DependentVariable object."
-        )
-
-    sparse_keys = input_dict["sparse_sampling"].keys()
-    if "dimension_indexes" not in sparse_keys:
-        raise KeyError(message2("dimension_indexes"))
-    if "sparse_grid_vertexes" not in sparse_keys:
-        raise KeyError(message2("sparse_grid_vertexes"))
-    if "encoding" in sparse_keys:
-        code = input_dict["sparse_sampling"]["encoding"]
-        if code != "none" and "unsigned_integer_type" not in sparse_keys:
-            raise KeyError(message2("unsigned_integer_type"))
-
-        uint_value = input_dict["sparse_sampling"]["unsigned_integer_type"]
-        if uint_value not in ["uint8", "uint16", "uint32", "uint64"]:
-            raise ValueError(
-                f"{uint_value} is an invalid `unsigned_integer_type` enumeration ",
-                "literal. The allowed values are `uint8`, `uint16`, `uint32`, ",
-                "and `uint64`.",
-            )
 
 
 def as_dependent_variable(array, **kwargs):

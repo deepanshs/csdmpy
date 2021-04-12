@@ -17,7 +17,7 @@ from .csdm import Dimension  # lgtm [py/import-own-module] # NOQA
 from .csdm import LabeledDimension  # lgtm [py/import-own-module] # NOQA
 from .csdm import LinearDimension  # lgtm [py/import-own-module] # NOQA
 from .csdm import MonotonicDimension  # lgtm [py/import-own-module] # NOQA
-from .dependent_variables import download  # lgtm [py/import-own-module] # NOQA
+from .dependent_variable import download  # lgtm [py/import-own-module] # NOQA
 from .helper_functions import _preview  # lgtm [py/import-own-module] # NOQA
 from .numpy_wrapper import apodize  # lgtm [py/import-own-module] # NOQA
 from .tests import *  # lgtm [py/import-own-module] # NOQA

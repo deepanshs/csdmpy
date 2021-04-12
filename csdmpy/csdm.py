@@ -13,15 +13,15 @@ from astropy.units.quantity import Quantity
 from .abstract_list import __dimensions_list__  # lgtm [py/import-own-module]
 from .abstract_list import DependentVariableList  # lgtm [py/import-own-module]
 from .abstract_list import DimensionList  # lgtm [py/import-own-module]
-from .dependent_variables import (  # lgtm [py/import-own-module] # noqa: F401
+from .dependent_variable import (  # lgtm [py/import-own-module] # noqa: F401
     as_dependent_variable,
 )
-from .dependent_variables import DependentVariable  # lgtm [py/import-own-module]
-from .dimensions import as_dimension  # lgtm [py/import-own-module]
-from .dimensions import Dimension  # lgtm [py/import-own-module] # noqa: F401
-from .dimensions import LabeledDimension  # lgtm [py/import-own-module] # noqa: F401
-from .dimensions import LinearDimension  # lgtm [py/import-own-module] # noqa: F401
-from .dimensions import MonotonicDimension  # lgtm [py/import-own-module] # noqa: F401
+from .dependent_variable import DependentVariable  # lgtm [py/import-own-module]
+from .dimension import as_dimension  # lgtm [py/import-own-module]
+from .dimension import Dimension  # lgtm [py/import-own-module] # noqa: F401
+from .dimension import LabeledDimension  # lgtm [py/import-own-module] # noqa: F401
+from .dimension import LinearDimension  # lgtm [py/import-own-module] # noqa: F401
+from .dimension import MonotonicDimension  # lgtm [py/import-own-module] # noqa: F401
 from .helper_functions import _preview  # lgtm [py/import-own-module]
 from .numpy_wrapper import fft
 from .units import string_to_quantity  # lgtm [py/import-own-module]
@@ -171,11 +171,11 @@ class CSDM:
 
     def __check_csdm_object(self, other, operator=""):
         """Check if the two objects are csdm objects"""
-        if not isinstance(other, CSDM):
-            raise TypeError(
-                f"unsupported operand type(s) {operator}: 'CSDM' and "
-                f"'{other.__class__.__name__}'."
-            )
+        if isinstance(other, CSDM):
+            return
+
+        name = other.__class__.__name__
+        raise TypeError(f"unsupported operand type(s) {operator}: 'CSDM' and '{name}'.")
 
     def __check_dimension_equality(self, other):
         """Check if the dimensions of the two csdm objects are identical."""
@@ -320,11 +320,11 @@ class CSDM:
         other = check_scalar_object(other, "+")
         d1 = self.copy()
         for i, item in enumerate(d1.dependent_variables):
-            if not isinstance(other, Quantity):
-                item.components = item.components + other
-            else:
-                factor = other.unit.to(item.unit)
-                item.components = item.components + factor * other.value
+            item.components = (
+                item.components + other
+                if not isinstance(other, Quantity)
+                else item.components + other.unit.to(item.unit) * other.value
+            )
         return d1
 
     def __radd__(self, other):
@@ -345,7 +345,6 @@ class CSDM:
         """
         if isinstance(other, CSDM):
             self.__check_csdm_object_additive_compatibility(other)
-
             d1 = self.copy()
             for i, item in enumerate(d1.dependent_variables):
                 factor = other.dependent_variables[i].unit.to(item.unit)
@@ -357,11 +356,11 @@ class CSDM:
         other = check_scalar_object(other, "-")
         d1 = self.copy()
         for i, item in enumerate(d1.dependent_variables):
-            if not isinstance(other, Quantity):
-                item.components = item.components - other
-            else:
-                factor = other.unit.to(item.unit)
-                item.components = item.components - factor * other.value
+            item.components = (
+                item.components - other
+                if not isinstance(other, Quantity)
+                else item.components - other.unit.to(item.unit) * other.value
+            )
         return d1
 
     def __rsub__(self, other):
@@ -500,10 +499,6 @@ class CSDM:
                 new_dim._copy_metadata(dim_)
                 if hasattr(new_dim, "complex_fft"):
                     new_dim.complex_fft = False
-
-                if hasattr(dim_, "_equivalencies"):
-                    dim_._equivalencies = equivalencies_
-                    new_dim._equivalencies = equivalencies_
 
                 csdm._dimensions += [new_dim]
 
@@ -925,12 +920,7 @@ class CSDM:
         obj["application"] = self.application
         obj["dimensions"] = [dim.dict() for dim in self.dimensions]
         obj["dependent_variables"] = [
-            dv._dict(
-                filename=filename,
-                dataset_index=i,
-                for_display=for_display,
-                version=self.__latest_CSDM_version__,
-            )
+            dv._dict(filename=filename, dataset_index=i, for_display=for_display)
             for i, dv in enumerate(self.dependent_variables)
         ]
 
@@ -957,12 +947,11 @@ class CSDM:
         Example:
             >>> data.dumps()  # doctest: +SKIP
         """
+        dict_ = self._dict(
+            update_timestamp=update_timestamp, read_only=read_only, version=version
+        )
         return json.dumps(
-            self._dict(update_timestamp, read_only, version),
-            ensure_ascii=False,
-            sort_keys=False,
-            allow_nan=False,
-            **kwargs,
+            dict_, ensure_ascii=False, sort_keys=False, allow_nan=False, **kwargs
         )
 
     def save(
@@ -1024,25 +1013,14 @@ class CSDM:
         if read_only:
             dictionary["csdm"]["read_only"] = read_only
 
-        if output_device is None:
-            with open(filename, "w", encoding="utf8") as outfile:
-                json.dump(
-                    dictionary,
-                    outfile,
-                    ensure_ascii=False,
-                    sort_keys=False,
-                    indent=indent,
-                    allow_nan=False,
-                )
-        else:
-            json.dump(
-                dictionary,
-                output_device,
-                ensure_ascii=False,
-                sort_keys=False,
-                indent=indent,
-                allow_nan=False,
-            )
+        kwargs = dict(
+            ensure_ascii=False, sort_keys=False, indent=indent, allow_nan=False
+        )
+        if output_device is not None:
+            json.dump(dictionary, output_device, **kwargs)
+
+        with open(filename, "w", encoding="utf8") as outfile:
+            json.dump(dictionary, outfile, **kwargs)
 
     def to_list(self):
         r"""Return the dimension coordinates and dependent variable components as
@@ -1101,26 +1079,21 @@ class CSDM:
             >>> d1, d2 = data.split()  #doctest: +SKIP
         """
 
-        def new_object():
-            a = CSDM()
-            a._dimensions = self._dimensions
-            a._dependent_variables = DependentVariableList([])
-            a._tags = self._tags
-            a._read_only = self._read_only
-            a._version = self._version
-            a._timestamp = self._timestamp
-            a._geographic_coordinate = self._geographic_coordinate
-            a._description = self._description
-            a._application = self._application
-            a._filename = self._filename
-            return a
+        def new_object(var):
+            new = CSDM()
+            new._dimensions = self._dimensions
+            new._dependent_variables = DependentVariableList([var])
+            new._tags = self._tags
+            new._read_only = self._read_only
+            new._version = self._version
+            new._timestamp = self._timestamp
+            new._geographic_coordinate = self._geographic_coordinate
+            new._description = self._description
+            new._application = self._application
+            new._filename = self._filename
+            return new
 
-        dv = []
-        for variable in self.dependent_variables:
-            a = new_object()
-            a._dependent_variables += [variable]
-            dv.append(a)
-        return dv
+        return [new_object(variable) for variable in self.dependent_variables]
 
     # csdm dimension order manipulation
     def transpose(self):

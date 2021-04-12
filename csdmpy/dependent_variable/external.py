@@ -7,9 +7,9 @@ from urllib.request import urlopen
 
 import numpy as np
 
-from csdmpy.dependent_variables.base_class import BaseDependentVariable
-from csdmpy.dependent_variables.decoder import Decoder
-from csdmpy.dependent_variables.download import get_absolute_url_path
+from .base_class import BaseDependentVariable
+from .decoder import Decoder
+from .download import get_absolute_url_path
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -50,9 +50,9 @@ class ExternalDataset(BaseDependentVariable):
         """Return the components_url of the CSDM serialized file."""
         return self._components_url
 
-    def dict(self, filename=None, dataset_index=None, for_display=False, version=None):
+    def dict(self, filename=None, dataset_index=None, for_display=False):
         """Return ExternalDataset object as a python dictionary."""
         dictionary = {}
         dictionary["type"] = "internal"
-        dictionary.update(super().dict(filename, dataset_index, for_display, version))
+        dictionary.update(super().dict(filename, dataset_index, for_display))
         return dictionary

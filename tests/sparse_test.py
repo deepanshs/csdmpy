@@ -2,12 +2,13 @@
 import numpy as np
 import pytest
 
-from csdmpy.dependent_variables import check_sparse_sampling_key_value
-from csdmpy.dependent_variables.sparse import SparseSampling
+from csdmpy.dependent_variable.sparse import check_sparse_sampling_key_value
+from csdmpy.dependent_variable.sparse import SparseSampling
 
 sparse_sampling = {
     "dimension_indexes": [0],
     "sparse_grid_vertexes": [0, 5, 10, 15, 20, 25],
+    "unsigned_integer_type": "uint16",
 }
 
 
@@ -19,7 +20,7 @@ def test_01():
 
     assert sp.description == ""
     assert sp.encoding == "none"
-    assert sp.unsigned_integer_type.value == "int64"
+    assert sp.unsigned_integer_type.value == "uint16"
     assert sp.application == {}
 
 
@@ -30,7 +31,7 @@ def test_02():
 
     error = "Missing a required `sparse_grid_vertexes`"
     with pytest.raises(KeyError, match=".*{0}.*".format(error)):
-        check_sparse_sampling_key_value({"sparse_sampling": sparse_sampling})
+        check_sparse_sampling_key_value(sparse_sampling)
 
 
 def test_03():
@@ -40,7 +41,7 @@ def test_03():
 
     error = "Missing a required `dimension_indexes`"
     with pytest.raises(KeyError, match=".*{0}.*".format(error)):
-        check_sparse_sampling_key_value({"sparse_sampling": sparse_sampling})
+        check_sparse_sampling_key_value(sparse_sampling)
 
 
 def test_04():
@@ -51,7 +52,7 @@ def test_04():
     }
     error = "Missing a required `unsigned_integer_type`"
     with pytest.raises(KeyError, match=".*{0}.*".format(error)):
-        check_sparse_sampling_key_value({"sparse_sampling": sparse_sampling})
+        check_sparse_sampling_key_value(sparse_sampling)
 
 
 def test_05():
@@ -63,7 +64,7 @@ def test_05():
     }
     error = "float32 is an invalid `unsigned_integer_type` enumeration"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
-        check_sparse_sampling_key_value({"sparse_sampling": sparse_sampling})
+        check_sparse_sampling_key_value(sparse_sampling)
 
 
 def test_06():

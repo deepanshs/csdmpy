@@ -5,7 +5,7 @@ from copy import deepcopy
 import numpy as np
 from astropy.units import Quantity
 
-from csdmpy.dimensions.base import BaseDimension
+from .base import BaseDimension
 from csdmpy.units import check_quantity_name
 from csdmpy.units import ScalarQuantity
 from csdmpy.utils import _axis_label
@@ -63,7 +63,6 @@ class BaseQuantitativeDimension(BaseDimension):
         self._equivalencies = None
 
     def __eq__(self, other):
-        """Overrides the default implementation"""
         check = [getattr(self, _) == getattr(other, _) for _ in __class__.__slots__]
         check += [super().__eq__(other)]
         return np.all(check)
@@ -99,8 +98,7 @@ class BaseQuantitativeDimension(BaseDimension):
 
     @period.setter
     def period(self, value=None):
-        if isinstance(value, Quantity):
-            value = str(value)
+        value = str(value) if isinstance(value, Quantity) else value
         if not isinstance(value, str):
             raise TypeError(type_error(str, "period", value))
 
@@ -141,7 +139,6 @@ class BaseQuantitativeDimension(BaseDimension):
         """Return the object as a python dictionary."""
         obj = {}
 
-        # The description key is added at the child class level.
         if self._coordinates_offset.value != 0.0:
             obj["coordinates_offset"] = str(ScalarQuantity(self._coordinates_offset))
 

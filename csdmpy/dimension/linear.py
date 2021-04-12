@@ -6,9 +6,9 @@ from __future__ import print_function
 import numpy as np
 from astropy.units import Quantity
 
-from csdmpy.dimensions.base import _copy_core_metadata
-from csdmpy.dimensions.quantitative import BaseQuantitativeDimension
-from csdmpy.dimensions.quantitative import ReciprocalDimension
+from .base import _copy_core_metadata
+from .quantitative import BaseQuantitativeDimension
+from .quantitative import ReciprocalDimension
 from csdmpy.units import frequency_ratio
 from csdmpy.units import ScalarQuantity
 from csdmpy.utils import check_and_assign_bool

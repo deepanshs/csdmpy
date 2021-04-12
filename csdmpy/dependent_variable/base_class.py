@@ -9,8 +9,8 @@ from copy import deepcopy
 
 import numpy as np
 
-from csdmpy.dependent_variables.download import get_relative_url_path
-from csdmpy.dependent_variables.sparse import SparseSampling
+from .download import get_relative_url_path
+from .sparse import SparseSampling
 from csdmpy.units import check_quantity_name
 from csdmpy.units import ScalarQuantity
 from csdmpy.utils import check_encoding
@@ -72,7 +72,6 @@ class BaseDependentVariable:
         )
 
     def __eq__(self, other):
-        """Overrides the default implementation"""
         check = [
             getattr(self, _) == getattr(other, _) for _ in __class__.__slots__[:-1]
         ]
@@ -224,13 +223,11 @@ class BaseDependentVariable:
     #                                  Methods                                #
     # ----------------------------------------------------------------------- #
 
-    def to_dict(
-        self, filename=None, dataset_index=None, for_display=False, version=None
-    ):
+    def to_dict(self, filename=None, dataset_index=None, for_display=False):
         """Alias to the `dict()` method of the class."""
-        return self.dict(filename, dataset_index, for_display, version)
+        return self.dict(filename, dataset_index, for_display)
 
-    def dict(self, filename=None, dataset_index=None, for_display=False, version=None):
+    def dict(self, filename=None, dataset_index=None, for_display=False):
         """Return a dictionary object of the base class."""
         obj = {}
         obj["description"] = self._description.strip()
