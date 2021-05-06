@@ -172,7 +172,7 @@ class LinearDimension(BaseQuantitativeDimension):
             return coordinates.to(self._unit)
 
         if equivalent_fn == "nmr_frequency_ratio":
-            denominator = self.origin_offset - self.coordinates_offset
+            denominator = self.origin_offset - self.get_nmr_reference_offset()
             if denominator.value == 0:
                 raise ZeroDivisionError("Cannot convert the coordinates to ppm.")
             return coordinates.to(equivalent_unit, frequency_ratio(denominator))
@@ -186,6 +186,22 @@ class LinearDimension(BaseQuantitativeDimension):
             "type. Use the `count`, `increment` or `coordinates_offset` attributes"
             " to update the coordinate along the linear dimension."
         )
+
+    def get_nmr_reference_offset(self):
+        """Calculate reference offset for NMR datsets."""
+        if self.complex_fft:
+            return self.coordinates_offset
+
+        if self.count % 2 != 0:  # odd count
+            return self.coordinates_offset + (self.count - 1) * self.increment / 2.0
+
+        # even count
+        n = self.count / 2
+        if self.increment > 0:  # positive increment
+            return self.coordinates_offset + n * self.increment
+
+        # negative increment
+        return self.coordinates_offset + (n - 1) * self.increment
 
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #

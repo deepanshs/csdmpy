@@ -238,10 +238,9 @@ def test_linearDimension():
     assert np.allclose(freq.coords.value, (np.arange(10) * 0.1 + 1))
 
     freq.to("ppm", "nmr_frequency_ratio")
-    assert np.allclose(
-        freq.coordinates.value, (np.arange(10) * 100 + 1000) / (1 - 0.001)
-    )
-    assert np.allclose(freq.coords.value, (np.arange(10) * 100 + 1000) / (1 - 0.001))
+    values = (np.arange(10) * 100 + 1000) / (1 - (0.001 + 0.0005))
+    assert np.allclose(freq.coordinates.value, values)
+    assert np.allclose(freq.coords.value, values)
 
     freq.origin_offset = "0 Hz"
     assert str(freq.origin_offset) == "0.0 Hz"
@@ -251,6 +250,7 @@ def test_linearDimension():
 
     assert (freq.origin_offset - freq.coordinates_offset).value == 0
 
+    freq.complex_fft = True
     freq.to("ppm", "nmr_frequency_ratio")
     error = "Cannot convert the coordinates to ppm."
     with pytest.raises(ZeroDivisionError, match=error):
