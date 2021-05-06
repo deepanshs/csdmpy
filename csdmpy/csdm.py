@@ -794,7 +794,10 @@ class CSDM:
         :meth:`~csdmpy.CSDM.add_dimension` method.
         """
         warnings.warn(
-            "The methods is deprecated since v0.2. Use list append or += operator.",
+            (
+                "The `add_dimension` methods is deprecated since v0.4. Use the list "
+                "append or += operator, eg. `csdm.dimensions.append(x)`."
+            ),
             DeprecationWarning,
         )
         if args != () and isinstance(args[0], __dimensions_list__):
