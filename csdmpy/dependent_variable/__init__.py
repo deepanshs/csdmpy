@@ -20,8 +20,7 @@ __all__ = ["DependentVariable"]
 
 
 class DependentVariable:
-    r"""
-    Create an instance of the DependentVariable class.
+    r"""Create an instance of the DependentVariable class.
 
     The instance of this class represents a dependent variable, :math:`\mathbf{U}`.
     A dependent variable holds :math:`p`-component data values, where :math:`p>0`

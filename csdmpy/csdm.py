@@ -938,8 +938,7 @@ class CSDM:
         version=__latest_CSDM_version__,
         **kwargs,
     ):
-        """
-        Serialize the :ref:`CSDM_api` instance as a JSON data-exchange string.
+        """Serialize the :ref:`CSDM_api` instance as a JSON data-exchange string.
 
         Args:
             update_timestamp(bool): If True, timestamp is updated to current time.
@@ -964,8 +963,7 @@ class CSDM:
         output_device=None,
         indent=0,
     ):
-        """
-        Serialize the :ref:`CSDM_api` instance as a JSON data-exchange file.
+        """Serialize the :ref:`CSDM_api` instance as a JSON data-exchange file.
 
         There are two types of file serialization extensions, `.csdf` and
         `.csdfe`. In the CSD model, when every instance of the DependentVariable
@@ -1367,8 +1365,7 @@ class CSDM:
     #     print(kwargs)
 
     def plot(self, reverse_axis=None, range=None, **kwargs):
-        """
-        A supplementary function for plotting basic 1D and 2D datasets only.
+        """A supplementary function for plotting basic 1D and 2D datasets only.
 
         Args:
             csdm_object: The CSDM object.
@@ -1411,8 +1408,7 @@ def _check_for_out(csdm, **kwargs):
 def _get_new_csdm_object_after_applying_ufunc(
     csdm, func, method=None, factor=None, *inputs, **kwargs
 ):
-    """
-    Perform the operation, func, on the components of the dependent variables, and
+    """Perform the operation, func, on the components of the dependent variables, and
     return the corresponding CSDM object.
     """
     if factor is None:
@@ -1447,8 +1443,7 @@ def _get_new_csdm_object_after_applying_ufunc(
 
 
 def _get_new_csdm_object_after_applying_function(func, *args, **kwargs):
-    """
-    Perform the operation, func, on the components of the dependent variables, and
+    """Perform the operation, func, on the components of the dependent variables, and
     return the corresponding CSDM object.
     """
     args_ = []
@@ -1478,8 +1473,7 @@ def _get_new_csdm_object_after_applying_function(func, *args, **kwargs):
 
 
 def _get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
-    """
-    Perform the operation, func, on the components of the dependent variables, and
+    """Perform the operation, func, on the components of the dependent variables, and
     return the corresponding CSDM object.
     """
     index = _check_dimension_indices(len(csdm.dimensions), index)
@@ -1550,8 +1544,7 @@ def _get_CSDM_object__args__axes(*args, **kwargs):
 
 
 def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
-    """
-    Perform the operation, func, on the components of the dependent variables, and
+    """Perform the operation, func, on the components of the dependent variables, and
     return the corresponding CSDM object.
     """
     csdm, args_, axis, kwargs = _get_CSDM_object__args__axes(*args, **kwargs)

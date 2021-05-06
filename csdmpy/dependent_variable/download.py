@@ -59,8 +59,7 @@ def download_file_from_url(url, verbose=False):
 
 
 def _get_absolute_data_address(data_path, file):
-    """
-    Return the absolute path address of a local data file.
+    """Return the absolute path address of a local data file.
 
     :params: data_path:
     """

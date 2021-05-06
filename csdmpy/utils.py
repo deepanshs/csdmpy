@@ -50,11 +50,10 @@ numpy_scalars = (
 
 
 class QuantityType:
-    """
-    Validate the quantity_type string value.
+    """Validate the quantity_type string value.
 
-    The valid options are `scalar`, `vector_n`, `pixel_n`,
-    `matrix_n_m`, and `symmetric_matrix_n`.
+    The valid options are `scalar`, `vector_n`, `pixel_n`, `matrix_n_m`, and
+    `symmetric_matrix_n`.
 
     :returns: The quantity_type key-value, if the value is valid.
     :raises KeyError: Otherwise.
@@ -102,14 +101,12 @@ class QuantityType:
 
 
 class NumericType:
-    """
-    Validate the numeric_type string value.
+    """Validate the numeric_type string value.
 
-    The valid options are
-    `uint8`, `uint16`, `uint32`, `uint64`, `int8`, `int16`, `int32`, `int64`,
-    `float32`, `float64`, `complex64`, and `complex128`.
-    The byte order for multi-byte numeric_types are assumed to follow the
-    little endianness format.
+    The valid options are `uint8`, `uint16`, `uint32`, `uint64`, `int8`, `int16`,
+    `int32`, `int64`, `float32`, `float64`, `complex64`, and `complex128`. The byte
+    order for multi-byte numeric_types are assumed to follow the little endianness
+    format.
 
     :returns: The numeric_type value, if the value is valid.
     :raises KeyError: Otherwise.
@@ -242,8 +239,7 @@ def _get_dictionary(*arg, **kwargs):
 
 
 def check_encoding(element):
-    """
-    Validate the encoding string value.
+    """Validate the encoding string value.
 
     The valid options are `base64`, `none`, and `raw`.
 
@@ -354,8 +350,7 @@ def _get_broadcast_shape(array, ndim, axis):
 
 
 def _check_dimension_indices(d, index=-1):
-    """
-    Check the list of indexes to ensure that each index is an integer
+    """Check the list of indexes to ensure that each index is an integer
     and within the counts of dimensions.
     """
     index = deepcopy(index)

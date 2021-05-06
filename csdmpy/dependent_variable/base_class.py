@@ -316,7 +316,7 @@ def reduced_display(_components):
     first and the last two data values.
     """
     _string = []
-    for i, item in enumerate(_components):
+    for _, item in enumerate(_components):
         temp = item.ravel()
         lst = [str(temp[0]), str(temp[1]), str(temp[-2]), str(temp[-1])]
         _string.append([("{0}, {1}, ..., {2}, {3}").format(*lst)])

@@ -17,6 +17,7 @@ CSDMAxes
        :nosignatures:
 
         ~CSDMAxes.plot
+        ~CSDMAxes.scatter
         ~CSDMAxes.imshow
         ~CSDMAxes.contour
         ~CSDMAxes.contourf
@@ -24,4 +25,7 @@ CSDMAxes
     .. rubric:: Method Documentation
 
     .. automethod:: plot
+    .. automethod:: scatter
     .. automethod:: imshow
+    .. automethod:: contour
+    .. automethod:: contourf

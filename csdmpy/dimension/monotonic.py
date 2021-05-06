@@ -116,11 +116,7 @@ class MonotonicDimension(BaseQuantitativeDimension):
             self._count = self._coordinates.size
             return
 
-        # if isinstance(values, Quantity):
         self._coordinates = values if isinstance(values, Quantity) else values * _unit
-        # elif isinstance(values, np.ndarray):
-        #     self._coordinates = values * _unit
-
         unit = scalar_quantity_format(self._coordinates[0], numerical_value=False)
         self._values = [f"{item.value} {unit}" for item in self._coordinates]
         self._count = self._coordinates.size

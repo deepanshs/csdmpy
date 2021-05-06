@@ -34,7 +34,7 @@ class CSDMAxes(plt.Axes):
     name = "csdm"
 
     def plot(self, csdm, *args, **kwargs):
-        """Produce a figure using the `plot` method from the matplotlib library.
+        """Generate a figure axes using the `plot` method from the matplotlib library.
 
         Apply to all 1D datasets with single-component dependent-variables. For
         multiple dependent variables, the data from individual dependent-variables is
@@ -57,7 +57,8 @@ class CSDMAxes(plt.Axes):
         return self._call_1D(csdm, "plot", *args, **kwargs)
 
     def scatter(self, csdm, *args, **kwargs):
-        """Produce a figure using the `scatter` method from the matplotlib library.
+        """Generate a figure axes using the `scatter` method from the matplotlib
+        library.
 
         Apply to all 1D datasets with single-component dependent-variables. For
         multiple dependent variables, the data from individual dependent-variables is
@@ -80,7 +81,7 @@ class CSDMAxes(plt.Axes):
         return self._call_1D(csdm, "scatter", *args, **kwargs)
 
     def imshow(self, csdm, origin="lower", *args, **kwargs):
-        """Produce a figure using the `imshow` method from the matplotlib library.
+        """Generate a figure axes using the `imshow` method from the matplotlib library.
 
         Apply to all 2D datasets with either single-component (scalar),
         three-components (pixel_3), or four-components (pixel_4) dependent-variables.
@@ -115,7 +116,8 @@ class CSDMAxes(plt.Axes):
             return self._call_uniform_2D_image(csdm, origin=origin, *args, **kwargs)
 
     def contour(self, csdm, *args, **kwargs):
-        """Produce a figure using the `contour` method from the matplotlib library.
+        """Generate a figure axes using the `contour` method from the matplotlib
+        library.
 
         Apply to all 2D datasets with a single-component (scalar) dependent-variables.
         For multiple dependent variables, the data from individual dependent-variables
@@ -143,7 +145,8 @@ class CSDMAxes(plt.Axes):
             return self._call_uniform_2D_contour(csdm, "contour", *args, **kwargs)
 
     def contourf(self, csdm, *args, **kwargs):
-        """Produce a figure using the `contourf` method from the matplotlib library.
+        """Generate a figure axes using the `contourf` method from the matplotlib
+        library.
 
         Apply to all 2D datasets with a single-component (scalar) dependent-variables.
         For multiple dependent variables, the data from individual dependent-variables

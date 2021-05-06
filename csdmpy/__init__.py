@@ -280,8 +280,7 @@ def as_csdm(array, unit="", quantity_type="scalar"):
 
 
 def plot(csdm_object, reverse_axis=None, range=None, **kwargs):
-    """
-    A supplementary function for plotting basic 1D and 2D datasets only.
+    """A supplementary function for plotting basic 1D and 2D datasets only.
 
     Args:
         csdm_object: The CSDM object.
