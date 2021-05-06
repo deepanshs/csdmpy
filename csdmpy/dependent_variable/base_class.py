@@ -280,8 +280,6 @@ class BaseDependentVariable:
             obj["components_url"] = url_relative_path
             del obj["encoding"]
 
-        del data
-
     def set_components(self, _components, _numeric_type=None):
         """Set dependent variable components."""
         if _numeric_type is None:

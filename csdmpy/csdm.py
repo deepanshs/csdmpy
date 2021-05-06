@@ -299,13 +299,17 @@ class CSDM:
                 fn(factor * other.value)
         return self
 
-    def __add__(self, other):
-        """
-        Add two objects (z=x+y), if the other object is a
+    def _default_addition_(self, other, fn, operation):
+        """Operate on two objects (z=x+/-y), if the other object is a
             1) csdm or scalar object,
             2) with identical dimension objects,
             3) same number of dependent-variables, and
             4) each dependent variables with identical dimensionality.
+
+        Args:
+            other: the object to add/subtract
+            fn: addition/subtraction function
+            operation: "+" or "-"
         """
         if isinstance(other, CSDM):
             self.__check_csdm_object_additive_compatibility(other)
@@ -313,20 +317,28 @@ class CSDM:
             d1 = self.copy()
             for i, item in enumerate(d1.dependent_variables):
                 factor = other.dependent_variables[i].unit.to(item.unit)
-                item.components = (
-                    item.components + factor * other.dependent_variables[i].components
+                item.components = item.components + fn(
+                    factor, other.dependent_variables[i].components
                 )
             return d1
 
-        other = check_scalar_object(other, "+")
+        other = check_scalar_object(other, operation)
         d1 = self.copy()
         for i, item in enumerate(d1.dependent_variables):
             item.components = (
-                item.components + other
+                item.components + fn(1, other)
                 if not isinstance(other, Quantity)
-                else item.components + other.unit.to(item.unit) * other.value
+                else item.components + fn(1, other.unit.to(item.unit) * other.value)
             )
         return d1
+
+    def __add__(self, other):
+        """Add two objects (z=x+y)"""
+
+        def fn(a, b):
+            return a * b
+
+        return self._default_addition_(other, fn, "+")
 
     def __radd__(self, other):
         """Right add two objects. See __add__ for details."""
@@ -337,32 +349,12 @@ class CSDM:
         return self.__ifunction__("__iadd__", "+", other)
 
     def __sub__(self, other):
-        """
-        Subtract two objects (z=x-y), if the other is
-            1) csdm or scalar object,
-            2) with identical dimension objects,
-            3) same number of dependent-variables, and
-            4) each dependent variables with identical dimensionality.
-        """
-        if isinstance(other, CSDM):
-            self.__check_csdm_object_additive_compatibility(other)
-            d1 = self.copy()
-            for i, item in enumerate(d1.dependent_variables):
-                factor = other.dependent_variables[i].unit.to(item.unit)
-                item.components = (
-                    item.components - factor * other.dependent_variables[i].components
-                )
-            return d1
+        """Subtract two objects (z=x+y)"""
 
-        other = check_scalar_object(other, "-")
-        d1 = self.copy()
-        for i, item in enumerate(d1.dependent_variables):
-            item.components = (
-                item.components - other
-                if not isinstance(other, Quantity)
-                else item.components - other.unit.to(item.unit) * other.value
-            )
-        return d1
+        def fn(a, b):
+            return -a * b
+
+        return self._default_addition_(other, fn, "-")
 
     def __rsub__(self, other):
         """Right subtract two objects. See __sub__ for details."""
