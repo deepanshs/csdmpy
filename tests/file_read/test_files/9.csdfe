@@ -1,0 +1,33 @@
+{
+  "csdm": {
+    "timestamp": "2019-05-21T13:43:00Z",
+    "description": "Global Mean Sea Level (GMSL) rise from the late 19th to the Early 21st Century.",
+    "dimensions": [
+      {
+        "type": "linear",
+        "increment": "0.08333333333 yr",
+        "label": "Time",
+        "coordinates_offset": "1880.0416666667 yr",
+        "reciprocal": {
+          "quantity_name": "frequency"
+        },
+        "count": 1608,
+        "quantity_name": "time"
+      }
+    ],
+    "dependent_variables": [
+      {
+        "type": "internal",
+        "component_labels": [
+          "Global Mean Sea Level"
+        ],
+        "name": "Global Mean Sea Level",
+        "unit": " mm",
+        "components": [],
+        "quantity_name": "length"
+      }
+    ],
+    "read_only": true,
+    "version": "1.0"
+  }
+}

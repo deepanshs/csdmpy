@@ -1,0 +1,35 @@
+{
+  "csdm": {
+    "version": "1.0",
+    "read_only": true,
+    "timestamp": "2016-03-12T16:41:00Z",
+    "description": "An RBG image of a raccoon face.",
+    "dependent_variables": [
+      {
+        "type": "external",
+        "components_url": "https://www.grandinetti.org/resources/CSDM/raccoon_raw.dat",
+        "quantity_type": "pixel_3",
+        "component_labels": [
+          "red",
+          "green",
+          "blue"
+        ],
+        "name": "raccoon face"
+      }
+    ],
+    "dimensions": [
+      {
+        "type": "linear",
+        "count": 1024,
+        "increment": "1.0",
+        "label" : "horizontal index"
+      },
+      {
+        "type": "linear",
+        "count": 768,
+        "increment": "1.0",
+        "label" : "vertical index"
+      }
+    ]
+  }
+}

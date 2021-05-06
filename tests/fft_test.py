@@ -64,7 +64,7 @@ def test_fft_1():
         vals = np.random.rand(64).astype(np.complex128)
 
         csdm = cp.new()
-        csdm.add_dimension(cp.as_dimension(coordinates))
+        csdm.dimensions.append(cp.as_dimension(coordinates))
         csdm.add_dependent_variable(
             cp.as_dependent_variable(vals, quantity_type="scalar")
         )
@@ -79,7 +79,7 @@ def test_fft_2():
         vals = np.random.rand(64).astype(np.complex128)
 
         csdm = cp.new()
-        csdm.add_dimension(cp.as_dimension(coordinates, complex_fft=True))
+        csdm.dimensions.append(cp.as_dimension(coordinates, complex_fft=True))
         csdm.add_dependent_variable(
             cp.as_dependent_variable(vals, quantity_type="scalar")
         )

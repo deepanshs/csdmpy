@@ -27,7 +27,7 @@ class BaseDimension:
 
     @property
     def label(self):
-        r"""Label associated with the dimension."""
+        """Label associated with the dimension."""
         return deepcopy(self._label)
 
     @label.setter
@@ -36,7 +36,7 @@ class BaseDimension:
 
     @property
     def application(self):
-        r"""Return an application dimension associated with the dimensions."""
+        """Return an application dimension associated with the dimensions."""
         return self._application
 
     @application.setter
@@ -45,7 +45,7 @@ class BaseDimension:
 
     @property
     def description(self):
-        r"""Return a description of the dimension."""
+        """Return a description of the dimension."""
         return deepcopy(self._description)
 
     @description.setter

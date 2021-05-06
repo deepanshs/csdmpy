@@ -5,6 +5,7 @@ from __future__ import print_function
 
 import datetime
 import json
+import warnings
 from copy import deepcopy
 
 import numpy as np
@@ -130,9 +131,7 @@ class CSDM:
                     f"A list of valid Dimension objects or equivalent dictionary "
                     f"objects is required, found {t_}"
                 )
-
-            for item in kwargs["dimensions"]:
-                self.add_dimension(item)
+            _ = [self.dimensions.append(item) for item in kwargs["dimensions"]]
 
         self._dependent_variables = DependentVariableList([])
         if "dependent_variables" in kwargs_keys:
@@ -169,13 +168,15 @@ class CSDM:
             return f"CSDM(\n{prop_dv}\n)"
         return f"CSDM(\n{prop_dv},\n{prop_dim}\n)"
 
-    def __check_csdm_object(self, other, operator=""):
-        """Check if the two objects are csdm objects"""
-        if isinstance(other, CSDM):
-            return
+    # def __check_csdm_object(self, other, operator=""):
+    #     """Check if the two objects are csdm objects"""
+    #     if isinstance(other, CSDM):
+    #         return
 
-        name = other.__class__.__name__
-        raise TypeError(f"unsupported operand type(s) {operator}: 'CSDM' and '{name}'.")
+    #     name = other.__class__.__name__
+    #     raise TypeError(
+    #           f"unsupported operand type(s) {operator}: 'CSDM' and '{name}'."
+    #     )
 
     def __check_dimension_equality(self, other):
         """Check if the dimensions of the two csdm objects are identical."""
@@ -607,6 +608,10 @@ class CSDM:
         """Tuple of the :ref:`dim_api` instances."""
         return self._dimensions
 
+    @dimensions.setter
+    def dimensions(self, other):
+        pass
+
     @property
     def x(self):
         """Alias for the dimensions attribute."""
@@ -733,7 +738,7 @@ class CSDM:
     # ----------------------------------------------------------------------- #
     #                                  Methods                                #
     # ----------------------------------------------------------------------- #
-
+    # deprecated
     def add_dimension(self, *args, **kwargs):
         """Add a new :ref:`dim_api` instance to the :ref:`csdm_api` object.
 
@@ -796,12 +801,17 @@ class CSDM:
         recommendation, always pass a copy of the :ref:`dim_api` instance to the
         :meth:`~csdmpy.CSDM.add_dimension` method.
         """
+        warnings.warn(
+            "The methods is deprecated since v0.2. Use list append or += operator.",
+            DeprecationWarning,
+        )
         if args != () and isinstance(args[0], __dimensions_list__):
             self._dimensions += [args[0]]
             return
 
         self._dimensions += [Dimension(*args, **kwargs)]
 
+    # deprecated
     def add_x(self, *args, **kwargs):
         """Alias to the ``add_dimension`` method."""
         self.add_dimension(*args, **kwargs)
@@ -1562,7 +1572,7 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
     if axis is not None:
         for i, variable in enumerate(csdm.dimensions):
             if -1 - i not in axis:
-                new.add_dimension(variable.copy())
+                new.dimensions.append(variable.copy())
 
     for variable in csdm.dependent_variables:
         y = func(variable.components, *args_, **kwargs)

@@ -1,0 +1,33 @@
+{
+  "csdm": {
+    "version": "1.0",
+    "read_only": true,
+    "timestamp": "2016-03-12T16:41:00Z",
+    "description": "An IR spectrum of caffeine.",
+    "dimensions": [
+      {
+        "type": "linear",
+        "count": "1842",
+        "increment": "1.930548614883216 cm^-1",
+        "coordinates_offset": "449.41 cm^-1",
+        "quantity_name": "wavenumber",
+        "reciprocal": {
+          "quantity_name": "length"
+        }
+      }
+    ],
+    "dependent_variables": [
+      {
+        "name": "Caffeine",
+        "type": "internal",
+        "encoding": "base64",
+        "numeric_type": "float32",
+        "quantity_type": "scalar",
+        "component_labels": [
+          "Transmittance"
+        ],
+        "components": []
+      }
+    ]
+  }
+}

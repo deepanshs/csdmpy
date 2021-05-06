@@ -155,10 +155,9 @@ class Dimension:
         lst = [item for item in missing_key if default[item] is None]
         if lst != []:
             raise KeyError(
-                f"Missing a required `{lst}` key from the LinearDimension object."
+                f"Missing a required `{lst[0]}` key from the LinearDimension object."
             )
         validate(default["count"], "count", int)
-
         return LinearDimension(**default)
 
     def __repr__(self):

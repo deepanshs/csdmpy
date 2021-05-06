@@ -1,0 +1,28 @@
+{
+   "csdm": {
+      "version": "1.0",
+      "read_only": true,
+      "timestamp": "2016-03-12T16:41:00Z",
+      "description": "A Electron Paramagnetic Resonance simulated dataset.",
+      "dependent_variables": [
+        {
+          "type": "external",
+          "components_url": "file:./xyinc2_raw_Vanadyl in Amanita muscaria.dat",
+          "component_labels": ["Intensity Derivative"],
+          "name": "Amanita.muscaria",
+          "encoding": "raw",
+          "numeric_type": "float32",
+          "quantity_type": "scalar"
+        }
+      ],
+      "dimensions": [
+        {
+          "type": "linear",
+          "count": 298,
+          "quantity_name": "magnetic flux density",
+          "coordinates_offset": "2750.0 G",
+          "increment": "4.0 G"
+        }
+      ]
+    }
+}

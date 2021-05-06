@@ -9,8 +9,7 @@ dim1 = {"type": "linear", "count": 5, "increment": "1 s"}
 dim2 = {"type": "linear", "count": 10, "increment": "1 m"}
 dv = {"type": "internal", "components": [data.ravel()], "quantity_type": "scalar"}
 
-a.add_dimension(dim1)
-a.add_dimension(dim2)
+a.dimensions += [dim1, dim2]
 a.add_dependent_variable(dv)
 
 

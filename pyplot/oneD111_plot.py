@@ -12,7 +12,7 @@ csdm = cp.new()
 # %%
 # Step-2: Create dimension objects and add it to the CSDM object.
 x = cp.as_dimension(np.arange(40) * 0.5 - 10, unit="µm", label="x")
-csdm.add_dimension(x)
+csdm.dimensions.append(x)
 
 # %%
 # Step-3: Create dependent variable objects and add it to the CSDM object.

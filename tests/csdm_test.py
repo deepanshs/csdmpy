@@ -17,7 +17,7 @@ import csdmpy as cp
 def get_test(type):
     out = np.random.rand(10).astype(type)
     a_test = cp.new()
-    a_test.add_dimension(cp.LinearDimension(count=10, increment="1s"))
+    a_test.dimensions.append(cp.LinearDimension(count=10, increment="1s"))
     a_test.add_dependent_variable(
         {"type": "internal", "quantity_type": "scalar", "unit": "m", "components": out}
     )
@@ -27,8 +27,8 @@ def get_test(type):
 def get_test_2d(type):
     out = np.random.rand(50).astype(type).reshape(10, 5)
     a_test = cp.new()
-    a_test.add_dimension(cp.LinearDimension(count=5, increment="1s"))
-    a_test.add_dimension(cp.LinearDimension(count=10, increment="1m"))
+    a_test.dimensions.append(cp.LinearDimension(count=5, increment="1s"))
+    a_test.dimensions.append(cp.LinearDimension(count=10, increment="1m"))
     a_test.add_dependent_variable(
         {
             "type": "internal",
@@ -112,26 +112,26 @@ def test_csdm():
     assert dm == data
     assert dm.shape == ()
 
-    dm.add_dimension(cp.LinearDimension(count=10, increment="1s"))
+    dm.dimensions.append(cp.LinearDimension(count=10, increment="1s"))
 
     assert dm != data
 
 
 def test_split():
     a = cp.new()
-    a.add_dimension(cp.LinearDimension(count=10, increment="1m"))
+    a.dimensions.append(cp.LinearDimension(count=10, increment="1m"))
     a.add_dependent_variable(
         {"type": "internal", "components": np.arange(10) + 1, "quantity_type": "scalar"}
     )
 
     b = cp.new()
-    b.add_dimension(cp.LinearDimension(count=10, increment="1m"))
+    b.dimensions.append(cp.LinearDimension(count=10, increment="1m"))
     b.add_dependent_variable(
         {"type": "internal", "components": np.arange(10) + 2, "quantity_type": "scalar"}
     )
 
     c = cp.new()
-    c.add_dimension(cp.LinearDimension(count=10, increment="1m"))
+    c.dimensions.append(cp.LinearDimension(count=10, increment="1m"))
     c.add_dependent_variable(
         {"type": "internal", "components": np.arange(10) + 1, "quantity_type": "scalar"}
     )
@@ -146,7 +146,7 @@ def test_split():
 
 
 a_test = cp.new()
-a_test.add_dimension(cp.LinearDimension(count=10, increment="1s"))
+a_test.dimensions.append(cp.LinearDimension(count=10, increment="1s"))
 a_test.add_dependent_variable(
     {
         "type": "internal",
@@ -157,7 +157,7 @@ a_test.add_dependent_variable(
 )
 
 a1_test = cp.new()
-a1_test.add_dimension(cp.LinearDimension(count=10, increment="1m"))
+a1_test.dimensions.append(cp.LinearDimension(count=10, increment="1m"))
 a1_test.add_dependent_variable(
     {
         "type": "internal",
@@ -168,7 +168,7 @@ a1_test.add_dependent_variable(
 )
 
 b_test = cp.new()
-b_test.add_dimension(cp.LinearDimension(count=10, increment="1s"))
+b_test.dimensions.append(cp.LinearDimension(count=10, increment="1s"))
 b_test.add_dependent_variable(
     {
         "type": "internal",
@@ -179,7 +179,7 @@ b_test.add_dependent_variable(
 )
 
 b1_test = cp.new()
-b1_test.add_dimension(cp.LinearDimension(count=10, increment="1s"))
+b1_test.dimensions.append(cp.LinearDimension(count=10, increment="1s"))
 b1_test.add_dependent_variable(
     {
         "type": "internal",

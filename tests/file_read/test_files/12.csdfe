@@ -1,0 +1,32 @@
+{
+  "csdm": {
+    "version": "1.0",
+    "read_only": true,
+    "timestamp": "2016-03-12T16:41:00Z",
+    "description": "A UV-vis spectra of benzene vapours.",
+    "dimensions": [
+      {
+        "count": 4001,
+        "increment": "0.01 nm",
+        "coordinates_offset": "230.0 nm",
+        "quantity_name": "length",
+        "label": "wavelength",
+        "reciprocal": {
+          "quantity_name": "wavenumber"
+        }
+      }
+    ],
+    "dependent_variables": [
+      {
+        "name": "Vapour of Benzene",
+        "type": "internal",
+        "encoding": "base64",
+        "numeric_type": "float32",
+        "component_labels": [
+          "Absorbance"
+        ],
+        "components": []
+      }
+    ]
+  }
+}

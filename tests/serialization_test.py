@@ -10,8 +10,7 @@ def setup():
     dimension2 = cp.as_dimension(np.arange(20))
     data = cp.as_dependent_variable(np.random.rand(20, 10))
 
-    csdm.add_dimension(dimension1)
-    csdm.add_dimension(dimension2)
+    csdm.dimensions += [dimension1, dimension2]
     csdm.add_dependent_variable(data)
 
     return csdm

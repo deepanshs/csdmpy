@@ -1,3 +1,16 @@
+v0.4
+----
+
+What's new
+''''''''''
+
+- The ``add_dimension`` method is deprecated. Dimensions can now be added using list append or `+=` operator.
+
+Bugfix
+''''''
+
+- Fixed error in calculating the nmr dimensionless frequency ratio (ppm) when dimension.complex_fft=False
+
 v0.3.5
 ------
 

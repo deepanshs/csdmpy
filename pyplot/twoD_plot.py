@@ -10,9 +10,8 @@ csdm = cp.new()
 
 # Step-2: Create dimension objects and add it to the CSDM object.
 x1 = cp.as_dimension(np.arange(10) * 0.1 + 15, unit="s", label="t1")
-csdm.add_dimension(x1)
 x2 = cp.as_dimension(np.arange(10) * 12.5, unit="s", label="t2")
-csdm.add_dimension(x2)
+csdm.dimensions += [x1, x2]
 
 # Step-3: Create dependent variable objects and add it to the CSDM object.
 y = cp.as_dependent_variable(np.diag(np.ones(10)), name="body-diagonal")

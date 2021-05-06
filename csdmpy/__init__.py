@@ -126,7 +126,7 @@ def parse_dict(dictionary):
         csdm._timestamp = validate(csdm_dict["timestamp"], "timestamp", str)
 
     if "dimensions" in keys:
-        _ = [csdm.add_dimension(dim) for dim in csdm_dict["dimensions"]]
+        _ = [csdm.dimensions.append(dim) for dim in csdm_dict["dimensions"]]
 
     if "dependent_variables" in keys:
         _ = [csdm.add_dependent_variable(dv) for dv in csdm_dict["dependent_variables"]]
@@ -267,7 +267,7 @@ def as_csdm(array, unit="", quantity_type="scalar"):
     # dimensions should be added first
     shape = array.shape[::-1]
     for i in shape[:-1]:
-        csdm.add_dimension(LinearDimension(count=i, increment="1"))
+        csdm.dimensions.append(LinearDimension(count=i, increment="1"))
 
     csdm.add_dependent_variable(
         type="internal",

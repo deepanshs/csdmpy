@@ -41,12 +41,11 @@ python dictionary.
 The above python dictionary contains two keys. The `type` key identifies the
 dimension as a labeled dimension while the `labels` key holds an
 array of labels. In this example, the labels are emojis. Add this dictionary
-as an argument of the :meth:`~csdmpy.CSDM.add_dimension` method
-of the `fun_data` instance.
+to the list of dimensions.
 
 .. doctest::
 
-    >>> fun_data.add_dimension(x)
+    >>> fun_data.dimensions += [x]
     >>> print(fun_data.data_structure)
     {
       "csdm": {

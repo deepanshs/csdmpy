@@ -18,7 +18,7 @@ def test_linear_new():
         "count": 10,
         "coordinates_offset": "5 m/s",
     }
-    data.add_dimension(dim)
+    data.dimensions.append(dim)
 
     assert data.dimensions[0].is_quantitative() is True
 
@@ -191,12 +191,18 @@ def test_linear_new():
 
 def test_linearDimension():
     a = cp.LinearDimension(count=3, increment="2s")
-    assert a.__str__() == "LinearDimension([0. 2. 4.] s)"
+    ap = cp.Dimension(type="linear", count=3, increment="2s")
 
-    assert a.__repr__() == (
+    message = "LinearDimension([0. 2. 4.] s)"
+    assert a.__str__() == message
+    assert ap.__str__() == message
+
+    message = (
         "LinearDimension(count=3, increment=2.0 s, "
         "quantity_name=time, reciprocal={'quantity_name': 'frequency'})"
     )
+    assert a.__repr__() == message
+    assert ap.__repr__() == message
 
     assert a != 2
     assert a.is_quantitative() is True
@@ -204,13 +210,22 @@ def test_linearDimension():
     b = cp.as_dimension(np.arange(3) * 2)
     assert a / cp.ScalarQuantity("1s") == b
     assert a * cp.ScalarQuantity("s^-1") == b
+    assert ap / cp.ScalarQuantity("1s") == b
+    assert ap * cp.ScalarQuantity("s^-1") == b
 
     b *= cp.ScalarQuantity("1s")
     assert a == b
+    assert ap == b
 
     b /= cp.ScalarQuantity("s")
     a *= cp.ScalarQuantity("s^-1")
+    ap *= cp.ScalarQuantity("s^-1")
     assert a == b
+    assert ap == b
+
+    ap = cp.Dimension(type="linear", count=3, increment="2s")
+    ap /= cp.ScalarQuantity("s")
+    assert ap == cp.as_dimension(np.arange(3) * 2)
 
     assert a.count == 3
 
@@ -253,7 +268,7 @@ def test_monotonic_new():
         "description": "Far far away.",
         "coordinates": ["1 m", "100 m", "1 km", "1 Gm", "0.25 lyr"],
     }
-    data.add_dimension(dim)
+    data.dimensions.append(dim)
     data.add_x(dim)
 
     for dim in data.dimensions:
@@ -413,6 +428,7 @@ def test_monotonic_new():
     )
 
     assert data.dimensions[0].dict() == dict1["csdm"]["dimensions"][0]
+    assert data.dimensions[0].to_dict() == dict1["csdm"]["dimensions"][0]
 
     error = r"The unit 's' \(time\) is inconsistent with the unit 'm' \(length\)"
     with pytest.raises(Exception, match=".*{0}.*".format(error)):
@@ -510,7 +526,7 @@ def test_labeled_new():
         "description": "Far far away.",
         "labels": ["m", "s", "t", "a"],
     }
-    data.add_dimension(dim)
+    data.dimensions.append(dim)
 
     assert data.dimensions[0].is_quantitative() is False
 
