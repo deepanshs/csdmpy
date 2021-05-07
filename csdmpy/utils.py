@@ -228,8 +228,7 @@ def _axis_label(label, unit=None):
 def _get_dictionary(*arg, **kwargs):
     if arg != ():
         if isinstance(arg[0], dict):
-            input_dict = arg[0]
-            return input_dict
+            return arg[0]
 
         raise Exception(
             "The argument is either a dictionary with the allowed keywords or a "

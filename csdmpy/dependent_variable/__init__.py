@@ -97,6 +97,8 @@ class DependentVariable:
             if dictionary["type"] == "internal"
             else ExternalDataset(**dictionary)
         )
+        self.encoding = "base64"
+        self.type = "internal"
 
     @staticmethod
     def __validate_key_value__(input_dict):
@@ -730,6 +732,9 @@ class DependentVariable:
         # for item in self.dependent_variables:
         item = self.subtype
         sub_shape = (item.quantity_type.p,) + tuple(shape)
+        if item.components.shape == sub_shape:
+            return
+
         dtype = item.numeric_type.dtype
 
         grid_points = np.asarray(sub_shape).prod()

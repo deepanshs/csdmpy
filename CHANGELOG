@@ -4,7 +4,7 @@ v0.4
 What's new
 ''''''''''
 
-- The ``add_dimension`` method is deprecated. Dimensions can now be added using list append or `+=` operator.
+- The ``add_dimension`` and ``add_dependent_variable`` from CSDM class are deprecated.
 
 Bugfix
 ''''''

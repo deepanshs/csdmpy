@@ -81,3 +81,10 @@ and the dependent variables at index zero with ``raw`` encoding, respectively.
 .. note:: Because an instance of the dependent variable, that is, the index
     zero in the above example, is set to be serialized with an external
     subtype, the corresponding file should be saved with a .csdfe extension.
+
+.. testcleanup::
+
+    >>> import os
+    >>> os.remove('my_file.csdf')
+    >>> os.remove('my_file.csdfe')
+    >>> os.remove('my_file_0.dat')

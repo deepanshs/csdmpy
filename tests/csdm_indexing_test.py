@@ -2,6 +2,8 @@
 """Test for the csdm object
     1) indexing and slicing test
 """
+from os import remove
+
 import numpy as np
 import pytest
 
@@ -33,6 +35,7 @@ def save_and_load(csdm):
     csdm.save("test_abc.csdf")
     new = cp.load("test_abc.csdf", application=True)
     assert new == csdm
+    remove("test_abc.csdf")
 
 
 def test_shape():

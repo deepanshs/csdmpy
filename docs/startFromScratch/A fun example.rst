@@ -12,27 +12,7 @@ Start by importing the `csdmpy` package.
 
     >>> import csdmpy as cp
 
-Create a new dataset with the :meth:`~csdmpy.new` method.
-
-.. doctest::
-
-    >>> fun_data = cp.new(description='An emoji dataset')
-
-Here, `fun_data` is an instance of the :ref:`csdm_api` class with a 0D{0} dataset.
-The data structure of this instance is
-
-.. doctest::
-
-    >>> print(fun_data.data_structure)
-    {
-      "csdm": {
-        "version": "1.0",
-        "description": "An emoji dataset"
-      }
-    }
-
-Add a labeled dimension to the `fun_data` instance. Here, we'll make use of
-python dictionary.
+Create a labeled dimension. Here, we make use of python dictionary.
 
 .. doctest::
 
@@ -43,52 +23,27 @@ dimension as a labeled dimension while the `labels` key holds an
 array of labels. In this example, the labels are emojis. Add this dictionary
 to the list of dimensions.
 
-.. doctest::
-
-    >>> fun_data.dimensions += [x]
-    >>> print(fun_data.data_structure)
-    {
-      "csdm": {
-        "version": "1.0",
-        "description": "An emoji dataset",
-        "dimensions": [
-          {
-            "type": "labeled",
-            "labels": [
-              "🍈",
-              "🍉",
-              "🍋",
-              "🍌",
-              "🥑",
-              "🍍"
-            ]
-          }
-        ]
-      }
-    }
-
-We have successfully added a labeled dimension to the `fun_data`
-instance.
-
-Next, add a dependent variable. Set up a python dictionary corresponding to the
-dependent variable object and add this dictionary as an argument of the
-:meth:`~csdmpy.CSDM.add_dependent_variable` method of the `fun_data`
-instance.
+Next, create a dependent variable. Similarly, set up a python dictionary corresponding
+to the dependent variable object.
 
 .. doctest::
 
-    >>> y =dict(type='internal', numeric_type='float32', quantity_type='scalar',
+    >>> y = dict(type='internal', numeric_type='float32', quantity_type='scalar',
     ...     components=[[0.5, 0.25, 1, 2, 1, 0.25]])
-    >>> fun_data.add_dependent_variable(y)
 
 Here, the python dictionary contains `type`, `numeric_type`, and `components`
 key. The value of the `components` key holds an array of data values
 corresponding to the labels from the labeled dimension.
 
-Now, we have a 😂 dataset...
+Create a csdm object from the dimensions and dependent variables and we have a 😂 dataset...
 
 .. doctest::
 
+    >>> fun_data = cp.CSDM(
+    ...     dimensions=[x],
+    ...     dependent_variables=[y],
+    ...     description="An emoji dataset"
+    ... )
     >>> print(fun_data.data_structure)
     {
       "csdm": {
@@ -130,10 +85,6 @@ To serialize this file, use the :meth:`~csdmpy.CSDM.save` method of the
     >>> fun_data.dependent_variables[0].encoding = 'base64'
     >>> fun_data.save('my_file.csdf')
 
-.. testcleanup::
-
-    import os
-    os.remove('csdmpy/my_file.csdf')
 
 In the above code, the components from the
 :attr:`~csdmpy.CSDM.dependent_variables` attribute at index zero, are
@@ -146,3 +97,10 @@ serialized with a `.csdfe` file extension.
 
   >>> fun_data.dependent_variables[0].encoding = 'raw'
   >>> fun_data.save('my_file_raw.csdfe')
+
+.. testcleanup::
+
+  >>> import os
+  >>> os.remove('my_file.csdf')
+  >>> os.remove('my_file_raw.csdfe')
+  >>> os.remove('my_file_raw_0.dat')

@@ -123,6 +123,8 @@ class CSDM:
 
         kwargs_keys = kwargs.keys()
 
+        _ = [setattr(self, f"_{k}", v) for k, v in kwargs.items()]
+
         self._dimensions = DimensionList([])
         if "dimensions" in kwargs_keys:
             if not isinstance(kwargs["dimensions"], list):
@@ -142,7 +144,12 @@ class CSDM:
                     f"dictionary objects is required, found {t_}"
                 )
             for item in kwargs["dependent_variables"]:
-                self.add_dependent_variable(item)
+                if isinstance(item, dict):
+                    item.update({"filename": self.filename})
+                self.dependent_variables.append(item)
+                if self.shape != ():
+                    shape = self.shape[::-1]
+                    self.dependent_variables[-1]._reshape(shape)
 
     def __repr__(self):
         keys = (
@@ -614,6 +621,10 @@ class CSDM:
         """Tuple of the :ref:`dv_api` instances."""
         return self._dependent_variables
 
+    @dependent_variables.setter
+    def dependent_variables(self, other):
+        pass
+
     @property
     def y(self):
         """Alias for the dependent_variables attribute."""
@@ -713,9 +724,8 @@ class CSDM:
 
     @property
     def shape(self):
-        """Return the count along each dimension of the csdm objects as a
-        tuple."""
-        return tuple([item.count for item in self.dimensions])
+        """Return the count along each dimension of the csdm object."""
+        return tuple([item.count for item in self._dimensions])
 
     @property
     def size(self):
@@ -792,11 +802,14 @@ class CSDM:
         ``var2`` is destroyed, the ``datamodel`` instance will become corrupt. As a
         recommendation, always pass a copy of the :ref:`dim_api` instance to the
         :meth:`~csdmpy.CSDM.add_dimension` method.
+
+        .. deprecated:: 0.4
+            Use cp.CSDM(dimensions=[..]) instead.
         """
         warnings.warn(
             (
-                "The `add_dimension` methods is deprecated since v0.4. Use the list "
-                "append or += operator, eg. `csdm.dimensions.append(x)`."
+                "The `add_dimension` methods is deprecated since v0.4. "
+                "Use cp.CSDM(dimensions=[..]) instead."
             ),
             DeprecationWarning,
         )
@@ -859,7 +872,17 @@ class CSDM:
         If passing a :ref:`dv_api` instance, as a general recommendation,
         always pass a copy of the DependentVariable instance to the
         :meth:`~csdmpy.add_dependent_variable` method.
+
+        .. deprecated:: 0.4
+            Use cp.CSDM(dependent_variables=[..]) instead.
         """
+        warnings.warn(
+            (
+                "The `add_dependent_variable` methods is deprecated since v0.4. "
+                "Use cp.CSDM(dependent_variables=[..]) instead."
+            ),
+            DeprecationWarning,
+        )
         if args != () and isinstance(args[0], DependentVariable):
             dv = args[0]
         else:
@@ -867,9 +890,8 @@ class CSDM:
             dv.encoding = "base64"
             dv.type = "internal"
 
-        shape = self.shape
-        if shape != ():
-            dv._reshape(shape[::-1])
+        if self.shape != ():
+            dv._reshape(self.shape[::-1])
 
         self._dependent_variables += [dv]
 
@@ -889,17 +911,8 @@ class CSDM:
             read_only (bool): If true, the read_only flag is set true.
 
         Example:
-            >>> data.dict() # doctest: +SKIP
-            {'csdm': {'version': '1.0', 'timestamp': '1994-11-05T13:15:30Z',
-            'geographic_coordinate': {'latitude': '10 deg', 'longitude': '93.2 deg',
-            'altitude': '10 m'}, 'description': 'A simulated sine curve.',
-            'dimensions': [{'type': 'linear', 'description': 'A temporal dimension.',
-            'count': 10, 'increment': '0.1 s', 'quantity_name': 'time','label': 'time',
-            'reciprocal': {'quantity_name': 'frequency'}}], 'dependent_variables':
-            [{'type': 'internal', 'description': 'A response dependent variable.',
-            'name': 'sine curve', 'encoding': 'base64', 'numeric_type': 'float32',
-            'quantity_type': 'scalar', 'component_labels': ['response'],'components':
-            ['AAAAABh5Fj9xeHM/cXhzPxh5Fj8yMQ0lGHkWv3F4c79xeHO/GHkWvw==']}]}}
+            >>> data.dict()['csdm']['version']
+            '1.0'
         """
         return self._dict(update_timestamp=update_timestamp, read_only=read_only)
 
@@ -949,7 +962,8 @@ class CSDM:
             version (str): The file is serialized with the given CSD model version.
 
         Example:
-            >>> data.dumps()  # doctest: +SKIP
+            >>> data.dumps()[:63] # first 63 characters
+            '{"csdm": {"version": "1.0", "timestamp": "1994-11-05T13:15:30Z"'
         """
         dict_ = self._dict(
             update_timestamp=update_timestamp, read_only=read_only, version=version
@@ -1005,8 +1019,8 @@ class CSDM:
             >>> data.save('my_file.csdf')
 
         .. testcleanup::
-            import os
-            os.remove('my_file.csdf')
+            >>> import os
+            >>> os.remove('my_file.csdf')
         """
         dictionary = self._dict(filename=filename, version=version)
 
@@ -1066,7 +1080,7 @@ class CSDM:
             A CSDM instance.
 
         Example:
-            >>> data.copy()  # doctest: +SKIP
+            >>> data2 = data.copy()
         """
         return deepcopy(self)
 
@@ -1155,7 +1169,8 @@ class CSDM:
             is None.
 
         Example:
-            >>> data2 = data.max()  #doctest: +SKIP
+            >>> data.max()
+            <Quantity 0.95105654>
         """
         return np.max(self, axis=axis)
 

@@ -43,9 +43,9 @@ class AbstractList(MutableSequence):
         raise LookupError("Deleting items is not allowed.")
 
     def check_object(self, *args):
-        return 0
+        pass
 
-    def insert(self, index, item):
+    def insert(self, index: int, item: object):
         """Insert a list item"""
         item = self.check_object(item)
         self._list.insert(index, item)
@@ -53,7 +53,7 @@ class AbstractList(MutableSequence):
     def append(self, item):
         """Append a list item"""
         item = self.check_object(item)
-        self.insert(len(self._list), item)
+        self._list.append(item)
 
     def __setitem__(self, index, item):
         """Set item at index"""

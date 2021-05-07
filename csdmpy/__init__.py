@@ -106,33 +106,14 @@ def parse_dict(dictionary):
     Args:
         dictionary: A CSDM compliant python dictionary.
     """
-    optional_keys = [
-        "read_only",
-        "timestamp",
-        "geographic_coordinate",
-        "application",
-        "tags",
-        "description",
-    ]
     _check_csdm_root_key_value(dictionary)
     csdm_dict = dictionary["csdm"]
-    _version = csdm_dict["version"]
-    filename = dictionary["filename"] if "filename" in dictionary.keys() else None
-    csdm = CSDM(filename=filename, version=_version)
+    filename = dictionary["filename"] if "filename" in dictionary else None
 
-    keys = csdm_dict.keys()
+    if "timestamp" in csdm_dict:
+        csdm_dict["timestamp"] = validate(csdm_dict["timestamp"], "timestamp", str)
 
-    if "timestamp" in keys:
-        csdm._timestamp = validate(csdm_dict["timestamp"], "timestamp", str)
-
-    if "dimensions" in keys:
-        _ = [csdm.dimensions.append(dim) for dim in csdm_dict["dimensions"]]
-
-    if "dependent_variables" in keys:
-        _ = [csdm.add_dependent_variable(dv) for dv in csdm_dict["dependent_variables"]]
-
-    _ = [setattr(csdm, "_" + k, csdm_dict[k]) for k in optional_keys if k in keys]
-    return csdm
+    return CSDM(filename=filename, **csdm_dict)
 
 
 def load(filename=None, application=False, verbose=False):
@@ -262,21 +243,15 @@ def as_csdm(array, unit="", quantity_type="scalar"):
             f"is equal to the number of components supported by {quantity_type}."
         )
 
-    csdm = new()
-
-    # dimensions should be added first
-    shape = array.shape[::-1]
-    for i in shape[:-1]:
-        csdm.dimensions.append(LinearDimension(count=i, increment="1"))
-
-    csdm.add_dependent_variable(
+    shape = array.shape[::-1][:-1]
+    dim = [LinearDimension(count=i, increment="1") for i in shape]
+    dv = DependentVariable(
         type="internal",
-        components=array.ravel(),
+        components=array,
         unit=unit,
         quantity_type=quantity_type,
     )
-
-    return csdm
+    return CSDM(dimensions=dim, dependent_variables=[dv])
 
 
 def plot(csdm_object, reverse_axis=None, range=None, **kwargs):

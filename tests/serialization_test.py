@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from os import remove
+
 import numpy as np
 
 import csdmpy as cp
@@ -28,7 +30,6 @@ def test_application():
 
     csdm1.dependent_variables[0].encoding = "base64"
     csdm1.save("csdm1.csdf")
-
     csdm1_test = cp.load("csdm1.csdf", application=True)
-
     assert csdm1_test == csdm1
+    remove("csdm1.csdf")

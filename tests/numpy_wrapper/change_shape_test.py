@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Test for the csdm object
-    1) T
-"""
+"""Test for the csdm object"""
+from os import remove
+
 import numpy as np
 
 import csdmpy as cp
@@ -36,3 +36,4 @@ def test_T():
 
     b_ = cp.load("test_abc.csdf")
     assert b == b_
+    remove("test_abc.csdf")
