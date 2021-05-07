@@ -123,7 +123,11 @@ class CSDM:
 
         kwargs_keys = kwargs.keys()
 
-        _ = [setattr(self, f"_{k}", v) for k, v in kwargs.items()]
+        _ = [
+            setattr(self, f"_{k}", v)
+            for k, v in kwargs.items()
+            if f"_{k}" in CSDM.__slots__
+        ]
 
         self._dimensions = DimensionList([])
         if "dimensions" in kwargs_keys:
