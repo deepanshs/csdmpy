@@ -18,12 +18,11 @@ def test_linear_new():
         "count": 10,
         "coordinates_offset": "5 m/s",
     }
-    data.add_dimension(dim)
+    data.dimensions.append(dim)
 
     assert data.dimensions[0].is_quantitative() is True
 
     # test for attributes
-
     assert data.dependent_variables == data.y
     assert data.dimensions == data.x
 
@@ -137,7 +136,6 @@ def test_linear_new():
                     "reciprocal": {"description": "blah blah"},
                 }
             ],
-            "dependent_variables": [],
         }
     }
     assert data.data_structure == json.dumps(
@@ -156,16 +154,15 @@ def test_linear_new():
             "dimensions": [
                 {
                     "type": "linear",
-                    "description": "blah blah",
                     "count": 12,
                     "increment": "20.0 m * s^-1",
                     "coordinates_offset": "5.0 m * s^-1",
                     "origin_offset": "1.0 km * s^-1",
                     "quantity_name": "speed",
+                    "description": "blah blah",
                     "complex_fft": True,
                 }
             ],
-            "dependent_variables": [],
         }
     }
     assert data.data_structure == json.dumps(
@@ -194,12 +191,18 @@ def test_linear_new():
 
 def test_linearDimension():
     a = cp.LinearDimension(count=3, increment="2s")
-    assert a.__str__() == "LinearDimension([0. 2. 4.] s)"
+    ap = cp.Dimension(type="linear", count=3, increment="2s")
 
-    assert a.__repr__() == (
+    message = "LinearDimension([0. 2. 4.] s)"
+    assert a.__str__() == message
+    assert ap.__str__() == message
+
+    message = (
         "LinearDimension(count=3, increment=2.0 s, "
         "quantity_name=time, reciprocal={'quantity_name': 'frequency'})"
     )
+    assert a.__repr__() == message
+    assert ap.__repr__() == message
 
     assert a != 2
     assert a.is_quantitative() is True
@@ -207,13 +210,22 @@ def test_linearDimension():
     b = cp.as_dimension(np.arange(3) * 2)
     assert a / cp.ScalarQuantity("1s") == b
     assert a * cp.ScalarQuantity("s^-1") == b
+    assert ap / cp.ScalarQuantity("1s") == b
+    assert ap * cp.ScalarQuantity("s^-1") == b
 
     b *= cp.ScalarQuantity("1s")
     assert a == b
+    assert ap == b
 
     b /= cp.ScalarQuantity("s")
     a *= cp.ScalarQuantity("s^-1")
+    ap *= cp.ScalarQuantity("s^-1")
     assert a == b
+    assert ap == b
+
+    ap = cp.Dimension(type="linear", count=3, increment="2s")
+    ap /= cp.ScalarQuantity("s")
+    assert ap == cp.as_dimension(np.arange(3) * 2)
 
     assert a.count == 3
 
@@ -226,10 +238,9 @@ def test_linearDimension():
     assert np.allclose(freq.coords.value, (np.arange(10) * 0.1 + 1))
 
     freq.to("ppm", "nmr_frequency_ratio")
-    assert np.allclose(
-        freq.coordinates.value, (np.arange(10) * 100 + 1000) / (1 - 0.001)
-    )
-    assert np.allclose(freq.coords.value, (np.arange(10) * 100 + 1000) / (1 - 0.001))
+    values = (np.arange(10) * 100 + 1000) / (1 - (0.001 + 0.0005))
+    assert np.allclose(freq.coordinates.value, values)
+    assert np.allclose(freq.coords.value, values)
 
     freq.origin_offset = "0 Hz"
     assert str(freq.origin_offset) == "0.0 Hz"
@@ -239,6 +250,7 @@ def test_linearDimension():
 
     assert (freq.origin_offset - freq.coordinates_offset).value == 0
 
+    freq.complex_fft = True
     freq.to("ppm", "nmr_frequency_ratio")
     error = "Cannot convert the coordinates to ppm."
     with pytest.raises(ZeroDivisionError, match=error):
@@ -256,7 +268,7 @@ def test_monotonic_new():
         "description": "Far far away.",
         "coordinates": ["1 m", "100 m", "1 km", "1 Gm", "0.25 lyr"],
     }
-    data.add_dimension(dim)
+    data.dimensions.append(dim)
     data.add_x(dim)
 
     for dim in data.dimensions:
@@ -387,42 +399,26 @@ def test_monotonic_new():
 
     assert data.dimensions[0].reciprocal.description == "blah"
 
-    dict1 = {
-        "csdm": {
-            "version": "1.0",
-            "dimensions": [
-                {
-                    "type": "monotonic",
-                    "description": "A galaxy far far away.",
-                    "coordinates": ["1 m", "100 m", "1 km", "1 Gm", "0.25 lyr"],
-                    "origin_offset": "1.0 lyr",
-                    "quantity_name": "length",
-                    "period": "1.0 m",
-                    "label": "some string",
-                    "application": {"go": "in"},
-                    "reciprocal": {
-                        "description": "blah",
-                        "quantity_name": "wavenumber",
-                    },
-                },
-                {
-                    "type": "monotonic",
-                    "description": "A galaxy far far away.",
-                    "coordinates": ["1 m", "100 m", "1 km", "1 Gm", "0.25 lyr"],
-                    "origin_offset": "1.0 lyr",
-                    "quantity_name": "length",
-                    "period": "1.0 m",
-                    "label": "some string",
-                    "application": {"go": "out"},
-                    "reciprocal": {
-                        "description": "1/blah",
-                        "quantity_name": "wavenumber",
-                    },
-                },
-            ],
-            "dependent_variables": [],
-        }
+    kwargs = {
+        "type": "monotonic",
+        "coordinates": ["1 m", "100 m", "1 km", "1 Gm", "0.25 lyr"],
+        "origin_offset": "1.0 lyr",
+        "quantity_name": "length",
+        "period": "1.0 m",
+        "label": "some string",
+        "description": "A galaxy far far away.",
     }
+    dim1 = {
+        **kwargs,
+        "application": {"go": "in"},
+        "reciprocal": {"quantity_name": "wavenumber", "description": "blah"},
+    }
+    dim2 = {
+        **kwargs,
+        "application": {"go": "out"},
+        "reciprocal": {"quantity_name": "wavenumber", "description": "1/blah"},
+    }
+    dict1 = {"csdm": {"version": "1.0", "dimensions": [dim1, dim2]}}
     assert data.data_structure == json.dumps(
         dict1, ensure_ascii=False, sort_keys=False, indent=2
     )
@@ -432,6 +428,7 @@ def test_monotonic_new():
     )
 
     assert data.dimensions[0].dict() == dict1["csdm"]["dimensions"][0]
+    assert data.dimensions[0].to_dict() == dict1["csdm"]["dimensions"][0]
 
     error = r"The unit 's' \(time\) is inconsistent with the unit 'm' \(length\)"
     with pytest.raises(Exception, match=".*{0}.*".format(error)):
@@ -529,7 +526,7 @@ def test_labeled_new():
         "description": "Far far away.",
         "labels": ["m", "s", "t", "a"],
     }
-    data.add_dimension(dim)
+    data.dimensions.append(dim)
 
     assert data.dimensions[0].is_quantitative() is False
 
@@ -570,13 +567,12 @@ def test_labeled_new():
             "dimensions": [
                 {
                     "type": "labeled",
-                    "description": "A galaxy far far away.",
                     "labels": ["a", "b", "c"],
                     "label": "labeled dimension",
+                    "description": "A galaxy far far away.",
                     "application": {"this is it": "period"},
                 }
             ],
-            "dependent_variables": [],
         }
     }
     assert data.data_structure == json.dumps(

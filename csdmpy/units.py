@@ -170,12 +170,12 @@ def scalar_quantity_format(quantity, numerical_value=True):
 
 
 class ScalarQuantity:
+    """A ScalarQuantity class compliant with the CSDM standards.
 
-    """
-    A ScalarQuantity class compliant with the CSDM standards.
+    Attribute
+    ---------
 
-    @params: quantity: Return the quantity object from astropy.units
-                       library.
+    quantity: Return the quantity object from astropy.units library.
     """
 
     __slots__ = "quantity"

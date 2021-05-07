@@ -7,12 +7,12 @@ from copy import deepcopy
 import numpy as np
 from astropy.units.quantity import Quantity
 
-from csdmpy.units import ScalarQuantity
+from .units import ScalarQuantity
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
 
-__all__ = ["literals_encoding", "QuantityType", "NumericType"]
+__all__ = ["LITERALS_ENCODING", "QuantityType", "NumericType"]
 
 literals_quantity_type = {
     "scalar": lambda n: 1,
@@ -23,7 +23,7 @@ literals_quantity_type = {
     "symmetric_matrix": lambda n: int(n * (n + 1) / 2),
 }
 
-literals_encoding = ("base64", "none", "raw")
+LITERALS_ENCODING = ("base64", "none", "raw")
 literals_quantity_type_ = [
     "scalar",
     "vector_n",
@@ -50,11 +50,10 @@ numpy_scalars = (
 
 
 class QuantityType:
-    """
-    Validate the quantity_type string value.
+    """Validate the quantity_type string value.
 
-    The valid options are `scalar`, `vector_n`, `pixel_n`,
-    `matrix_n_m`, and `symmetric_matrix_n`.
+    The valid options are `scalar`, `vector_n`, `pixel_n`, `matrix_n_m`, and
+    `symmetric_matrix_n`.
 
     :returns: The quantity_type key-value, if the value is valid.
     :raises KeyError: Otherwise.
@@ -73,9 +72,7 @@ class QuantityType:
     def __eq__(self, other):
         """Overrides the default implementation"""
         check = [self.value == other.value, self.p == other.p]
-        if False in check:
-            return False
-        return True
+        return False if False in check else True
 
     def update(self, element):
         """Update the quantity type."""
@@ -93,15 +90,10 @@ class QuantityType:
         lst = literals_quantity_type
         if keyword not in lst:
             message = (
-                "The value, `{0}`, is an invalid `quantity_type` enumeration literal. "
-                "The allowed values are {1}."
+                f"The value, `{keyword}`, is an invalid `quantity_type` enumeration "
+                f"literal. The allowed values are {literals_quantity_type_}."
             )
-
-            raise ValueError(
-                message.format(
-                    keyword, "'" + "', '".join(literals_quantity_type_) + "'"
-                )
-            )
+            raise ValueError(message)
 
         components = self._get_number_of_components(keyword, numbers)
         self.value = element
@@ -109,14 +101,12 @@ class QuantityType:
 
 
 class NumericType:
-    """
-    Validate the numeric_type string value.
+    """Validate the numeric_type string value.
 
-    The valid options are
-    `uint8`, `uint16`, `uint32`, `uint64`, `int8`, `int16`, `int32`, `int64`,
-    `float32`, `float64`, `complex64`, and `complex128`.
-    The byte order for multi-byte numeric_types are assumed to follow the
-    little endianness format.
+    The valid options are `uint8`, `uint16`, `uint32`, `uint64`, `int8`, `int16`,
+    `int32`, `int64`, `float32`, `float64`, `complex64`, and `complex128`. The byte
+    order for multi-byte numeric_types are assumed to follow the little endianness
+    format.
 
     :returns: The numeric_type value, if the value is valid.
     :raises KeyError: Otherwise.
@@ -186,9 +176,7 @@ class NumericType:
     def __eq__(self, other):
         """Overrides the default implementation"""
         check = [self.value == other.value, self.dtype == other.dtype]
-        if False in check:
-            return False
-        return True
+        return False if False in check else True
 
     def _check_numeric_type(self, element):
         if isinstance(element, np.dtype):
@@ -203,12 +191,12 @@ class NumericType:
 
         lst = self.__class__._lst
         if element not in lst.keys():
-            message = (
-                "The value, `{0}`, is an invalid `numeric_type` enumeration literal. "
-                "The allowed values are {1}."
-            )
             literals = self.__class__.literals
-            raise ValueError(message.format(element, "'" + "', '".join(literals) + "'"))
+            message = (
+                f"The value, `{element}`, is an invalid `numeric_type` enumeration "
+                f"literal. The allowed values are {literals}."
+            )
+            raise ValueError(message)
 
         self.value = element
         self.dtype = np.dtype(lst[element])
@@ -222,61 +210,49 @@ def validate(value, attr, types, method=None):
     raise TypeError(type_error(types, attr, value))
 
 
-def type_error(a, b, c):
-    if isinstance(a, tuple):
-        a = [item.__name__ for item in a]
-        a = " or ".join(a)
-    else:
-        a = a.__name__
-    return ("Expecting an instance of type `{0}` for {1}, got `{2}`.").format(
-        a, b, type(c).__name__
+def type_error(types, attr, value):
+    types = (
+        " or ".join([item.__name__ for item in types])
+        if isinstance(types, tuple)
+        else types.__name__
     )
+    val_type = type(value).__name__
+    return f"Expecting an instance of type `{types}` for {attr}, got `{val_type}`."
 
 
-def attribute_error(a, b):
-    return "`{0}` has no attribute `{1}`.".format(a.__class__.__name__, b)
-
-
-def _axis_label(label, unit=None, label_type=""):
-    if unit not in [None, ""]:
-        if label_type == "":
-            return f"{label} / ({unit})"
-        # if label_type == "latex":
-        #     return "{0} / ({1})".format(label, unit.to_string("latex"))
-    return label
+def _axis_label(label, unit=None):
+    """Return a formatted label with units."""
+    return f"{label} / ({unit})" if unit not in [None, ""] else label
 
 
 def _get_dictionary(*arg, **kwargs):
     if arg != ():
         if isinstance(arg[0], dict):
-            input_dict = arg[0]
-            return input_dict
+            return arg[0]
 
         raise Exception(
             "The argument is either a dictionary with the allowed keywords or a "
             "collection of valid arguments."
         )
-    input_dict = kwargs
-    return input_dict
+    return kwargs
 
 
 def check_encoding(element):
-    """
-    Validate the encoding string value.
+    """Validate the encoding string value.
 
     The valid options are `base64`, `none`, and `raw`.
 
     :returns: The encoding key-value, if the value is valid.
     :raises KeyError: Otherwise.
     """
-    if element in literals_encoding:
+    if element in LITERALS_ENCODING:
         return element
 
     message = (
-        "The value, `{0}`, is an invalid `encoding` enumeration literal. "
-        "The allowed values are '{1}', '{2}' and '{3}'."
+        f"The value, `{element}`, is an invalid `encoding` enumeration literal. "
+        f"The allowed values are '{LITERALS_ENCODING}'."
     )
-    raise ValueError(message.format(element, *literals_encoding))
+    raise ValueError(message)
 
 
 def numpy_dtype_to_numeric_type(element):
@@ -326,11 +302,11 @@ def numpy_dtype_to_numeric_type(element):
         "complex128",
     )
 
-    if element in lst.keys():
+    if element in lst:
         return lst[element]
     if element in lst2:
         return element
-    raise ValueError("The dtype, {0}, is not supported.".format(element))
+    raise ValueError(f"The dtype, {element}, is not supported.")
 
 
 def check_and_assign_bool(element):
@@ -373,8 +349,7 @@ def _get_broadcast_shape(array, ndim, axis):
 
 
 def _check_dimension_indices(d, index=-1):
-    """
-    Check the list of indexes to ensure that each index is an integer
+    """Check the list of indexes to ensure that each index is an integer
     and within the counts of dimensions.
     """
     index = deepcopy(index)

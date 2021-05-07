@@ -26,8 +26,7 @@ __all__ = ("sin", "cos", "tan", "arcsin", "arccos", "arctan", "exp")
 
 
 def sin(csdm, arg, dimension=0):
-    r"""
-    Apodize the components along the `dimension` with :math:`\sin(a x)`.
+    r"""Apodize the components along the `dimension` with :math:`\sin(a x)`.
 
     Args:
         csdm: A CSDM object.
@@ -43,8 +42,7 @@ def sin(csdm, arg, dimension=0):
 
 
 def cos(csdm, arg, dimension=0):
-    r"""
-    Apodize the components along the `dimension` with :math:`\cos(a x)`.
+    r"""Apodize the components along the `dimension` with :math:`\cos(a x)`.
 
     Args:
         csdm: A CSDM object.
@@ -60,8 +58,7 @@ def cos(csdm, arg, dimension=0):
 
 
 def tan(csdm, arg, dimension=0):
-    r"""
-    Apodize the components along the `dimension` with :math:`\tan(a x)`.
+    r"""Apodize the components along the `dimension` with :math:`\tan(a x)`.
 
     Args:
         csdm: A CSDM object.
@@ -77,8 +74,7 @@ def tan(csdm, arg, dimension=0):
 
 
 def arcsin(csdm, arg, dimension=0):
-    r"""
-    Apodize the components along the `dimension` with :math:`\arcsin(a x)`.
+    r"""Apodize the components along the `dimension` with :math:`\arcsin(a x)`.
 
     Args:
         csdm: A CSDM object.
@@ -94,8 +90,7 @@ def arcsin(csdm, arg, dimension=0):
 
 
 def arccos(csdm, arg, dimension=0):
-    r"""
-    Apodize the components along the `dimension` with :math:`\arccos(a x)`.
+    r"""Apodize the components along the `dimension` with :math:`\arccos(a x)`.
 
     Args:
         csdm: A CSDM object.
@@ -111,8 +106,7 @@ def arccos(csdm, arg, dimension=0):
 
 
 def arctan(csdm, arg, dimension=0):
-    r"""
-    Apodize the components along the `dimension` with :math:`\arctan(a x)`.
+    r"""Apodize the components along the `dimension` with :math:`\arctan(a x)`.
 
     Args:
         csdm: A CSDM object.
@@ -128,8 +122,7 @@ def arctan(csdm, arg, dimension=0):
 
 
 def exp(csdm, arg, dimension=0):
-    r"""
-    Apodize the components along the `dimension` with :math:`\exp(a x)`.
+    r"""Apodize the components along the `dimension` with :math:`\exp(a x)`.
 
     Args:
         csdm: A CSDM object.

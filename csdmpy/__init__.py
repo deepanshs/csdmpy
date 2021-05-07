@@ -17,7 +17,7 @@ from .csdm import Dimension  # lgtm [py/import-own-module] # NOQA
 from .csdm import LabeledDimension  # lgtm [py/import-own-module] # NOQA
 from .csdm import LinearDimension  # lgtm [py/import-own-module] # NOQA
 from .csdm import MonotonicDimension  # lgtm [py/import-own-module] # NOQA
-from .dependent_variables import download  # lgtm [py/import-own-module] # NOQA
+from .dependent_variable import download  # lgtm [py/import-own-module] # NOQA
 from .helper_functions import _preview  # lgtm [py/import-own-module] # NOQA
 from .numpy_wrapper import apodize  # lgtm [py/import-own-module] # NOQA
 from .tests import *  # lgtm [py/import-own-module] # NOQA
@@ -36,7 +36,7 @@ __credits__ = ["Deepansh J. Srivastava"]
 __license__ = "BSD License"
 __maintainer__ = "Deepansh J. Srivastava"
 __status__ = "Beta"
-__version__ = "0.3.6"
+__version__ = "0.4"
 
 __all__ = [
     "parse_dict",
@@ -106,49 +106,18 @@ def parse_dict(dictionary):
     Args:
         dictionary: A CSDM compliant python dictionary.
     """
-    optional_keys = [
-        "read_only",
-        "timestamp",
-        "geographic_coordinate",
-        "application",
-        "tags",
-        "description",
-    ]
-
     _check_csdm_root_key_value(dictionary)
+    csdm_dict = dictionary["csdm"]
+    filename = dictionary["filename"] if "filename" in dictionary else None
 
-    _version = dictionary["csdm"]["version"]
+    if "timestamp" in csdm_dict:
+        csdm_dict["timestamp"] = validate(csdm_dict["timestamp"], "timestamp", str)
 
-    if "filename" in dictionary.keys():
-        filename = dictionary["filename"]
-    else:
-        filename = None
-    csdm = CSDM(filename=filename, version=_version)
-
-    keys = dictionary["csdm"].keys()
-    if "timestamp" in keys:
-        _timestamp = dictionary["csdm"]["timestamp"]
-        validate(_timestamp, "timestamp", str)
-        csdm._timestamp = _timestamp
-
-    if "dimensions" in keys:
-        for dim in dictionary["csdm"]["dimensions"]:
-            csdm.add_dimension(dim)
-
-    if "dependent_variables" in keys:
-        for dat in dictionary["csdm"]["dependent_variables"]:
-            csdm.add_dependent_variable(dat)
-
-    for key in optional_keys:
-        if key in keys:
-            setattr(csdm, "_" + key, dictionary["csdm"][key])
-
-    return csdm
+    return CSDM(filename=filename, **csdm_dict)
 
 
 def load(filename=None, application=False, verbose=False):
-    r"""
-    Loads a .csdf/.csdfe file and returns an instance of the :ref:`csdm_api` class.
+    r"""Loads a .csdf/.csdfe file and returns an instance of the :ref:`csdm_api` class.
 
     The file must be a JSON serialization of the CSD Model.
 
@@ -190,8 +159,7 @@ def load(filename=None, application=False, verbose=False):
 
 
 def loads(string):
-    """
-    Loads a JSON serialized string as a CSDM object.
+    """Loads a JSON serialized string as a CSDM object.
 
     Args:
         string: A JSON serialized CSDM string.
@@ -217,7 +185,7 @@ def loads(string):
 
 
 def new(description=""):
-    r"""
+    """
     Creates a new instance of the :ref:`csdm_api` class containing a 0D{0} dataset.
 
     Args:
@@ -230,9 +198,7 @@ def new(description=""):
         {
           "csdm": {
             "version": "1.0",
-            "description": "Testing Testing 1 2 3",
-            "dimensions": [],
-            "dependent_variables": []
+            "description": "Testing Testing 1 2 3"
           }
         }
 
@@ -277,26 +243,19 @@ def as_csdm(array, unit="", quantity_type="scalar"):
             f"is equal to the number of components supported by {quantity_type}."
         )
 
-    csdm = new()
-
-    # dimensions should be added first
-    shape = array.shape[::-1]
-    for i in shape[:-1]:
-        csdm.add_dimension(LinearDimension(count=i, increment="1"))
-
-    csdm.add_dependent_variable(
+    shape = array.shape[::-1][:-1]
+    dim = [LinearDimension(count=i, increment="1") for i in shape]
+    dv = DependentVariable(
         type="internal",
-        components=array.ravel(),
+        components=array,
         unit=unit,
         quantity_type=quantity_type,
     )
-
-    return csdm
+    return CSDM(dimensions=dim, dependent_variables=[dv])
 
 
 def plot(csdm_object, reverse_axis=None, range=None, **kwargs):
-    """
-    A supplementary function for plotting basic 1D and 2D datasets only.
+    """A supplementary function for plotting basic 1D and 2D datasets only.
 
     Args:
         csdm_object: The CSDM object.

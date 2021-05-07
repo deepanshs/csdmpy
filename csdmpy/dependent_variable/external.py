@@ -7,10 +7,9 @@ from urllib.request import urlopen
 
 import numpy as np
 
-from csdmpy.dependent_variables.base_class import BaseDependentVariable
-from csdmpy.dependent_variables.decoder import Decoder
-from csdmpy.dependent_variables.download import get_absolute_url_path
-from csdmpy.dependent_variables.sparse import SparseSampling
+from .base_class import BaseDependentVariable
+from .decoder import Decoder
+from .download import get_absolute_url_path
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -20,13 +19,11 @@ __all__ = ["ExternalDataset"]
 class ExternalDataset(BaseDependentVariable):
     """ExternalDataset class."""
 
-    __slots__ = ("_components_url", "_sparse_sampling")
+    __slots__ = "_components_url"
 
     def __init__(self, **kwargs):
         """Initialize."""
-        self._sparse_sampling = {}
         kwargs["encoding"] = "raw"
-
         if kwargs["numeric_type"] is None:
             raise KeyError(
                 "Missing a required `numeric_type` key from the DependentVariable "
@@ -48,33 +45,14 @@ class ExternalDataset(BaseDependentVariable):
         if self._components.ndim == 1:
             self._components = self._components[np.newaxis, :]
 
-        if kwargs["sparse_sampling"] != {}:
-            self._sparse_sampling = SparseSampling(**kwargs["sparse_sampling"])
-
     @property
     def components_url(self):
         """Return the components_url of the CSDM serialized file."""
         return self._components_url
 
-    def to_dict(
-        self, filename=None, dataset_index=None, for_display=False, version=None
-    ):
-        """Alias to the `dict()` method of the class."""
-        return self.dict(filename, dataset_index, for_display, version)
-
-    def dict(self, filename=None, dataset_index=None, for_display=False, version=None):
+    def dict(self, filename=None, dataset_index=None, for_display=False):
         """Return ExternalDataset object as a python dictionary."""
         dictionary = {}
-
         dictionary["type"] = "internal"
-        dictionary.update(
-            self._get_dictionary(filename, dataset_index, for_display, version)
-        )
+        dictionary.update(super().dict(filename, dataset_index, for_display))
         return dictionary
-
-    def __eq__(self, other):
-        """Overrides the default implementation"""
-        check = [super().__eq__(other), self._sparse_sampling == other._sparse_sampling]
-        if False in check:
-            return False
-        return True

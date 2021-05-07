@@ -128,11 +128,7 @@ def test_internal_new():
         }
     ]
     dict1 = {
-        "csdm": {
-            "version": "1.0",
-            "dimensions": [],
-            "dependent_variables": dependent_variables_dict_1,
-        }
+        "csdm": {"version": "1.0", "dependent_variables": dependent_variables_dict_1}
     }
 
     assert data.data_structure == str(
@@ -245,7 +241,6 @@ def test_external_new():
     dict1 = {
         "csdm": {
             "version": "1.0",
-            "dimensions": [],
             "dependent_variables": [
                 {
                     "type": "internal",

@@ -20,9 +20,35 @@ __all__ = ["Dimension"]
 functional_dimension = ["linear"]
 
 
+DEFAULT_DIM = {
+    "type": None,  # valid for all dimension subtypes
+    "description": "",  # valid for all dimension subtypes
+    "count": None,  # valid for linear subtype
+    "increment": None,  # valid for linear subtype
+    "labels": None,  # valid for labeled subtype
+    "coordinates": None,  # valid for monotonic subtype
+    "coordinates_offset": None,  # valid for linear subtype
+    "origin_offset": None,  # valid for linear subtype
+    "complex_fft": False,  # valid for linear subtype
+    "period": None,  # valid for monotonic and linear subtypes
+    "quantity_name": None,  # valid for monotonic and linear subtypes
+    "label": "",  # valid for all dimension subtypes
+    "application": {},  # valid for all dimension subtypes
+    "reciprocal": {  # valid for monotonic and linear subtypes
+        "increment": None,  # valid for monotonic and linear subtypes
+        "coordinates_offset": None,  # valid for monotonic and linear subtypes
+        "origin_offset": None,  # valid for monotonic and linear subtypes
+        "period": None,  # valid for monotonic and linear subtypes
+        "quantity_name": None,  # valid for monotonic and linear subtypes
+        "label": "",  # valid for monotonic and linear subtypes
+        "description": "",  # valid for monotonic and linear subtypes
+        "application": {},  # valid for monotonic and linear subtypes
+    },
+}
+
+
 class Dimension:
-    r"""
-    Create an instance of the Dimension class.
+    """Dimension class.
 
     An instance of this class describes a dimension of a multi-dimensional system.
     In version 1.0 of the CSD model, there are three subtypes of the Dimension class:
@@ -62,41 +88,13 @@ class Dimension:
         ...               count = 10,
         ...               coordinates_offset = '10 mT',
         ...               origin_offset = '10 T')
-
     """
 
     __slots__ = ("subtype",)
 
-    _immutable_objects_ = ()
-
     def __init__(self, *args, **kwargs):
         """Initialize an instance of Dimension object."""
-        default = {
-            "type": None,  # valid for all dimension subtypes
-            "description": "",  # valid for all dimension subtypes
-            "count": None,  # valid for linear subtype
-            "increment": None,  # valid for linear subtype
-            "labels": None,  # valid for labeled subtype
-            "coordinates": None,  # valid for monotonic subtype
-            "coordinates_offset": None,  # valid for linear subtype
-            "origin_offset": None,  # valid for linear subtype
-            "complex_fft": False,  # valid for linear subtype
-            "period": None,  # valid for monotonic and linear subtypes
-            "quantity_name": None,  # valid for monotonic and linear subtypes
-            "label": "",  # valid for all dimension subtypes
-            "application": {},  # valid for all dimension subtypes
-            "reciprocal": {  # valid for monotonic and linear subtypes
-                "increment": None,  # valid for monotonic and linear subtypes
-                "coordinates_offset": None,  # valid for monotonic and linear subtypes
-                "origin_offset": None,  # valid for monotonic and linear subtypes
-                "period": None,  # valid for monotonic and linear subtypes
-                "quantity_name": None,  # valid for monotonic and linear subtypes
-                "label": "",  # valid for monotonic and linear subtypes
-                "description": "",  # valid for monotonic and linear subtypes
-                "application": {},  # valid for monotonic and linear subtypes
-            },
-        }
-
+        default = deepcopy(DEFAULT_DIM)
         default_keys = default.keys()
         input_dict = _get_dictionary(*args, **kwargs)
         input_keys = input_dict.keys()
@@ -106,14 +104,14 @@ class Dimension:
 
         if "reciprocal" in input_keys:
             input_subkeys = input_dict["reciprocal"].keys()
-        for key in input_keys:
-            if key in default_keys:
-                if key == "reciprocal":
-                    for subkey in input_subkeys:
-                        default[key][subkey] = input_dict[key][subkey]
-                else:
-                    default[key] = input_dict[key]
 
+        _ = [
+            [default[key].update({subkey: val[subkey]}) for subkey in input_subkeys]
+            if key == "reciprocal"
+            else default.update({key: val})
+            for key, val in input_dict.items()
+            if key in default_keys
+        ]
         self.__validate_key_value__(default)
 
         if default["type"] == "labeled":
@@ -154,14 +152,12 @@ class Dimension:
         """Create and assign a linear dimension."""
         missing_key = ["increment", "count"]
 
-        for item in missing_key:
-            if default[item] is None:
-                raise KeyError(
-                    f"Missing a required `{item}` key from the LinearDimension object."
-                )
-
+        lst = [item for item in missing_key if default[item] is None]
+        if lst != []:
+            raise KeyError(
+                f"Missing a required `{lst[0]}` key from the LinearDimension object."
+            )
         validate(default["count"], "count", int)
-
         return LinearDimension(**default)
 
     def __repr__(self):
@@ -174,11 +170,8 @@ class Dimension:
 
     def __eq__(self, other):
         """Overrides the default implementation."""
-        if isinstance(other, Dimension):
-            return True if self.subtype == other.subtype else False
-        if isinstance(other, (LinearDimension, LabeledDimension, MonotonicDimension)):
-            return True if self.subtype == other else False
-        return False
+        other = other.subtype if isinstance(other, Dimension) else other
+        return True if self.subtype == other else False
 
     def __mul__(self, other):
         """Multiply the Dimension object by a scalar."""
@@ -201,8 +194,7 @@ class Dimension:
     # ======================================================================= #
     @property
     def absolute_coordinates(self):
-        r"""
-        Absolute coordinates, :math:`\bf X_k^{\rm{abs}}`, along the dimension.
+        r"""Absolute coordinates, :math:`\bf X_k^{\rm{abs}}`, along the dimension.
 
         This attribute is only *valid* for quantitative dimensions, that is,
         `linear` and `monotonic` dimensions. The absolute coordinates are given as
@@ -256,8 +248,7 @@ class Dimension:
 
     @property
     def application(self):
-        """
-        Application metadata dictionary of the dimension object.
+        """Application metadata dictionary of the dimension object.
 
         .. doctest::
 
@@ -290,8 +281,7 @@ class Dimension:
 
     @property
     def axis_label(self):
-        r"""
-        Formatted string for displaying label along the dimension axis.
+        r"""Formatted string for displaying label along the dimension axis.
 
         This attribute is not a part of the original core scientific dataset
         model, however, it is a convenient supplementary attribute that provides
@@ -323,8 +313,7 @@ class Dimension:
 
     @property
     def coordinates(self):
-        r"""
-        Coordinates, :math:`{\bf X}_k`, along the dimension.
+        r"""Coordinates, :math:`{\bf X}_k`, along the dimension.
 
         Example:
             >>> print(x.coordinates)
@@ -372,8 +361,7 @@ class Dimension:
 
     @property
     def data_structure(self):
-        r"""
-        Json serialized string describing the Dimension class instance.
+        """JSON serialized string describing the Dimension class instance.
 
         This supplementary attribute is useful for a quick preview of the dimension
         object. The attribute cannot be modified.
@@ -383,13 +371,13 @@ class Dimension:
             >>> print(x.data_structure)
             {
               "type": "linear",
-              "description": "This is a test",
               "count": 10,
               "increment": "5.0 G",
               "coordinates_offset": "10.0 mT",
               "origin_offset": "10.0 T",
               "quantity_name": "magnetic flux density",
-              "label": "field strength"
+              "label": "field strength",
+              "description": "This is a test"
             }
 
         Returns:
@@ -401,8 +389,7 @@ class Dimension:
 
     @property
     def description(self):
-        """
-        Brief description of the dimension object.
+        """Brief description of the dimension object.
 
         The default value is an empty string, ''. The attribute may be
         modified, for example,
@@ -428,8 +415,7 @@ class Dimension:
 
     @property
     def complex_fft(self):
-        r"""
-        If true, the coordinates are the ordered as the output of a complex fft.
+        """If true, the coordinates are the ordered as the output of a complex fft.
 
         This attribute is only `valid` for the Dimension instances with `linear`
         subtype.
@@ -464,8 +450,7 @@ class Dimension:
 
     @property
     def increment(self):
-        r"""
-        Increment along a `linear` dimension.
+        """Increment along a `linear` dimension.
 
         The attribute is only `valid` for Dimension instances with the subtype
         `linear`. When assigning a value, the dimensionality of the value must
@@ -500,8 +485,7 @@ class Dimension:
 
     @property
     def coordinates_offset(self):
-        r"""
-        Offset corresponding to the zero of the indexes array, :math:`\mathbf{J}_k`.
+        r"""Offset corresponding to the zero of the indexes array, :math:`\mathbf{J}_k`.
 
         When assigning a value, the dimensionality of the value must be consistent with
         the dimensionality of the other members specifying the dimension.
@@ -531,8 +515,7 @@ class Dimension:
 
     @property
     def label(self):
-        r"""
-        Label associated with the dimension.
+        """Label associated with the dimension.
 
         Example:
             >>> print(x.label)
@@ -552,8 +535,7 @@ class Dimension:
 
     @property
     def count(self):
-        r"""
-        Number of coordinates, :math:`N_k \ge 1`, along the dimension.
+        r"""Number of coordinates, :math:`N_k \ge 1`, along the dimension.
 
         Example:
             >>> print(x.count)
@@ -574,8 +556,7 @@ class Dimension:
 
     @property
     def origin_offset(self):
-        r"""
-        Origin offset, :math:`o_k`, along the dimension.
+        """Origin offset, :math:`o_k`, along the dimension.
 
         When assigning a value, the dimensionality of the value must be consistent
         with the dimensionality of other members specifying the dimension.
@@ -604,8 +585,7 @@ class Dimension:
 
     @property
     def period(self):
-        r"""
-        Period of the dimension.
+        """Period of the dimension.
 
         The default value of the period is infinity, i.e., the dimension is
         non-periodic.
@@ -644,8 +624,7 @@ class Dimension:
 
     @property
     def quantity_name(self):
-        r"""
-        Quantity name associated with the physical quantities specifying the dimension.
+        """Quantity name associated with the physical quantities specifying dimension.
 
         The attribute is `invalid` for the labeled dimension.
 
@@ -669,8 +648,7 @@ class Dimension:
 
     @property
     def type(self):
-        r"""
-        The dimension subtype.
+        """The dimension subtype.
 
         There are three *valid* subtypes of Dimension class. The valid
         literals are given by the :ref:`dimObjectSubtype_uml` enumeration.
@@ -690,8 +668,7 @@ class Dimension:
 
     @property
     def labels(self):
-        r"""
-        Ordered list of labels along the `Labeled` dimension.
+        """Ordered list of labels along the `Labeled` dimension.
 
         Consider the following labeled dimension,
 
@@ -736,8 +713,7 @@ class Dimension:
 
     @property
     def reciprocal(self):
-        r"""
-        An instance of the ReciprocalDimension class.
+        """An instance of the ReciprocalDimension class.
 
         The attributes of ReciprocalDimension class are:
             - coordinates_offset
@@ -764,8 +740,7 @@ class Dimension:
         return self.dict()
 
     def dict(self):
-        r"""
-        Return Dimension object as a python dictionary.
+        """Return Dimension object as a python dictionary.
 
         Example:
             >>> x.dict() # doctest: +SKIP
@@ -777,8 +752,7 @@ class Dimension:
         return self.subtype.dict()
 
     def is_quantitative(self):
-        r"""
-        Return True if the dependent variable is quantitative.
+        """Return True if the dependent variable is quantitative.
 
         Example:
             >>> x.is_quantitative()
@@ -787,8 +761,7 @@ class Dimension:
         return self.subtype.is_quantitative()
 
     def to(self, unit="", equivalencies=None):
-        r"""
-        Convert the coordinates along the dimension to the unit, `unit`.
+        r"""Convert the coordinates along the dimension to the unit, `unit`.
 
         This method is a wrapper of the `to` method from the
         `Quantity <http://docs.astropy.org/en/stable/api/\
@@ -874,16 +847,15 @@ def __check_array_for_dimension__(array, type):
         raise ValueError(f"Invalid value for `type`. Allowed values are {options}.")
 
     if not isinstance(array, (list, np.ndarray)):
-        raise ValueError(
-            f"Cannot convert {array.__class__.__name__} to a Dimension object."
-        )
+        name = array.__class__.__name__
+        raise ValueError(f"Cannot convert {name} to a Dimension object.")
 
     array = np.asarray(array)
-    if array.ndim != 1:
-        raise ValueError(
-            f"Cannot convert a {array.ndim} dimensional array to a Dimension object."
-        )
-    return array
+    n = array.ndim
+    if n == 1:
+        return array
+
+    raise ValueError(f"Cannot convert a {n} dimensional array to a Dimension object.")
 
 
 def _generic_dimensions(array, unit, className="Dimension", **kwargs):
@@ -914,13 +886,11 @@ def _linear_dimension(array, unit, className="LinearDimension", **kwargs):
         raise ValueError(f"Invalid array for {className} object.")
 
     if np.allclose(np.diff(array, 1), increment):
-
-        if str(unit) != "":
-            unit = f"({unit})"
+        unit = f"({unit})" if str(unit) != "" else ""
         return LinearDimension(
             count=array.size,
-            increment=f"{increment} {unit}",
-            coordinates_offset=f"{array[0]} {unit}",
+            increment=f"{increment} {unit}".strip(),
+            coordinates_offset=f"{array[0]} {unit}".strip(),
             **kwargs,
         )
 

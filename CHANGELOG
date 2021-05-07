@@ -1,3 +1,16 @@
+v0.4
+----
+
+What's new
+''''''''''
+
+- The ``add_dimension`` and ``add_dependent_variable`` from CSDM class are deprecated.
+
+Bugfix
+''''''
+
+- Fixed error in calculating the nmr dimensionless frequency ratio (ppm) when dimension.complex_fft=False
+
 v0.3.5
 ------
 

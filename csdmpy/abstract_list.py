@@ -3,11 +3,11 @@ from collections.abc import MutableSequence
 
 import numpy as np
 
-from csdmpy.dependent_variables import DependentVariable
-from csdmpy.dimensions import Dimension
-from csdmpy.dimensions import LabeledDimension
-from csdmpy.dimensions import LinearDimension
-from csdmpy.dimensions import MonotonicDimension
+from .dependent_variable import DependentVariable
+from .dimension import Dimension
+from .dimension import LabeledDimension
+from .dimension import LinearDimension
+from .dimension import MonotonicDimension
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -41,15 +41,26 @@ class AbstractList(MutableSequence):
 
     def __delitem__(self, index):
         raise LookupError("Deleting items is not allowed.")
-        # del self._list[index]
 
-    def insert(self, index, item):
+    def check_object(self, *args):
+        pass
+
+    def insert(self, index: int, item: object):
         """Insert a list item"""
+        item = self.check_object(item)
         self._list.insert(index, item)
 
     def append(self, item):
         """Append a list item"""
-        self.insert(len(self._list), item)
+        item = self.check_object(item)
+        self._list.append(item)
+
+    def __setitem__(self, index, item):
+        """Set item at index"""
+        item = self.check_object(item)
+        # if self._list[index].count != item.count:
+        #     raise IndexError("Index out of range")
+        self._list[index] = item
 
     def __eq__(self, other):
         """Check equality of DependentVariableList."""
@@ -58,39 +69,25 @@ class AbstractList(MutableSequence):
         if len(self._list) != len(other._list):
             return False
 
-        check = []
-        for i in range(len(self._list)):
-            check.append(self._list[i] == other._list[i])
-
-        if np.all(check):
-            return True
-        return False
+        check = [self_i == other_i for self_i, other_i in zip(self._list, other._list)]
+        return np.all(check)
 
 
 class DimensionList(AbstractList):
-    def __init__(self, data=[]):
-        super().__init__(data)
-
-    def __setitem__(self, index, item):
-        if not isinstance(item, __dimensions_list__):
-            raise ValueError(
-                f"Expecting a Dimension object, found {item.__class__.__name__}"
-            )
-        if self._list[index].count != item.count:
-            raise ValueError(
-                f"Cannot substitute a dimension with {self._list[index].count} points "
-                f"with a dimension with {item.count} points."
-            )
-        self._list[index] = item
+    def check_object(self, obj):
+        if isinstance(obj, dict):
+            obj = Dimension(**obj)
+        if not isinstance(obj, __dimensions_list__):
+            name = obj.__class__.__name__
+            raise ValueError(f"Expecting a Dimension object, found {name}")
+        return obj
 
 
 class DependentVariableList(AbstractList):
-    def __init__(self, data=[]):
-        super().__init__(data)
-
-    def __setitem__(self, index, item):
-        if not isinstance(item, DependentVariable):
-            raise ValueError(
-                f"Expecting a DependentVariable object, found {item.__class__.name__}"
-            )
-        self._list[index] = item
+    def check_object(self, obj):
+        if isinstance(obj, dict):
+            obj = DependentVariable(**obj)
+        if not isinstance(obj, DependentVariable):
+            name = obj.__class__.name__
+            raise ValueError(f"Expecting a DependentVariable object, found {name}")
+        return obj

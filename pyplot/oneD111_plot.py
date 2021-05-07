@@ -6,25 +6,21 @@ import csdmpy as cp
 
 # Create a test 1D{1, 1, 1, 1, 1} dataset. ====================================
 
-# Step-1: Create a new csdm object
-csdm = cp.new()
-
-# %%
-# Step-2: Create dimension objects and add it to the CSDM object.
+# Step-1: Create dimension objects.
 x = cp.as_dimension(np.arange(40) * 0.5 - 10, unit="µm", label="x")
-csdm.add_dimension(x)
 
-# %%
-# Step-3: Create dependent variable objects and add it to the CSDM object.
+# Step-2: Create dependent variable objects.
 units = ["cm", "s", "m/s", ""]
-for i in range(4):
-    y = cp.as_dependent_variable(
-        np.random.rand(40) + 10, unit=units[i], name=f"test-{i}"
-    )
-    csdm.add_dependent_variable(y)
+y = [
+    cp.as_dependent_variable(np.random.rand(40) + 10, unit=units[i], name=f"test-{i}")
+    for i in range(4)
+]
+
+# Step-3: Create the CSDM object with Dimension and Dependent variable objects.
+csdm = cp.CSDM(dimensions=[x], dependent_variables=y)
 
 
-# The plot on same axes =======================================================
+# Plot ========================================================================
 plt.figure(figsize=(5, 3.5))
 # create the axes with `projection="csdm"`
 ax = plt.subplot(projection="csdm")

@@ -3,14 +3,11 @@
 from __future__ import division
 from __future__ import print_function
 
-import json
-from copy import deepcopy
-
 import numpy as np
 
-from csdmpy.dimensions.base import _copy_core_metadata
-from csdmpy.dimensions.base import BaseDimension
-from csdmpy.dimensions.base import check_count
+from .base import _copy_core_metadata
+from .base import BaseDimension
+from .base import check_count
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -30,35 +27,31 @@ class LabeledDimension(BaseDimension):
     _type = "labeled"
 
     def __init__(self, labels, label="", description="", application={}, **kwargs):
-        r"""Instantiate a LabeledDimension class."""
+        """Instantiate a LabeledDimension class."""
         super().__init__(label, application, description)
         self.labels = labels
 
     def __repr__(self):
-        properties = ", ".join(
-            [f"{k}={v}" for k, v in self.dict().items() if k != "type"]
-        )
+        content = [f"{k}={v}" for k, v in self.dict().items() if k != "type"]
+        properties = ", ".join(content)
         return f"LabeledDimension({properties})"
 
     def __str__(self):
         return f"LabeledDimension({self.coordinates.__str__()})"
 
     def __eq__(self, other):
-        """Overrides the default implementation"""
-        if hasattr(other, "subtype"):
-            other = other.subtype
-        if isinstance(other, LabeledDimension):
-            check = [
-                self._count == other._count,
-                np.all(self._labels == other._labels),
-                super().__eq__(other),
-            ]
-            if np.all(check):
-                return True
-        return False
+        other = other.subtype if hasattr(other, "subtype") else other
+        if not isinstance(other, LabeledDimension):
+            return False
+        check = [
+            self._count == other._count,
+            np.all(self._labels == other._labels),
+            super().__eq__(other),
+        ]
+        return np.all(check)
 
     def is_quantitative(self):
-        r"""Return `True`, if the dimension is quantitative, otherwise `False`.
+        """Return `True`, if the dimension is quantitative, otherwise `False`.
         :returns: A Boolean.
         """
         return False
@@ -74,7 +67,7 @@ class LabeledDimension(BaseDimension):
 
     @property
     def count(self):
-        r"""Total number of labels along the dimension."""
+        """Total number of labels along the dimension."""
         return self._count
 
     @count.setter
@@ -83,7 +76,7 @@ class LabeledDimension(BaseDimension):
 
     @property
     def labels(self):
-        r"""Return a list of labels along the dimension."""
+        """Return a list of labels along the dimension."""
         return self._labels
 
     @labels.setter
@@ -94,13 +87,14 @@ class LabeledDimension(BaseDimension):
         items = np.asarray([isinstance(item, str) for item in labels])
         if np.all(items):
             self._labels = np.asarray(labels)
-            self._count = len(labels)
-        else:
-            i = np.where(items == 0)[0][0]
-            raise ValueError(
-                "A list of string labels are required, found "
-                f"{labels[i].__class__.__name__} at index {i}."
-            )
+            self._count = self._labels.size
+            return
+
+        i = np.where(items == 0)[0][0]
+        name = labels[i].__class__.__name__
+        raise ValueError(
+            f"A list of string labels are required, found {name} at index {i}."
+        )
 
     @property
     def coordinates(self):
@@ -112,55 +106,20 @@ class LabeledDimension(BaseDimension):
     def coordinates(self, value):
         self.labels = value
 
-    @property
-    def coords(self):
-        """Alias for the `coordinates` attribute."""
-        return self.coordinates
-
-    @coords.setter
-    def coords(self, value):
-        self.coordinates = value
-
-    @property
-    def axis_label(self):
-        """Return a formatted string for displaying label along the dimension axis."""
-        return self.label
-
-    @property
-    def data_structure(self):
-        """Json serialized string describing the LabeledDimension class instance."""
-        return json.dumps(self.dict(), ensure_ascii=False, sort_keys=False, indent=2)
-
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
     # ----------------------------------------------------------------------- #
 
     def _copy_metadata(self, obj, copy=False):
         """Copy LabeledDimension metadata."""
-        if hasattr(obj, "subtype"):
-            obj = obj.subtype
+        obj = obj.subtype if hasattr(obj, "subtype") else obj
         if isinstance(obj, LabeledDimension):
             _copy_core_metadata(self, obj, "labeled")
-
-    def to_dict(self):
-        """Alias to the `dict()` method of the class."""
-        return self.dict()
 
     def dict(self):
         """Return the LabeledDimension as a python dictionary."""
         dictionary = {}
         dictionary["type"] = self.__class__._type
-        if self._description.strip() != "":
-            dictionary["description"] = self._description.strip()
         dictionary["labels"] = self._labels.tolist()
-
-        if self._label.strip() != "":
-            dictionary["label"] = self._label.strip()
-
-        if self._application != {}:
-            dictionary["application"] = self._application
+        dictionary.update(super().dict())
         return dictionary
-
-    def copy(self):
-        """Return a copy of the object."""
-        return deepcopy(self)

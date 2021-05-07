@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Test for the csdm object
-    1) T
-"""
+"""Test for the csdm object"""
+from os import remove
+
 import numpy as np
 
 import csdmpy as cp
@@ -13,18 +13,14 @@ dim2 = {"type": "linear", "count": 5, "increment": "1"}
 dim3 = {"type": "linear", "count": 15, "increment": "1"}
 dv = {"type": "internal", "components": [data.ravel()], "quantity_type": "scalar"}
 
-a.add_dimension(dim1)
-a.add_dimension(dim2)
-a.add_dimension(dim3)
+a.dimensions += [dim1, dim2, dim3]
 a.add_dependent_variable(dv)
 
 data1 = np.random.rand(15 * 5 * 10).reshape(15, 5, 10) * 1e3 + 10
 a1 = cp.new()
 dv = {"type": "internal", "components": [data1.ravel()], "quantity_type": "scalar"}
 
-a1.add_dimension(dim1)
-a1.add_dimension(dim2)
-a1.add_dimension(dim3)
+a1.dimensions += [dim1, dim2, dim3]
 a1.add_dependent_variable(dv)
 
 # ---------------------------------------------------------------
@@ -40,3 +36,4 @@ def test_T():
 
     b_ = cp.load("test_abc.csdf")
     assert b == b_
+    remove("test_abc.csdf")

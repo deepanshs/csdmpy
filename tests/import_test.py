@@ -12,69 +12,48 @@ def test_load_files():
     assert split(cp.tests.test02)[1] == "0jsvs9bmme8vf6yn76bctkhfxm4vkcc8.csdf"
 
 
-def test00():
+def test_00():
     error = "Missing the value for the required `filename` attribute."
     with pytest.raises(Exception, match=".*{0}.*".format(error)):
         cp.load()
 
 
-def test01():
+def test_01():
     dataset = cp.load(cp.tests.test01)
 
     assert dataset.dependent_variables[0].type == "internal"
 
     # encoding is always set to 'base64' after import
     assert dataset.dependent_variables[0].encoding == "base64"
-
     assert dataset.dependent_variables[0].numeric_type == "float32"
-
     assert dataset.dependent_variables[0].components.dtype == np.float32
-
     assert dataset.description == "A simulated sine curve."
-
     assert len(dataset.dependent_variables) == 1
-
     assert len(dataset.dimensions) == 1
-
     assert dataset.dimensions[0].type == "linear"
-
     assert str(dataset.dimensions[0].increment) == "0.1 s"
-
     assert str(dataset.dimensions[0].origin_offset) == "0.0 s"
-
     assert dataset.dimensions[0].count == 10
-
     assert dataset.dimensions[0].quantity_name == "time"
-
     assert np.all(dataset.dimensions[0].coordinates.value == np.arange(10) * 0.1)
 
 
-def test02():
+def test_02():
     dataset = cp.load(cp.tests.test02)
 
     assert dataset.dependent_variables[0].type == "internal"
 
     # encoding is always set to 'base64' after import
     assert dataset.dependent_variables[0].encoding == "base64"
-
     assert dataset.dependent_variables[0].numeric_type == "float64"
-
     assert dataset.dependent_variables[0].components.dtype == np.float64
-
     assert dataset.description == "Base64 encoding test"
-
     assert len(dataset.dependent_variables) == 4
-
     assert len(dataset.dimensions) == 1
-
     assert dataset.dimensions[0].type == "monotonic"
-
     assert str(dataset.dimensions[0].origin_offset) == "0.0 cm"
-
     assert dataset.dimensions[0].count == 10
-
     assert dataset.dimensions[0].quantity_name == "length"
-
     assert dataset.size == dataset.dependent_variables[0].components[0].size
 
 

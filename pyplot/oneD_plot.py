@@ -5,16 +5,15 @@ import numpy as np
 import csdmpy as cp
 
 # Create a test 1D{1} dataset. ================================================
-# Step-1: Create a new csdm object
-csdm = cp.new()
 
-# Step-2: Create dimension objects and add it to the CSDM object.
+# Step-1: Create dimension objects.
 x = cp.as_dimension(np.arange(10) * 0.1 + 15, unit="s", label="t1")
-csdm.add_dimension(x)
 
-# Step-3: Create dependent variable objects and add it to the CSDM object.
+# Step-2: Create dependent variable objects.
 y = cp.as_dependent_variable(np.random.rand(10), unit="cm", name="test-0")
-csdm.add_dependent_variable(y)
+
+# Step-3: Create the CSDM object with Dimension and Dependent variable objects.
+csdm = cp.CSDM(dimensions=[x], dependent_variables=[y])
 
 
 # Plot ========================================================================

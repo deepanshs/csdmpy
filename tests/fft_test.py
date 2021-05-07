@@ -5,7 +5,6 @@ import csdmpy as cp
 
 
 def fft_process(csdm):
-
     y = csdm.dependent_variables[0].components[0]
 
     # fft
@@ -31,7 +30,6 @@ def fft_process(csdm):
 
 
 def ifft_process(csdm):
-
     y = csdm.dependent_variables[0].components[0]
 
     # inverse fft
@@ -58,13 +56,12 @@ def ifft_process(csdm):
 
 
 def test_fft_1():
-
     for _ in range(10):
         coordinates = np.arange(64, dtype=np.float64) - (np.random.rand() * 64)
         vals = np.random.rand(64).astype(np.complex128)
 
         csdm = cp.new()
-        csdm.add_dimension(cp.as_dimension(coordinates))
+        csdm.dimensions.append(cp.as_dimension(coordinates))
         csdm.add_dependent_variable(
             cp.as_dependent_variable(vals, quantity_type="scalar")
         )
@@ -73,13 +70,12 @@ def test_fft_1():
 
 
 def test_fft_2():
-
     for _ in range(10):
         coordinates = np.arange(64, dtype=np.float64) - (np.random.rand() * 64)
         vals = np.random.rand(64).astype(np.complex128)
 
         csdm = cp.new()
-        csdm.add_dimension(cp.as_dimension(coordinates, complex_fft=True))
+        csdm.dimensions.append(cp.as_dimension(coordinates, complex_fft=True))
         csdm.add_dependent_variable(
             cp.as_dependent_variable(vals, quantity_type="scalar")
         )

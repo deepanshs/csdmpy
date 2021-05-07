@@ -3,15 +3,10 @@
 from copy import deepcopy
 from warnings import warn
 
-try:
-    import matplotlib.projections as proj
-    import matplotlib.pyplot as plt
-    from matplotlib.pyplot import Axes
-    from matplotlib.image import NonUniformImage
-except ImportError:
-    Axes = int
-
+import matplotlib.projections as proj
+import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.image import NonUniformImage
 
 
 __author__ = "Deepansh J. Srivastava"
@@ -33,13 +28,13 @@ def _get_label_from_dv(dv, i):
     return label
 
 
-class CSDMAxes(Axes):
+class CSDMAxes(plt.Axes):
     """A custom CSDM data plot axes."""
 
     name = "csdm"
 
     def plot(self, csdm, *args, **kwargs):
-        """Produce a figure using the `plot` method from the matplotlib library.
+        """Generate a figure axes using the `plot` method from the matplotlib library.
 
         Apply to all 1D datasets with single-component dependent-variables. For
         multiple dependent variables, the data from individual dependent-variables is
@@ -62,7 +57,8 @@ class CSDMAxes(Axes):
         return self._call_1D(csdm, "plot", *args, **kwargs)
 
     def scatter(self, csdm, *args, **kwargs):
-        """Produce a figure using the `scatter` method from the matplotlib library.
+        """Generate a figure axes using the `scatter` method from the matplotlib
+        library.
 
         Apply to all 1D datasets with single-component dependent-variables. For
         multiple dependent variables, the data from individual dependent-variables is
@@ -85,7 +81,7 @@ class CSDMAxes(Axes):
         return self._call_1D(csdm, "scatter", *args, **kwargs)
 
     def imshow(self, csdm, origin="lower", *args, **kwargs):
-        """Produce a figure using the `imshow` method from the matplotlib library.
+        """Generate a figure axes using the `imshow` method from the matplotlib library.
 
         Apply to all 2D datasets with either single-component (scalar),
         three-components (pixel_3), or four-components (pixel_4) dependent-variables.
@@ -120,7 +116,8 @@ class CSDMAxes(Axes):
             return self._call_uniform_2D_image(csdm, origin=origin, *args, **kwargs)
 
     def contour(self, csdm, *args, **kwargs):
-        """Produce a figure using the `contour` method from the matplotlib library.
+        """Generate a figure axes using the `contour` method from the matplotlib
+        library.
 
         Apply to all 2D datasets with a single-component (scalar) dependent-variables.
         For multiple dependent variables, the data from individual dependent-variables
@@ -148,7 +145,8 @@ class CSDMAxes(Axes):
             return self._call_uniform_2D_contour(csdm, "contour", *args, **kwargs)
 
     def contourf(self, csdm, *args, **kwargs):
-        """Produce a figure using the `contourf` method from the matplotlib library.
+        """Generate a figure axes using the `contourf` method from the matplotlib
+        library.
 
         Apply to all 2D datasets with a single-component (scalar) dependent-variables.
         For multiple dependent variables, the data from individual dependent-variables
@@ -236,19 +234,12 @@ class CSDMAxes(Axes):
                 if fn == "contourf":
                     r_plt = super().contourf(x0, x1, y[0], *args, **kwargs)
 
-                # label = dv.axis_label[0] if one else f"{dv.name} - {dv.axis_label[0]}"
-                # cbar = plt.gcf().colorbar(r_plt, ax=self)
-                # cbar.ax.minorticks_off()
-                # cbar.set_label(label)
-
         self.set_xlim(x0.min(), x0.max())
         self.set_ylim(x1.min(), x1.max())
         self.set_xlabel(x[0].axis_label)
         self.set_ylabel(x[1].axis_label)
         if one:
             self.set_title(dv.name)
-        # self.grid(color="gray", linestyle="--", linewidth=0.5)
-
         return r_plt
 
     def _call_uniform_2D_image(self, csdm, *args, **kwargs):
@@ -281,11 +272,6 @@ class CSDMAxes(Axes):
 
                 r_plt = super().imshow(y[0], *args, **kwargs)
 
-                # label = dv.axis_label[0] if one else f"{dv.name} - {dv.axis_label[0]}"
-                # cbar = plt.gcf().colorbar(r_plt, ax=self)
-                # cbar.ax.minorticks_off()
-                # cbar.set_label(label)
-
             if dv.quantity_type == "pixel_3":
                 r_plt = super().imshow(np.moveaxis(y.copy(), 0, -1), *args, **kwargs)
 
@@ -296,8 +282,6 @@ class CSDMAxes(Axes):
         self.set_ylabel(x[1].axis_label)
         if one:
             self.set_title(dv.name)
-        # self.grid(color="gray", linestyle="--", linewidth=0.5)
-
         return r_plt
 
 

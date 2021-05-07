@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from os import remove
+
 import csdmpy as cp
 
 
@@ -21,15 +23,19 @@ def setup():
 def test_csdf_base64():
     data = setup()
     data.save("my_file_base64.csdf")
+    remove("my_file_base64.csdf")
 
 
 def test_csdf_none():
     data = setup()
     data.dependent_variables[0].encoding = "none"
     data.save("my_file_none.csdf")
+    remove("my_file_none.csdf")
 
 
 def test_csdfe():
     data = setup()
     data.dependent_variables[0].encoding = "raw"
     data.save("my_file_raw.csdfe")
+    remove("my_file_raw.csdfe")
+    remove("my_file_raw_0.dat")
