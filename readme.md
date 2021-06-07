@@ -79,7 +79,9 @@ python version 3.4 and higher.
 
     $ pip install csdmpy
 
-## Citations
+## How to cite
+
+Please cite the following when used in publication.
 
 1. Srivastava D.J., Vosegaard T., Massiot D., Grandinetti P.J. (2020) Core Scientific Dataset Model: A lightweight and portable model and file format for multi-dimensional scientific data. [PLOS ONE 15(1): e0225953.](https://doi.org/10.1371/journal.pone.0225953)
 
