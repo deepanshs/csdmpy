@@ -256,7 +256,7 @@ def _default_units(element):
 
 def check_quantity_name(element, unit):
     if element is None:
-        element = unit.physical_type
+        element = str(unit.physical_type).split("/")[0]
         return element
 
     if unit.physical_type == "unknown":
