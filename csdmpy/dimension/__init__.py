@@ -377,7 +377,10 @@ class Dimension:
               "origin_offset": "10.0 T",
               "quantity_name": "magnetic flux density",
               "label": "field strength",
-              "description": "This is a test"
+              "description": "This is a test",
+              "reciprocal": {
+                "quantity_name": "electrical mobility"
+              }
             }
 
         Returns:
