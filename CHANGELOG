@@ -1,3 +1,9 @@
+v0.4.1
+------
+
+Patch update for the CSDM dimension's ``quantity_name`` attribute value from units compatible with astropy>=4.3
+
+
 v0.4
 ----
 
