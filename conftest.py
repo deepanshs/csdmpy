@@ -25,6 +25,7 @@ def add_cp_dimension(doctest_namespace):
         coordinates_offset="10 mT",
         origin_offset="10 T",
         label="field strength",
+        reciprocal={"quantity_name": "electrical mobility"},
     )
 
     doctest_namespace["dimension_dictionary"] = {
