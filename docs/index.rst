@@ -19,11 +19,7 @@ Welcome to the csdmpy documentation
             :alt: PyPI - Python Version
 
       * - Build Status
-        - .. image:: https://img.shields.io/travis/deepanshs/csdmpy?logo=travis
-            :target: https://travis-ci.org/DeepanshS/csdmpy
-            :alt: Travis (.org)
-
-          .. image:: https://img.shields.io/github/workflow/status/deepanshs/csdmpy/CI%20(pip)?logo=GitHub
+        - .. image:: https://img.shields.io/github/workflow/status/deepanshs/csdmpy/CI%20(pip)?logo=GitHub
             :target: https://github.com/DeepanshS/csdmpy/actions
             :alt: GitHub Workflow Status
 
@@ -37,11 +33,7 @@ Welcome to the csdmpy documentation
             :alt: License
 
       * - Metrics
-        - .. image:: https://img.shields.io/pypi/dm/csdmpy.svg
-            :target: https://img.shields.io/pypi/dm/csdmpy
-            :alt: PyPI - Downloads
-
-          .. image:: https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm
+        - .. image:: https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm
             :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/
             :alt: Total alerts
 
