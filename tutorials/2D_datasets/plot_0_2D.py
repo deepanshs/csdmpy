@@ -41,9 +41,9 @@ print(csdm_object.dimensions)
 # %%
 # Plot of the dataset.
 plt.figure(figsize=(5, 3.5))
-ax = plt.gca(projection="csdm")
+ax = plt.subplot(projection="csdm")
 cb = ax.imshow(csdm_object, aspect="auto")
-plt.colorbar(cb)
+plt.colorbar(cb, ax=ax)
 plt.tight_layout()
 plt.show()
 

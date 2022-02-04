@@ -100,10 +100,6 @@ ax = axi[1, 0]
 im = NonUniformImage(ax, interpolation="nearest", extent=extent, cmap="bone_r")
 im.set_data(x0, x1, y00.real / y00.real.max())
 
-# Add the colorbar and the component label.
-cbar = fig.colorbar(im)
-cbar.ax.set_ylabel(y[0].axis_label[0])
-
 # Set up the grid lines.
 ax.images.append(im)
 for i in range(x1.size):
@@ -132,6 +128,10 @@ ax1.plot(right, x1, "k", linewidth=0.5)
 ax1.set_ylim([extent[2], extent[3]])
 ax1.set_xlim([right.min(), right.max()])
 ax1.axis("off")
+
+# Add the colorbar and the component label.
+cbar = fig.colorbar(im, ax=ax1)
+cbar.ax.set_ylabel(y[0].axis_label[0])
 
 # Turn off the axis system for the top-right subplot.
 axi[0, 1].axis("off")
