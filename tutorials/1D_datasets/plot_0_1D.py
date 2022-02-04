@@ -31,7 +31,7 @@ csdm_object = cp.CSDM(dependent_variables=[dv], dimensions=[dim])
 # %%
 # Plot of the dataset.
 plt.figure(figsize=(5, 3.5))
-ax = plt.gca(projection="csdm")
+ax = plt.subplot(projection="csdm")
 ax.plot(csdm_object)
 plt.tight_layout()
 plt.show()

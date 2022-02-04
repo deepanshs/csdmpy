@@ -178,6 +178,8 @@ class CSDMAxes(plt.Axes):
         z = csdm.split()
         one = True if len(z) == 1 else False
         legend = False
+
+        r_plt = None
         for i, item in enumerate(z):
             x_, y_ = item.to_list()
             # dv will always be at index 0 because we called the object.split() before.
@@ -205,6 +207,9 @@ class CSDMAxes(plt.Axes):
         if legend:
             self.legend()
 
+        if r_plt is None:
+            raise NotImplementedError("Cannot plot dataset")
+
         return r_plt
 
     def _call_uniform_2D_contour(self, csdm, fn, *args, **kwargs):
@@ -216,16 +221,15 @@ class CSDMAxes(plt.Axes):
         x0, x1 = x[0].coordinates.value, x[1].coordinates.value
 
         # add cmap for multiple dependent variables.
-        cmaps_bool = False
-        if "cmaps" in kw_keys:
-            cmaps_bool = True
-            cmaps = kwargs.pop("cmaps")
+        cmaps_bool = True if "cmaps" in kw_keys else False
+        cmaps = kwargs.pop("cmaps") if cmaps_bool else None
 
         one = True if len(csdm.dependent_variables) == 1 else False
 
+        r_plt = None
         for i, dv in enumerate(csdm.dependent_variables):
             y = dv.components
-            if dv.quantity_type == "scalar":
+            if dv.quantity_type in ["scalar", "vector_1", "pixel_1"]:
                 if cmaps_bool:
                     kwargs["cmap"] = cmaps[i]
 
@@ -240,6 +244,9 @@ class CSDMAxes(plt.Axes):
         self.set_ylabel(x[1].axis_label)
         if one:
             self.set_title(dv.name)
+
+        if r_plt is None:
+            raise NotImplementedError("Cannot plot dataset")
         return r_plt
 
     def _call_uniform_2D_image(self, csdm, *args, **kwargs):
@@ -257,16 +264,15 @@ class CSDMAxes(plt.Axes):
             kwargs["extent"] = extent
 
         # add cmap for multiple dependent variables.
-        cmaps_bool = False
-        if "cmaps" in kw_keys:
-            cmaps_bool = True
-            cmaps = kwargs.pop("cmaps")
+        cmaps_bool = True if "cmaps" in kw_keys else False
+        cmaps = kwargs.pop("cmaps") if cmaps_bool else None
 
         one = True if len(csdm.dependent_variables) == 1 else False
 
+        r_plt = None
         for i, dv in enumerate(csdm.dependent_variables):
             y = dv.components
-            if dv.quantity_type == "scalar":
+            if dv.quantity_type in ["scalar", "vector_1", "pixel_1"]:
                 if cmaps_bool:
                     kwargs["cmap"] = cmaps[i]
 
@@ -282,6 +288,9 @@ class CSDMAxes(plt.Axes):
         self.set_ylabel(x[1].axis_label)
         if one:
             self.set_title(dv.name)
+
+        if r_plt is None:
+            raise NotImplementedError("Cannot plot dataset")
         return r_plt
 
 
