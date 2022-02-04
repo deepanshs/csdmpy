@@ -5,7 +5,7 @@
 | Deployment   | [![PyPI version](https://img.shields.io/pypi/v/csdmpy.svg?style=flat&logo=pypi&logoColor=white)](https://pypi.python.org/pypi/csdmpy) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/csdmpy)                                                                                                                                                                                                                                                                                                                                                                |
 | Build Status | [![Travis (.org)](https://img.shields.io/travis/deepanshs/csdmpy?logo=travis)](<(https://travis-ci.org/DeepanshS/csdmpy)>) [![Github workflow](<https://img.shields.io/github/workflow/status/deepanshs/csdmpy/CI%20(pip)?logo=GitHub>)](https://github.com/DeepanshS/csdmpy/actions) [![Documentation Status](https://readthedocs.org/projects/csdmpy/badge/?version=stable)](https://csdmpy.readthedocs.io/en/stable/?badge=stable)                                                                                                                                        |
 | License      | [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| Metrics      | [![PyPI - Downloads](https://img.shields.io/pypi/dm/csdmpy.svg)](https://img.shields.io/pypi/dm/csdmpy)[![Total alerts](https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DeepanshS/csdmpy/context:python) [![codecov](https://codecov.io/gh/DeepanshS/csdmpy/branch/master/graph/badge.svg)](https://codecov.io/gh/DeepanshS/csdmpy) |
+| Metrics      | [![Total alerts](https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/DeepanshS/csdmpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DeepanshS/csdmpy/context:python) [![codecov](https://codecov.io/gh/DeepanshS/csdmpy/branch/master/graph/badge.svg)](https://codecov.io/gh/DeepanshS/csdmpy) |
 | GitHub       | ![GitHub issues](https://img.shields.io/github/issues-raw/deepanshs/csdmpy)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | Citations    | [![DOI](<https://img.shields.io/badge/DOI-PLOS%20ONE%2015(1):%20e0225953-blueviolet>)](https://doi.org/10.1371/journal.pone.0225953)                                                                                                                                                                                                                                                                                                                               |
 
@@ -34,14 +34,14 @@ For further reading, refer to the [documentation](https://csdmpy.readthedocs.io/
 The core scientific dataset (CSD) model is a _light-weight_, _portable_,
 _versatile_, and _standalone_ data model capable of handling a variety of
 scientific datasets. The model only encapsulates
-data values and the minimum metadata, to accurately represent a _p_-component
+data values and the minimum metadata, to accurately represent a **_p_-component
 dependent variable,
-discretely sampled at _M_ unique points in a _d_-dimensional coordinate space.
+discretely sampled at _M_ unique points in a _d_-dimensional coordinate space**.
 The model is not intended to encapsulate
 any information on how the data might be acquired, processed, or visualized.
 
-The data model is _versatile_ in allowing many use cases for most spectroscopy,
-diffraction, and imaging techniques. As
+The data model is _versatile_ in allowing many **use cases for most spectroscopy,
+diffraction, and imaging techniques**. As
 such the model supports multi-component datasets associated with continuous
 physical quantities that are discretely sampled in a multi-dimensional space
 associated with other carefully controlled quantities, for e.g., a mass as a
@@ -65,6 +65,14 @@ to the file. Out of numerous file serialization formats, XML, JSON, property
 list, we adopt the data-exchange oriented JSON (JavaScript Object Notation)
 file-serialization format because it is _human-readable_, and _easily integrable_ with any number of programming languages
 and field related application-software.
+
+## Advantage of CSDM file-serializaiton.
+- A generic scientific dataset model capable of serializing multi-dimensional, multi-component datasets along with necessary datasets. In contrast, a CSV or text-based file is not efficient for storing two or higher-dimensional datasets and is not readily parsable for metadata, if any.
+
+- The CSD model is a model. It is independent of serialization formats, XML, JSON, plist, h5, etc. We choose to implement the model in JSON because of its widespread use and human readability.
+
+### Cons
+- CSD model is a scientific dataset serialization model and not a workflow serialization format.
 
 ## Installing _csdmpy_ package
 
