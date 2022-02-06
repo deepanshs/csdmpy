@@ -1,3 +1,8 @@
+What new
+--------
+
+Bug fix involving plot of datasets with dependent-variable quantity type of `vector_1` or `pixel_1`.
+
 v0.4.1
 ------
 
