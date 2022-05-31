@@ -18,7 +18,10 @@ __dimensions_list__ = (Dimension, LinearDimension, MonotonicDimension, LabeledDi
 
 
 class AbstractList(MutableSequence):
+    """Abstract list for objects"""
+
     def __init__(self, data=[]):
+        """Store data list"""
         super().__init__()
         self._list = list(data)
 
@@ -42,25 +45,20 @@ class AbstractList(MutableSequence):
     def __delitem__(self, index):
         raise LookupError("Deleting items is not allowed.")
 
-    def check_object(self, *args):
-        pass
+    def check_object(self, obj):
+        """Abstract check"""
 
-    def insert(self, index: int, item: object):
+    def insert(self, index: int, value: object):
         """Insert a list item"""
-        item = self.check_object(item)
-        self._list.insert(index, item)
+        self._list.insert(index, self.check_object(value))
 
-    def append(self, item):
+    def append(self, value):
         """Append a list item"""
-        item = self.check_object(item)
-        self._list.append(item)
+        self._list.append(self.check_object(value))
 
     def __setitem__(self, index, item):
         """Set item at index"""
-        item = self.check_object(item)
-        # if self._list[index].count != item.count:
-        #     raise IndexError("Index out of range")
-        self._list[index] = item
+        self._list.__setitem__(index, self.check_object(item))
 
     def __eq__(self, other):
         """Check equality of DependentVariableList."""
@@ -74,7 +72,10 @@ class AbstractList(MutableSequence):
 
 
 class DimensionList(AbstractList):
+    """List of Dimension objects"""
+
     def check_object(self, obj):
+        """Validate dimension"""
         if isinstance(obj, dict):
             obj = Dimension(**obj)
         if not isinstance(obj, __dimensions_list__):
@@ -84,10 +85,13 @@ class DimensionList(AbstractList):
 
 
 class DependentVariableList(AbstractList):
+    """List of Dependent variable objects"""
+
     def check_object(self, obj):
+        """Validate dependent variable"""
         if isinstance(obj, dict):
             obj = DependentVariable(**obj)
         if not isinstance(obj, DependentVariable):
-            name = obj.__class__.name__
+            name = obj.__class__.__name__
             raise ValueError(f"Expecting a DependentVariable object, found {name}")
         return obj
