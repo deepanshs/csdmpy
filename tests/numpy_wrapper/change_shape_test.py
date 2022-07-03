@@ -7,9 +7,9 @@ import numpy as np
 import csdmpy as cp
 
 data = np.random.rand(4, 3, 2)
-dim1 = {"type": "linear", "count": 2, "increment": "1"}
-dim2 = {"type": "linear", "count": 3, "increment": "1"}
-dim3 = {"type": "linear", "count": 4, "increment": "1"}
+dim1 = cp.Dimension(type="linear", count=2, increment="1")
+dim2 = cp.Dimension(type="linear", count=3, increment="1")
+dim3 = cp.Dimension(type="linear", count=4, increment="1")
 dv = {"type": "internal", "components": [data.ravel()], "quantity_type": "scalar"}
 obj_1 = cp.CSDM(dimensions=[dim1, dim2, dim3], dependent_variables=[dv])
 
@@ -32,3 +32,38 @@ def test_00():
     test2 = cp.load("test_abc.csdf")
     assert test1 == test2
     remove("test_abc.csdf")
+
+
+def test_index_assignment():
+    test_1 = obj_1.copy()
+    test_1[:, :, 0] = 0
+    assert np.allclose(test_1.y[0].components[0, 0, :, :], 0)
+
+
+def test_indexing():
+    test_1 = obj_1[:, :, 0]
+    assert len(test_1.x) == 2
+    assert test_1.x[0] == dim1
+    assert test_1.x[1] == dim2
+
+    test_1 = obj_1[:, -1, :]
+    assert len(test_1.x) == 2
+    assert test_1.x[0] == dim1
+    assert test_1.x[1] == dim3
+
+    test_1 = obj_1[0, :, :]
+    assert len(test_1.x) == 2
+    assert test_1.x[0] == dim2
+    assert test_1.x[1] == dim3
+
+    test_1 = obj_1[0, 0, :]
+    assert len(test_1.x) == 1
+    assert test_1.x[0] == dim3
+
+    test_1 = obj_1[:, 0, 0]
+    assert len(test_1.x) == 1
+    assert test_1.x[0] == dim1
+
+    test_1 = obj_1[0, :, 0]
+    assert len(test_1.x) == 1
+    assert test_1.x[0] == dim2

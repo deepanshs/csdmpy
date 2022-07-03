@@ -159,18 +159,6 @@ def test_internal_new():
     }
     assert data.y[0].dict() == dependent_variables_dict_2
 
-    # data = cp.new()
-    # test_array = np.arange(20).reshape(2, 10)
-    # dim = {
-    #     "type": "internal",
-    #     "numeric_type": "float32",
-    #     "quantity_type": "vector_1",
-    #     "components": test_array,
-    # }
-    # error = "The quantity_type, 'vector_1', requires exactly 1 component"
-    # with pytest.raises(Exception, match=".*{0}.*".format(error)):
-    #     data.add_dependent_variable(dim)
-
     # check equality
     dim1 = data.y[0].copy()
     assert data.y[0] == dim1
@@ -262,20 +250,18 @@ def test_external_new():
 
 
 def test_missing_type():
-    data = cp.new()
-    dim = {
+    d_v = {
         "numeric_type": "float32",
         "quantity_type": "scalar",
         "components": [np.arange(10)],
     }
     error = "Missing a required `type` key from the DependentVariable object."
     with pytest.raises(KeyError, match=".*{0}.*".format(error)):
-        data.add_dependent_variable(dim)
+        _ = cp.CSDM(dependent_variables=[d_v])
 
 
 def test_wrong_type():
-    data = cp.new()
-    dim = {
+    d_v = {
         "type": "",
         "numeric_type": "float32",
         "quantity_type": "scalar",
@@ -283,20 +269,18 @@ def test_wrong_type():
     }
     error = "is an invalid `type` for the DependentVariable"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
-        data.add_dependent_variable(dim)
+        _ = cp.CSDM(dependent_variables=[d_v])
 
 
 def test_missing_component():
-    data = cp.new()
-    dim = {"type": "internal", "numeric_type": "float32", "quantity_type": "scalar"}
+    d_v = {"type": "internal", "numeric_type": "float32", "quantity_type": "scalar"}
     error = "Missing a required `components` key"
     with pytest.raises(KeyError, match=".*{0}.*".format(error)):
-        data.add_dependent_variable(dim)
+        _ = cp.CSDM(dependent_variables=[d_v])
 
 
 def test_missing_component_url():
-    data = cp.new()
-    dim = {"type": "external", "numeric_type": "float32", "quantity_type": "scalar"}
+    d_v = {"type": "external", "numeric_type": "float32", "quantity_type": "scalar"}
     error = "Missing a required `components_url` key"
     with pytest.raises(KeyError, match=".*{0}.*".format(error)):
-        data.add_dependent_variable(dim)
+        _ = cp.CSDM(dependent_variables=[d_v])
