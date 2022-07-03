@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/0iw0egupb1hkulkbdq4hagzzhkbvqjkv.csdf"
+filename = "https://www.ssnmr.org/sites/default/files/CSDM/ir/caffeine_base64.csdf"
 FTIR_data = cp.load(filename)
 print(FTIR_data.data_structure)
 

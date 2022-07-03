@@ -14,7 +14,7 @@ Nuclear Magnetic Resonance (NMR) dataset
 # Let's load the file.
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/27yrgdaubtb4wqj5adbavp2u16c2h7k8.csdf"
+filename = "https://www.ssnmr.org/sites/default/files/CSDM/NMR/satrec/satRec.csdf"
 NMR_2D_data = cp.load(filename)
 print(NMR_2D_data.description)
 

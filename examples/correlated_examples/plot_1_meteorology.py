@@ -18,7 +18,8 @@ Meteorological, 2D{1,1,2,1,1} dataset
 # Let's import the `csdmpy` module and load this dataset.
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/6uhrtdxfisl4a14x9pndyze2mv414zyg.csdf"
+domain = "https://www.ssnmr.org/sites/default/files/CSDM"
+filename = f"{domain}/correlatedDataset/forecast/NCEI.csdf"
 multi_dataset = cp.load(filename)
 # sphinx_gallery_thumbnail_number = 5
 

@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/3w5iqkx15fayan1u6g6sn5woc2ublkyh.csdf"
+filename = "https://www.ssnmr.org/sites/default/files/CSDM/TEM/TEM.csdf"
 TEM = cp.load(filename)
 print(TEM.data_structure)
 

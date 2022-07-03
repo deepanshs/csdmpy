@@ -10,7 +10,9 @@ Vector, 2D{2} dataset
 # dipole as a function of two linearly sampled spatial dimensions.
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/iobasl6fx1z7rds3ovamrwueek8ver5o.csdf"
+domain = "https://www.ssnmr.org/sites/default/files/CSDM"
+filename = f"{domain}/vector/electric_field/electric_field_base64.csdf"
+
 vector_data = cp.load(filename)
 print(vector_data.data_structure)
 

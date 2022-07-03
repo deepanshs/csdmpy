@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/ul3rajps49zfuz9ozj3j5xsjmgeuybuy.csdf"
+filename = "https://www.ssnmr.org/sites/default/files/CSDM/MassSpec/acetone.csdf"
 mass_spec = cp.load(filename)
 print(mass_spec.data_structure)
 

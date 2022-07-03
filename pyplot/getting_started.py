@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import csdmpy as cp
 
-filename = cp.tests.test01  # replace this with your file's name.
+domain = "https://www.ssnmr.org/sites/default/files/CSDM"
+filename = f"{domain}/test/test01.csdf"  # replace this with your file's name.
 testdata1 = cp.load(filename)
 print(testdata1.description)
 

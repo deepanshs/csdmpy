@@ -16,7 +16,8 @@ import matplotlib.pyplot as plt
 
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/0p3o1ga1kqno4dk4sooi1rbk29pbs3mm.csdf"
+domain = "https://www.ssnmr.org/sites/default/files/CSDM"
+filename = f"{domain}/BubbleNebula/Bubble_nebula.csdf"
 bubble_nebula = cp.load(filename)
 print(bubble_nebula.data_structure)
 

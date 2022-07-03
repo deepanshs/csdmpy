@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/0dh8mwnjr600lh1ufpsmt5780yp7wi99.csdf"
+domain = "https://www.ssnmr.org/sites/default/files/CSDM"
+filename = f"{domain}/EPR/AmanitaMuscaria_base64.csdf"
 EPR_data = cp.load(filename)
 print(EPR_data.data_structure)
 

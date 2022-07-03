@@ -15,7 +15,8 @@ Astronomy, 2D{1,1,1} dataset (Creating image composition)
 # Import the `csdmpy` model and load the dataset.
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/of3wmoxcqungkp6ndbplnbxtgu6jaahh.csdf"
+domain = "https://www.ssnmr.org/sites/default/files/CSDM"
+filename = f"{domain}/EagleNebula/eagleNebula_base64.csdf"
 eagle_nebula = cp.load(filename)
 # sphinx_gallery_thumbnail_number = 2
 
