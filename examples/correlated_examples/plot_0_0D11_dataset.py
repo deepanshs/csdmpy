@@ -15,7 +15,8 @@ Scatter, 0D{1,1} dataset
 # Let's import the dataset.
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/h1nxth6gs94fthfmvip5vchp3zh4zd6o.csdf"
+domain = "https://www.ssnmr.org/sites/default/files/CSDM"
+filename = f"{domain}/correlatedDataset/0D_dataset/J_vs_s.csdf"
 zero_d_dataset = cp.load(filename)
 
 # %%

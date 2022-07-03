@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/c9wg59hya5ohc083qi2jgd7wk5emmlmu.csdf"
+domain = "https://www.ssnmr.org/sites/default/files/CSDM"
+filename = f"{domain}/UV-vis/benzeneVapour_base64.csdf"
 UV_data = cp.load(filename)
 print(UV_data.data_structure)
 

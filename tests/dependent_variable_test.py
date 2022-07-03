@@ -180,12 +180,11 @@ def test_internal_new():
 
 
 def test_external_new():
+    domain = "https://www.ssnmr.org/sites/default/files/CSDM"
     data = cp.new()
     dim = {
         "type": "external",
-        "components_url": (
-            "https://osu.box.com/shared/static/b967zfl7efcvf471wm9a7tqb74kqomuh.dat"
-        ),
+        "components_url": f"{domain}/GC/cinnamon_raw_cinnamon stick.dat",
         "component_labels": ["monotonic"],
         "name": "Headspace from cinnamon stick",
         "numeric_type": "float32",
@@ -215,9 +214,7 @@ def test_external_new():
         assert dv.unit == ""
 
         # check component_url
-        assert dv.components_url == (
-            "https://osu.box.com/shared/static/b967zfl7efcvf471wm9a7tqb74kqomuh.dat"
-        )
+        assert dv.components_url == f"{domain}/GC/cinnamon_raw_cinnamon stick.dat"
 
         # component names
         assert dv.component_labels == ["monotonic"]

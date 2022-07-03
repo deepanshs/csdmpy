@@ -14,7 +14,7 @@ Image, 2D{3} datasets
 # The following is an example of an RGB image dataset.
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/vdxdaitsa9dq45x8nk7l7h25qrw2baxt.csdf"
+filename = "https://www.ssnmr.org/sites/default/files/CSDM/image/raccoon_image.csdf"
 ImageData = cp.load(filename)
 print(ImageData.data_structure)
 

@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/w63851uqruzhz6kx9rx5qgk3or2pot9l.csdf"
+filename = "https://www.ssnmr.org/sites/default/files/CSDM/vector/1D_vector.csdf"
 vector_data = cp.load(filename)
 print(vector_data.data_structure)
 

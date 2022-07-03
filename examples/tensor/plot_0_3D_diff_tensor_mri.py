@@ -14,7 +14,8 @@ Diffusion tensor MRI, 3D{6} dataset
 # Let's import the CSDM data-file and look at its data structure.
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/x5d1hgqjgo01wguyzwbv6e256erxejtx.csdf"
+domain = "https://www.ssnmr.org/sites/default/files/CSDM"
+filename = f"{domain}/tensor/human_brain/brain_MRI_reduced_example.csdf"
 diff_mri = cp.load(filename)
 
 # %%

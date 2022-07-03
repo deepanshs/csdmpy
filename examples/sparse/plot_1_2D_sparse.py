@@ -12,7 +12,7 @@ Sparse along two dimensions, 2D{1,1} dataset
 # Let's import the CSD model data-file and look at its data structure.
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/kaos28g47brtswi6mgsgaap5qlahp1zo.csdf"
+filename = "https://www.ssnmr.org/sites/default/files/CSDM/sparse/iglu_2d.csdf"
 sparse_2d = cp.load(filename)
 
 # %%

@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/2e4fqm8n8bh4i5wgrinbwcavafa8x7y1.csdf"
+domain = "https://www.ssnmr.org/sites/default/files/CSDM"
+filename = f"{domain}/NMR/blochDecay/blochDecay.csdf"
 NMR_data = cp.load(filename)
 print(NMR_data.data_structure)
 

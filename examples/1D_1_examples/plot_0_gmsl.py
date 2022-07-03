@@ -12,7 +12,7 @@ Global Mean Sea Level rise dataset
 # Let's import this file.
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/vetjm3cndxdps05ijvv603ajth3jocck.csdf"
+filename = "https://www.ssnmr.org/sites/default/files/CSDM/gmsl/GMSL.csdf"
 sea_level = cp.load(filename)
 
 # %%

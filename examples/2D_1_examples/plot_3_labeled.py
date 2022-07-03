@@ -12,7 +12,7 @@ Labeled Dataset
 # Import the `csdmpy` model and load the dataset.
 import csdmpy as cp
 
-filename = "https://osu.box.com/shared/static/e81to3izj5yv5m7mjq9xw7gmqez2blto.csdf"
+filename = "https://www.ssnmr.org/sites/default/files/CSDM/labeled/population.csdf"
 labeled_data = cp.load(filename)
 
 # %%

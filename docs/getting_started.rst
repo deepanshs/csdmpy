@@ -19,7 +19,7 @@ sample test file.
 
 .. doctest::
 
-    >>> filename = cp.tests.test01 # replace this with your file's name.
+    >>> filename = "https://www.ssnmr.org/sites/default/files/CSDM/test/test01.csdf"
     >>> testdata1 = cp.load(filename)
 
 Here, ``testdata1`` is an instance of the CSDM class.
