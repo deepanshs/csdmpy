@@ -14,11 +14,13 @@ __all__ = ["parse_url", "download_file_from_url"]
 
 
 def parse_url(url):
+    """Parse url"""
     res = urlparse(quote(url, safe="/?#@:"))
     return res
 
 
 def download_file_from_url(url, verbose=False):
+    """Download file from url"""
     res = parse_url(url)
     filename = path.split(res[2])[1]
     if path.isfile(filename):
@@ -28,12 +30,12 @@ def download_file_from_url(url, verbose=False):
             )
         return filename
 
-    with open(filename, "wb") as f:
+    with open(filename, "wb") as file:
         response = requests.get(url, stream=True)
         total = response.headers.get("content-length")
 
         if total is None:
-            f.write(response.content)
+            file.write(response.content)
         else:
             downloaded = 0
             total = int(total)
@@ -47,7 +49,7 @@ def download_file_from_url(url, verbose=False):
                 chunk_size=max(int(total / 1000), 1024 * 1024)
             ):
                 downloaded += len(data)
-                f.write(data)
+                file.write(data)
                 if verbose:
                     done = int(20 * downloaded / total)
                     sys.stdout.write("\r[{}{}]".format("█" * done, "." * (20 - done)))
@@ -71,6 +73,7 @@ def _get_absolute_data_address(data_path, file):
 
 
 def get_absolute_url_path(url, file):
+    """Return absolute path to url"""
     res = parse_url(url)
     url_path = res.geturl()
     if res.scheme in ["file", ""]:
@@ -80,6 +83,7 @@ def get_absolute_url_path(url, file):
 
 
 def get_relative_url_path(dataset_index, filename):
+    """Return relative path to url"""
     index = str(dataset_index)
     absolute_path = get_absolute_url_path("", filename)
 

@@ -11,6 +11,8 @@ __all__ = ["Decoder"]
 
 
 class Decoder:
+    """Decoder class"""
+
     def __new__(self, encoding, quantity_type, components, dtype):
         """Decode the components based on the encoding key value.
 
@@ -24,6 +26,7 @@ class Decoder:
 
     @staticmethod
     def decode_base64(components, dtype, component_len=None):
+        """Read components form a base64 buffer"""
         components = np.asarray(
             [np.frombuffer(base64.b64decode(item), dtype=dtype) for item in components]
         )
@@ -31,6 +34,7 @@ class Decoder:
 
     @staticmethod
     def decode_none(components, dtype, component_len=None):
+        """Read components form a text buffer"""
         return (
             np.asarray(
                 [
@@ -45,6 +49,7 @@ class Decoder:
 
     @staticmethod
     def decode_raw(components, dtype, component_len=None):
+        """Read components form a binary buffer"""
         components = np.frombuffer(components, dtype=dtype)
         components.shape = component_len, int(components.size / component_len)
         return components

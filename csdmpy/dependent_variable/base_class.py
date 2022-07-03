@@ -9,8 +9,8 @@ from copy import deepcopy
 
 import numpy as np
 
-from .download import get_relative_url_path
-from .sparse import SparseSampling
+from csdmpy.dependent_variable.download import get_relative_url_path
+from csdmpy.dependent_variable.sparse import SparseSampling
 from csdmpy.units import check_quantity_name
 from csdmpy.units import ScalarQuantity
 from csdmpy.utils import check_encoding
@@ -52,8 +52,8 @@ class BaseDependentVariable:
         components=None,
         component_labels=None,
         description="",
-        application={},
-        sparse_sampling={},
+        application=None,
+        sparse_sampling=None,
         **kwargs,
     ):
         """Init BaseDependentVariable class."""
@@ -87,30 +87,30 @@ class BaseDependentVariable:
         the inconsistency is resolved by appropriate truncating or adding the
         required number of strings.
         """
-        n = self._quantity_type.p
+        n_1 = self._quantity_type.p
         if component_labels is None:
-            self._component_labels = ["" for i in range(n)]
+            self._component_labels = ["" for i in range(n_1)]
             return
 
         validate(component_labels, "component_labels", list)
 
         component_length = len(component_labels)
-        if component_length == n:
+        if component_length == n_1:
             self._component_labels = component_labels
             return
 
         warning_statement = (
             f"The number of component labels, {component_length}, is not equal"
-            f" to the number of components, {n}. The inconsistency is resolved"
+            f" to the number of components, {n_1}. The inconsistency is resolved"
             " by appropriate truncation or addition of the strings."
         )
         warnings.warn(warning_statement)
 
-        if component_length > n:
-            self._component_labels = component_labels[:n]
+        if component_length > n_1:
+            self._component_labels = component_labels[:n_1]
             return
 
-        labels = ["" for i in range(n)]
+        labels = ["" for i in range(n_1)]
         for i, item in enumerate(component_labels):
             labels[i] = item
         self._component_labels = labels
@@ -261,6 +261,7 @@ class BaseDependentVariable:
         return obj
 
     def get_proper_encoded_data(self, obj, filename=None, dataset_index=None):
+        """Encode dependent variables to encoding type."""
         data = self.ravel_data()
 
         if self.encoding == "none":
@@ -289,23 +290,23 @@ class BaseDependentVariable:
 
     def ravel_data(self):
         """Encode data based on the encoding key value."""
-        n = self._quantity_type.p
+        n_1 = self._quantity_type.p
         size = self._components[0].size
         if self._numeric_type.value in ["complex64", "complex128"]:
 
             if self._numeric_type.value == "complex64":
-                data = np.empty((n, size * 2), dtype=np.float32)
+                data = np.empty((n_1, size * 2), dtype=np.float32)
 
             if self._numeric_type.value == "complex128":
-                data = np.empty((n, size * 2), dtype=np.float64)
+                data = np.empty((n_1, size * 2), dtype=np.float64)
 
-            for i in range(n):
+            for i in range(n_1):
                 data[i, 0::2] = self._components.real[i].ravel()
                 data[i, 1::2] = self._components.imag[i].ravel()
 
         else:
-            data = np.empty((n, size), dtype=self._numeric_type.dtype)
-            for i in range(n):
+            data = np.empty((n_1, size), dtype=self._numeric_type.dtype)
+            for i in range(n_1):
                 data[i] = self._components[i].ravel()
 
         return data
