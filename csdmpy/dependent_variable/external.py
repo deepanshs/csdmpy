@@ -7,9 +7,9 @@ from urllib.request import urlopen
 
 import numpy as np
 
-from .base_class import BaseDependentVariable
-from .decoder import Decoder
-from .download import get_absolute_url_path
+from csdmpy.dependent_variable.base_class import BaseDependentVariable
+from csdmpy.dependent_variable.decoder import Decoder
+from csdmpy.dependent_variable.download import get_absolute_url_path
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
@@ -19,7 +19,7 @@ __all__ = ["ExternalDataset"]
 class ExternalDataset(BaseDependentVariable):
     """ExternalDataset class."""
 
-    __slots__ = "_components_url"
+    __slots__ = ["_components_url"]
 
     def __init__(self, **kwargs):
         """Initialize."""

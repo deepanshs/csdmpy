@@ -9,8 +9,8 @@ from copy import deepcopy
 
 import numpy as np
 
-from .external import ExternalDataset  # lgtm [py/import-own-module]
-from .internal import InternalDataset  # lgtm [py/import-own-module]
+from csdmpy.dependent_variable.external import ExternalDataset
+from csdmpy.dependent_variable.internal import InternalDataset
 from csdmpy.utils import _axis_label  # lgtm [py/import-own-module]
 from csdmpy.utils import _get_dictionary  # lgtm [py/import-own-module]
 
@@ -108,9 +108,9 @@ class DependentVariable:
             )
 
         if input_dict["type"] not in ["internal", "external"]:
-            t_ = input_dict["type"]
+            t_1 = input_dict["type"]
             raise ValueError(
-                f"The value, '{t_}', is an invalid `type` for the DependentVariable "
+                f"The value, '{t_1}', is an invalid `type` for the DependentVariable "
                 "objects. The allowed values are 'internal', 'external'."
             )
 
@@ -141,9 +141,9 @@ class DependentVariable:
 
     def __str__(self):
         msg = f"{self.components.__str__()} {self.unit}".strip()
-        qt = self.quantity_type
-        nt = self.numeric_type
-        return f"DependentVariable(\n{msg}, quantity_type={qt}, numeric_type={nt})"
+        q_t = self.quantity_type
+        n_t = self.numeric_type
+        return f"DependentVariable(\n{msg}, quantity_type={q_t}, numeric_type={n_t})"
 
     def __eq__(self, other):
         if not isinstance(other, DependentVariable):

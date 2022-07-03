@@ -4,7 +4,7 @@ from copy import deepcopy
 
 import numpy as np
 
-from .decoder import Decoder
+from csdmpy.dependent_variable.decoder import Decoder
 from csdmpy.utils import check_encoding
 from csdmpy.utils import NumericType
 from csdmpy.utils import QuantityType
@@ -125,6 +125,8 @@ class SparseSampling:
 
 
 def check_sparse_sampling_key_value(input_dict):
+    """Check for sparse sampling key value"""
+
     def message(item):
         return (
             f"Missing a required `{item}` key from the SparseSampling object of the "

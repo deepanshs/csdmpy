@@ -5,8 +5,8 @@ from __future__ import print_function
 
 import numpy as np
 
-from .base_class import BaseDependentVariable
-from .decoder import Decoder
+from csdmpy.dependent_variable.base_class import BaseDependentVariable
+from csdmpy.dependent_variable.decoder import Decoder
 from csdmpy.utils import numpy_dtype_to_numeric_type
 
 
@@ -53,8 +53,8 @@ class InternalDataset(BaseDependentVariable):
             )
 
         size = self._components.size
-        p = self.quantity_type.p
-        self._components.shape = (p, int(size / p))
+        p_1 = self.quantity_type.p
+        self._components.shape = (p_1, int(size / p_1))
 
     def dict(self, filename=None, dataset_index=None, for_display=False):
         """Return InternalDataset object as a python dictionary."""

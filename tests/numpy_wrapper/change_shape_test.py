@@ -28,12 +28,13 @@ a1.add_dependent_variable(dv)
 # __ufunc_list_dimensionless_unit__
 
 
-def test_T():
-    b = a.T
+def test_00():
+    """shape test"""
+    test1 = a.T
     out = a.y[0].components[0]
-    assert np.allclose(b.y[0].components[0], out.T)
-    b.save("test_abc.csdf")
+    assert np.allclose(test1.y[0].components[0], out.T)
+    test1.save("test_abc.csdf")
 
-    b_ = cp.load("test_abc.csdf")
-    assert b == b_
+    test2 = cp.load("test_abc.csdf")
+    assert test1 == test2
     remove("test_abc.csdf")
