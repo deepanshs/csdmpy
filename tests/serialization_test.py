@@ -7,13 +7,11 @@ import csdmpy as cp
 
 
 def setup():
-    csdm = cp.new()
     dimension1 = cp.as_dimension(np.arange(10))
     dimension2 = cp.as_dimension(np.arange(20))
     data = cp.as_dependent_variable(np.random.rand(20, 10))
 
-    csdm.dimensions += [dimension1, dimension2]
-    csdm.add_dependent_variable(data)
+    csdm = cp.CSDM(dimensions=[dimension1, dimension2], dependent_variables=[data])
 
     return csdm
 
