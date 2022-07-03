@@ -28,14 +28,14 @@ def test_csdf_base64():
 
 def test_csdf_none():
     data = setup()
-    data.dependent_variables[0].encoding = "none"
+    data.y[0].encoding = "none"
     data.save("my_file_none.csdf")
     remove("my_file_none.csdf")
 
 
 def test_csdfe():
     data = setup()
-    data.dependent_variables[0].encoding = "raw"
+    data.y[0].encoding = "raw"
     data.save("my_file_raw.csdfe")
     remove("my_file_raw.csdfe")
     remove("my_file_raw_0.dat")

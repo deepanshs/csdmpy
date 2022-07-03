@@ -1,7 +1,8 @@
-What new
---------
+v0.5.0
+------
 
 Bug fix involving plot of datasets with dependent-variable quantity type of `vector_1` or `pixel_1`.
+Add support for `np.cumsum`, `np.cumprod` functions to CSDM objects.
 
 v0.4.1
 ------

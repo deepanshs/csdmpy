@@ -367,12 +367,13 @@ def _check_dimension_indices(d, index=-1):
         return -1 - i
 
     message = "Index/Indices are expected as integer(s)"
+    # convert to list and correct the list elements in the following section.
     if isinstance(index, tuple):
         index = list(index)
-    if isinstance(index, (list, np.ndarray)):
+    if isinstance(index, (tuple, list, np.ndarray)):
         for i, item in enumerate(index):
             index[i] = _correct_index(item, d)
         return tuple(index)
     if isinstance(index, int):
-        return tuple([_correct_index(index, d)])
+        return _correct_index(index, d)
     raise TypeError(f"{message}, found {type(index)}")

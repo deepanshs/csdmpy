@@ -18,26 +18,28 @@ def get_test(type):
     out = np.random.rand(10).astype(type)
     a_test = cp.new()
     a_test.dimensions.append(cp.LinearDimension(count=10, increment="1s"))
-    a_test.add_dependent_variable(
-        {"type": "internal", "quantity_type": "scalar", "unit": "m", "components": out}
+    a_test.y.append(
+        cp.DependentVariable(
+            type="internal", quantity_type="scalar", unit="m", components=out
+        )
     )
+
     return out, a_test
 
 
 def get_test_2d(type):
     out = np.random.rand(50).astype(type).reshape(10, 5)
-    a_test = cp.new()
-    a_test.dimensions.append(cp.LinearDimension(count=5, increment="1s"))
-    a_test.dimensions.append(cp.LinearDimension(count=10, increment="1m"))
-    a_test.add_dependent_variable(
-        {
-            "type": "internal",
-            "quantity_type": "scalar",
-            "unit": "m",
-            "components": out.ravel(),
-        }
+
+    d_0 = cp.LinearDimension(count=5, increment="1s")
+    d_1 = cp.LinearDimension(count=10, increment="1m")
+    dv_0 = cp.DependentVariable(
+        type="internal",
+        quantity_type="scalar",
+        unit="m",
+        components=out.ravel(),
     )
-    return out, a_test
+    obj = cp.CSDM(dimensions=[d_0, d_1], dependent_variables=[dv_0])
+    return out, obj
 
 
 def test_csdm():
@@ -120,22 +122,22 @@ def test_csdm():
 def test_split():
     a = cp.new()
     a.dimensions.append(cp.LinearDimension(count=10, increment="1m"))
-    a.add_dependent_variable(
+    a.dependent_variables.append(
         {"type": "internal", "components": np.arange(10) + 1, "quantity_type": "scalar"}
     )
 
     b = cp.new()
     b.dimensions.append(cp.LinearDimension(count=10, increment="1m"))
-    b.add_dependent_variable(
+    b.dependent_variables.append(
         {"type": "internal", "components": np.arange(10) + 2, "quantity_type": "scalar"}
     )
 
     c = cp.new()
     c.dimensions.append(cp.LinearDimension(count=10, increment="1m"))
-    c.add_dependent_variable(
+    c.dependent_variables.append(
         {"type": "internal", "components": np.arange(10) + 1, "quantity_type": "scalar"}
     )
-    c.add_dependent_variable(
+    c.dependent_variables.append(
         {"type": "internal", "components": np.arange(10) + 2, "quantity_type": "scalar"}
     )
 
@@ -200,399 +202,387 @@ b1_test.add_dependent_variable(
 
 def test_add_sub():
     # add
-    c = a_test + b_test
+    res = a_test + b_test
     out = np.arange(10) + 1000 * np.arange(10)
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    assert np.allclose(res.y[0].components, [out])
 
     # sub
-    c = a_test - b_test
+    res = a_test - b_test
     out = np.arange(10) - 1000 * np.arange(10)
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    assert np.allclose(res.y[0].components, [out])
 
-    c = b_test - a_test
+    res = b_test - a_test
     out = np.arange(10) - 1 / 1000 * np.arange(10)
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    assert np.allclose(res.y[0].components, [out])
 
     # add scalar
-    c = a_test + cp.ScalarQuantity("2m")
+    res = a_test + cp.ScalarQuantity("2m")
     out = np.arange(10) + 2
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    assert np.allclose(res.y[0].components, [out])
 
-    c = cp.ScalarQuantity("2m") + a_test
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    res = cp.ScalarQuantity("2m") + a_test
+    assert np.allclose(res.y[0].components, [out])
 
     a_t = cp.as_csdm(np.arange(10))
-    c = a_t + 5.12
+    res = a_t + 5.12
     out = np.arange(10) + 5.12
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    assert np.allclose(res.y[0].components, [out])
 
-    c = 5.12 + a_t
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    res = 5.12 + a_t
+    assert np.allclose(res.y[0].components, [out])
 
     # add complex
-    c = a_t + 5.12 - 4j
+    res = a_t + 5.12 - 4j
     out = np.arange(10) + 5.12 - 4j
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    assert np.allclose(res.y[0].components, [out])
 
-    c = 5.12 - 4j + a_t
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    res = 5.12 - 4j + a_t
+    assert np.allclose(res.y[0].components, [out])
 
-    c = a_test / cp.ScalarQuantity("m") + 3 + 4j
+    res = a_test / cp.ScalarQuantity("m") + 3 + 4j
     out = np.arange(10) + 3 + 4j
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    assert np.allclose(res.y[0].components, [out])
 
     # subtract scalar
-    c = a_test - cp.ScalarQuantity("2m")
+    res = a_test - cp.ScalarQuantity("2m")
     out = np.arange(10) - 2
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    assert np.allclose(res.y[0].components, [out])
 
-    c = cp.ScalarQuantity("2m") - a_test
-    assert np.allclose(c.dependent_variables[0].components, [-out])
+    res = cp.ScalarQuantity("2m") - a_test
+    assert np.allclose(res.y[0].components, [-out])
 
     error = r"Cannot operate on CSDM objects with different dimensions."
     with pytest.raises(Exception, match=".*{0}.*".format(error)):
-        c = a1_test + b_test
+        res = a1_test + b_test
 
-    error = r"Cannot operate on CSDM objects with differnet lengths of dependent"
+    error = r"Cannot operate on CSDM objects with different lengths of dependent"
     with pytest.raises(Exception, match=".*{0}.*".format(error)):
-        c = a_test + b1_test
+        res = a_test + b1_test
 
 
 def test_iadd_isub():
-    c = a_test.astype("float32")
-    c += cp.ScalarQuantity("5.0cm")
+    res = a_test.astype("float32")
+    res += cp.ScalarQuantity("5.0cm")
     out = np.arange(10) + 0.05
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    assert np.allclose(res.y[0].components, [out])
 
-    c = a_test.astype("float32")
-    c -= cp.ScalarQuantity("5.0cm")
+    res = a_test.astype("float32")
+    res -= cp.ScalarQuantity("5.0cm")
     out = np.arange(10) - 0.05
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    assert np.allclose(res.y[0].components, [out])
 
-    c = a_test.astype("float32") / cp.ScalarQuantity("cm")
-    c -= 0.05
+    res = a_test.astype("float32") / cp.ScalarQuantity("cm")
+    res -= 0.05
     out = np.arange(10) - 0.05
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    assert np.allclose(res.y[0].components, [out])
 
-    out, a_test_ = get_test(float)  # in units of m
-    a_test_ += b_test
+    out, new_test = get_test(float)  # in units of m
+    new_test += b_test
     out += 1000 * np.arange(10)
-    assert np.allclose(a_test_.dependent_variables[0].components, [out])
+    assert np.allclose(new_test.y[0].components, [out])
 
-    out, a_test_ = get_test(float)  # in units of m
-    c = a_test_ / cp.ScalarQuantity("m")
-    c += 2.0
+    out, new_test = get_test(float)  # in units of m
+    res = new_test / cp.ScalarQuantity("m")
+    res += 2.0
     out += 2.0
-    assert np.allclose(c.dependent_variables[0].components, [out])
+    assert np.allclose(res.y[0].components, [out])
 
-    out, a_test_ = get_test(float)  # in units of m
-    a_test_ -= b_test
+    out, new_test = get_test(float)  # in units of m
+    new_test -= b_test
     out -= 1000 * np.arange(10)
-    assert np.allclose(a_test_.dependent_variables[0].components, [out])
+    assert np.allclose(new_test.y[0].components, [out])
 
 
 def test_mul_truediv_pow():
     # mul
-    c = a_test * 2
-    out = a_test.dependent_variables[0].components
-    assert np.allclose(c.dependent_variables[0].components, out * 2)
-    assert id(a_test) != id(c)
+    res = a_test * 2
+    out = a_test.y[0].components
+    assert np.allclose(res.y[0].components, out * 2)
+    assert id(a_test) != id(res)
 
-    c = 2 * a_test
-    assert np.allclose(c.dependent_variables[0].components, out * 2)
+    res = 2 * a_test
+    assert np.allclose(res.y[0].components, out * 2)
 
-    c = b_test * 1.34
-    out = b_test.dependent_variables[0].components
-    assert np.allclose(c.dependent_variables[0].components, out * 1.34)
-    assert id(b_test) != id(c)
+    res = b_test * 1.34
+    out = b_test.y[0].components
+    assert np.allclose(res.y[0].components, out * 1.34)
+    assert id(b_test) != id(res)
 
-    c = 1.34 * a_test
-    assert np.allclose(c.dependent_variables[0].components, out * 1.34)
+    res = 1.34 * a_test
+    assert np.allclose(res.y[0].components, out * 1.34)
 
-    c = b1_test * 1.423j
-    out = b1_test.dependent_variables[0].components
-    assert np.allclose(c.dependent_variables[0].components, out * 1.423j)
-    assert id(b1_test) != id(c)
+    res = b1_test * 1.423j
+    out = b1_test.y[0].components
+    assert np.allclose(res.y[0].components, out * 1.423j)
+    assert id(b1_test) != id(res)
 
-    c = 1.423j * b1_test
-    assert np.allclose(c.dependent_variables[0].components, out * 1.423j)
+    res = 1.423j * b1_test
+    assert np.allclose(res.y[0].components, out * 1.423j)
 
     lst = np.random.rand(5).astype(np.complex128)
-    c = a1_test * lst[2]
-    out = b1_test.dependent_variables[0].components
-    assert np.allclose(c.dependent_variables[0].components, out * lst[2])
-    assert id(a1_test) != id(c)
+    res = a1_test * lst[2]
+    out = b1_test.y[0].components
+    assert np.allclose(res.y[0].components, out * lst[2])
+    assert id(a1_test) != id(res)
 
     # c = lst[2] * a1_test
-    # assert np.allclose(c.dependent_variables[0].components, out * lst[2])
+    # assert np.allclose(c.y[0].components, out * lst[2])
 
-    c = b1_test * cp.string_to_quantity("1.324 s")
-    out = b1_test.dependent_variables[0].components
-    assert np.allclose(c.dependent_variables[0].components, out * 1.324)
-    assert str(c.dependent_variables[0].unit) == "km s"
-    assert id(b1_test) != id(c)
+    res = b1_test * cp.string_to_quantity("1.324 s")
+    out = b1_test.y[0].components
+    assert np.allclose(res.y[0].components, out * 1.324)
+    assert str(res.y[0].unit) == "km s"
+    assert id(b1_test) != id(res)
 
-    c = b1_test * cp.ScalarQuantity("1.324 s")
-    out = b1_test.dependent_variables[0].components
-    assert np.allclose(c.dependent_variables[0].components, out * 1.324)
-    assert str(c.dependent_variables[0].unit) == "km s"
-    assert id(b1_test) != id(c)
+    res = b1_test * cp.ScalarQuantity("1.324 s")
+    out = b1_test.y[0].components
+    assert np.allclose(res.y[0].components, out * 1.324)
+    assert str(res.y[0].unit) == "km s"
+    assert id(b1_test) != id(res)
 
-    c = cp.ScalarQuantity("1.324 s") * b1_test
-    assert np.allclose(c.dependent_variables[0].components, out * 1.324)
+    res = cp.ScalarQuantity("1.324 s") * b1_test
+    assert np.allclose(res.y[0].components, out * 1.324)
 
     # div
-    c = a_test / 2
-    out = a_test.dependent_variables[0].components
-    assert np.allclose(c.dependent_variables[0].components, out / 2)
-    assert id(a_test) != id(c)
+    res = a_test / 2
+    out = a_test.y[0].components
+    assert np.allclose(res.y[0].components, out / 2)
+    assert id(a_test) != id(res)
 
-    c = 2.0 / a_test.astype(float)
-    assert np.allclose(c.dependent_variables[0].components, 2 / out)
+    res = 2.0 / a_test.astype(float)
+    assert np.allclose(res.y[0].components, 2 / out)
 
-    c = b_test / 1.34
-    out = b_test.dependent_variables[0].components
-    assert np.allclose(c.dependent_variables[0].components, out / 1.34)
-    assert id(b_test) != id(c)
+    res = b_test / 1.34
+    out = b_test.y[0].components
+    assert np.allclose(res.y[0].components, out / 1.34)
+    assert id(b_test) != id(res)
 
-    c = b1_test / 1.423j
-    out = b1_test.dependent_variables[0].components
-    assert np.allclose(c.dependent_variables[0].components, out / 1.423j)
-    assert id(b1_test) != id(c)
+    res = b1_test / 1.423j
+    out = b1_test.y[0].components
+    assert np.allclose(res.y[0].components, out / 1.423j)
+    assert id(b1_test) != id(res)
 
-    c = 1.423j / (b1_test + 1).astype(float)
-    assert np.allclose(c.dependent_variables[0].components, 1.423j / (out + 1))
+    res = 1.423j / (b1_test + 1).astype(float)
+    assert np.allclose(res.y[0].components, 1.423j / (out + 1))
 
     lst = np.random.rand(5).astype(np.complex128)
-    c = a1_test / lst[2]
-    out = b1_test.dependent_variables[0].components
-    assert np.allclose(c.dependent_variables[0].components, out / lst[2])
-    assert id(a1_test) != id(c)
+    res = a1_test / lst[2]
+    out = b1_test.y[0].components
+    assert np.allclose(res.y[0].components, out / lst[2])
+    assert id(a1_test) != id(res)
 
-    c = b1_test / cp.string_to_quantity("1.324 s")
-    out = b1_test.dependent_variables[0].components
-    assert np.allclose(c.dependent_variables[0].components, out / 1.324)
-    assert str(c.dependent_variables[0].unit) == "km / s"
-    assert id(b1_test) != id(c)
+    res = b1_test / cp.string_to_quantity("1.324 s")
+    out = b1_test.y[0].components
+    assert np.allclose(res.y[0].components, out / 1.324)
+    assert str(res.y[0].unit) == "km / s"
+    assert id(b1_test) != id(res)
 
     # c = cp.string_to_quantity("1.324 s") / (b1_test+1)
-    # assert np.allclose(c.dependent_variables[0].components, 1.324 / (out+1))
+    # assert np.allclose(c.y[0].components, 1.324 / (out+1))
 
-    c = b1_test / cp.ScalarQuantity("1.324 s")
-    out = b1_test.dependent_variables[0].components
-    assert np.allclose(c.dependent_variables[0].components, out / 1.324)
-    assert str(c.dependent_variables[0].unit) == "km / s"
-    assert id(b1_test) != id(c)
+    res = b1_test / cp.ScalarQuantity("1.324 s")
+    out = b1_test.y[0].components
+    assert np.allclose(res.y[0].components, out / 1.324)
+    assert str(res.y[0].unit) == "km / s"
+    assert id(b1_test) != id(res)
 
-    c = cp.ScalarQuantity("1.324 s") / (b_test + 1)
-    assert np.allclose(c.dependent_variables[0].components, 1.324 / (out + 1))
+    res = cp.ScalarQuantity("1.324 s") / (b_test + 1)
+    assert np.allclose(res.y[0].components, 1.324 / (out + 1))
 
     error = r"unsupported operand type\(s\) \*: 'CSDM' and 'str'."
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
-        c = a_test * "3"
+        res = a_test * "3"
 
     error = r"Only scalar multiplication or division is allowed."
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
-        c = a_test * np.asarray([1, 2])
+        res = a_test * np.asarray([1, 2])
 
     error = r"unsupported operand type\(s\) /: 'CSDM' and 'str'."
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
-        c = a_test / "3"
+        res = a_test / "3"
 
     error = r"Only scalar multiplication or division is allowed."
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
-        c = a_test / np.asarray([1, 2])
+        res = a_test / np.asarray([1, 2])
 
     # pow
-    c = b1_test ** 2
-    out = b1_test.dependent_variables[0].components
-    assert np.allclose(c.dependent_variables[0].components, np.power(out, 2))
-    assert str(c.dependent_variables[0].unit) == "km2"
+    res = b1_test ** 2
+    out = b1_test.y[0].components
+    assert np.allclose(res.y[0].components, np.power(out, 2))
+    assert str(res.y[0].unit) == "km2"
 
-    c **= 2
-    assert np.allclose(c.dependent_variables[0].components, np.power(out, 4))
-    assert str(c.dependent_variables[0].unit) == "km4"
+    res **= 2
+    assert np.allclose(res.y[0].components, np.power(out, 4))
+    assert str(res.y[0].unit) == "km4"
 
-    c **= 1 / 4
-    assert np.allclose(c.dependent_variables[0].components, out)
-    assert str(c.dependent_variables[0].unit) == "km"
+    res **= 1 / 4
+    assert np.allclose(res.y[0].components, out)
+    assert str(res.y[0].unit) == "km"
 
 
 def test_imul_itruediv():
     # imul
-    out, a_test = get_test(int)
-    b = a_test
-    a_test *= 2
+    out, new_test = get_test(int)
+    res = new_test
+    new_test *= 2
     out *= 2
-    assert np.allclose(a_test.dependent_variables[0].components, [out])
-    assert id(a_test) == id(b)
+    assert np.allclose(new_test.y[0].components, [out])
+    assert id(new_test) == id(res)
 
-    out, a_test = get_test(float)
-    b = a_test
-    a_test *= 2.312
+    out, new_test = get_test(float)
+    res = new_test
+    new_test *= 2.312
     out *= 2.312
-    assert np.allclose(a_test.dependent_variables[0].components, [out])
-    assert id(a_test) == id(b)
+    assert np.allclose(new_test.y[0].components, [out])
+    assert id(new_test) == id(res)
 
-    out, a_test = get_test(complex)
-    b = a_test
-    a_test *= 2.12 + 1.1j
+    out, new_test = get_test(complex)
+    res = new_test
+    new_test *= 2.12 + 1.1j
     out *= 2.12 + 1.1j
-    assert np.allclose(a_test.dependent_variables[0].components, [out])
-    assert id(a_test) == id(b)
+    assert np.allclose(new_test.y[0].components, [out])
+    assert id(new_test) == id(res)
 
-    out, a_test = get_test(float)
-    b = a_test
-    a_test *= cp.string_to_quantity("3.12 s/km")
+    out, new_test = get_test(float)
+    res = new_test
+    new_test *= cp.string_to_quantity("3.12 s/km")
     out *= 3.12
-    assert np.allclose(a_test.dependent_variables[0].components, [out])
-    assert str(a_test.dependent_variables[0].unit) == "m s / km"
-    assert id(a_test) == id(b)
+    assert np.allclose(new_test.y[0].components, [out])
+    assert str(new_test.y[0].unit) == "m s / km"
+    assert id(new_test) == id(res)
 
-    out, a_test = get_test(float)
-    b = a_test
-    a_test *= cp.ScalarQuantity("3.12 s/km")
+    out, new_test = get_test(float)
+    res = new_test
+    new_test *= cp.ScalarQuantity("3.12 s/km")
     out *= 3.12
-    assert np.allclose(a_test.dependent_variables[0].components, [out])
-    assert str(a_test.dependent_variables[0].unit) == "m s / km"
-    assert id(a_test) == id(b)
+    assert np.allclose(new_test.y[0].components, [out])
+    assert str(new_test.y[0].unit) == "m s / km"
+    assert id(new_test) == id(res)
 
     # itruediv
 
-    out, a_test = get_test(float)
-    b = a_test
-    a_test /= 2
+    out, new_test = get_test(float)
+    res = new_test
+    new_test /= 2
     out /= 2
-    assert np.allclose(a_test.dependent_variables[0].components, [out])
-    assert id(a_test) == id(b)
+    assert np.allclose(new_test.y[0].components, [out])
+    assert id(new_test) == id(res)
 
-    out, a_test = get_test(float)
-    b = a_test
-    a_test /= 2.312
+    out, new_test = get_test(float)
+    res = new_test
+    new_test /= 2.312
     out /= 2.312
-    assert np.allclose(a_test.dependent_variables[0].components, [out])
-    assert id(a_test) == id(b)
+    assert np.allclose(new_test.y[0].components, [out])
+    assert id(new_test) == id(res)
 
-    out, a_test = get_test(complex)
-    b = a_test
-    a_test /= 2.12 + 1.1j
+    out, new_test = get_test(complex)
+    res = new_test
+    new_test /= 2.12 + 1.1j
     out /= 2.12 + 1.1j
-    assert np.allclose(a_test.dependent_variables[0].components, [out])
-    assert id(a_test) == id(b)
+    assert np.allclose(new_test.y[0].components, [out])
+    assert id(new_test) == id(res)
 
-    out, a_test = get_test(float)
-    b = a_test
-    a_test /= cp.string_to_quantity("3.12 s/km")
+    out, new_test = get_test(float)
+    res = new_test
+    new_test /= cp.string_to_quantity("3.12 s/km")
     out /= 3.12
-    assert np.allclose(a_test.dependent_variables[0].components, [out])
-    assert str(a_test.dependent_variables[0].unit) == "km m / s"
-    assert id(a_test) == id(b)
+    assert np.allclose(new_test.y[0].components, [out])
+    assert str(new_test.y[0].unit) == "km m / s"
+    assert id(new_test) == id(res)
 
-    out, a_test = get_test(float)
-    b = a_test
-    a_test /= cp.ScalarQuantity("3.12 s/km")
+    out, new_test = get_test(float)
+    res = new_test
+    new_test /= cp.ScalarQuantity("3.12 s/km")
     out /= 3.12
-    assert np.allclose(a_test.dependent_variables[0].components, [out])
-    assert str(a_test.dependent_variables[0].unit) == "km m / s"
-    assert id(a_test) == id(b)
+    assert np.allclose(new_test.y[0].components, [out])
+    assert str(new_test.y[0].unit) == "km m / s"
+    assert id(new_test) == id(res)
 
 
 def test_in_build():
     assert a_test == +a_test
 
-    out = a_test.dependent_variables[0].components
-    assert np.allclose(abs(a_test).dependent_variables[0].components[0], abs(out))
+    out = a_test.y[0].components
+    assert np.allclose(abs(a_test).y[0].components[0], abs(out))
 
 
 def test_max_min_clip():
     # max
-    d0 = cp.LinearDimension(count=5, increment="1s")
-    d1 = cp.LinearDimension(count=10, increment="1m")
-    out, a_test = get_test_2d(float)
-    assert out.max() == a_test.max().value
-    assert str(a_test.max().unit) == "m"
+    d_0 = cp.LinearDimension(count=5, increment="1s")
+    d_1 = cp.LinearDimension(count=10, increment="1m")
+    out, new_test = get_test_2d(float)
+    assert out.max() == new_test.max().value
+    assert str(new_test.max().unit) == "m"
 
-    b = a_test.max(axis=1)
-    assert np.allclose(out.max(0), b.dependent_variables[0].components[0])
-    assert b.dimensions[0] == d0
+    res = new_test.max(axis=1)
+    assert np.allclose(out.max(0), res.y[0].components[0])
+    assert res.dimensions[0] == d_0
 
-    b = a_test.max(axis=0)
-    assert np.allclose(out.max(1), b.dependent_variables[0].components[0])
-    assert b.dimensions[0] == d1
+    res = new_test.max(axis=0)
+    assert np.allclose(out.max(1), res.y[0].components[0])
+    assert res.dimensions[0] == d_1
 
     # min
-    out, a_test = get_test_2d(float)
-    assert out.min() == a_test.min().value
-    assert str(a_test.min().unit) == "m"
+    out, new_test = get_test_2d(float)
+    assert out.min() == new_test.min().value
+    assert str(new_test.min().unit) == "m"
 
-    b = a_test.min(axis=1)
-    assert np.allclose(out.min(0), b.dependent_variables[0].components[0])
-    assert b.dimensions[0] == d0
+    res = new_test.min(axis=1)
+    assert np.allclose(out.min(0), res.y[0].components[0])
+    assert res.dimensions[0] == d_0
 
-    b = a_test.min(axis=0)
-    assert np.allclose(out.min(1), b.dependent_variables[0].components[0])
-    assert b.dimensions[0] == d1
+    res = new_test.min(axis=0)
+    assert np.allclose(out.min(1), res.y[0].components[0])
+    assert res.dimensions[0] == d_1
 
     # clip
-    b = a_test.clip(min=0)
-    assert np.allclose(out.clip(min=0), b.dependent_variables[0].components[0])
+    res = new_test.clip(min=0)
+    assert np.allclose(out.clip(min=0), res.y[0].components[0])
 
-    b = a_test.clip(max=0.5)
-    assert np.allclose(out.clip(max=0.5), b.dependent_variables[0].components[0])
+    res = new_test.clip(max=0.5)
+    assert np.allclose(out.clip(max=0.5), res.y[0].components[0])
 
 
 def test_real_imag_conj_angle():
-    out, a_test = get_test_2d(complex)
-    b = a_test.real
-    assert b.dependent_variables[0].numeric_type == "float64"
-    assert np.allclose(out.real, b.dependent_variables[0].components[0])
+    out, new_test = get_test_2d(complex)
+    res = new_test.real
+    assert res.y[0].numeric_type == "float64"
+    assert np.allclose(out.real, res.y[0].components[0])
 
-    b = np.real(a_test)
-    assert b.dependent_variables[0].numeric_type == "float64"
-    assert np.allclose(out.real, b.dependent_variables[0].components[0])
+    res = np.real(new_test)
+    assert res.y[0].numeric_type == "float64"
+    assert np.allclose(out.real, res.y[0].components[0])
 
-    b = a_test.imag
-    assert b.dependent_variables[0].numeric_type == "float64"
-    assert np.allclose(out.imag, b.dependent_variables[0].components[0])
+    res = new_test.imag
+    assert res.y[0].numeric_type == "float64"
+    assert np.allclose(out.imag, res.y[0].components[0])
 
-    b = a_test.conj()
-    assert b.dependent_variables[0].numeric_type == "complex128"
-    assert np.allclose(out.conj(), b.dependent_variables[0].components[0])
+    res = new_test.conj()
+    assert res.y[0].numeric_type == "complex128"
+    assert np.allclose(out.conj(), res.y[0].components[0])
 
-    b = np.angle(a_test)
-    assert b.dependent_variables[0].numeric_type == "float64"
-    assert np.allclose(np.angle(out), b.dependent_variables[0].components[0])
+    res = np.angle(new_test)
+    assert res.y[0].numeric_type == "float64"
+    assert np.allclose(np.angle(out), res.y[0].components[0])
 
 
 def test_round_around():
-    out, a_test = get_test_2d(float)
-    b = a_test.round(1)
-    assert np.allclose(out.round(1), b.dependent_variables[0].components[0])
+    out, new_test = get_test_2d(float)
+    res = new_test.round(1)
+    assert np.allclose(out.round(1), res.y[0].components[0])
 
-    b = np.around(a_test, 1)
-    assert np.allclose(np.around(out, 1), b.dependent_variables[0].components[0])
+    res = np.around(new_test, 1)
+    assert np.allclose(np.around(out, 1), res.y[0].components[0])
+
+
+# def test_argmin_max():
+#     out, new_test = get_test_2d(float)
+#     assert np.allclose(np.argmax(out), np.argmax(new_test))
+#     assert np.allclose(np.argmin(out), np.argmin(new_test))
 
 
 def test_not_implemented_error():
-    fn = [np.argmax, np.argmin, np.ptp, np.trace, np.cumsum, np.cumprod]
+    fn = [np.ptp, np.trace]
     for fn_ in fn:
         with pytest.raises(NotImplementedError, match=""):
             fn_(a_test)
-
-    with pytest.raises(NotImplementedError, match=""):
-        a_test.argmax()
-
-    with pytest.raises(NotImplementedError, match=""):
-        a_test.argmin()
-
-    with pytest.raises(NotImplementedError, match=""):
-        a_test.ptp()
-
-    with pytest.raises(NotImplementedError, match=""):
-        a_test.trace()
-
-    with pytest.raises(NotImplementedError, match=""):
-        a_test.cumsum()
-
-    with pytest.raises(NotImplementedError, match=""):
-        a_test.cumprod()

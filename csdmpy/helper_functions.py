@@ -306,7 +306,7 @@ def _check_1D_dataset(csdm):
     message = (
         "The function requires a 1D dataset with single-component dependent "
         "variables. For multiple dependent-variables, the data from all the "
-        "dependent variables are ploted on the same figure."
+        "dependent variables are plotted on the same figure."
     )
     if len(x) != 1:
         raise Exception(message)

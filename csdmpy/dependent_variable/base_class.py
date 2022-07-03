@@ -110,10 +110,10 @@ class BaseDependentVariable:
             self._component_labels = component_labels[:n]
             return
 
-        lables = ["" for i in range(n)]
+        labels = ["" for i in range(n)]
         for i, item in enumerate(component_labels):
-            lables[i] = item
-        self._component_labels = lables
+            labels[i] = item
+        self._component_labels = labels
         return
 
     # ----------------------------------------------------------------------- #

@@ -193,8 +193,8 @@ def new(description=""):
 
     Example:
         >>> import csdmpy as cp
-        >>> emptydata = cp.new(description='Testing Testing 1 2 3')
-        >>> print(emptydata.data_structure)
+        >>> empty_data = cp.new(description='Testing Testing 1 2 3')
+        >>> print(empty_data.data_structure)
         {
           "csdm": {
             "version": "1.0",
@@ -261,7 +261,7 @@ def plot(csdm_object, reverse_axis=None, range=None, **kwargs):
         csdm_object: The CSDM object.
         reverse_axis: An ordered array of boolean specifying which dimensions will be
             displayed on a reverse axis.
-        range: A list of minimum and maxmim coordinates along the dimensions. The range
+        range: A list of minimum and maximum coordinates along the dimensions. The range
             along each dimension is given as [min, max]
         kwargs: Additional keyword arguments are used in matplotlib plotting functions.
             We implement the following matplotlib methods for the one and

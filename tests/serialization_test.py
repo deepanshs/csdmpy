@@ -26,9 +26,9 @@ def test_application():
     csdm1.dimensions[0].reciprocal.application = {"test": "reciprocal-d0"}
     csdm1.dimensions[1].application = {"test": "d1"}
     csdm1.dimensions[1].reciprocal.application = {"test": "reciprocal-d1"}
-    csdm1.dependent_variables[0].application = {"test": "dv0"}
+    csdm1.y[0].application = {"test": "dv0"}
 
-    csdm1.dependent_variables[0].encoding = "base64"
+    csdm1.y[0].encoding = "base64"
     csdm1.save("csdm1.csdf")
     csdm1_test = cp.load("csdm1.csdf", application=True)
     assert csdm1_test == csdm1

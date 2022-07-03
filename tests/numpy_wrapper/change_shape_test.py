@@ -30,8 +30,8 @@ a1.add_dependent_variable(dv)
 
 def test_T():
     b = a.T
-    out = a.dependent_variables[0].components[0]
-    assert np.allclose(b.dependent_variables[0].components[0], out.T)
+    out = a.y[0].components[0]
+    assert np.allclose(b.y[0].components[0], out.T)
     b.save("test_abc.csdf")
 
     b_ = cp.load("test_abc.csdf")

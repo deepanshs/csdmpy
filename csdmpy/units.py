@@ -84,8 +84,8 @@ def string_to_quantity(string, dtype=float):
         if unit[0] == "(" and unit[-1] == ")":
             unit = unit[1:-1]
 
-    for key in convert:
-        unit = unit.replace(key, convert[key])
+    for key, value in convert.items():
+        unit = unit.replace(key, value)
         unit_multiplier = 1
     try:
         unit_qt = u.Unit(unit) * unit_multiplier
@@ -98,11 +98,12 @@ def string_to_quantity(string, dtype=float):
 def scalar_quantity_format(quantity, numerical_value=True):
     """Convert unit to value object."""
     string = quantity.unit.to_string("fits").strip()
-    for key in convert.keys():
-        string = string.replace(convert[key], key)
+    for key, value in convert.items():
+        string = string.replace(value, key)
+
     lst = {"10**-6": "ppm", "10**-2": "%"}
-    for key in lst.keys():
-        string = string.replace(key, lst[key])
+    for key, value in lst.items():
+        string = string.replace(key, value)
 
     if numerical_value:
         cat_string = [str(quantity.value)]
@@ -178,7 +179,7 @@ class ScalarQuantity:
     quantity: Return the quantity object from astropy.units library.
     """
 
-    __slots__ = "quantity"
+    __slots__ = ["quantity"]
 
     def __init__(self, quantity_string=None, unit=None):
         self.quantity = self.quantity_object(quantity_string, unit)
@@ -198,11 +199,10 @@ class ScalarQuantity:
         if quantity_string in lst and unit not in lst:
             return 0.0 * unit
 
-        if isinstance(quantity_string, str):
-            quantity = string_to_quantity(quantity_string)
-            if unit is not None:
-                return check_unit_consistency(quantity, unit)
-            return quantity
+        quantity = string_to_quantity(quantity_string)
+        if unit is not None:
+            return check_unit_consistency(quantity, unit)
+        return quantity
 
     def __str__(self):
         return self.__format__()
@@ -256,7 +256,7 @@ def _default_units(element):
 
 def check_quantity_name(element, unit):
     if element is None:
-        element = str(unit.physical_type).split("/")[0]
+        element = str(unit.physical_type).split("/", maxsplit=1)[0]
         return element
 
     if unit.physical_type == "unknown":

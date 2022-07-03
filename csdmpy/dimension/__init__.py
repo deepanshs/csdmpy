@@ -103,10 +103,10 @@ class Dimension:
             raise KeyError("Missing a required 'type' key from the Dimension object.")
 
         if "reciprocal" in input_keys:
-            input_subkeys = input_dict["reciprocal"].keys()
+            input_sub_keys = input_dict["reciprocal"].keys()
 
         _ = [
-            [default[key].update({subkey: val[subkey]}) for subkey in input_subkeys]
+            [default[key].update({sub_key: val[sub_key]}) for sub_key in input_sub_keys]
             if key == "reciprocal"
             else default.update({key: val})
             for key, val in input_dict.items()
@@ -285,7 +285,7 @@ class Dimension:
 
         This attribute is not a part of the original core scientific dataset
         model, however, it is a convenient supplementary attribute that provides
-        a formated string ready for labeling dimension axes.
+        a formatted string ready for labeling dimension axes.
         For quantitative dimensions, this attributes returns a string,
         `label / unit`,  if the `label` is a non-empty string, otherwise,
         `quantity_name / unit`. Here
@@ -304,7 +304,7 @@ class Dimension:
         For `labeled` dimensions, this attribute returns `label`.
 
         Returns:
-            A formated string of label.
+            A formatted string of label.
 
         Raises:
             AttributeError: When assigned a value.
@@ -682,7 +682,7 @@ class Dimension:
             ...         labels=['Cu', 'Ag', 'Au']
             ...      )
 
-        then the lables along the labeled dimension are
+        then the labels along the labeled dimension are
 
         .. doctest::
 
@@ -792,11 +792,11 @@ class Dimension:
         return deepcopy(self)
 
     def reciprocal_coordinates(self):
-        """Return reciprocal coordinates assuming Nyquist-shannan theorem."""
+        """Return reciprocal coordinates assuming Nyquist-Shannon theorem."""
         return self.subtype.reciprocal_coordinates()
 
     def reciprocal_increment(self):
-        """Return reciprocal increment assuming Nyquist-shannan theorem."""
+        """Return reciprocal increment assuming Nyquist-Shannon theorem."""
         return self.subtype.reciprocal_coordinates()
 
 

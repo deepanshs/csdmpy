@@ -194,7 +194,7 @@ class DependentVariable:
 
         This attribute is not a part of the original core scientific dataset
         model, however, it is a convenient supplementary attribute that provides
-        formated string ready for labeling the components of the dependent variable.
+        formatted string ready for labeling the components of the dependent variable.
         The string at index `i` is formatted as `component_labels[i] / unit` if
         `component_labels[i]` is a non-empty string, otherwise, `quantity_name / unit`.
         Here, `quantity_name`, `component_labels`, and `unit`are the attributes of the
@@ -206,7 +206,7 @@ class DependentVariable:
             ['energy / (s W)', 'energy / (s W)', 'energy / (s W)']
 
         Returns:
-            A list of formated component label strings.
+            A list of formatted component label strings.
 
         Raises:
             AttributeError: When assigned a value.

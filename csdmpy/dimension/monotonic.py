@@ -147,8 +147,7 @@ class MonotonicDimension(BaseQuantitativeDimension):
     @property
     def coordinates(self):
         """Return the coordinates along the dimensions."""
-        n = self._count
-        coordinates = self._coordinates[:n]
+        coordinates = self._coordinates[: self._count]
         equivalent_fn = self._equivalencies
 
         if equivalent_fn is None:
