@@ -61,9 +61,6 @@ Welcome to the csdmpy documentation
         - .. image:: https://img.shields.io/badge/DOI-PLOS%20ONE%2015(1):%20e0225953-Purple?size=large
             :target: https://doi.org/10.1371/journal.pone.0225953
 
-          .. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3973603.svg
-            :target: https://doi.org/10.5281/zenodo.3973603
-
 .. .. image:: https://img.shields.io/github/contributors/DeepanshS/csdmpy.svg?style=flat&logo=github
 ..     :target: https://github.com/DeepanshS/csdmpy/graphs/contributors
 ..     :alt: GitHub contributors
@@ -165,7 +162,6 @@ Citations
     multi-dimensional scientific data.
     `PLOS ONE 15(1): e0225953. <https://doi.org/10.1371/journal.pone.0225953>`_
 
-Additionally, if you use the csdmpy python package, please find the citation for the respective version from `zenodo <https://zenodo.org/record/3973603>`_.
 
 .. only:: html
 
