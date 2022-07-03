@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Base Dimension class"""
 import json
 import warnings
 from copy import deepcopy
@@ -41,7 +42,7 @@ class BaseDimension:
 
     @application.setter
     def application(self, value):
-        self._application = validate(value, "application", dict)
+        self._application = validate(value, "application", (dict, type(None)))
 
     @property
     def description(self):
@@ -54,7 +55,7 @@ class BaseDimension:
 
     @property
     def coordinates(self):
-        pass
+        """Dimension coordinates"""
 
     @coordinates.setter
     def coordinates(self, value):
@@ -84,7 +85,9 @@ class BaseDimension:
         obj["label"] = self._label.strip()
         obj["description"] = self._description.strip()
         obj["application"] = self._application
-        _ = [obj.pop(item) for item in [k for k, v in obj.items() if v in ["", {}]]]
+        _ = [
+            obj.pop(item) for item in [k for k, v in obj.items() if v in ["", {}, None]]
+        ]
         return obj
 
     def copy(self):

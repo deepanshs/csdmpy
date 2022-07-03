@@ -26,7 +26,7 @@ class LabeledDimension(BaseDimension):
 
     _type = "labeled"
 
-    def __init__(self, labels, label="", description="", application={}, **kwargs):
+    def __init__(self, labels, label="", description="", application=None, **kwargs):
         """Instantiate a LabeledDimension class."""
         super().__init__(label, application, description)
         self.labels = labels
@@ -109,7 +109,7 @@ class LabeledDimension(BaseDimension):
     #                                 Methods                                 #
     # ----------------------------------------------------------------------- #
 
-    def _copy_metadata(self, obj, copy=False):
+    def _copy_metadata(self, obj):
         """Copy LabeledDimension metadata."""
         obj = obj.subtype if hasattr(obj, "subtype") else obj
         if isinstance(obj, LabeledDimension):

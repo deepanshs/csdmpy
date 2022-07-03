@@ -5,9 +5,9 @@ from copy import deepcopy
 
 import numpy as np
 
-from .labeled import LabeledDimension  # lgtm [py/import-own-module]
-from .linear import LinearDimension  # lgtm [py/import-own-module]
-from .monotonic import MonotonicDimension  # lgtm [py/import-own-module]
+from csdmpy.dimension.labeled import LabeledDimension
+from csdmpy.dimension.linear import LinearDimension
+from csdmpy.dimension.monotonic import MonotonicDimension
 from csdmpy.units import string_to_quantity  # lgtm [py/import-own-module]
 from csdmpy.utils import _get_dictionary  # lgtm [py/import-own-module]
 from csdmpy.utils import validate  # lgtm [py/import-own-module]
@@ -33,7 +33,7 @@ DEFAULT_DIM = {
     "period": None,  # valid for monotonic and linear subtypes
     "quantity_name": None,  # valid for monotonic and linear subtypes
     "label": "",  # valid for all dimension subtypes
-    "application": {},  # valid for all dimension subtypes
+    "application": None,  # valid for all dimension subtypes
     "reciprocal": {  # valid for monotonic and linear subtypes
         "increment": None,  # valid for monotonic and linear subtypes
         "coordinates_offset": None,  # valid for monotonic and linear subtypes
@@ -42,7 +42,7 @@ DEFAULT_DIM = {
         "quantity_name": None,  # valid for monotonic and linear subtypes
         "label": "",  # valid for monotonic and linear subtypes
         "description": "",  # valid for monotonic and linear subtypes
-        "application": {},  # valid for monotonic and linear subtypes
+        "application": None,  # valid for monotonic and linear subtypes
     },
 }
 
@@ -253,12 +253,11 @@ class Dimension:
         .. doctest::
 
             >>> print(x.application)
-            {}
+            None
 
-        The application attribute is where an application can place its own
-        metadata as a python dictionary object containing application specific
-        metadata, using a reverse domain name notation string as the attribute
-        key, for example,
+        The application attribute is where an application can place its metadata as a
+        python dictionary object using a reverse domain name notation string as the
+        attribute key, for example,
 
         .. doctest::
 
@@ -733,7 +732,7 @@ class Dimension:
     #                           Dimension Methods                             #
     # ======================================================================= #
 
-    def _copy_metadata(self, obj, copy=False):
+    def _copy_metadata(self, obj):
         """Copy Dimension metadata"""
         self.subtype._type = obj.subtype._type
         self.subtype._copy_metadata(obj)
@@ -854,14 +853,16 @@ def __check_array_for_dimension__(array, type):
         raise ValueError(f"Cannot convert {name} to a Dimension object.")
 
     array = np.asarray(array)
-    n = array.ndim
-    if n == 1:
+    n_dim = array.ndim
+    if n_dim == 1:
         return array
 
-    raise ValueError(f"Cannot convert a {n} dimensional array to a Dimension object.")
+    raise ValueError(
+        f"Cannot convert a {n_dim} dimensional array to a Dimension object."
+    )
 
 
-def _generic_dimensions(array, unit, className="Dimension", **kwargs):
+def _generic_dimensions(array, unit, class_name="Dimension", **kwargs):
     """Return a dimension object based on the array coordinates."""
     # labeled
     if str(array.dtype)[:2] in [">U", "<U"]:
@@ -870,7 +871,7 @@ def _generic_dimensions(array, unit, className="Dimension", **kwargs):
         return LabeledDimension(labels=array.tolist(), **kwargs)
 
     # linear
-    obj = _linear_dimension(array, unit, className, **kwargs)
+    obj = _linear_dimension(array, unit, class_name, **kwargs)
     if obj is not None:
         return obj
 
@@ -882,11 +883,11 @@ def _generic_dimensions(array, unit, className="Dimension", **kwargs):
     raise ValueError("Invalid array for Dimension object.")
 
 
-def _linear_dimension(array, unit, className="LinearDimension", **kwargs):
+def _linear_dimension(array, unit, class_name="LinearDimension", **kwargs):
     """Return a LinearDimension is array is linear, else None."""
     increment = array[1] - array[0]
     if increment == 0:
-        raise ValueError(f"Invalid array for {className} object.")
+        raise ValueError(f"Invalid array for {class_name} object.")
 
     if np.allclose(np.diff(array, 1), increment):
         unit = f"({unit})" if str(unit) != "" else ""

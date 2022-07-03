@@ -45,7 +45,7 @@ class SparseSampling:
             "quantity_type": "scalar",
             "unsigned_integer_type": "uint64",
             "description": "",
-            "application": {},
+            "application": None,
         }
         default.update(kwargs)
         check_sparse_sampling_key_value(default)
@@ -102,7 +102,7 @@ class SparseSampling:
 
     @application.setter
     def application(self, value):
-        self._application = validate(value, "application", dict)
+        self._application = validate(value, "application", (dict, type(None)))
 
     @property
     def description(self):

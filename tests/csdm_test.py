@@ -14,21 +14,22 @@ import pytest
 import csdmpy as cp
 
 
-def get_test(type):
-    out = np.random.rand(10).astype(type)
-    a_test = cp.new()
-    a_test.dimensions.append(cp.LinearDimension(count=10, increment="1s"))
-    a_test.y.append(
-        cp.DependentVariable(
-            type="internal", quantity_type="scalar", unit="m", components=out
-        )
+def get_test(np_type):
+    out = np.random.rand(10).astype(np_type)
+    a_test = cp.CSDM(
+        dimensions=[cp.LinearDimension(count=10, increment="1s")],
+        dependent_variables=[
+            cp.DependentVariable(
+                type="internal", quantity_type="scalar", unit="m", components=out
+            )
+        ],
     )
 
     return out, a_test
 
 
-def get_test_2d(type):
-    out = np.random.rand(50).astype(type).reshape(10, 5)
+def get_test_2d(np_type):
+    out = np.random.rand(50).astype(np_type).reshape(10, 5)
 
     d_0 = cp.LinearDimension(count=5, increment="1s")
     d_1 = cp.LinearDimension(count=10, increment="1m")
@@ -68,7 +69,7 @@ def test_csdm():
     assert data.version == cp.csdm.CSDM.__latest_CSDM_version__
 
     # geographic_coordinate
-    assert data.geographic_coordinate == {}
+    assert data.geographic_coordinate is None
     error = "can't set attribute"
     with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
         data.geographic_coordinate = {}
@@ -82,7 +83,7 @@ def test_csdm():
         data.description = {}
 
     # application
-    assert data.application == {}
+    assert data.application is None
     data.application = {"csdmpy": "Some day"}
     assert data.application == {"csdmpy": "Some day"}
     error = "Expecting an instance of type"
@@ -109,94 +110,90 @@ def test_csdm():
     assert data.dict() == structure
 
     # equality check
-    dm = data.copy()
+    new_data = data.copy()
 
-    assert dm == data
-    assert dm.shape == ()
+    assert new_data == data
+    assert new_data.shape == ()
 
-    dm.dimensions.append(cp.LinearDimension(count=10, increment="1s"))
+    new_data.dimensions.append(cp.LinearDimension(count=10, increment="1s"))
 
-    assert dm != data
+    assert new_data != data
 
 
 def test_split():
-    a = cp.new()
-    a.dimensions.append(cp.LinearDimension(count=10, increment="1m"))
-    a.dependent_variables.append(
-        {"type": "internal", "components": np.arange(10) + 1, "quantity_type": "scalar"}
+    set_1 = cp.CSDM(
+        dimensions=[cp.LinearDimension(count=10, increment="1m")],
+        dependent_variables=[cp.as_dependent_variable(np.arange(10) + 1)],
     )
 
-    b = cp.new()
-    b.dimensions.append(cp.LinearDimension(count=10, increment="1m"))
-    b.dependent_variables.append(
-        {"type": "internal", "components": np.arange(10) + 2, "quantity_type": "scalar"}
+    set_2 = cp.CSDM(
+        dimensions=[cp.LinearDimension(count=10, increment="1m")],
+        dependent_variables=[cp.as_dependent_variable(np.arange(10) + 2)],
     )
 
-    c = cp.new()
-    c.dimensions.append(cp.LinearDimension(count=10, increment="1m"))
-    c.dependent_variables.append(
-        {"type": "internal", "components": np.arange(10) + 1, "quantity_type": "scalar"}
+    set_12 = cp.CSDM(
+        dimensions=[cp.LinearDimension(count=10, increment="1m")],
+        dependent_variables=[
+            cp.as_dependent_variable(np.arange(10) + 1),
+            cp.as_dependent_variable(np.arange(10) + 2),
+        ],
     )
-    c.dependent_variables.append(
-        {"type": "internal", "components": np.arange(10) + 2, "quantity_type": "scalar"}
-    )
 
-    a_, b_ = c.split()
+    set_12_split_1, set_12_split_2 = set_12.split()
 
-    assert a_ == a
-    assert b_ == b
+    assert set_12_split_1 == set_1
+    assert set_12_split_2 == set_2
 
 
-a_test = cp.new()
-a_test.dimensions.append(cp.LinearDimension(count=10, increment="1s"))
-a_test.add_dependent_variable(
-    {
-        "type": "internal",
-        "quantity_type": "scalar",
-        "unit": "m",
-        "components": np.arange(10),
-    }
+a_test = cp.CSDM(
+    dimensions=[cp.LinearDimension(count=10, increment="1s")],
+    dependent_variables=[
+        cp.DependentVariable(
+            type="internal",
+            quantity_type="scalar",
+            unit="m",
+            components=np.arange(10),
+        )
+    ],
 )
 
-a1_test = cp.new()
-a1_test.dimensions.append(cp.LinearDimension(count=10, increment="1m"))
-a1_test.add_dependent_variable(
-    {
-        "type": "internal",
-        "quantity_type": "scalar",
-        "unit": "m",
-        "components": np.arange(10),
-    }
+a1_test = cp.CSDM(
+    dimensions=[cp.LinearDimension(count=10, increment="1m")],
+    dependent_variables=[
+        cp.DependentVariable(
+            type="internal", quantity_type="scalar", unit="m", components=np.arange(10)
+        )
+    ],
 )
 
-b_test = cp.new()
-b_test.dimensions.append(cp.LinearDimension(count=10, increment="1s"))
-b_test.add_dependent_variable(
-    {
-        "type": "internal",
-        "quantity_type": "scalar",
-        "unit": "km",
-        "components": np.arange(10, dtype=float),
-    }
+b_test = cp.CSDM(
+    dimensions=[cp.LinearDimension(count=10, increment="1s")],
+    dependent_variables=[
+        cp.DependentVariable(
+            type="internal",
+            quantity_type="scalar",
+            unit="km",
+            components=np.arange(10, dtype=float),
+        )
+    ],
 )
 
-b1_test = cp.new()
-b1_test.dimensions.append(cp.LinearDimension(count=10, increment="1s"))
-b1_test.add_dependent_variable(
-    {
-        "type": "internal",
-        "quantity_type": "scalar",
-        "unit": "km",
-        "components": np.arange(10),
-    }
-)
-b1_test.add_dependent_variable(
-    {
-        "type": "internal",
-        "quantity_type": "vector_2",
-        "unit": "km",
-        "components": np.arange(20),
-    }
+b1_test = cp.CSDM(
+    dimensions=[cp.LinearDimension(count=10, increment="1s")],
+    dependent_variables=[
+        cp.DependentVariable(
+            type="internal",
+            quantity_type="scalar",
+            unit="km",
+            components=np.arange(10),
+        ),
+        cp.DependentVariable(
+            type="internal",
+            quantity_type="vector_2",
+            unit="km",
+            components=np.arange(20),
+        ),
+    ],
 )
 
 
@@ -393,7 +390,7 @@ def test_mul_truediv_pow():
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         res = a_test * "3"
 
-    error = r"Only scalar multiplication or division is allowed."
+    error = "Only scalar multiplication or division is allowed."
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         res = a_test * np.asarray([1, 2])
 
@@ -401,7 +398,7 @@ def test_mul_truediv_pow():
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         res = a_test / "3"
 
-    error = r"Only scalar multiplication or division is allowed."
+    error = "Only scalar multiplication or division is allowed."
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         res = a_test / np.asarray([1, 2])
 

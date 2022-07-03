@@ -11,14 +11,13 @@ from csdmpy.units import ScalarQuantity
 
 # linear dimension
 def test_linear_new():
-    data = cp.new()
     dim = {
         "type": "linear",
         "increment": "10 m/s",
         "count": 10,
         "coordinates_offset": "5 m/s",
     }
-    data.dimensions.append(dim)
+    data = cp.CSDM(dimensions=[dim])
 
     assert data.dimensions[0].is_quantitative() is True
 
@@ -48,7 +47,7 @@ def test_linear_new():
     assert str(data.dimensions[0].increment) == "10.0 m / s"
 
     # application
-    assert data.dimensions[0].application == {}
+    assert data.dimensions[0].application is None
     data.dimensions[0].application = {"my_application": {}}
     assert data.dimensions[0].application == {"my_application": {}}
     error = "Expecting an instance of type"
@@ -190,44 +189,44 @@ def test_linear_new():
 
 
 def test_linearDimension():
-    a = cp.LinearDimension(count=3, increment="2s")
-    ap = cp.Dimension(type="linear", count=3, increment="2s")
+    dim_1 = cp.LinearDimension(count=3, increment="2s")
+    dim_2 = cp.Dimension(type="linear", count=3, increment="2s")
 
     message = "LinearDimension([0. 2. 4.] s)"
-    assert a.__str__() == message
-    assert ap.__str__() == message
+    assert dim_1.__str__() == message
+    assert dim_2.__str__() == message
 
     message = (
         "LinearDimension(count=3, increment=2.0 s, "
         "quantity_name=time, reciprocal={'quantity_name': 'frequency'})"
     )
-    assert a.__repr__() == message
-    assert ap.__repr__() == message
+    assert dim_1.__repr__() == message
+    assert dim_2.__repr__() == message
 
-    assert a != 2
-    assert a.is_quantitative() is True
+    assert dim_1 != 2
+    assert dim_1.is_quantitative() is True
 
-    b = cp.as_dimension(np.arange(3) * 2)
-    assert a / cp.ScalarQuantity("1s") == b
-    assert a * cp.ScalarQuantity("s^-1") == b
-    assert ap / cp.ScalarQuantity("1s") == b
-    assert ap * cp.ScalarQuantity("s^-1") == b
+    dim_3 = cp.as_dimension(np.arange(3) * 2)
+    assert dim_1 / cp.ScalarQuantity("1s") == dim_3
+    assert dim_1 * cp.ScalarQuantity("s^-1") == dim_3
+    assert dim_2 / cp.ScalarQuantity("1s") == dim_3
+    assert dim_2 * cp.ScalarQuantity("s^-1") == dim_3
 
-    b *= cp.ScalarQuantity("1s")
-    assert a == b
-    assert ap == b
+    dim_3 *= cp.ScalarQuantity("1s")
+    assert dim_1 == dim_3
+    assert dim_2 == dim_3
 
-    b /= cp.ScalarQuantity("s")
-    a *= cp.ScalarQuantity("s^-1")
-    ap *= cp.ScalarQuantity("s^-1")
-    assert a == b
-    assert ap == b
+    dim_3 /= cp.ScalarQuantity("s")
+    dim_1 *= cp.ScalarQuantity("s^-1")
+    dim_2 *= cp.ScalarQuantity("s^-1")
+    assert dim_1 == dim_3
+    assert dim_2 == dim_3
 
-    ap = cp.Dimension(type="linear", count=3, increment="2s")
-    ap /= cp.ScalarQuantity("s")
-    assert ap == cp.as_dimension(np.arange(3) * 2)
+    dim_2 = cp.Dimension(type="linear", count=3, increment="2s")
+    dim_2 /= cp.ScalarQuantity("s")
+    assert dim_2 == cp.as_dimension(np.arange(3) * 2)
 
-    assert a.count == 3
+    assert dim_1.count == 3
 
     freq = cp.LinearDimension(
         count=10, increment="100 Hz", origin_offset="1 MHz", coordinates_offset="1kHz"
@@ -262,14 +261,12 @@ def test_linearDimension():
 
 # monotonic dimension
 def test_monotonic_new():
-    data = cp.new()
-    dim = {
-        "type": "monotonic",
-        "description": "Far far away.",
-        "coordinates": ["1 m", "100 m", "1 km", "1 Gm", "0.25 lyr"],
-    }
-    data.dimensions.append(dim)
-    data.add_x(dim)
+    dim_x = cp.Dimension(
+        type="monotonic",
+        description="Far far away.",
+        coordinates=["1 m", "100 m", "1 km", "1 Gm", "0.25 lyr"],
+    )
+    data = cp.CSDM(dimensions=[dim_x, dim_x.copy()])
 
     for dim in data.dimensions:
         assert dim.is_quantitative() is True
@@ -455,25 +452,25 @@ def test_monotonic_new():
 
 
 def test_monotonicDimension():
-    a = cp.MonotonicDimension(coordinates=10 ** (np.arange(2)))
-    assert a.__str__() == "MonotonicDimension([ 1. 10.])"
+    dim_1 = cp.MonotonicDimension(coordinates=10 ** (np.arange(2)))
+    assert dim_1.__str__() == "MonotonicDimension([ 1. 10.])"
 
-    assert a.__repr__() == ("MonotonicDimension(coordinates=[ 1. 10.])")
+    assert dim_1.__repr__() == ("MonotonicDimension(coordinates=[ 1. 10.])")
 
-    assert a != 2
-    assert a.is_quantitative() is True
+    assert dim_1 != 2
+    assert dim_1.is_quantitative() is True
 
-    b = cp.as_dimension([1, 10], type="monotonic") * cp.ScalarQuantity("s")
-    assert b / cp.ScalarQuantity("1s") == cp.as_dimension([1, 10], type="monotonic")
-    assert a * cp.ScalarQuantity("s") == b
+    dim_2 = cp.as_dimension([1, 10], type="monotonic") * cp.ScalarQuantity("s")
+    assert dim_2 / cp.ScalarQuantity("1s") == cp.as_dimension([1, 10], type="monotonic")
+    assert dim_1 * cp.ScalarQuantity("s") == dim_2
 
-    b /= cp.ScalarQuantity("s")
-    a *= cp.ScalarQuantity("s^-1")
-    assert a * cp.ScalarQuantity("1s") == b
+    dim_2 /= cp.ScalarQuantity("s")
+    dim_1 *= cp.ScalarQuantity("s^-1")
+    assert dim_1 * cp.ScalarQuantity("1s") == dim_2
 
-    b.count = 1
-    assert b.coordinates.value == [1]
-    assert b.coords.value == [1]
+    dim_2.count = 1
+    assert dim_2.coordinates.value == [1]
+    assert dim_2.coords.value == [1]
 
     ratio = cp.as_dimension([1, 10], type="monotonic") * cp.ScalarQuantity("Hz")
     ratio.origin_offset = "1 MHz"
@@ -596,44 +593,44 @@ def test_labeled_new():
 
 
 def test_labeledDimension():
-    a = cp.as_dimension(["1", "a", "c"])
+    dim_1 = cp.as_dimension(["1", "a", "c"])
 
-    assert a.__str__() == "LabeledDimension(['1' 'a' 'c'])"
+    assert dim_1.__str__() == "LabeledDimension(['1' 'a' 'c'])"
 
-    assert a.__repr__() == ("LabeledDimension(labels=['1', 'a', 'c'])")
+    assert dim_1.__repr__() == ("LabeledDimension(labels=['1', 'a', 'c'])")
 
-    assert a.type == "labeled"
-    assert a != 1
-    assert a.is_quantitative() is False
-    assert a.count == 3
+    assert dim_1.type == "labeled"
+    assert dim_1 != 1
+    assert dim_1.is_quantitative() is False
+    assert dim_1.count == 3
 
     error = "Cannot set the count, 4, more than the number of coordinates"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
-        a.count = 4
+        dim_1.count = 4
 
-    a.count = 2
-    assert a.count == 2
+    dim_1.count = 2
+    assert dim_1.count == 2
 
-    assert a == a.copy()
+    assert dim_1 == dim_1.copy()
 
 
 def test_as_dimension():
-    a = np.arange(10)
+    array = np.arange(10)
     one = np.ones(10)
     rand = np.random.rand(10)
-    monotonic = 10 ** a / 10
+    monotonic = 10 ** array / 10
 
-    dim = cp.as_dimension(a, unit="s")
-    assert np.allclose(dim.coordinates.value, a)
-    assert np.allclose(dim.coords.value, a)
+    dim = cp.as_dimension(array, unit="s")
+    assert np.allclose(dim.coordinates.value, array)
+    assert np.allclose(dim.coords.value, array)
 
     # linear
     error = "Invalid array for Dimension object."
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         cp.as_dimension(one, unit="s")
 
-    dim = cp.as_dimension(a, unit="s", type="linear")
-    assert np.allclose(dim.coordinates.value, a)
+    dim = cp.as_dimension(array, unit="s", type="linear")
+    assert np.allclose(dim.coordinates.value, array)
 
     # linear with type
     error = "Invalid array for LinearDimension object."
@@ -675,7 +672,7 @@ def test_as_dimension():
     # error
     error = "Invalid value for `type`. Allowed values are"
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
-        cp.as_dimension(a, type="log-linear")
+        cp.as_dimension(array, type="log-linear")
 
     error = "to a Dimension object."
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):

@@ -143,13 +143,13 @@ def load(filename=None, application=False, verbose=False):
     csdm_object = parse_dict(dictionary)
 
     if application is False:
-        csdm_object.application = {}
+        csdm_object.application = None
         for dim in csdm_object.dimensions:
-            dim.application = {}
+            dim.application = None
             if hasattr(dim, "reciprocal") and dim.type != "label":
-                dim.reciprocal.application = {}
+                dim.reciprocal.application = None
         for dim in csdm_object.dependent_variables:
-            dim.application = {}
+            dim.application = None
             # if hasattr(dim., 'dimension indexes'):
             #     dim.reciprocal.application = {}
     # csdm_objects = []

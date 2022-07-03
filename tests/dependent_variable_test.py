@@ -8,15 +8,17 @@ import csdmpy as cp
 
 
 def test_internal_new():
-    data = cp.new()
     test_array = np.arange(20).reshape(2, 10)
-    dim = {
-        "type": "internal",
-        "numeric_type": "float32",
-        "quantity_type": "vector_2",
-        "components": test_array,
-    }
-    data.add_dependent_variable(dim)
+    data = cp.CSDM(
+        dependent_variables=[
+            cp.DependentVariable(
+                type="internal",
+                numeric_type="float32",
+                quantity_type="vector_2",
+                components=test_array,
+            )
+        ]
+    )
 
     assert data.dependent_variables == data.y
     assert data.dimensions == data.x
@@ -109,7 +111,7 @@ def test_internal_new():
         data.y[0].description = {}
 
     # application
-    assert data.y[0].application == {}
+    assert data.y[0].application is None
     with pytest.raises(TypeError, match=".*{0}.*".format(error)):
         data.y[0].application = ""
 
@@ -181,17 +183,16 @@ def test_internal_new():
 
 def test_external_new():
     domain = "https://www.ssnmr.org/sites/default/files/CSDM"
-    data = cp.new()
-    dim = {
-        "type": "external",
-        "components_url": f"{domain}/GC/cinnamon_raw_cinnamon stick.dat",
-        "component_labels": ["monotonic"],
-        "name": "Headspace from cinnamon stick",
-        "numeric_type": "float32",
-        "quantity_type": "scalar",
-    }
-    data.add_dependent_variable(dim)
-    data.add_y(dim)
+
+    d_v = cp.DependentVariable(
+        type="external",
+        components_url=f"{domain}/GC/cinnamon_raw_cinnamon stick.dat",
+        component_labels=["monotonic"],
+        name="Headspace from cinnamon stick",
+        numeric_type="float32",
+        quantity_type="scalar",
+    )
+    data = cp.CSDM(dependent_variables=[d_v, d_v.copy()])
 
     for dv in data.y:
         # check type
@@ -233,33 +234,18 @@ def test_external_new():
         assert dv.description == "This is also a test"
 
         # application
-        assert dv.application == {}
+        assert dv.application is None
 
-    dict1 = {
-        "csdm": {
-            "version": "1.0",
-            "dependent_variables": [
-                {
-                    "type": "internal",
-                    "description": "This is also a test",
-                    "name": "Headspace from cinnamon stick",
-                    "numeric_type": "int32",
-                    "quantity_type": "scalar",
-                    "component_labels": ["monotonic"],
-                    "components": [["48453, 48444, ..., 48040, 48040"]],
-                },
-                {
-                    "type": "internal",
-                    "description": "This is also a test",
-                    "name": "Headspace from cinnamon stick",
-                    "numeric_type": "int32",
-                    "quantity_type": "scalar",
-                    "component_labels": ["monotonic"],
-                    "components": [["48453, 48444, ..., 48040, 48040"]],
-                },
-            ],
-        }
+    dict_1 = {
+        "type": "internal",
+        "description": "This is also a test",
+        "name": "Headspace from cinnamon stick",
+        "numeric_type": "int32",
+        "quantity_type": "scalar",
+        "component_labels": ["monotonic"],
+        "components": [["48453, 48444, ..., 48040, 48040"]],
     }
+    dict1 = {"csdm": {"version": "1.0", "dependent_variables": [dict_1, dict_1]}}
 
     assert data.data_structure == json.dumps(
         dict1, ensure_ascii=False, sort_keys=False, indent=2

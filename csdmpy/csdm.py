@@ -14,9 +14,7 @@ from astropy.units.quantity import Quantity
 from .abstract_list import __dimensions_list__  # lgtm [py/import-own-module]
 from .abstract_list import DependentVariableList  # lgtm [py/import-own-module]
 from .abstract_list import DimensionList  # lgtm [py/import-own-module]
-from .dependent_variable import (  # lgtm [py/import-own-module] # noqa: F401
-    as_dependent_variable,
-)
+from .dependent_variable import as_dependent_variable  # noqa: F401
 from .dependent_variable import DependentVariable  # lgtm [py/import-own-module]
 from .dimension import as_dimension  # lgtm [py/import-own-module]
 from .dimension import Dimension  # lgtm [py/import-own-module] # noqa: F401
@@ -126,9 +124,9 @@ class CSDM:
         self._read_only = False
         self._version = version
         self._timestamp = ""
-        self._geographic_coordinate = {}
+        self._geographic_coordinate = None
         self._description = description
-        self._application = {}
+        self._application = None
         self._filename = filename
 
         kwargs_keys = kwargs.keys()
@@ -218,11 +216,11 @@ class CSDM:
         """Check if the dependent variables from the two csdm objects have the same
         dimensionality.
         """
-        for v1, v2 in zip(self.dependent_variables, other.dependent_variables):
-            if v1.unit.physical_type != v2.unit.physical_type:
+        for v_1, v_2 in zip(self.dependent_variables, other.dependent_variables):
+            if v_1.unit.physical_type != v_2.unit.physical_type:
                 raise Exception(
                     "Cannot operate on dependent variables with physical types: "
-                    f"{v1.unit.physical_type} and {v2.unit.physical_type}."
+                    f"{v_1.unit.physical_type} and {v_2.unit.physical_type}."
                 )
 
     def __check_csdm_object_additive_compatibility(self, other):
@@ -305,19 +303,19 @@ class CSDM:
 
             for i, item in enumerate(self.dependent_variables):
                 factor = other.dependent_variables[i].unit.to(item.unit)
-                fn = getattr(item.components, function)
-                fn(factor * other.dependent_variables[i].components)
+                f_n = getattr(item.components, function)
+                f_n(factor * other.dependent_variables[i].components)
             return self
 
         other = check_scalar_object(other, symbol)
 
         for i, item in enumerate(self.dependent_variables):
-            fn = getattr(item.components, function)
+            f_n = getattr(item.components, function)
             if not isinstance(other, Quantity):
-                fn(other)
+                f_n(other)
             else:
                 factor = other.unit.to(item.unit)
-                fn(factor * other.value)
+                f_n(factor * other.value)
         return self
 
     def _default_addition_(self, other, fn, operation):
@@ -651,9 +649,9 @@ class CSDM:
         .. doctest::
 
             >>> print(data.application)
-            {}
+            None
 
-        By default, the application attribute is an empty dictionary, that is,
+        By default, the application attribute is an empty object, that is,
         the application metadata stored by the previous application is ignored
         upon file import.
 
@@ -683,7 +681,7 @@ class CSDM:
 
     @application.setter
     def application(self, value):
-        self._application = validate(value, "application", dict)
+        self._application = validate(value, "application", (dict, type(None)))
 
     @property
     def data_structure(self):
@@ -834,9 +832,9 @@ class CSDM:
         self._dimensions += [Dimension(*args, **kwargs)]
 
     # deprecated
-    def add_x(self, *args, **kwargs):
-        """Alias to the ``add_dimension`` method."""
-        self.add_dimension(*args, **kwargs)
+    # def add_x(self, *args, **kwargs):
+    #     """Alias to the ``add_dimension`` method."""
+    #     self.add_dimension(*args, **kwargs)
 
     def add_dependent_variable(self, *args, **kwargs):
         """Add a new :ref:`dv_api` instance to the :ref:`csdm_api` instance.
@@ -898,20 +896,20 @@ class CSDM:
             DeprecationWarning,
         )
         if args != () and isinstance(args[0], DependentVariable):
-            dv = args[0]
+            d_v = args[0]
         else:
-            dv = DependentVariable(filename=self.filename, *args, **kwargs)
-            dv.encoding = "base64"
-            dv.type = "internal"
+            d_v = DependentVariable(filename=self.filename, *args, **kwargs)
+            d_v.encoding = "base64"
+            d_v.type = "internal"
 
         if self.shape != ():
-            dv._reshape(self.shape[::-1])
+            d_v._reshape(self.shape[::-1])
 
-        self._dependent_variables += [dv]
+        self._dependent_variables += [d_v]
 
-    def add_y(self, *args, **kwargs):
-        """Alias for ``add_dependent_variable`` method."""
-        return self.add_dependent_variable(*args, **kwargs)
+    # def add_y(self, *args, **kwargs):
+    #     """Alias for ``add_dependent_variable`` method."""
+    #     return self.add_dependent_variable(*args, **kwargs)
 
     def to_dict(self, update_timestamp=False, read_only=False):
         """Alias to the `dict()` method of the class."""
@@ -956,7 +954,7 @@ class CSDM:
             for i, dv in enumerate(self.dependent_variables)
         ]
 
-        empty_values = [[], "", {}, False]
+        empty_values = [[], "", {}, False, None]
         _ = [obj.pop(_) for _ in [k for k, v in obj.items() if v in empty_values]]
 
         return {"csdm": obj}

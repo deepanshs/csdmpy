@@ -84,7 +84,7 @@ class DependentVariable:
             "components": None,
             "components_url": None,
             "filename": __file__,
-            "application": {},
+            "application": None,
             "sparse_sampling": {},
         }
         input_dict = _get_dictionary(*args, **kwargs)
@@ -160,7 +160,7 @@ class DependentVariable:
         .. doctest::
 
             >>> print(y.application)
-            {}
+            None
 
         The application attribute is where an application can place its own
         metadata as a python dictionary object containing the application specific
