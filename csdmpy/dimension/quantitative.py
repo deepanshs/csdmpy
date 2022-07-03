@@ -5,7 +5,7 @@ from copy import deepcopy
 import numpy as np
 from astropy.units import Quantity
 
-from .base import BaseDimension
+from csdmpy.dimension.base import BaseDimension
 from csdmpy.units import check_quantity_name
 from csdmpy.units import ScalarQuantity
 from csdmpy.utils import _axis_label
@@ -38,7 +38,7 @@ class BaseQuantitativeDimension(BaseDimension):
     def __init__(
         self,
         description="",
-        application={},
+        application=None,
         coordinates_offset=None,
         origin_offset=None,
         quantity_name=None,

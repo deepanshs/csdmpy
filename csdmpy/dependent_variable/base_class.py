@@ -187,7 +187,7 @@ class BaseDependentVariable:
 
     @application.setter
     def application(self, value):
-        self._application = validate(value, "application", dict)
+        self._application = validate(value, "application", (dict, type(None)))
 
     @property
     def description(self):

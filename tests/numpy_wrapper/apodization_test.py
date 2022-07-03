@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Apodization module"""
 import numpy as np
 
 import csdmpy as cp

@@ -21,7 +21,7 @@ def test_01():
     assert sp.description == ""
     assert sp.encoding == "none"
     assert sp.unsigned_integer_type.value == "uint16"
-    assert sp.application == {}
+    assert sp.application is None
 
 
 def test_02():

@@ -6,9 +6,9 @@ from __future__ import print_function
 import numpy as np
 from astropy.units import Quantity
 
-from .base import _copy_core_metadata
-from .quantitative import BaseQuantitativeDimension
-from .quantitative import ReciprocalDimension
+from csdmpy.dimension.base import _copy_core_metadata
+from csdmpy.dimension.quantitative import BaseQuantitativeDimension
+from csdmpy.dimension.quantitative import ReciprocalDimension
 from csdmpy.units import frequency_ratio
 from csdmpy.units import ScalarQuantity
 from csdmpy.utils import check_and_assign_bool
@@ -51,7 +51,7 @@ class LinearDimension(BaseQuantitativeDimension):
                 "quantity_name": None,
                 "label": "",
                 "description": "",
-                "application": {},
+                "application": None,
             }
 
         super().__init__(unit=_unit, **kwargs)
@@ -206,7 +206,7 @@ class LinearDimension(BaseQuantitativeDimension):
     #                                 Methods                                 #
     # ----------------------------------------------------------------------- #
 
-    def _copy_metadata(self, obj, copy=False):
+    def _copy_metadata(self, obj):
         """Copy LinearDimension metadata."""
         obj = obj.subtype if hasattr(obj, "subtype") else obj
         if isinstance(obj, LinearDimension):
@@ -247,7 +247,7 @@ class LinearDimension(BaseQuantitativeDimension):
         )
 
     def reciprocal_increment(self):
-        """Return reciprocal increment assuming Nyquist-shannan theorem."""
+        """Return reciprocal increment assuming Nyquist-Shannon theorem."""
         return 1.0 / (self._count * self._increment)
 
 
