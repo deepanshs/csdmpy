@@ -67,7 +67,17 @@ __ufunc_list_unit_independent__ = [
 
 __ufunc_list_applies_to_unit__ = [np.sqrt, np.square, np.cbrt, np.reciprocal, np.power]
 
-__function_reduction_list__ = [np.max, np.min, np.sum, np.mean, np.var, np.std, np.prod]
+__function_reduction_list__ = [
+    np.max,
+    np.min,
+    np.sum,
+    np.cumsum,
+    np.mean,
+    np.var,
+    np.std,
+    np.prod,
+    np.cumprod,
+]
 
 __other_functions__ = [np.round, np.real, np.imag, np.clip, np.around, np.angle]
 
@@ -200,7 +210,7 @@ class CSDM:
         """
         if len(self.dependent_variables) != len(other.dependent_variables):
             raise Exception(
-                "Cannot operate on CSDM objects with differnet lengths of "
+                "Cannot operate on CSDM objects with different lengths of "
                 "dependent variables."
             )
 
@@ -754,20 +764,20 @@ class CSDM:
         .. doctest::
 
             >>> import csdmpy as cp
-            >>> datamodel = cp.new()
+            >>> data_model = cp.new()
             >>> py_dictionary = {
             ...     'type': 'linear',
             ...     'increment': '5 G',
             ...     'count': 50,
             ...     'coordinates_offset': '-10 mT'
             ... }
-            >>> datamodel.add_dimension(py_dictionary)
+            >>> data_model.add_dimension(py_dictionary)
 
         *Using keyword as the arguments.*
 
         .. doctest::
 
-            >>> datamodel.add_dimension(
+            >>> data_model.add_dimension(
             ...     type = 'linear',
             ...     increment = '5 G',
             ...     count = 50,
@@ -782,7 +792,7 @@ class CSDM:
             ...                  increment = '5 G',
             ...                  count = 50,
             ...                  coordinates_offset = '-10 mT')
-            >>> datamodel.add_dimension(var1)
+            >>> data_model.add_dimension(var1)
 
         *Using a subtype class.*
 
@@ -791,7 +801,7 @@ class CSDM:
             >>> var2 = cp.LinearDimension(count = 50,
             ...                  increment = '5 G',
             ...                  coordinates_offset = '-10 mT')
-            >>> datamodel.add_dimension(var2)
+            >>> data_model.add_dimension(var2)
 
         *From a numpy array.*
 
@@ -799,11 +809,11 @@ class CSDM:
 
             >>> array = np.arange(50)
             >>> dim = cp.as_dimension(array)
-            >>> datamodel.add_dimension(dim)
+            >>> data_model.add_dimension(dim)
 
         In the third and fourth example, the instances, ``var1`` and ``var2`` are added
-        to the ``datamodel`` as a reference, `i.e.`, if the instance ``var1`` or
-        ``var2`` is destroyed, the ``datamodel`` instance will become corrupt. As a
+        to the ``data_model`` as a reference, `i.e.`, if the instance ``var1`` or
+        ``var2`` is destroyed, the ``data_model`` instance will become corrupt. As a
         recommendation, always pass a copy of the :ref:`dim_api` instance to the
         :meth:`~csdmpy.CSDM.add_dimension` method.
 
@@ -838,7 +848,7 @@ class CSDM:
 
             >>> import numpy as np
 
-            >>> datamodel = cp.new()
+            >>> data_model = cp.new()
 
             >>> numpy_array = (100*np.random.rand(3,50)).astype(np.uint8)
             >>> py_dictionary = {
@@ -849,13 +859,13 @@ class CSDM:
             ...     'quantity_name': 'energy',
             ...     'quantity_type': 'pixel_3'
             ... }
-            >>> datamodel.add_dependent_variable(py_dictionary)
+            >>> data_model.add_dependent_variable(py_dictionary)
 
         *From a list of valid keyword arguments.*
 
         .. doctest::
 
-            >>> datamodel.add_dependent_variable(type='internal',
+            >>> data_model.add_dependent_variable(type='internal',
             ...                                  name='star',
             ...                                  unit='W s',
             ...                                  quantity_type='pixel_3',
@@ -871,7 +881,7 @@ class CSDM:
             ...                          unit='W s',
             ...                          quantity_type='pixel_3',
             ...                          components=numpy_array)
-            >>> datamodel.add_dependent_variable(var1)
+            >>> data_model.add_dependent_variable(var1)
 
         If passing a :ref:`dv_api` instance, as a general recommendation,
         always pass a copy of the DependentVariable instance to the
@@ -1118,15 +1128,15 @@ class CSDM:
 
     # csdm dimension order manipulation
     def transpose(self):
-        """Return a transpose of the dependent variable data from the CSDM object."""
+        """Return a transpose of the CSDM object."""
         return self.T
 
     def fft(self, axis=0):
-        """Perform a FFT along the given `dimension=axis`, for linear dimension assuming
-        Nyquist-shannan relation.
+        """Perform a FFT along the given `dimension=axis`, for linear dimension, assuming
+        Nyquist-Shannon relation.
 
         Args:
-            axis: The index of the dimension along which the FFT is performed.
+            axis: dimension index along which the FFT is performed.
 
         The FFT method uses the :attr:`~csdmpy.Dimension.complex_fft` attribute of the
         Dimension object to decide whether a forward or inverse Fourier transform is
@@ -1160,12 +1170,11 @@ class CSDM:
     #                            NumPy-like functions                         #
     # ----------------------------------------------------------------------- #
     def max(self, axis=None):
-        """Return a csdm object with the maximum dependent variable component along a
-        given axis.
+        """Return a csdm object of maximum dependent variable along a given axis.s
 
         Args:
-            axis: An integer or None or a tuple of `m` integers cooresponding to the
-                index/indices of dimensions along which the sum of the dependent
+            axis: An integer or None or a tuple of `m` integers corresponding to the
+                dimension index/indices along which the max of the dependent
                 variable components is performed. If None, the output is the sum over
                 all dimensions per dependent variable.
         Return:
@@ -1182,12 +1191,12 @@ class CSDM:
         raise NotImplementedError("")
 
     def min(self, axis=None):
-        """Return a csdm object with the minimum dependent variable component along a
+        """Return a csdm object of minimum dependent variable component along a
         given axis.
 
         Args:
-            axis: An integer or None or a tuple of `m` integers cooresponding to the
-                index/indices of dimensions along which the sum of the dependent
+            axis: An integer or None or a tuple of `m` integers corresponding to the
+                dimension index/indices along which the min of the dependent
                 variable components is performed. If None, the output is over all
                 dimensions per dependent variable.
         Return:
@@ -1226,93 +1235,99 @@ class CSDM:
         return np.clip(self, a_min, a_max)
 
     def conj(self):
-        """Return a csdm object with the complex conjugate of all dependent variable
-        components."""
+        """Return a complex conjugate of the csdm object."""
         return np.conj(self)
 
     def round(self, decimals=0):
-        """Return a csdm object by rounding the dependent variable components to the
-        given `decimals`."""
+        """Rounds a csdm object to the given `decimals`."""
         return np.round(self, decimals)
 
     def trace(self, offset=0, axis1=0, axis2=-1):
         raise NotImplementedError("")
 
     def sum(self, axis=None):
-        """Return a csdm object with the sum of the dependent variable components over
-        a given `dimension=axis`.
+        """Return a csdm object sum over a given axis.
 
         Args:
-            axis: An integer or None or a tuple of `m` integers cooresponding to the
-                index/indices of dimensions along which the sum of the dependent
-                variable components is performed. If None, the output is over all
-                dimensions per dependent variable.
+            axis: An integer or None or a tuple of `m` integers corresponding to the
+                dimension index/indices along which the operation is performed. If None,
+                the output is over all dimensions per dependent variable.
         Return:
             A CSDM object with `m` dimensions removed, or a list when `axis` is None.
         """
         return np.sum(self, axis=axis)
 
     def cumsum(self, axis=None):
-        raise NotImplementedError("")
-
-    def mean(self, axis=None):
-        """Return a csdm object with the mean of the dependent variable components over
-        a given `dimension=axis`.
+        """Return a csdm object cumulative sum over a given axis.
 
         Args:
-            axis: An integer or None or a tuple of `m` integers cooresponding to the
-                index/indices of dimensions along which the sum of the dependent
-                variable components is performed. If None, the output is over all
-                dimensions per dependent variable.
+            axis: An integer or None corresponding to the dimension index along which
+                the operation is performed. If None, the output is over all dimensions
+                per dependent variable.
+        Return:
+            A CSDM object with `1` dimension removed, or a list when `axis` is None.
+        """
+        return np.cumsum(self, axis=axis)
+
+    def mean(self, axis=None):
+        """Return a csdm object mean over a given axis.
+
+        Args:
+            axis: An integer or None or a tuple of `m` integers corresponding to the
+                dimension index/indices along which the operation is performed. If None,
+                the output is over all dimensions per dependent variable.
         Return:
             A CSDM object with `m` dimensions removed, or a list when `axis` is None.
         """
         return np.mean(self, axis=axis)
 
     def var(self, axis=None):
-        """Return a csdm object with the variance of the dependent variable components
-        over a given `dimension=axis`.
+        """Return a csdm object variance over a given axis.
 
         Args:
-            axis: An integer or None or a tuple of `m` integers cooresponding to the
-                index/indices of dimensions along which the sum of the dependent
-                variable components is performed. If None, the output is over all
-                dimensions per dependent variable.
+            axis: An integer or None or a tuple of `m` integers corresponding to the
+                dimension index/indices along which the operation is performed. If None,
+                the output is over all dimensions per dependent variable.
         Return:
             A CSDM object with `m` dimensions removed, or a list when `axis` is None.
         """
         return np.var(self, axis=axis)
 
     def std(self, axis=None):
-        """Return a csdm object with the standard deviation of the dependent variable
-        components over a given `dimension=axis`.
+        """Return a csdm object standard deviation over a given axis.
 
         Args:
-            axis: An integer or None or a tuple of `m` integers cooresponding to the
-                index/indices of dimensions along which the sum of the dependent
-                variable components is performed. If None, the output is over all
-                dimensions per dependent variable.
+            axis: An integer or None or a tuple of `m` integers corresponding to the
+                dimensions index/indices along which the operation is performed.
+                If None, the output is over all dimensions per dependent variable.
         Return:
             A CSDM object with `m` dimensions removed, or a list when `axis` is None.
         """
         return np.std(self, axis=axis)
 
     def prod(self, axis=None):
-        """Return a csdm object with the product of the dependent variable components
-        over a given `dimension=axis`.
+        """Return a csdm object product over a given axis.
 
         Args:
-            axis: An integer or None or a tuple of `m` integers cooresponding to the
-                index/indices of dimensions along which the product of the dependent
-                variable components is performed. If None, the output is over all
-                dimensions per dependent variable.
+            axis: An integer or None or a tuple of `m` integers corresponding to the
+                dimension index/indices along which the operation is performed.
+                If None, the output is over all dimensions per dependent variable.
         Return:
             A CSDM object with `m` dimensions removed, or a list when `axis` is None.
         """
         return np.prod(self, axis=axis)
 
     def cumprod(self, axis=None):
-        raise NotImplementedError("")
+        """Return a csdm object cumulative product over a given axis.
+
+        Args:
+            axis: An integer or None corresponding to the dimension index along which
+                the operation is performed. If None, the output is over all dimensions
+                per dependent variable.
+        Return:
+            A CSDM object with `m` dimensions removed, or a list when `axis` is None.
+        """
+        return np.cumprod(self, axis=axis)
 
     def __array_ufunc__(self, function, method, *inputs, **kwargs):
         csdm = inputs[0]
@@ -1350,7 +1365,7 @@ class CSDM:
 
         raise NotImplementedError(f"Function {function} is not implemented.")
 
-    def __array_function__(self, function, types, *args, **kwargs):
+    def __array_function__(self, function, _, *args, **kwargs):
         if function in __function_reduction_list__:
             return _get_new_csdm_object_after_dimension_reduction_func(
                 function, *args[0], **args[1], **kwargs
@@ -1376,6 +1391,11 @@ class CSDM:
                 ]
             )
 
+        # csdm, args_, axis, kwargs = _get_CSDM_object__args__axes(
+        #     *args[0], **args[1], **kwargs
+        # )
+        # nd_array = csdm.y[0].components
+        # return function(nd_array, *args_, **kwargs)
         raise NotImplementedError(f"Function {function.__name__} is not implemented.")
 
     # def __array_interface__(self, *args, **kwargs):
@@ -1393,7 +1413,7 @@ class CSDM:
             csdm_object: The CSDM object.
             reverse_axis: An ordered array of boolean specifying which dimensions will
                 be displayed on a reverse axis.
-            range: A list of minimum and maxmim coordinates along the dimensions. The
+            range: A list of minimum and maximum coordinates along the dimensions. The
                 range along each dimension is given as [min, max]
             kwargs: Additional keyword arguments are used in matplotlib plotting
                 functions. We implement the following matplotlib methods for the one
@@ -1499,6 +1519,7 @@ def _get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
     return the corresponding CSDM object.
     """
     index = _check_dimension_indices(len(csdm.dimensions), index)
+    index = [index] if isinstance(index, int) else index
 
     quantity = string_to_quantity(arg)
 
@@ -1545,6 +1566,7 @@ def _get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
 
 
 def _get_CSDM_object__args__axes(*args, **kwargs):
+    # print(args)
     axis = None
     args_ = []
     if args != ():
@@ -1574,6 +1596,7 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
     new = CSDM()
     lst = []
 
+    axis = [axis] if isinstance(axis, int) else axis
     # dimension should be added first so that the dependent variables can be
     # shaped appropriately.
     if axis is not None:

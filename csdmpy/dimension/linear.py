@@ -162,8 +162,7 @@ class LinearDimension(BaseQuantitativeDimension):
     @property
     def coordinates(self):
         """Return the coordinates along the dimensions."""
-        n = self._count
-        coordinates = self._coordinates[:n] + self.coordinates_offset
+        coordinates = self._coordinates[: self._count] + self.coordinates_offset
 
         equivalent_fn = self._equivalencies
         equivalent_unit = self._equivalent_unit
@@ -182,13 +181,13 @@ class LinearDimension(BaseQuantitativeDimension):
     @coordinates.setter
     def coordinates(self, value):
         raise AttributeError(
-            "The attribute cannot be modifed for Dimension objects with `linear` "
+            "The attribute cannot be modified for Dimension objects with `linear` "
             "type. Use the `count`, `increment` or `coordinates_offset` attributes"
             " to update the coordinate along the linear dimension."
         )
 
     def get_nmr_reference_offset(self):
-        """Calculate reference offset for NMR datsets."""
+        """Calculate reference offset for NMR datasets."""
         if self.complex_fft:
             return self.coordinates_offset
 
@@ -196,12 +195,12 @@ class LinearDimension(BaseQuantitativeDimension):
             return self.coordinates_offset + (self.count - 1) * self.increment / 2.0
 
         # even count
-        n = self.count / 2
+        count = self.count / 2
         if self.increment > 0:  # positive increment
-            return self.coordinates_offset + n * self.increment
+            return self.coordinates_offset + count * self.increment
 
         # negative increment
-        return self.coordinates_offset + (n - 1) * self.increment
+        return self.coordinates_offset + (count - 1) * self.increment
 
     # ----------------------------------------------------------------------- #
     #                                 Methods                                 #
@@ -231,12 +230,12 @@ class LinearDimension(BaseQuantitativeDimension):
         return obj
 
     def reciprocal_coordinates(self):
-        """Return reciprocal coordinates assuming Nyquist-shannan theorem."""
+        """Return reciprocal coordinates assuming Nyquist-Shannon theorem."""
         coordinates_offset = self.reciprocal._coordinates_offset
         return self._reciprocal_coordinates() + coordinates_offset
 
     def _reciprocal_coordinates(self):
-        """Return reciprocal coordinates assuming Nyquist-shannan theorem
+        """Return reciprocal coordinates assuming Nyquist-Shannon theorem
         without the coordinates offset."""
         count = self._count
         increment = 1.0 / (count * self._increment)

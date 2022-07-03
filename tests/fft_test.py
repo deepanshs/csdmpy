@@ -5,7 +5,7 @@ import csdmpy as cp
 
 
 def fft_process(csdm):
-    y = csdm.dependent_variables[0].components[0]
+    y = csdm.y[0].components[0]
 
     # fft
     coordinates_offset = csdm.dimensions[0].coordinates_offset
@@ -14,7 +14,7 @@ def fft_process(csdm):
     phase = np.exp(-2j * np.pi * coordinates_offset * reciprocal_coordinates)
     y_fft = np.fft.fftshift(np.fft.fft(y)) * phase
     csdm_fft = csdm.fft(axis=0)
-    assert np.allclose(y_fft, csdm_fft.dependent_variables[0].components[0])
+    assert np.allclose(y_fft, csdm_fft.y[0].components[0])
 
     # inverse fft
     reciprocal_coordinates_offset = csdm_fft.dimensions[0].reciprocal.coordinates_offset
@@ -25,12 +25,12 @@ def fft_process(csdm):
     csdm_2 = csdm_fft.fft(axis=0)
 
     assert np.allclose(y, y2)
-    assert np.allclose(y2, csdm_2.dependent_variables[0].components[0])
+    assert np.allclose(y2, csdm_2.y[0].components[0])
     assert csdm == csdm_2
 
 
 def ifft_process(csdm):
-    y = csdm.dependent_variables[0].components[0]
+    y = csdm.y[0].components[0]
 
     # inverse fft
     reciprocal_coordinates_offset = csdm.dimensions[0].reciprocal.coordinates_offset
@@ -40,7 +40,7 @@ def ifft_process(csdm):
     y_fft = np.fft.ifft(np.fft.ifftshift(y * phase))
     csdm_fft = csdm.fft(axis=0)
 
-    assert np.allclose(y_fft, csdm_fft.dependent_variables[0].components[0])
+    assert np.allclose(y_fft, csdm_fft.y[0].components[0])
 
     # fft
     coordinates_offset = csdm_fft.dimensions[0].coordinates_offset
@@ -51,7 +51,7 @@ def ifft_process(csdm):
     csdm_2 = csdm_fft.fft(axis=0)
 
     assert np.allclose(y, y2)
-    assert np.allclose(y2, csdm_2.dependent_variables[0].components[0])
+    assert np.allclose(y2, csdm_2.y[0].components[0])
     assert csdm == csdm_2
 
 
@@ -100,8 +100,8 @@ def test_fft_2D_1():
     csdm_object_2_fft = csdm_object_2.fft()
 
     assert np.allclose(
-        csdm_object_fft[:, 0].dependent_variables[0].components,
-        csdm_object_2_fft.dependent_variables[0].components,
+        csdm_object_fft[:, 0].y[0].components,
+        csdm_object_2_fft.y[0].components,
     )
 
     csdm_object_fft = csdm_object.fft(axis=1)
@@ -113,6 +113,6 @@ def test_fft_2D_1():
     csdm_object_1_fft = csdm_object_1.fft()
 
     assert np.allclose(
-        csdm_object_fft[0].dependent_variables[0].components,
-        csdm_object_1_fft.dependent_variables[0].components,
+        csdm_object_fft[0].y[0].components,
+        csdm_object_1_fft.y[0].components,
     )

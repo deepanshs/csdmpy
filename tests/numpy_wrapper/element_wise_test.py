@@ -35,97 +35,97 @@ a1.add_dependent_variable(dv)
 
 def test_sin():
     b = np.sin(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.sin(data))
+    assert np.allclose(b.y[0].components[0], np.sin(data))
 
 
 def test_cos():
     b = np.cos(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.cos(data))
+    assert np.allclose(b.y[0].components[0], np.cos(data))
 
 
 def test_tan():
     b = np.tan(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.tan(data))
+    assert np.allclose(b.y[0].components[0], np.tan(data))
 
 
 def test_arcsin():
     b = np.arcsin(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.arcsin(data))
+    assert np.allclose(b.y[0].components[0], np.arcsin(data))
 
 
 def test_arccos():
     b = np.arccos(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.arccos(data))
+    assert np.allclose(b.y[0].components[0], np.arccos(data))
 
 
 def test_arctan():
     b = np.arctan(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.arctan(data))
+    assert np.allclose(b.y[0].components[0], np.arctan(data))
 
 
 def test_sinh():
     b = np.sinh(a1)
-    assert np.allclose(b.dependent_variables[0].components[0], np.sinh(data1))
+    assert np.allclose(b.y[0].components[0], np.sinh(data1))
 
 
 def test_cosh():
     b = np.cosh(a1)
-    assert np.allclose(b.dependent_variables[0].components[0], np.cosh(data1))
+    assert np.allclose(b.y[0].components[0], np.cosh(data1))
 
 
 def test_tanh():
     b = np.tanh(a1)
-    assert np.allclose(b.dependent_variables[0].components[0], np.tanh(data1))
+    assert np.allclose(b.y[0].components[0], np.tanh(data1))
 
 
 def test_arcsinh():
     b = np.arcsinh(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.arcsinh(data))
+    assert np.allclose(b.y[0].components[0], np.arcsinh(data))
 
 
 def test_arccosh():
     b = np.arccosh(a1)
-    assert np.allclose(b.dependent_variables[0].components[0], np.arccosh(data1))
+    assert np.allclose(b.y[0].components[0], np.arccosh(data1))
 
 
 def test_arctanh():
     b = np.arctanh(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.arctanh(data))
+    assert np.allclose(b.y[0].components[0], np.arctanh(data))
 
 
 def test_exp():
     b = np.exp(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.exp(data))
+    assert np.allclose(b.y[0].components[0], np.exp(data))
 
 
 def test_exp2():
     b = np.exp2(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.exp2(data))
+    assert np.allclose(b.y[0].components[0], np.exp2(data))
 
 
 def test_expm1():
     b = np.expm1(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.expm1(data))
+    assert np.allclose(b.y[0].components[0], np.expm1(data))
 
 
 def test_log():
     b = np.log(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.log(data))
+    assert np.allclose(b.y[0].components[0], np.log(data))
 
 
 def test_log2():
     b = np.log2(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.log2(data))
+    assert np.allclose(b.y[0].components[0], np.log2(data))
 
 
 def test_log10():
     b = np.log10(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.log10(data))
+    assert np.allclose(b.y[0].components[0], np.log10(data))
 
 
 def test_log1p():
     b = np.log1p(a)
-    assert np.allclose(b.dependent_variables[0].components[0], np.log1p(data))
+    assert np.allclose(b.y[0].components[0], np.log1p(data))
 
 
 # test unit of components
@@ -156,42 +156,42 @@ def test_unsupported_unit():
 
 def test_negative():
     b = np.negative(a2)
-    assert np.allclose(b.dependent_variables[0].components[0], np.negative(data2))
+    assert np.allclose(b.y[0].components[0], np.negative(data2))
 
 
 def test_positive():
     b = np.positive(a2)
-    assert np.allclose(b.dependent_variables[0].components[0], np.positive(data2))
+    assert np.allclose(b.y[0].components[0], np.positive(data2))
 
 
 def test_absolute():
     b = np.absolute(a2)
-    assert np.allclose(b.dependent_variables[0].components[0], np.absolute(data2))
+    assert np.allclose(b.y[0].components[0], np.absolute(data2))
 
 
 def test_fabs():
     b = np.fabs(a2)
-    assert np.allclose(b.dependent_variables[0].components[0], np.fabs(data2))
+    assert np.allclose(b.y[0].components[0], np.fabs(data2))
 
 
 def test_rint():
     b = np.rint(a2)
-    assert np.allclose(b.dependent_variables[0].components[0], np.rint(data2))
+    assert np.allclose(b.y[0].components[0], np.rint(data2))
 
 
 def test_sign():
     b = np.sign(a2)
-    assert np.allclose(b.dependent_variables[0].components[0], np.sign(data2))
+    assert np.allclose(b.y[0].components[0], np.sign(data2))
 
 
 def test_conj():
     b = np.conj(a2)
-    assert np.allclose(b.dependent_variables[0].components[0], np.conj(data2))
+    assert np.allclose(b.y[0].components[0], np.conj(data2))
 
 
 def test_conjugate():
     b = np.conjugate(a2)
-    assert np.allclose(b.dependent_variables[0].components[0], np.conjugate(data2))
+    assert np.allclose(b.y[0].components[0], np.conjugate(data2))
 
 
 # -----------------------------------------------------------------
@@ -201,37 +201,29 @@ def test_conjugate():
 
 def test_sqrt():
     b = np.sqrt(a2)
-    assert np.allclose(
-        b.dependent_variables[0].components[0], np.sqrt(data2), equal_nan=True
-    )
-    assert str(b.dependent_variables[0].unit) == "m(1/2)"
+    assert np.allclose(b.y[0].components[0], np.sqrt(data2), equal_nan=True)
+    assert str(b.y[0].unit) == "m(1/2)"
 
 
 def test_square():
     b = np.square(a2)
-    assert np.allclose(b.dependent_variables[0].components[0], np.square(data2))
-    assert str(b.dependent_variables[0].unit) == "m2"
+    assert np.allclose(b.y[0].components[0], np.square(data2))
+    assert str(b.y[0].unit) == "m2"
 
 
 def test_cbrt():
     b = np.cbrt(a2)
-    assert np.allclose(
-        b.dependent_variables[0].components[0], np.cbrt(data2), equal_nan=True
-    )
-    assert str(b.dependent_variables[0].unit) == "m(1/3)"
+    assert np.allclose(b.y[0].components[0], np.cbrt(data2), equal_nan=True)
+    assert str(b.y[0].unit) == "m(1/3)"
 
 
 def test_reciprocal():
     b = np.reciprocal(a2)
-    assert np.allclose(
-        b.dependent_variables[0].components[0], np.reciprocal(data2), equal_nan=True
-    )
-    assert str(b.dependent_variables[0].unit) == "1 / m"
+    assert np.allclose(b.y[0].components[0], np.reciprocal(data2), equal_nan=True)
+    assert str(b.y[0].unit) == "1 / m"
 
 
 def test_power():
     b = np.power(a2, 5.3)
-    assert np.allclose(
-        b.dependent_variables[0].components[0], np.power(data2, 5.3), equal_nan=True
-    )
-    assert str(b.dependent_variables[0].unit) == "m(53/10)"
+    assert np.allclose(b.y[0].components[0], np.power(data2, 5.3), equal_nan=True)
+    assert str(b.y[0].unit) == "m(53/10)"

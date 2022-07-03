@@ -72,11 +72,11 @@ def _get_absolute_data_address(data_path, file):
 
 def get_absolute_url_path(url, file):
     res = parse_url(url)
-    path = res.geturl()
+    url_path = res.geturl()
     if res.scheme in ["file", ""]:
         if res.netloc == "":
-            path = _get_absolute_data_address(res.path, file)
-    return path
+            url_path = _get_absolute_data_address(res.path, file)
+    return url_path
 
 
 def get_relative_url_path(dataset_index, filename):

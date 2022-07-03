@@ -99,8 +99,7 @@ class LabeledDimension(BaseDimension):
     @property
     def coordinates(self):
         """Return the coordinates along the dimensions. This is an alias for labels."""
-        n = self._count
-        return self.labels[:n]
+        return self.labels[: self._count]
 
     @coordinates.setter
     def coordinates(self, value):

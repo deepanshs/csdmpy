@@ -8,7 +8,8 @@ from csdmpy.utils import _get_broadcast_shape  # lgtm [py/import-own-module]
 
 def fft(csdm, axis=0):
     """Perform a FFT along the given `dimension=axis`."""
-    index = _check_dimension_indices(len(csdm.dimensions), axis)[0]
+    index = _check_dimension_indices(len(csdm.dimensions), axis)
+    index = index if isinstance(index, int) else index[0]
     # for index in indexes:
     if csdm.dimensions[axis].type != "linear":
         raise NotImplementedError(
@@ -23,7 +24,7 @@ def fft(csdm, axis=0):
 
     unit_in = dimension_object._unit
     # the following coordinates does not include the coordinates offset and have are
-    # given in the vase unit of the dimension.
+    # given in the base unit of the dimension.
     coordinates = dimension_object._coordinates.to(unit_in).value
     coordinates_offset = dimension_object._coordinates_offset.to(unit_in).value
 

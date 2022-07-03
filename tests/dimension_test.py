@@ -111,7 +111,7 @@ def test_linear_new():
     test_with = (np.arange(12) - 6) * 20.0 + 5.0 + 1000.0
     assert np.all(data.dimensions[0].absolute_coordinates.value == test_with)
 
-    error = "The attribute cannot be modifed for Dimension objects with"
+    error = "The attribute cannot be modified for Dimension objects with"
     with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
         data.dimensions[0].coordinates = [1, 3]
 
