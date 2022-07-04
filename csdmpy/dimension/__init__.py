@@ -67,12 +67,12 @@ class Dimension:
 
         >>> from csdmpy import Dimension
         >>> dimension_dictionary = {
-        ...     'type': 'linear',
-        ...     'description': 'test',
-        ...     'increment': '5 G',
-        ...     'count': 10,
-        ...     'coordinates_offset': '10 mT',
-        ...     'origin_offset': '10 T'
+        ...     "type": "linear",
+        ...     "description": "test",
+        ...     "increment": "5 G",
+        ...     "count": 10,
+        ...     "coordinates_offset": "10 mT",
+        ...     "origin_offset": "10 T",
         ... }
         >>> x = Dimension(dimension_dictionary)
 
@@ -82,12 +82,14 @@ class Dimension:
 
     .. doctest::
 
-        >>> x = Dimension(type = 'linear',
-        ...               description = 'test',
-        ...               increment = '5 G',
-        ...               count = 10,
-        ...               coordinates_offset = '10 mT',
-        ...               origin_offset = '10 T')
+        >>> x = Dimension(
+        ...     type="linear",
+        ...     description="test",
+        ...     increment="5 G",
+        ...     count=10,
+        ...     coordinates_offset="10 mT",
+        ...     origin_offset="10 T",
+        ... )
     """
 
     __slots__ = ("subtype",)
@@ -235,7 +237,7 @@ class Dimension:
 
         .. testsetup::
 
-            >>> x.complex_fft = False
+            x.complex_fft = False
 
         Returns:
             A Quantity array of absolute coordinates for quantitative dimensions, `i.e`
@@ -261,11 +263,7 @@ class Dimension:
 
         .. doctest::
 
-            >>> x.application = {
-            ...     "com.example.myApp" : {
-            ...         "myApp_key": "myApp_metadata"
-            ...      }
-            ... }
+            >>> x.application = {"com.example.myApp": {"myApp_key": "myApp_metadata"}}
             >>> print(x.application)
             {'com.example.myApp': {'myApp_key': 'myApp_metadata'}}
 
@@ -331,7 +329,7 @@ class Dimension:
 
         .. testsetup::
 
-            >>> x.complex_fft = False
+            x.complex_fft = False
 
         Returns:
             A Quantity array of coordinates for quantitative dimensions, `i.e.` `linear`
@@ -401,7 +399,7 @@ class Dimension:
             >>> print(x.description)
             This is a test
 
-            >>> x.description = 'This is a test dimension.'
+            >>> x.description = "This is a test dimension."
 
         Returns:
             A string of UTF-8 allows characters describing the dimension.
@@ -428,7 +426,7 @@ class Dimension:
 
         .. doctest::
 
-            >>> test = Dimension(type='linear', increment = '1', count = 10)
+            >>> test = Dimension(type="linear", increment="1", count=10)
             >>> test.complex_fft
             False
             >>> print(test.coordinates)
@@ -602,9 +600,9 @@ class Dimension:
 
         .. doctest::
 
-            >>> x.period = '1/0 T'
-            >>> x.period = 'infinity µT'
-            >>> x.period = '∞ G'
+            >>> x.period = "1/0 T"
+            >>> x.period = "infinity µT"
+            >>> x.period = "∞ G"
 
         .. Attention::
             The physical quantity of the period must be consistent with other
@@ -676,10 +674,7 @@ class Dimension:
 
         .. doctest::
 
-            >>> x2 = Dimension(
-            ...         type='labeled',
-            ...         labels=['Cu', 'Ag', 'Au']
-            ...      )
+            >>> x2 = Dimension(type="labeled", labels=["Cu", "Ag", "Au"])
 
         then the labels along the labeled dimension are
 

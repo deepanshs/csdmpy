@@ -19,9 +19,13 @@ Single component dependent variable
 
 .. doctest::
 
-    >>> dv1 = cp.DependentVariable(type='internal', quantity_type='scalar',
-    ...                            components=np.arange(10000), unit='J',
-    ...                            description='A sample internal dependent variable.')
+    >>> dv1 = cp.DependentVariable(
+    ...     type="internal",
+    ...     quantity_type="scalar",
+    ...     components=np.arange(10000),
+    ...     unit="J",
+    ...     description="A sample internal dependent variable.",
+    ... )
     >>> print(dv1)
     DependentVariable(
     [[   0    1    2 ... 9997 9998 9999]] J, quantity_type=scalar, numeric_type=int64)
@@ -34,7 +38,7 @@ array as the DependentVariable object.
 
 .. doctest::
 
-    >>> dv1 = cp.as_dependent_variable(np.arange(10000).astype(np.complex64), unit='J')
+    >>> dv1 = cp.as_dependent_variable(np.arange(10000).astype(np.complex64), unit="J")
     >>> print(dv1)
     DependentVariable(
     [[0.000e+00+0.j 1.000e+00+0.j 2.000e+00+0.j ... 9.997e+03+0.j
@@ -44,7 +48,9 @@ You may additionally provide the quantity_type for the dependent variable,
 
 .. doctest::
 
-    >>> dv2 = cp.as_dependent_variable(np.arange(10000).astype(np.complex64), quantity_type='pixel_1')
+    >>> dv2 = cp.as_dependent_variable(
+    ...     np.arange(10000).astype(np.complex64), quantity_type="pixel_1"
+    ... )
     >>> print(dv2)
     DependentVariable(
     [[0.000e+00+0.j 1.000e+00+0.j 2.000e+00+0.j ... 9.997e+03+0.j
@@ -60,9 +66,13 @@ To generate a multi-component DependentVariable object, add an appropriate
 
 .. doctest::
 
-    >>> dv1 = cp.DependentVariable(type='internal', quantity_type='vector_2',
-    ...                            components=np.arange(10000), unit='J',
-    ...                            description='A sample internal dependent variable.')
+    >>> dv1 = cp.DependentVariable(
+    ...     type="internal",
+    ...     quantity_type="vector_2",
+    ...     components=np.arange(10000),
+    ...     unit="J",
+    ...     description="A sample internal dependent variable.",
+    ... )
     >>> print(dv1)
     DependentVariable(
     [[   0    1    2 ... 4997 4998 4999]
@@ -74,8 +84,9 @@ The above example generates a two-component dependent variable.
 
 .. doctest::
 
-    >>> dv1 = cp.as_dependent_variable(np.arange(9000).astype(np.complex64),
-    ...                                unit='m/s', quantity_type='symmetric_matrix_3')
+    >>> dv1 = cp.as_dependent_variable(
+    ...     np.arange(9000).astype(np.complex64), unit="m/s", quantity_type="symmetric_matrix_3"
+    ... )
     >>> print(dv1)
     DependentVariable(
     [[0.000e+00+0.j 1.000e+00+0.j 2.000e+00+0.j ... 1.497e+03+0.j
@@ -99,7 +110,7 @@ The above example generates a six-component dependent variable.
 
     .. doctest::
 
-        >>> d1 = cp.as_dependent_variable(np.arange(127), quantity_type='pixel_2') # doctest: +SKIP
+        >>> d1 = cp.as_dependent_variable(np.arange(127), quantity_type="pixel_2")  # doctest: +SKIP
         ValueError: cannot reshape array of size 127 into shape (2,63)
 
 Notice in the above examples, we use a one-dimensional NumPy array to generate
@@ -111,7 +122,9 @@ components and not the dimensions. For example, consider the following.
 
 .. doctest::
 
-    >>> d2 = cp.as_dependent_variable(np.arange(6000).reshape(10,20,30), quantity_type='vector_2')
+    >>> d2 = cp.as_dependent_variable(
+    ...     np.arange(6000).reshape(10, 20, 30), quantity_type="vector_2"
+    ... )
     >>> print(d2)
     DependentVariable(
     [[   0    1    2 ... 2997 2998 2999]
@@ -133,10 +146,14 @@ of the dependent variable are located at a remote and local address.
 
 .. doctest::
 
-    >>> dv = cp.DependentVariable(type='external', quantity_type='scalar', unit='J',
-    ...                           components_url='address to the binary file.',
-    ...                           numeric_type='int64',
-    ...                           description='A sample internal dependent variable.') # doctest: +SKIP
+    >>> dv = cp.DependentVariable(
+    ...     type="external",
+    ...     quantity_type="scalar",
+    ...     unit="J",
+    ...     components_url="address to the binary file.",
+    ...     numeric_type="int64",
+    ...     description="A sample internal dependent variable.",
+    ... )  # doctest: +SKIP
 
 
 A DependentVariable of type `external` is useful for data serialization. When

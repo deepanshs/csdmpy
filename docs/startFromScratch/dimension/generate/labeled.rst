@@ -10,8 +10,7 @@ string labels. You can similarly generate a labeled dimension.
 .. doctest::
 
     >>> import csdmpy as cp
-    >>> x = cp.Dimension(type='labeled',
-    ...                  labels=['The', 'great', 'circle'])
+    >>> x = cp.Dimension(type="labeled", labels=["The", "great", "circle"])
     >>> print(x)
     LabeledDimension(['The' 'great' 'circle'])
 
@@ -19,7 +18,7 @@ string labels. You can similarly generate a labeled dimension.
 
 .. doctest::
 
-    >>> x = cp.LabeledDimension(labels=['The', 'great', 'circle'])
+    >>> x = cp.LabeledDimension(labels=["The", "great", "circle"])
     >>> print(x)
     LabeledDimension(['The' 'great' 'circle'])
 
@@ -30,7 +29,7 @@ Dimension object.
 
 .. doctest::
 
-    >>> array = ['The', 'great', 'circle']
+    >>> array = ["The", "great", "circle"]
     >>> x = cp.as_dimension(array)
     >>> print(x)
     LabeledDimension(['The' 'great' 'circle'])

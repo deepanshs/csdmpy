@@ -58,7 +58,7 @@ class MonotonicDimension(BaseQuantitativeDimension):
             }
         super().__init__(unit=_unit, **kwargs)
 
-        r_unit = self._unit ** -1
+        r_unit = self._unit**-1
         self.reciprocal = ReciprocalDimension(unit=r_unit, **kwargs["reciprocal"])
         self._get_coordinates(coordinates)
 
@@ -209,6 +209,6 @@ def _update_monotonic_dimension_object_by_scalar(object_, other, type_):
     object_._unit = object_._coordinates.unit
     object_._quantity_name = object_._unit.physical_type
     object_._equivalencies = None
-    _reciprocal_unit = object_._unit ** -1
+    _reciprocal_unit = object_._unit**-1
     object_.reciprocal = ReciprocalDimension(unit=_reciprocal_unit)
     return object_

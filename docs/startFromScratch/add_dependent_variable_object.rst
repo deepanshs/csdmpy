@@ -41,18 +41,18 @@ be a valid collection for the given DependentVariable subtype. For example,
 .. doctest::
 
     >>> dv0 = {
-    ...     'type': 'internal',
-    ...     'quantity_type': 'scalar',
-    ...     'description': 'This is an internal scalar dependent variable',
-    ...     'unit': 'cm',
-    ...     'components': np.arange(50)
+    ...     "type": "internal",
+    ...     "quantity_type": "scalar",
+    ...     "description": "This is an internal scalar dependent variable",
+    ...     "unit": "cm",
+    ...     "components": np.arange(50),
     ... }
     >>> dv1 = {
-    ...     'type': 'internal',
-    ...     'quantity_type': 'vector_2',
-    ...     'description': 'This is an internal vector dependent variable',
-    ...     'unit': 'cm',
-    ...     'components': np.arange(100)
+    ...     "type": "internal",
+    ...     "quantity_type": "vector_2",
+    ...     "description": "This is an internal vector dependent variable",
+    ...     "unit": "cm",
+    ...     "components": np.arange(100),
     ... }
     >>> new_data = cp.CSDM(dependent_variables=[dv0, dv1])
     >>> print(new_data)

@@ -10,10 +10,21 @@ demonstrates the effect of these attributes and methods on the coordinates.
 .. doctest::
 
     >>> import numpy as np
-    >>> array = np.asarray([-0.28758166, -0.22712233, -0.19913859, -0.17235106,
-    ...                     -0.1701172, -0.10372635, -0.01817061, 0.05936719,
-    ...                     0.18141424, 0.34758913])
-    >>> x = cp.MonotonicDimension(coordinates=array)*cp.ScalarQuantity('cm')
+    >>> array = np.asarray(
+    ...     [
+    ...         -0.28758166,
+    ...         -0.22712233,
+    ...         -0.19913859,
+    ...         -0.17235106,
+    ...         -0.1701172,
+    ...         -0.10372635,
+    ...         -0.01817061,
+    ...         0.05936719,
+    ...         0.18141424,
+    ...         0.34758913,
+    ...     ]
+    ... )
+    >>> x = cp.MonotonicDimension(coordinates=array) * cp.ScalarQuantity("cm")
 
 Attributes
 """"""""""
@@ -38,7 +49,7 @@ instance.
 
     .. doctest::
 
-        >>> print ('number of points =', x.count)
+        >>> print("number of points =", x.count)
         number of points = 10
 
     You may update the number of points with this attribute, however, you can
@@ -47,7 +58,7 @@ instance.
     .. doctest::
 
         >>> x.count = 6
-        >>> print('new number of points =', x.count)
+        >>> print("new number of points =", x.count)
         new number of points = 6
         >>> print(x.coordinates)
         [-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172  -0.10372635] cm
@@ -56,11 +67,11 @@ instance.
 :attr:`~csdmpy.Dimension.origin_offset`
     .. doctest::
 
-        >>> print('old origin offset =', x.origin_offset)
+        >>> print("old origin offset =", x.origin_offset)
         old origin offset = 0.0 cm
 
         >>> x.origin_offset = "1 km"
-        >>> print('new origin offset =', x.origin_offset)
+        >>> print("new origin offset =", x.origin_offset)
         new origin offset = 1.0 km
 
         >>> print(x.coordinates)
@@ -74,7 +85,7 @@ instance.
 
     .. doctest::
 
-        >>> print('absolute coordinates =', x.absolute_coordinates)
+        >>> print("absolute coordinates =", x.absolute_coordinates)
         absolute coordinates = [99999.71241834 99999.77287767 99999.80086141 99999.82764894
          99999.8298828  99999.89627365] cm
 
@@ -84,18 +95,18 @@ instance.
 :attr:`~csdmpy.Dimension.label`
     .. doctest::
 
-        >>> x.label = 't1'
-        >>> print('new label =', x.label)
+        >>> x.label = "t1"
+        >>> print("new label =", x.label)
         new label = t1
 
 :attr:`~csdmpy.Dimension.period`
     .. doctest::
 
-        >>> print('old period =', x.period)
+        >>> print("old period =", x.period)
         old period = inf cm
 
-        >>> x.period = '10 m'
-        >>> print('new period =', x.period)
+        >>> x.period = "10 m"
+        >>> print("new period =", x.period)
         new period = 10.0 m
 
 :attr:`~csdmpy.Dimension.quantity_name`
@@ -103,7 +114,7 @@ instance.
 
     .. doctest::
 
-        >>> print ('quantity is', x.quantity_name)
+        >>> print("quantity is", x.quantity_name)
         quantity is length
 
 
@@ -117,15 +128,15 @@ The method is used for unit conversions. It follows,
 
 .. doctest::
 
-    >>> print('old unit =', x.coordinates.unit)
+    >>> print("old unit =", x.coordinates.unit)
     old unit = cm
-    >>> print('old coordinates =', x.coordinates)
+    >>> print("old coordinates =", x.coordinates)
     old coordinates = [-0.28758166 -0.22712233 -0.19913859 -0.17235106 -0.1701172  -0.10372635] cm
 
     >>> ## unit conversion
-    >>> x.to('mm')
+    >>> x.to("mm")
 
-    >>> print('new coordinates =', x.coordinates)
+    >>> print("new coordinates =", x.coordinates)
     new coordinates = [-2.8758166 -2.2712233 -1.9913859 -1.7235106 -1.701172  -1.0372635] mm
 
 The argument of this method is a unit, in this case, 'mm', whose
@@ -134,7 +145,7 @@ coordinates.  An exception will be raised otherwise,
 
 .. doctest::
 
-    >>> x.to('km/s')  # doctest: +SKIP
+    >>> x.to("km/s")  # doctest: +SKIP
     Exception("Validation Failed: The unit 'km / s' (speed) is inconsistent with the unit 'mm' (length).")
 
 
@@ -149,6 +160,6 @@ appropriate ScalarQuantity, as follows,
 
     >>> print(x)
     MonotonicDimension([-2.8758166 -2.2712233 -1.9913859 -1.7235106 -1.701172  -1.0372635] mm)
-    >>> x *= cp.ScalarQuantity('2 s/mm')
+    >>> x *= cp.ScalarQuantity("2 s/mm")
     >>> print(x)
     MonotonicDimension([-0.57516332 -0.45424466 -0.39827718 -0.34470212 -0.3402344  -0.2074527 ] cm s / mm)

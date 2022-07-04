@@ -16,7 +16,7 @@ Create a labeled dimension. Here, we make use of python dictionary.
 
 .. doctest::
 
-    >>> x = dict(type='labeled', labels=['🍈','🍉','🍋','🍌','🥑','🍍'])
+    >>> x = dict(type="labeled", labels=["🍈", "🍉", "🍋", "🍌", "🥑", "🍍"])
 
 The above python dictionary contains two keys. The `type` key identifies the
 dimension as a labeled dimension while the `labels` key holds an
@@ -28,8 +28,12 @@ to the dependent variable object.
 
 .. doctest::
 
-    >>> y = dict(type='internal', numeric_type='float32', quantity_type='scalar',
-    ...     components=[[0.5, 0.25, 1, 2, 1, 0.25]])
+    >>> y = dict(
+    ...     type="internal",
+    ...     numeric_type="float32",
+    ...     quantity_type="scalar",
+    ...     components=[[0.5, 0.25, 1, 2, 1, 0.25]],
+    ... )
 
 Here, the python dictionary contains `type`, `numeric_type`, and `components`
 key. The value of the `components` key holds an array of data values
@@ -40,9 +44,7 @@ Create a csdm object from the dimensions and dependent variables and we have a �
 .. doctest::
 
     >>> fun_data = cp.CSDM(
-    ...     dimensions=[x],
-    ...     dependent_variables=[y],
-    ...     description="An emoji dataset"
+    ...     dimensions=[x], dependent_variables=[y], description="An emoji dataset"
     ... )
     >>> print(fun_data.data_structure)
     {
@@ -82,8 +84,8 @@ To serialize this file, use the :meth:`~csdmpy.CSDM.save` method of the
 
 .. doctest::
 
-    >>> fun_data.dependent_variables[0].encoding = 'base64'
-    >>> fun_data.save('my_file.csdf')
+    >>> fun_data.dependent_variables[0].encoding = "base64"
+    >>> fun_data.save("my_file.csdf")
 
 
 In the above code, the components from the
@@ -95,12 +97,13 @@ serialized with a `.csdfe` file extension.
 
 .. doctest::
 
-  >>> fun_data.dependent_variables[0].encoding = 'raw'
-  >>> fun_data.save('my_file_raw.csdfe')
+    >>> fun_data.dependent_variables[0].encoding = "raw"
+    >>> fun_data.save("my_file_raw.csdfe")
 
 .. testcleanup::
 
-  >>> import os
-  >>> os.remove('my_file.csdf')
-  >>> os.remove('my_file_raw.csdfe')
-  >>> os.remove('my_file_raw_0.dat')
+    import os
+
+    os.remove("my_file.csdf")
+    os.remove("my_file_raw.csdfe")
+    os.remove("my_file_raw_0.dat")

@@ -6,7 +6,7 @@ import csdmpy.statistics as stat
 
 
 def get_gaussian(x, b, c):
-    return np.exp(-((x - b) ** 2) / (2 * c ** 2))
+    return np.exp(-((x - b) ** 2) / (2 * c**2))
 
 
 def test_01():

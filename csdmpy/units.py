@@ -214,12 +214,12 @@ class ScalarQuantity:
 
         .. doctest::
 
-            >>> a = ScalarQuantity('5 kg m^2 /s')
+            >>> a = ScalarQuantity("5 kg m^2 /s")
             >>> print(a.quantity)
             5.0 kg m2 / s
             >>> print(str(ScalarQuantity(a.quantity)))
             5.0 kg * m^2 * s^-1
-            >>> print(ScalarQuantity(a.quantity).__format__('unit'))
+            >>> print(ScalarQuantity(a.quantity).__format__("unit"))
             kg * m^2 * s^-1
         """
 

@@ -618,7 +618,7 @@ def test_as_dimension():
     array = np.arange(10)
     one = np.ones(10)
     rand = np.random.rand(10)
-    monotonic = 10 ** array / 10
+    monotonic = 10**array / 10
 
     dim = cp.as_dimension(array, unit="s")
     assert np.allclose(dim.coordinates.value, array)
