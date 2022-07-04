@@ -592,6 +592,16 @@ def test_to_list():
     assert np.allclose(dv_1, out)
 
 
+def test_new_from_old_csdm():
+    old_test = get_test_2d(int)[1]
+    new_test = cp.CSDM(
+        dimensions=old_test.dimensions, dependent_variables=old_test.dependent_variables
+    )
+    assert old_test.x == new_test.x
+    assert old_test.y == new_test.y
+    assert id(old_test.x) != id(new_test.x)
+
+
 # def test_argmin_max():
 #     out, new_test = get_test_2d(float)
 #     assert np.allclose(np.argmax(out), np.argmax(new_test))
