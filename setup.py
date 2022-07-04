@@ -5,7 +5,7 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-# Load package veersion number.
+# Load package version number.
 with open("csdmpy/__init__.py", "r") as f:
     for line in f.readlines():
         if "__version__" in line:
@@ -66,6 +66,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Topic :: Scientific/Engineering",
     ],
 )

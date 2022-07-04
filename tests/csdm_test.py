@@ -346,8 +346,8 @@ def test_mul_truediv_pow():
     assert np.allclose(res.y[0].components, out / 2)
     assert id(a_test) != id(res)
 
-    res = 2.0 / a_test.astype(float)
-    assert np.allclose(res.y[0].components, 2 / out)
+    res = 2.0 / (a_test + 1).astype(float)
+    assert np.allclose(res.y[0].components, 2 / (out + 1))
 
     res = b_test / 1.34
     out = b_test.y[0].components
@@ -572,6 +572,26 @@ def test_round_around():
     assert np.allclose(np.around(out, 1), res.y[0].components[0])
 
 
+def test_transpose():
+    out, new_test = get_test_2d(float)
+    res = new_test.T
+    res2 = new_test.transpose()
+
+    assert res == res2
+    assert np.allclose(res.y[0].components[0], out.T)
+
+
+def test_to_list():
+    out, new_test = get_test_2d(int)
+    d_0, d_1, dv_1 = new_test.to_list()
+
+    assert str(d_0.unit) == "s"
+    assert np.allclose(d_0.value, np.arange(5))
+    assert str(d_1.unit) == "m"
+    assert np.allclose(d_1.value, np.arange(10))
+    assert np.allclose(dv_1, out)
+
+
 # def test_argmin_max():
 #     out, new_test = get_test_2d(float)
 #     assert np.allclose(np.argmax(out), np.argmax(new_test))
@@ -579,7 +599,10 @@ def test_round_around():
 
 
 def test_not_implemented_error():
-    fn = [np.ptp, np.trace]
-    for fn_ in fn:
+    np_fn = [np.ptp, np.trace, np.argmax, np.argmin]
+    cp_fn = ["ptp", "trace", "argmax", "argmin"]
+    for fn_n, fn_c in zip(np_fn, cp_fn):
         with pytest.raises(NotImplementedError, match=""):
-            fn_(a_test)
+            _ = fn_n(a_test)
+        with pytest.raises(NotImplementedError, match=""):
+            a_test.__getattribute__(fn_c)()

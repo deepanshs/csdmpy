@@ -14,7 +14,6 @@ dim = [
     {"type": "linear", "count": 15, "increment": "1"},
 ]
 dv = {"type": "internal", "components": [data.ravel()], "quantity_type": "scalar"}
-
 test_1 = cp.CSDM(dimensions=dim, dependent_variables=[dv])
 
 
