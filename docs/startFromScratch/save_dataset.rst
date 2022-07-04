@@ -84,7 +84,8 @@ and the dependent variables at index zero with ``raw`` encoding, respectively.
 
 .. testcleanup::
 
-    >>> import os
-    >>> os.remove('my_file.csdf')
-    >>> os.remove('my_file.csdfe')
-    >>> os.remove('my_file_0.dat')
+    import os
+
+    os.remove("my_file.csdf")
+    os.remove("my_file.csdfe")
+    os.remove("my_file_0.dat")

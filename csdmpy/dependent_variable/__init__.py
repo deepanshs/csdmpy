@@ -38,15 +38,15 @@ class DependentVariable:
 
         >>> from csdmpy import DependentVariable
         >>> import numpy as np
-        >>> numpy_array = np.arange(30).reshape(3,10).astype(np.float32)
+        >>> numpy_array = np.arange(30).reshape(3, 10).astype(np.float32)
 
         >>> dependent_variable_dictionary = {
-        ...     'type': 'internal',
-        ...     'components': numpy_array,
-        ...     'name': 'star',
-        ...     'unit': 'W s',
-        ...     'quantity_name': 'energy',
-        ...     'quantity_type': 'pixel_3'
+        ...     "type": "internal",
+        ...     "components": numpy_array,
+        ...     "name": "star",
+        ...     "unit": "W s",
+        ...     "quantity_name": "energy",
+        ...     "quantity_type": "pixel_3",
         ... }
         >>> y = DependentVariable(dependent_variable_dictionary)
 
@@ -57,12 +57,12 @@ class DependentVariable:
     .. doctest::
 
         >>> y = DependentVariable(
-        ...         type='internal',
-        ...         name='star',
-        ...         unit='W s',
-        ...         quantity_type='pixel_3',
-        ...         components=numpy_array
-        ...     )
+        ...     type="internal",
+        ...     name="star",
+        ...     unit="W s",
+        ...     quantity_type="pixel_3",
+        ...     components=numpy_array,
+        ... )
     """
 
     __slots__ = ("subtype", "_type")
@@ -169,11 +169,7 @@ class DependentVariable:
 
         .. doctest::
 
-            >>> y.application = {
-            ...     "com.example.myApp" : {
-            ...         "myApp_key": "myApp_metadata"
-            ...      }
-            ... }
+            >>> y.application = {"com.example.myApp": {"myApp_key": "myApp_metadata"}}
             >>> print(y.application)
             {'com.example.myApp': {'myApp_key': 'myApp_metadata'}}
 
@@ -235,7 +231,7 @@ class DependentVariable:
 
         .. doctest::
 
-            >>> y.component_labels = ['channel 0', 'channel 1', 'channel 2']
+            >>> y.component_labels = ["channel 0", "channel 1", "channel 2"]
 
         The individual labels are accessed with proper indexing, for example,
 
@@ -298,7 +294,7 @@ class DependentVariable:
 
         .. doctest::
 
-            >>> y.components = np.linspace(0,256,30, dtype='u1').reshape(3,10)
+            >>> y.components = np.linspace(0, 256, 30, dtype="u1").reshape(3, 10)
             >>> y.numeric_type
             'uint8'
 
@@ -400,7 +396,7 @@ class DependentVariable:
 
             >>> print(y.description)
             A test image
-            >>> y.description = 'A test pixel_3 image'
+            >>> y.description = "A test pixel_3 image"
             >>> print(y.description)
             A test pixel_3 image
 
@@ -438,7 +434,7 @@ class DependentVariable:
 
         .. doctest::
 
-            >>> y.encoding = 'base64'
+            >>> y.encoding = "base64"
 
         The value of this attribute will be used in serializing the data to the file,
         when using the :meth:`~csdmpy.CSDM.save` method.
@@ -463,7 +459,7 @@ class DependentVariable:
 
             >>> y.name
             'star'
-            >>> y.name = 'rock star'
+            >>> y.name = "rock star"
 
         Returns:
             A string containing the name of the dependent variable.
@@ -508,14 +504,14 @@ class DependentVariable:
              [10. 11. 12. 13. 14. 15. 16. 17. 18. 19.]
              [20. 21. 22. 23. 24. 25. 26. 27. 28. 29.]]
 
-            >>> y.numeric_type = 'complex64'
-            >>> print(y.components[:,:5])
+            >>> y.numeric_type = "complex64"
+            >>> print(y.components[:, :5])
             [[ 0.+0.j  1.+0.j  2.+0.j  3.+0.j  4.+0.j]
              [10.+0.j 11.+0.j 12.+0.j 13.+0.j 14.+0.j]
              [20.+0.j 21.+0.j 22.+0.j 23.+0.j 24.+0.j]]
 
-            >>> y.numeric_type = float # python type object
-            >>> print(y.components[:,:5])
+            >>> y.numeric_type = float  # python type object
+            >>> print(y.components[:, :5])
             [[ 0.  1.  2.  3.  4.]
              [10. 11. 12. 13. 14.]
              [20. 21. 22. 23. 24.]]
@@ -573,7 +569,7 @@ class DependentVariable:
 
             >>> y.quantity_type
             'pixel_3'
-            >>> y.quantity_type = 'vector_3'
+            >>> y.quantity_type = "vector_3"
 
         Returns:
             A string with a `valid` quantity type.
@@ -607,7 +603,7 @@ class DependentVariable:
             >>> print(y.type)
             internal
 
-            >>> y.type = 'external'
+            >>> y.type = "external"
 
         When `type` is external, the data values from the corresponding dependent
         variable are serialized to an external file within the same directory as the
@@ -678,12 +674,12 @@ class DependentVariable:
 
             >>> y.unit
             Unit("s W")
-            >>> print(y.components[0,5])
+            >>> print(y.components[0, 5])
             5.0
-            >>> y.to('mJ')
+            >>> y.to("mJ")
             >>> y.unit
             Unit("mJ")
-            >>> print(y.components[0,5])
+            >>> print(y.components[0, 5])
             5000.0
 
         .. note::

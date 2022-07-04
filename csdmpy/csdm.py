@@ -458,7 +458,7 @@ class CSDM:
         other = check_scalar_object(other, "**")
         for item in self.dependent_variables:
             item.components.__ipow__(other)
-            item.subtype._unit = item.subtype._unit ** other
+            item.subtype._unit = item.subtype._unit**other
         return self
 
     def _get_indices(self, indices):
@@ -766,10 +766,10 @@ class CSDM:
             >>> import csdmpy as cp
             >>> data_model = cp.new()
             >>> py_dictionary = {
-            ...     'type': 'linear',
-            ...     'increment': '5 G',
-            ...     'count': 50,
-            ...     'coordinates_offset': '-10 mT'
+            ...     "type": "linear",
+            ...     "increment": "5 G",
+            ...     "count": 50,
+            ...     "coordinates_offset": "-10 mT",
             ... }
             >>> data_model.add_dimension(py_dictionary)
 
@@ -777,30 +777,20 @@ class CSDM:
 
         .. doctest::
 
-            >>> data_model.add_dimension(
-            ...     type = 'linear',
-            ...     increment = '5 G',
-            ...     count = 50,
-            ...     coordinates_offset = '-10 mT'
-            ... )
+            >>> data_model.add_dimension(type="linear", increment="5 G", count=50)
 
         *Using a* :ref:`dim_api` *class.*
 
         .. doctest::
 
-            >>> var1 = Dimension(type = 'linear',
-            ...                  increment = '5 G',
-            ...                  count = 50,
-            ...                  coordinates_offset = '-10 mT')
+            >>> var1 = Dimension(type="linear", increment="5 G", count=50)
             >>> data_model.add_dimension(var1)
 
         *Using a subtype class.*
 
         .. doctest::
 
-            >>> var2 = cp.LinearDimension(count = 50,
-            ...                  increment = '5 G',
-            ...                  coordinates_offset = '-10 mT')
+            >>> var2 = cp.LinearDimension(count=50, increment="5 G")
             >>> data_model.add_dimension(var2)
 
         *From a numpy array.*
@@ -850,14 +840,14 @@ class CSDM:
 
             >>> data_model = cp.new()
 
-            >>> numpy_array = (100*np.random.rand(3,50)).astype(np.uint8)
+            >>> numpy_array = (100 * np.random.rand(3, 50)).astype(np.uint8)
             >>> py_dictionary = {
-            ...     'type': 'internal',
-            ...     'components': numpy_array,
-            ...     'name': 'star',
-            ...     'unit': 'W s',
-            ...     'quantity_name': 'energy',
-            ...     'quantity_type': 'pixel_3'
+            ...     "type": "internal",
+            ...     "components": numpy_array,
+            ...     "name": "star",
+            ...     "unit": "W s",
+            ...     "quantity_name": "energy",
+            ...     "quantity_type": "pixel_3",
             ... }
             >>> data_model.add_dependent_variable(py_dictionary)
 
@@ -865,22 +855,26 @@ class CSDM:
 
         .. doctest::
 
-            >>> data_model.add_dependent_variable(type='internal',
-            ...                                  name='star',
-            ...                                  unit='W s',
-            ...                                  quantity_type='pixel_3',
-            ...                                  components=numpy_array)
+            >>> data_model.add_dependent_variable(
+            ...     type="internal",
+            ...     name="star",
+            ...     unit="W s",
+            ...     quantity_type="pixel_3",
+            ...     components=numpy_array,
+            ... )
 
         *From a* :ref:`dv_api` *instance.*
 
         .. doctest::
 
             >>> from csdmpy import DependentVariable
-            >>> var1 = DependentVariable(type='internal',
-            ...                          name='star',
-            ...                          unit='W s',
-            ...                          quantity_type='pixel_3',
-            ...                          components=numpy_array)
+            >>> var1 = DependentVariable(
+            ...     type="internal",
+            ...     name="star",
+            ...     unit="W s",
+            ...     quantity_type="pixel_3",
+            ...     components=numpy_array,
+            ... )
             >>> data_model.add_dependent_variable(var1)
 
         If passing a :ref:`dv_api` instance, as a general recommendation,
@@ -1033,8 +1027,10 @@ class CSDM:
             >>> data.save('my_file.csdf')
 
         .. testcleanup::
-            >>> import os
-            >>> os.remove('my_file.csdf')
+
+            import os
+
+            os.remove("my_file.csdf")
         """
         dictionary = self._dict(filename=filename, version=version)
 

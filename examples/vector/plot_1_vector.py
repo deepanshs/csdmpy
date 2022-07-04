@@ -45,7 +45,7 @@ import numpy as np
 
 X, Y = np.meshgrid(x[0].coordinates, x[1].coordinates)  # (x, y) coordinate pairs
 U, V = y[0].components[0], y[0].components[1]  # U and V are the components
-R = np.sqrt(U ** 2 + V ** 2)  # The magnitude of the vector
+R = np.sqrt(U**2 + V**2)  # The magnitude of the vector
 R /= R.min()  # Scaled magnitude of the vector
 Rlog = np.log10(R)  # Scaled magnitude of the vector on a log scale
 

@@ -20,11 +20,11 @@ Consider the following csdm data object.
     >>> arr1 = np.arange(6, dtype=np.float32).reshape(2, 3)
     >>> csdm_obj1 = cp.as_csdm(arr1)
     >>> # converting the dimension to proper physical dimensions.
-    >>> csdm_obj1.dimensions[0]*=cp.ScalarQuantity('2.64 m')
-    >>> csdm_obj1.dimensions[0].coordinates_offset = '1 km'
+    >>> csdm_obj1.dimensions[0] *= cp.ScalarQuantity("2.64 m")
+    >>> csdm_obj1.dimensions[0].coordinates_offset = "1 km"
     >>> # converting the dimension to proper physical dimensions.
-    >>> csdm_obj1.dimensions[1]*=cp.ScalarQuantity('10 µs')
-    >>> csdm_obj1.dimensions[1].coordinates_offset = '-0.5 ms'
+    >>> csdm_obj1.dimensions[1] *= cp.ScalarQuantity("10 µs")
+    >>> csdm_obj1.dimensions[1].coordinates_offset = "-0.5 ms"
     >>> print(csdm_obj1)
     CSDM(
     DependentVariable(
@@ -87,7 +87,7 @@ Multiplicative operations involving scalar / ScalarQuantity
 
 .. doctest::
 
-    >>> csdm_obj2 = csdm_obj1 * 3j/2.4
+    >>> csdm_obj2 = csdm_obj1 * 3j / 2.4
     >>> print(csdm_obj2)
     CSDM(
     DependentVariable(
@@ -104,7 +104,7 @@ csdm object with the appropriate scalar quantity, for example,
 
 .. doctest::
 
-    >>> csdm_obj1 *= cp.ScalarQuantity('3.23 m')
+    >>> csdm_obj1 *= cp.ScalarQuantity("3.23 m")
     >>> print(csdm_obj1)
     CSDM(
     DependentVariable(
@@ -118,7 +118,7 @@ csdm object with the appropriate scalar quantity, for example,
 
 .. doctest::
 
-    >>> csdm_obj1 /= cp.ScalarQuantity('3.23 m')
+    >>> csdm_obj1 /= cp.ScalarQuantity("3.23 m")
     >>> print(csdm_obj1)
     CSDM(
     DependentVariable(
@@ -140,8 +140,8 @@ objects with the same dimensionality. For examples,
 
 .. doctest::
 
-    >>> csdm1 = cp.as_csdm(np.ones((2,3)), unit='m/s')
-    >>> csdm2 = cp.as_csdm(np.ones((2,3)), unit='cm/s')
+    >>> csdm1 = cp.as_csdm(np.ones((2, 3)), unit="m/s")
+    >>> csdm2 = cp.as_csdm(np.ones((2, 3)), unit="cm/s")
     >>> csdm_obj = csdm1 + csdm2
     >>> print(csdm_obj)
     CSDM(
@@ -159,9 +159,9 @@ csdm objects have different dimensionality.
 
 .. doctest::
 
-    >>> csdm1 = cp.as_csdm(np.ones((2,3)), unit='m/s')
-    >>> csdm2 = cp.as_csdm(np.ones((2,3)))
-    >>> csdm_obj = csdm1 + csdm2 # doctest: +SKIP
+    >>> csdm1 = cp.as_csdm(np.ones((2, 3)), unit="m/s")
+    >>> csdm2 = cp.as_csdm(np.ones((2, 3)))
+    >>> csdm_obj = csdm1 + csdm2  # doctest: +SKIP
     Exception: Cannot operate on dependent variables with physical types: speed and dimensionless.
 
 Similarly, an exception will be raised if the dimension objects of the two
@@ -171,10 +171,10 @@ csdm objects are different.
 
 .. doctest::
 
-    >>> csdm1 = cp.as_csdm(np.ones((2,3)), unit='m/s')
-    >>> csdm1.dimensions[1] = cp.MonotonicDimension(coordinates=['1 ms', '1 s'])
-    >>> csdm2 = cp.as_csdm(np.ones((2,3)), unit='cm/s')
-    >>> csdm_obj = csdm1 + csdm2 # doctest: +SKIP
+    >>> csdm1 = cp.as_csdm(np.ones((2, 3)), unit="m/s")
+    >>> csdm1.dimensions[1] = cp.MonotonicDimension(coordinates=["1 ms", "1 s"])
+    >>> csdm2 = cp.as_csdm(np.ones((2, 3)), unit="cm/s")
+    >>> csdm_obj = csdm1 + csdm2  # doctest: +SKIP
     Exception: Cannot operate on CSDM objects with different dimensions.
 
 
@@ -186,10 +186,10 @@ rules as the NumPy array. Consider the following 3D{1} csdm object.
 
 .. doctest::
 
-    >>> csdm1 = cp.as_csdm(np.zeros((5, 10, 20)), unit='s')
-    >>> csdm1.dimensions[0] = cp.as_dimension(np.arange(20)*0.5+4.3, unit='kg')
-    >>> csdm1.dimensions[1] = cp.as_dimension([1, 2, 3, 5, 7, 11, 13, 17, 19, 23], unit='mm')
-    >>> csdm1.dimensions[2] = cp.LabeledDimension(labels=list('abcde'))
+    >>> csdm1 = cp.as_csdm(np.zeros((5, 10, 20)), unit="s")
+    >>> csdm1.dimensions[0] = cp.as_dimension(np.arange(20) * 0.5 + 4.3, unit="kg")
+    >>> csdm1.dimensions[1] = cp.as_dimension([1, 2, 3, 5, 7, 11, 13, 17, 19, 23], unit="mm")
+    >>> csdm1.dimensions[2] = cp.LabeledDimension(labels=list("abcde"))
     >>> print(csdm1.shape)
     (20, 10, 5)
     >>> print(csdm1.dimensions)
@@ -274,7 +274,7 @@ Method that only operate on dimensionless dependent variables
 
 .. doctest::
 
-    >>> csdm_obj1 = cp.as_csdm(10**(np.arange(10)/10))
+    >>> csdm_obj1 = cp.as_csdm(10 ** (np.arange(10) / 10))
     >>> new_csdm1 = np.log10(csdm_obj1)
     >>> print(new_csdm1)
     CSDM(
@@ -287,7 +287,7 @@ Method that only operate on dimensionless dependent variables
 
 .. doctest::
 
-    >>> new_csdm2 = np.cos(2*np.pi*new_csdm1)
+    >>> new_csdm2 = np.cos(2 * np.pi * new_csdm1)
     >>> print(new_csdm2)
     CSDM(
     DependentVariable(
@@ -300,7 +300,7 @@ Method that only operate on dimensionless dependent variables
 
 .. doctest::
 
-    >>> new_csdm2 = np.exp(new_csdm1 * cp.ScalarQuantity('K')) # doctest: +SKIP
+    >>> new_csdm2 = np.exp(new_csdm1 * cp.ScalarQuantity("K"))  # doctest: +SKIP
     ValueError: Cannot apply `exp` to quantity with physical type `temperature`.
 
 An exception is raised for csdm object with non-dimensionless dependent
@@ -313,7 +313,7 @@ Method that are independent of the dependent variable dimensionality
 
 .. doctest::
 
-    >>> new_csdm2 = np.square(new_csdm1 * cp.ScalarQuantity('K'))
+    >>> new_csdm2 = np.square(new_csdm1 * cp.ScalarQuantity("K"))
     >>> print(new_csdm2)
     CSDM(
     DependentVariable(
@@ -340,7 +340,7 @@ Dimension reduction methods
 
 .. doctest::
 
-    >>> csdm1 = cp.as_csdm(np.ones((10,20,30)), unit='µG')
+    >>> csdm1 = cp.as_csdm(np.ones((10, 20, 30)), unit="µG")
     >>> csdm1.shape
     (30, 20, 10)
     >>> new = np.sum(csdm1, axis=1)
@@ -354,7 +354,7 @@ Dimension reduction methods
 
 .. doctest::
 
-    >>> csdm1 = cp.as_csdm(np.ones((10,20,30)), unit='µG')
+    >>> csdm1 = cp.as_csdm(np.ones((10, 20, 30)), unit="µG")
     >>> csdm1.shape
     (30, 20, 10)
     >>> new = np.sum(csdm1, axis=(1, 2))

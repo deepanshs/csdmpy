@@ -403,7 +403,7 @@ def test_mul_truediv_pow():
         res = a_test / np.asarray([1, 2])
 
     # pow
-    res = b1_test ** 2
+    res = b1_test**2
     out = b1_test.y[0].components
     assert np.allclose(res.y[0].components, np.power(out, 2))
     assert str(res.y[0].unit) == "km2"

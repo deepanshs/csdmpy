@@ -13,7 +13,7 @@ instance of the CSDM class following,
 .. doctest::
 
     >>> import csdmpy as cp
-    >>> new_data = cp.new(description='A new test dataset')
+    >>> new_data = cp.new(description="A new test dataset")
 
 The :meth:`~csdmpy.new` method returns an instance of the CSDM class with zero
 dimensions and dependent variables. respectively, `i.e.`, a 0D{0} dataset.
@@ -77,7 +77,7 @@ be the number of components. For example,
 
 .. doctest::
 
-    >>> csdm_obj1 = cp.as_csdm(array, quantity_type='pixel_3')
+    >>> csdm_obj1 = cp.as_csdm(array, quantity_type="pixel_3")
     >>> print(csdm_obj1)
     CSDM(
     DependentVariable(
@@ -100,8 +100,8 @@ the remaining three axes become the respective dimensions.
 
 .. doctest::
 
-    >>> array2 = np.arange(12000).reshape(2,30,20,10)
-    >>> csdm_obj2 = cp.as_csdm(array2, quantity_type='vector_2')
+    >>> array2 = np.arange(12000).reshape(2, 30, 20, 10)
+    >>> csdm_obj2 = cp.as_csdm(array2, quantity_type="vector_2")
     >>> print(len(csdm_obj2.dimensions), len(csdm_obj2.dependent_variables[0].components))
     3 2
 

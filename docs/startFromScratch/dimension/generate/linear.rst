@@ -11,7 +11,13 @@ datasets. There are several ways to generate LinearDimension.
 .. doctest::
 
     >>> import csdmpy as cp
-    >>> x = cp.Dimension(type='linear', count=10, increment="0.1 s", label="time", description="A temporal dimension.")
+    >>> x = cp.Dimension(
+    ...     type="linear",
+    ...     count=10,
+    ...     increment="0.1 s",
+    ...     label="time",
+    ...     description="A temporal dimension.",
+    ... )
     >>> print(x)
     LinearDimension([0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s)
 
@@ -20,8 +26,9 @@ datasets. There are several ways to generate LinearDimension.
 .. doctest::
 
     >>> import csdmpy as cp
-    >>> x1 = cp.LinearDimension(count=10, increment="0.1 s", label="time",
-    ...                          description="A temporal dimension.")
+    >>> x1 = cp.LinearDimension(
+    ...     count=10, increment="0.1 s", label="time", description="A temporal dimension."
+    ... )
     >>> print(x1)
     LinearDimension([0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s)
 
@@ -44,7 +51,7 @@ dimension by either providing an appropriate unit as the argument to the
 
 .. doctest::
 
-    >>> x3 = cp.as_dimension(array, unit='s')
+    >>> x3 = cp.as_dimension(array, unit="s")
     >>> print(x3)
     LinearDimension([0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s)
 
@@ -53,7 +60,7 @@ or appropriately multiplying the dimension object ``x2`` with a
 
 .. doctest::
 
-    >>> x2 *= cp.ScalarQuantity('s')
+    >>> x2 *= cp.ScalarQuantity("s")
     >>> print(x2)
     LinearDimension([0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9] s)
 
@@ -71,12 +78,12 @@ array. The value and the unit of the quantity instance are
 
     >>> # To access the numpy array
     >>> numpy_array = x.coordinates.value
-    >>> print('numpy array =', numpy_array)
+    >>> print("numpy array =", numpy_array)
     numpy array = [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]
 
     >>> # To access the astropy.unit
     >>> unit = x.coordinates.unit
-    >>> print('unit =', unit)
+    >>> print("unit =", unit)
     unit = s
 
 respectively.

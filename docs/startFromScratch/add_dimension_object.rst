@@ -19,7 +19,7 @@ to generate a CSDM object.
 
 .. doctest::
 
-    >>> linear_dim = cp.LinearDimension(count=10, increment='0.1 C/V')
+    >>> linear_dim = cp.LinearDimension(count=10, increment="0.1 C/V")
     >>> new_data = cp.CSDM(dimensions=[linear_dim])
     >>> print(new_data)
     CSDM(
@@ -35,22 +35,22 @@ be a valid collection for the given Dimension subtype. For example,
 
     >>> # dictionary representation of a linear dimension.
     >>> d0 = {
-    ...     'type': 'linear',
-    ...     'description': 'This is a linear dimension',
-    ...     'count': 5,
-    ...     'increment': '0.1 rad'
+    ...     "type": "linear",
+    ...     "description": "This is a linear dimension",
+    ...     "count": 5,
+    ...     "increment": "0.1 rad",
     ... }
     >>> # dictionary representation of a monotonic dimension.
     >>> d1 = {
-    ...     'type': 'monotonic',
-    ...     'description': 'This is a monotonic dimension',
-    ...     'coordinates': ['1 m/s', '2 cm/s', '4 mm/s'],
+    ...     "type": "monotonic",
+    ...     "description": "This is a monotonic dimension",
+    ...     "coordinates": ["1 m/s", "2 cm/s", "4 mm/s"],
     ... }
     >>> # dictionary representation of a labeled dimension.
     >>> d2 = {
-    ...     'type': 'labeled',
-    ...     'description': 'This is a labeled dimension',
-    ...     'labels': ['Cu', 'Ag', 'Au'],
+    ...     "type": "labeled",
+    ...     "description": "This is a labeled dimension",
+    ...     "labels": ["Cu", "Ag", "Au"],
     ... }
     >>> # add the dictionaries to the CSDM object.
     >>> new_data = cp.CSDM(dimensions=[d0, d1, d2])
