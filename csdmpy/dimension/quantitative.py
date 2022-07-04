@@ -113,7 +113,7 @@ class BaseQuantitativeDimension(BaseDimension):
     @property
     def quantity_name(self):
         """Quantity name associated with this dimension."""
-        return deepcopy(self._quantity_name)
+        return deepcopy(str(self._quantity_name))
 
     @quantity_name.setter
     def quantity_name(self, value):

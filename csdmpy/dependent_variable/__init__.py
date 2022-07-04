@@ -544,7 +544,7 @@ class DependentVariable:
         Raises:
             NotImplementedError: When assigning a value.
         """
-        return self.subtype.quantity_name
+        return str(self.subtype.quantity_name)
 
     @quantity_name.setter
     def quantity_name(self, value=""):
