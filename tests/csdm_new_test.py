@@ -30,10 +30,10 @@ def test_csdm_new():
 
 
 def test_bad_csdm():
-    error = "A list of valid Dimension objects or equivalent dictionary"
+    error = "A list of valid Dimension or equivalent dictionary objects"
     with pytest.raises(ValueError, match=f".*{error}.*"):
         cp.CSDM(dimensions="blah")
 
-    error = "A list of valid DependentVariable objects or equivalent dictionary"
+    error = "A list of valid DependentVariable or equivalent dictionary objects"
     with pytest.raises(ValueError, match=f".*{error}.*"):
         cp.CSDM(dependent_variables="blah")

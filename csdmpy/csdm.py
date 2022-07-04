@@ -139,21 +139,23 @@ class CSDM:
 
         self._dimensions = DimensionList([])
         if "dimensions" in kwargs_keys:
-            if not isinstance(kwargs["dimensions"], list):
+            if not isinstance(kwargs["dimensions"], (list, DimensionList)):
                 t_ = type(kwargs["dimensions"])
                 raise ValueError(
-                    f"A list of valid Dimension objects or equivalent dictionary "
-                    f"objects is required, found {t_}"
+                    "A list of valid Dimension or equivalent dictionary objects is "
+                    f"required, found {t_}."
                 )
             _ = [self.dimensions.append(item) for item in kwargs["dimensions"]]
 
         self._dependent_variables = DependentVariableList([])
         if "dependent_variables" in kwargs_keys:
             t_ = type(kwargs["dependent_variables"])
-            if not isinstance(kwargs["dependent_variables"], list):
+            if not isinstance(
+                kwargs["dependent_variables"], (list, DependentVariableList)
+            ):
                 raise ValueError(
-                    f"A list of valid DependentVariable objects or equivalent "
-                    f"dictionary objects is required, found {t_}"
+                    "A list of valid DependentVariable or equivalent dictionary "
+                    f"objects is required, found {t_}."
                 )
             for item in kwargs["dependent_variables"]:
                 if isinstance(item, dict):
@@ -380,7 +382,7 @@ class CSDM:
         return -self.__sub__(other)
 
     def __isub__(self, other):
-        """Subtract two objects in-lace (y-=x). See __sub__ for details. """
+        """Subtract two objects in-lace (y-=x). See __sub__ for details."""
         return self.__ifunction__("__isub__", "-", other)
 
     def __mul__(self, other):
@@ -702,7 +704,7 @@ class CSDM:
 
     @property
     def filename(self):
-        """Local file address of the current file. """
+        """Local file address of the current file."""
         return self._filename
 
     # Numpy - like property
