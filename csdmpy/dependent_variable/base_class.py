@@ -136,7 +136,7 @@ class BaseDependentVariable:
     @property
     def quantity_name(self):
         """Return quantity name associated with the physical quantity."""
-        return deepcopy(self._quantity_name)
+        return deepcopy(str(self._quantity_name))
 
     @quantity_name.setter
     def quantity_name(self, value=""):

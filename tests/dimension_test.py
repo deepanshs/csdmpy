@@ -681,3 +681,12 @@ def test_as_dimension():
     error = "Cannot convert a 2 dimensional array to a Dimension object."
     with pytest.raises(ValueError, match=".*{0}.*".format(error)):
         cp.as_dimension(np.arange(100).reshape(10, 10))
+
+
+def test_dimension_scale():
+    """Test for unit physical type in astropy>=4.0"""
+    dim = cp.LinearDimension(count=10, increment="1m")
+    dim2 = dim / 2.4
+    assert np.allclose(dim2.coordinates.value, np.arange(10) / 2.4)
+    assert dim2.quantity_name == "length"
+    assert type(dim2.quantity_name) == str
