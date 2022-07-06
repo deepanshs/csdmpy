@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
 """The Base DependentVariable class."""
-from __future__ import division
-from __future__ import print_function
-
 import base64
 import warnings
 from copy import deepcopy
@@ -320,5 +316,5 @@ def reduced_display(_components):
     for _, item in enumerate(_components):
         temp = item.ravel()
         lst = [str(temp[0]), str(temp[1]), str(temp[-2]), str(temp[-1])]
-        _string.append([("{0}, {1}, ..., {2}, {3}").format(*lst)])
+        _string.append([("{}, {}, ..., {}, {}").format(*lst)])
     return _string

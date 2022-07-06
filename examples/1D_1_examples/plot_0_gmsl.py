@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Global Mean Sea Level rise dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

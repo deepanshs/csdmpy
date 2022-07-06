@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Base Dimension class"""
 import json
 import warnings

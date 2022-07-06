@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Sparse along two dimensions, 2D{1,1} dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

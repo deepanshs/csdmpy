@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 2D{1} dataset with two linear dimensions
 ----------------------------------------

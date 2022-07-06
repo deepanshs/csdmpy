@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import numpy as np
 import pytest
 
@@ -30,7 +29,7 @@ def test_02():
     }
 
     error = "Missing a required `sparse_grid_vertexes`"
-    with pytest.raises(KeyError, match=".*{0}.*".format(error)):
+    with pytest.raises(KeyError, match=f".*{error}.*"):
         check_sparse_sampling_key_value(sparse_sampling)
 
 
@@ -40,7 +39,7 @@ def test_03():
     }
 
     error = "Missing a required `dimension_indexes`"
-    with pytest.raises(KeyError, match=".*{0}.*".format(error)):
+    with pytest.raises(KeyError, match=f".*{error}.*"):
         check_sparse_sampling_key_value(sparse_sampling)
 
 
@@ -51,7 +50,7 @@ def test_04():
         "sparse_grid_vertexes": [0, 5, 10, 15, 20, 25],
     }
     error = "Missing a required `unsigned_integer_type`"
-    with pytest.raises(KeyError, match=".*{0}.*".format(error)):
+    with pytest.raises(KeyError, match=f".*{error}.*"):
         check_sparse_sampling_key_value(sparse_sampling)
 
 
@@ -63,7 +62,7 @@ def test_05():
         "sparse_grid_vertexes": [0, 5, 10, 15, 20, 25],
     }
     error = "float32 is an invalid `unsigned_integer_type` enumeration"
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(ValueError, match=f".*{error}.*"):
         check_sparse_sampling_key_value(sparse_sampling)
 
 

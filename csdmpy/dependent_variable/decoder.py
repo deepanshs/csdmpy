@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Decoder for components' encoding types."""
 import base64
 

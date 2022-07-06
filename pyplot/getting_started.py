@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import csdmpy as cp
 
 domain = "https://www.ssnmr.org/sites/default/files/CSDM"

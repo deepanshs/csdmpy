@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """The SparseSampling class."""
 from copy import deepcopy
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Image, 2D{3} datasets
 ^^^^^^^^^^^^^^^^^^^^^

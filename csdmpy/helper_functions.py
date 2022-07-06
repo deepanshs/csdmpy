@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Helper functions."""
 from copy import deepcopy
 from warnings import warn
@@ -434,7 +433,7 @@ def oneD_scalar(x, y, ax, range_, **kwargs):
         ax.set_xlim(x[0].coordinates.value.min(), x[0].coordinates.value.max())
         ax.set_xlabel(f"{x[0].axis_label} - 0")
         ax.set_ylabel(y.axis_label[0])
-        ax.set_title("{0}".format(y.name))
+        ax.set_title(f"{y.name}")
         ax.grid(color="gray", linestyle="--", linewidth=0.5)
 
     ax.set_xlim(range_[0])
@@ -479,7 +478,7 @@ def twoD_scalar(x, y, ax, range_, **kwargs):
     ax.set_ylim([extent[2], extent[3]])
     ax.set_xlabel(f"{x[0].axis_label} - 0")
     ax.set_ylabel(f"{x[1].axis_label} - 1")
-    ax.set_title("{0}".format(y.name))
+    ax.set_title(f"{y.name}")
     ax.grid(color="gray", linestyle="--", linewidth=0.5)
 
     ax.set_xlim(range_[0])
@@ -519,7 +518,7 @@ def vector_plot(x, y, ax, range_, **kwargs):
             ax.invert_yaxis()
     else:
         ax.set_ylim([-y.components.max(), y.components.max()])
-    ax.set_title("{0}".format(y.name))
+    ax.set_title(f"{y.name}")
     ax.grid(color="gray", linestyle="--", linewidth=0.5)
 
     ax.set_xlim(range_[0])
@@ -537,7 +536,7 @@ def RGB_image(x, y, ax, range_, **kwargs):
 
     y0 = y.components
     ax.imshow(np.moveaxis(y0 / y0.max(), 0, -1), **kwargs)
-    ax.set_title("{0}".format(y.name))
+    ax.set_title(f"{y.name}")
 
     ax.set_xlim(range_[0])
     ax.set_ylim(range_[1])

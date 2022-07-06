@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """CSDM main."""
 import sys
 

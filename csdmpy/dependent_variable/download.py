@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Utility functions for the csdmpy module."""
 import sys
 from os import path
@@ -41,7 +40,7 @@ def download_file_from_url(url, verbose=False):
             total = int(total)
             if verbose:
                 sys.stdout.write(
-                    "Downloading '{0}' from '{1}' to file '{2}'.\n".format(
+                    "Downloading '{}' from '{}' to file '{}'.\n".format(
                         res[2], res[1], filename
                     )
                 )

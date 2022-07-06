@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test for the csdm object
     1) indexing and slicing test
 """
@@ -144,5 +143,5 @@ def test_index_7():
 
 def test_index_8():
     error = "Fancy indexing using tuples or lists may result in"
-    with pytest.raises(NotImplementedError, match=".*{0}.*".format(error)):
+    with pytest.raises(NotImplementedError, match=f".*{error}.*"):
         _ = a_obj[(1, 3, 9), 10]

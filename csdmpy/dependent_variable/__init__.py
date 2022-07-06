@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
 """Dependent variable object: attributes and methods."""
-from __future__ import division
-from __future__ import print_function
-
 import json
 import warnings
 from copy import deepcopy
@@ -623,11 +619,9 @@ class DependentVariable:
             self._type = value
             return
         raise ValueError(
-            (
-                f"The value, `{value}`, is invalid for the `type` attribute of the "
-                "DependentVariable object. The allowed values are 'internal' and "
-                "'external'."
-            )
+            f"The value, `{value}`, is invalid for the `type` attribute of the "
+            "DependentVariable object. The allowed values are 'internal' and "
+            "'external'."
         )
 
     @property
@@ -738,11 +732,9 @@ class DependentVariable:
 
         if grid_points != components_size and item._sparse_sampling == {}:
             warnings.warn(
-                (
-                    "The number of elements in the components array, "
-                    f"{components_size}, is not consistent with the total "
-                    f"number of grid points, {grid_points}."
-                )
+                "The number of elements in the components array, "
+                f"{components_size}, is not consistent with the total "
+                f"number of grid points, {grid_points}."
             )
         if item._sparse_sampling == {}:
             item._components = np.asarray(

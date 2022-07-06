@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import numpy as np
 
 from .utils import _get_broadcast_shape
@@ -146,5 +145,5 @@ def std(csdm):
     """
     var_ = var(csdm)
     if isinstance(var_, list):
-        return [tuple([np.sqrt(value) for value in items]) for items in var_]
-    return tuple([np.sqrt(value) for value in var_])
+        return [tuple(np.sqrt(value) for value in items) for items in var_]
+    return tuple(np.sqrt(value) for value in var_)

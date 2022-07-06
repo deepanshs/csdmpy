@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
 """The data model build on the Core Scientific Dataset Model."""
-from __future__ import division
-from __future__ import print_function
-
 import datetime
 import json
 from urllib.parse import urlparse

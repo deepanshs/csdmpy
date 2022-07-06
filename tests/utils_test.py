@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import pytest
 
 from csdmpy.utils import check_and_assign_bool
@@ -13,7 +12,7 @@ def test_encoding():
     assert check_encoding("none") == "none"
 
     error = "is an invalid `encoding` enumeration literal. The allowed values are"
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(ValueError, match=f".*{error}.*"):
         check_encoding("text")
 
 
@@ -29,7 +28,7 @@ def test_quantity_type():
     assert QuantityType("symmetric_matrix_10").p == 55
 
     error = "is an invalid `quantity_type` enumeration literal. The allowed values are"
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(ValueError, match=f".*{error}.*"):
         QuantityType("RGB")
 
 
@@ -66,13 +65,13 @@ def test_numeric_type():
 
     error = "is an invalid `numeric_type` enumeration literal. The allowed values are"
 
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(ValueError, match=f".*{error}.*"):
         NumericType("float16")
 
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(ValueError, match=f".*{error}.*"):
         NumericType("complex256")
 
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(ValueError, match=f".*{error}.*"):
         NumericType("float128")
 
 
@@ -82,5 +81,5 @@ def test_boolean():
     assert check_and_assign_bool(True) is True
 
     error = "Expecting an instance of type"
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+    with pytest.raises(TypeError, match=f".*{error}.*"):
         check_and_assign_bool("True")

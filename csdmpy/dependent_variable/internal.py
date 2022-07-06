@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
 """The Internal DependentVariable SubType class."""
-from __future__ import division
-from __future__ import print_function
-
 import numpy as np
 
 from csdmpy.dependent_variable.base_class import BaseDependentVariable

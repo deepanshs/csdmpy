@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Astronomy, 2D{1,1,1} dataset (Creating image composition)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

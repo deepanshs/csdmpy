@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Diffusion tensor MRI, 3D{6} dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """The Dimension object: attributes and methods."""
 import warnings
 from copy import deepcopy

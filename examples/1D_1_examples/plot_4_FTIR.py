@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Fourier Transform Infrared Spectroscopy (FTIR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
