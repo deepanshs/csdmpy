@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
 """The External DependentVariable SubType class."""
-from __future__ import division
-from __future__ import print_function
-
 from urllib.request import urlopen
 
 import numpy as np

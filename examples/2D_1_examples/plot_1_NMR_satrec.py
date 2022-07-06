@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Nuclear Magnetic Resonance (NMR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

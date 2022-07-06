@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 __all__ = ["test01", "test02", "test03", "test04"]
 
 test01 = "https://www.ssnmr.org/sites/default/files/CSDM/test/test01.csdf"

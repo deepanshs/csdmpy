@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 A wrapper to the Numpy functions used to apodize the components along a given
 dimension. If :math:`x` is  the coordinates along the dimension, the apodization

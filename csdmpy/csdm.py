@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
 """THE CSDM object"""
-from __future__ import division
-from __future__ import print_function
-
 import datetime
 import json
 import warnings
@@ -465,11 +461,11 @@ class CSDM:
         if isinstance(indices, tuple):
             l_ = len(indices)
             indices = indices + tuple(
-                [slice(0, _.count, 1) for _ in self.dimensions[l_:]]
+                slice(0, _.count, 1) for _ in self.dimensions[l_:]
             )
         if isinstance(indices, (int, slice)):
             indices = (indices,) + tuple(
-                [slice(0, _.count, 1) for _ in self.dimensions[1:]]
+                slice(0, _.count, 1) for _ in self.dimensions[1:]
             )
         for item in indices:
             if isinstance(item, (tuple, list)):
@@ -739,7 +735,7 @@ class CSDM:
     @property
     def shape(self):
         """Return the count along each dimension of the csdm object."""
-        return tuple([item.count for item in self._dimensions])
+        return tuple(item.count for item in self._dimensions)
 
     @property
     def size(self):
@@ -1375,16 +1371,14 @@ class CSDM:
                 args[1]["axes"] = (0,) + tuple(np.asarray(args[1]["axes"]) + 1)
             else:
                 dim_len = len(args[0][0].dimensions)
-                args[1]["axes"] = (0,) + tuple([-i - 1 for i in range(dim_len)])
+                args[1]["axes"] = (0,) + tuple(-i - 1 for i in range(dim_len))
 
             csdm = _get_new_csdm_object_after_applying_function(
                 function, *args[0], **args[1], **kwargs
             )
             csdm._dimensions = tuple(
-                [
-                    csdm.dimensions[args[1]["axes"][1:][i]]
-                    for i in range(len(csdm.dimensions))
-                ]
+                csdm.dimensions[args[1]["axes"][1:][i]]
+                for i in range(len(csdm.dimensions))
             )
 
         # csdm, args_, axis, kwargs = _get_CSDM_object__args__axes(

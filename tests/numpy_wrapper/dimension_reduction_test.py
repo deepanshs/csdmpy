@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test for the csdm object
     1) sum, mean, var, std, prod.
 """

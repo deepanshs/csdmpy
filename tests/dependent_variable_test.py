@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 
 import numpy as np
@@ -28,7 +27,7 @@ def test_internal_new():
     data.y[0].type = "external"
     assert data.y[0].type == "external"
     error = "is invalid for the `type` attribute of the DependentVariable object."
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(ValueError, match=f".*{error}.*"):
         data.y[0].type = "celestial"
 
     # check components
@@ -49,7 +48,7 @@ def test_internal_new():
     # check unit
     assert data.y[0].unit == ""
     error = r"`unit` attribute cannot be modified"
-    with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
+    with pytest.raises(AttributeError, match=f".*{error}.*"):
         data.y[0].unit = "m/s"
 
     # check component_url
@@ -82,7 +81,7 @@ def test_internal_new():
     data.y[0].encoding = "none"
     assert data.y[0].encoding == "none"
     error = "is an invalid `encoding` enumeration literal. The allowed values are"
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(ValueError, match=f".*{error}.*"):
         data.y[0].encoding = "base16"
     data.y[0].encoding = "raw"
     assert data.y[0].encoding == "raw"
@@ -93,13 +92,13 @@ def test_internal_new():
     assert data.y[0].numeric_type == "complex64"
     assert np.all(data.y[0].components == test_array + 100.0)
     error = "is an invalid `numeric_type` enumeration literal. The allowed values are"
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(ValueError, match=f".*{error}.*"):
         data.y[0].numeric_type = "complex32"
 
     # quantity_name
     assert data.y[0].quantity_name == "dimensionless"
     error = "`quantity_name` attribute cannot be modified."
-    with pytest.raises(NotImplementedError, match=".*{0}.*".format(error)):
+    with pytest.raises(NotImplementedError, match=f".*{error}.*"):
         data.y[0].quantity_name = "time"
 
     # description
@@ -107,12 +106,12 @@ def test_internal_new():
     data.y[0].description = "This is a test"
     assert data.y[0].description == "This is a test"
     error = "Expecting an instance of type"
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+    with pytest.raises(TypeError, match=f".*{error}.*"):
         data.y[0].description = {}
 
     # application
     assert data.y[0].application is None
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+    with pytest.raises(TypeError, match=f".*{error}.*"):
         data.y[0].application = ""
 
     dependent_variables_dict_1 = [
@@ -256,7 +255,7 @@ def test_missing_type():
         "components": [np.arange(10)],
     }
     error = "Missing a required `type` key from the DependentVariable object."
-    with pytest.raises(KeyError, match=".*{0}.*".format(error)):
+    with pytest.raises(KeyError, match=f".*{error}.*"):
         _ = cp.CSDM(dependent_variables=[d_v])
 
 
@@ -268,19 +267,19 @@ def test_wrong_type():
         "components": [np.arange(10)],
     }
     error = "is an invalid `type` for the DependentVariable"
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(ValueError, match=f".*{error}.*"):
         _ = cp.CSDM(dependent_variables=[d_v])
 
 
 def test_missing_component():
     d_v = {"type": "internal", "numeric_type": "float32", "quantity_type": "scalar"}
     error = "Missing a required `components` key"
-    with pytest.raises(KeyError, match=".*{0}.*".format(error)):
+    with pytest.raises(KeyError, match=f".*{error}.*"):
         _ = cp.CSDM(dependent_variables=[d_v])
 
 
 def test_missing_component_url():
     d_v = {"type": "external", "numeric_type": "float32", "quantity_type": "scalar"}
     error = "Missing a required `components_url` key"
-    with pytest.raises(KeyError, match=".*{0}.*".format(error)):
+    with pytest.raises(KeyError, match=f".*{error}.*"):
         _ = cp.CSDM(dependent_variables=[d_v])

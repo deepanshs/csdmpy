@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Transmission Electron Microscopy (TEM) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

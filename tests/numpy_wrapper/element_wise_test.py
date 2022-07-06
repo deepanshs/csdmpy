@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test for the csdm object
     1) sin, cos, tan, arcsin, arccos, arctan,
     2) sinh, cosh, tanh, arcsinh, arccosh, arctanh

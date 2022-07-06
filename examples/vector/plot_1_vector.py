@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Vector, 2D{2} dataset
 ^^^^^^^^^^^^^^^^^^^^^

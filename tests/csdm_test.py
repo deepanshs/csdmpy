@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test for the csdm object
     1) generate csdm object.
     2) split multiple dependent variables to individual objects.
@@ -54,7 +53,7 @@ def test_csdm():
     data.read_only = True
     assert data.read_only is True
     error = "Expecting an instance of type"
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+    with pytest.raises(TypeError, match=f".*{error}.*"):
         data.read_only = "True"
 
     # tags
@@ -62,7 +61,7 @@ def test_csdm():
     data.tags = ["1", "2", "3"]
     assert data.tags == ["1", "2", "3"]
     error = "Expecting an instance of type"
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+    with pytest.raises(TypeError, match=f".*{error}.*"):
         data.tags = "23"
 
     # version
@@ -71,7 +70,7 @@ def test_csdm():
     # geographic_coordinate
     assert data.geographic_coordinate is None
     error = "can't set attribute"
-    with pytest.raises(AttributeError, match=".*{0}.*".format(error)):
+    with pytest.raises(AttributeError, match=f".*{error}.*"):
         data.geographic_coordinate = {}
 
     # description
@@ -79,7 +78,7 @@ def test_csdm():
     data.description = "Enough with the tests"
     assert data.description == "Enough with the tests"
     error = "Expecting an instance of type"
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+    with pytest.raises(TypeError, match=f".*{error}.*"):
         data.description = {}
 
     # application
@@ -87,7 +86,7 @@ def test_csdm():
     data.application = {"csdmpy": "Some day"}
     assert data.application == {"csdmpy": "Some day"}
     error = "Expecting an instance of type"
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+    with pytest.raises(TypeError, match=f".*{error}.*"):
         data.application = "Some other day"
 
     # filename
@@ -249,11 +248,11 @@ def test_add_sub():
     assert np.allclose(res.y[0].components, [-out])
 
     error = r"Cannot operate on CSDM objects with different dimensions."
-    with pytest.raises(Exception, match=".*{0}.*".format(error)):
+    with pytest.raises(Exception, match=f".*{error}.*"):
         res = a1_test + b_test
 
     error = r"Cannot operate on CSDM objects with different lengths of dependent"
-    with pytest.raises(Exception, match=".*{0}.*".format(error)):
+    with pytest.raises(Exception, match=f".*{error}.*"):
         res = a_test + b1_test
 
 
@@ -387,19 +386,19 @@ def test_mul_truediv_pow():
     assert np.allclose(res.y[0].components, 1.324 / (out + 1))
 
     error = r"unsupported operand type\(s\) \*: 'CSDM' and 'str'."
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+    with pytest.raises(TypeError, match=f".*{error}.*"):
         res = a_test * "3"
 
     error = "Only scalar multiplication or division is allowed."
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(ValueError, match=f".*{error}.*"):
         res = a_test * np.asarray([1, 2])
 
     error = r"unsupported operand type\(s\) /: 'CSDM' and 'str'."
-    with pytest.raises(TypeError, match=".*{0}.*".format(error)):
+    with pytest.raises(TypeError, match=f".*{error}.*"):
         res = a_test / "3"
 
     error = "Only scalar multiplication or division is allowed."
-    with pytest.raises(ValueError, match=".*{0}.*".format(error)):
+    with pytest.raises(ValueError, match=f".*{error}.*"):
         res = a_test / np.asarray([1, 2])
 
     # pow

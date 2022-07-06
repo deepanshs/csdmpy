@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Electron Paramagnetic Resonance (EPR) dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

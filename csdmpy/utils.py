@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
 """Helper methods for CSDM class."""
-from __future__ import print_function
-
 from copy import deepcopy
 
 import numpy as np

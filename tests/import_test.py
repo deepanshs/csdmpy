@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from os.path import split
 
 import numpy as np
@@ -14,7 +13,7 @@ def test_load_files():
 
 def test_00():
     error = "Missing the value for the required `filename` attribute."
-    with pytest.raises(Exception, match=".*{0}.*".format(error)):
+    with pytest.raises(Exception, match=f".*{error}.*"):
         cp.load()
 
 

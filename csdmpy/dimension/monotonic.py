@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
 """The MonotonicDimension sub type class."""
-from __future__ import division
-from __future__ import print_function
-
 import numpy as np
 from astropy.units import Quantity
 

@@ -1,12 +1,11 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import os
 
 from setuptools import find_packages
 from setuptools import setup
 
 # Load package version number.
-with open("csdmpy/__init__.py", "r") as f:
+with open("csdmpy/__init__.py") as f:
     for line in f.readlines():
         if "__version__" in line:
             before_keyword, keyword, after_keyword = line.partition("=")

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from os import remove
 
 import csdmpy as cp
