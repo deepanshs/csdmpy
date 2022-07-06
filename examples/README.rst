@@ -12,19 +12,3 @@ on a :math:`d`-dimensional coordinate grid.
 In the case of `correlated datasets`, the number of components in each
 dependent variable is given as a list within the curly braces, `i.e.`,
 :math:`d\mathrm{D}\{p_0, p_1, p_2, ...\}`.
-
-----
-
-.. only:: latex
-
-    **The sample CSDM compliant files used in this documentation are available**
-    `online <https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u>`_.
-
-.. only:: html
-
-    **The sample CSDM compliant files used in this documentation are available online.**
-
-    .. image:: https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet
-        :target: https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u
-
-----
