@@ -1,8 +1,18 @@
 v0.5.0
 ------
 
-Bug fix involving plot of datasets with dependent-variable quantity type of `vector_1` or `pixel_1`.
-Add support for `np.cumsum`, `np.cumprod` functions to CSDM objects.
+What's new
+''''''''''
+
+- Add support for ``np.cumsum``, ``np.cumprod`` functions to CSDM objects.
+
+Bugfix
+''''''
+
+- Bugfix involving plot of datasets with dependent-variable quantity type of `vector_1` or `pixel_1`.
+- Bugfix when assigning DimensionList/DependentVariableList to the CSDM dimensions and dependent_variables attribute #45
+- Bugfix in CSDM object serializing when using Astropy.units v4.0 and higher. #44
+- Bugfix for incorrect class name. #39
 
 v0.4.1
 ------

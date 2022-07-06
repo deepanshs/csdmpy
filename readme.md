@@ -25,10 +25,6 @@ compatible with Numpy.
 
 For further reading, refer to the [documentation](https://csdmpy.readthedocs.io/en/latest/).
 
-> **Download the examples files using in this package**
->
-> [![Download](https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet)](https://buckeyemailosu-my.sharepoint.com/personal/grandinetti_1_osu_edu/_layouts/15/onedrive.aspx?ga=1&id=%2Fpersonal%2Fgrandinetti%5F1%5Fosu%5Fedu%2FDocuments%2FBuckeyeBox%20Data%2FCSDM%2FTest%20Files%2DCSDM%2Dv1%2E0)
-
 > **See example gallery**
 >
 > [![View](https://img.shields.io/badge/View-Example%20Gallery-Purple?size=large)](https://csdmpy.readthedocs.io/en/latest/auto_examples/index.html)
