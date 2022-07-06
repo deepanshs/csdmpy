@@ -88,45 +88,31 @@ compatible with Numpy.
 
 ----
 
-    .. only:: latex
+.. only:: latex
 
-        **The sample CSDM compliant files used in this documentation are available**
-        `online <https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u>`_.
+  **View the core scientific dataset model (CSDM)**
+  `examples gallery <https://csdmpy.readthedocs.io/en/stable/auto_examples/index.html>`_.
 
-    .. only:: html
+.. only:: html
 
-        **The sample CSDM compliant files used in this documentation are available online.**
+  **View the core scientific dataset model (CSDM) examples gallery.**
 
-        .. image:: https://img.shields.io/badge/Download-CSDM%20sample%20files-blueviolet?size=large
-            :target: https://osu.box.com/s/bq10pc5jyd3mu67vqvhw4xmrqgsd0x8u
-
-----
-
-    .. only:: latex
-
-        **View the core scientific dataset model (CSDM)**
-        `examples gallery <https://csdmpy.readthedocs.io/en/stable/auto_examples/index.html>`_.
-
-    .. only:: html
-
-        **View the core scientific dataset model (CSDM) examples gallery.**
-
-        .. image:: https://img.shields.io/badge/View-Example%20Gallery-Purple?size=large
-            :target: auto_examples/index.html
+  .. image:: https://img.shields.io/badge/View-Example%20Gallery-Purple?size=large
+      :target: auto_examples/index.html
 
 ----
 
-    .. only:: latex
+.. only:: latex
 
-        `Tutorial <https://csdmpy.readthedocs.io/en/stable/auto_tutorials/index.html>`_
-        **on generating and serializing CSDM objects from Numpy arrays**
+  `Tutorial <https://csdmpy.readthedocs.io/en/stable/auto_tutorials/index.html>`_
+  **on generating and serializing CSDM objects from Numpy arrays**
 
-    .. only:: html
+.. only:: html
 
-        **Tutorial on generating and serializing CSDM objects from Numpy arrays.**
+  **Tutorial on generating and serializing CSDM objects from Numpy arrays.**
 
-        .. image:: https://img.shields.io/badge/View-Tutorial%20Gallery-Blue?size=large
-            :target: auto_tutorials/index.html
+  .. image:: https://img.shields.io/badge/View-Tutorial%20Gallery-Blue?size=large
+      :target: auto_tutorials/index.html
 
 
 ----
