@@ -601,15 +601,9 @@ def test_new_from_old_csdm():
     assert id(old_test.x) != id(new_test.x)
 
 
-# def test_argmin_max():
-#     out, new_test = get_test_2d(float)
-#     assert np.allclose(np.argmax(out), np.argmax(new_test))
-#     assert np.allclose(np.argmin(out), np.argmin(new_test))
-
-
 def test_not_implemented_error():
-    np_fn = [np.ptp, np.trace, np.argmax, np.argmin]
-    cp_fn = ["ptp", "trace", "argmax", "argmin"]
+    np_fn = [np.ptp, np.trace]
+    cp_fn = ["ptp", "trace"]
     for fn_n, fn_c in zip(np_fn, cp_fn):
         with pytest.raises(NotImplementedError, match=""):
             _ = fn_n(a_test)

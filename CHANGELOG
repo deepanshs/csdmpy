@@ -4,7 +4,7 @@ v0.5.0
 What's new
 ''''''''''
 
-- Add support for ``np.cumsum``, ``np.cumprod`` functions to CSDM objects.
+- Add support for ``np.cumsum``, ``np.cumprod``, ``np.argmin``, ``np.argmax`` functions to CSDM objects.
 
 Bugfix
 ''''''
