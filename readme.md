@@ -40,9 +40,16 @@ discretely sampled at _M_ unique points in a _d_-dimensional coordinate space**.
 The model is not intended to encapsulate
 any information on how the data might be acquired, processed, or visualized.
 
+---
+### Use cases
 The data model is _versatile_ in allowing many **use cases for most spectroscopy,
-diffraction, and imaging techniques**. As
-such the model supports multi-component datasets associated with continuous
+diffraction, and imaging techniques**.
+
+![](/docs/_static/csdm.png "")
+
+### Data Model
+
+The model supports multi-component datasets associated with continuous
 physical quantities that are discretely sampled in a multi-dimensional space
 associated with other carefully controlled quantities, for e.g., a mass as a
 function of temperature, a current as a function of voltage and time, a signal
@@ -58,30 +65,31 @@ pressure, wind velocity, and
 solar-flux as a function of Earth’s latitude and longitude coordinates. We
 refer to these dependent variables as _correlated-datasets_.
 
-The CSD model is independent of the hardware,
-operating system, application software, programming language, and the
-object-oriented file-serialization format utilized in serializing the CSD model
-to the file. Out of numerous file serialization formats, XML, JSON, property
-list, we adopt the data-exchange oriented JSON (JavaScript Object Notation)
-file-serialization format because it is _human-readable_, and _easily integrable_ with any number of programming languages
-and field related application-software.
-
-## Advantage of CSDM file-serialization.
-- A generic scientific dataset model capable of serializing multi-dimensional, multi-component datasets along with necessary datasets. In contrast, a CSV or text-based file is not efficient for storing two or higher-dimensional datasets and is not readily parsable for metadata, if any.
-
-- PNG and JPEG are standard file serialization methods for RGBA and RGB images. Although the CSD model supports RGB/RGBA images, its advantage is its ability to serialize not just 2D scalar images but 3D images, 4D volumetric images, and even higher-dimensional images. The model can also support complex-valued images, which PNG or JPEG doesn't.
-
-- The CSD model is a model. It is independent of serialization formats, XML, JSON, plist, h5, etc. We choose to implement the model in JSON because of its widespread use and human readability.
-
-### Cons
-- CSD model is a scientific dataset serialization model and not a workflow serialization format.
-
+**Example**
+```py
+"csdm": {
+  "version": "1.0",
+  # A list of Linear, Monotonic, or Labeled dimensions of the multi-dimensional space.
+  "dimensions": [{
+    "type": "linear",
+    "count": 1608,
+    "increment": "0.08333333333 yr",
+    "coordinates_offset": "1880.0416666667 yr",
+  }],
+  # A list of dependent variables sampling the multi-dimensional space.
+  "dependent_variables": [{
+    "type": "internal",
+    "unit": "mm",
+    "numeric_type": "float32",
+    "quantity_type": "scalar",
+    "component_labels": ["GMSL"],
+    "components": [
+      ["-183.0, -171.125, ..., 59.6875, 58.5"]
+    ]
+  }]
+}
+```
 ## Installing _csdmpy_ package
-
-**Using PIP**:
-
-PIP is a package manager for Python packages and is included with
-python version 3.4 and higher.
 
     $ pip install csdmpy
 
