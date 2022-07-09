@@ -65,12 +65,14 @@ __function_reduction_list__ = [
     np.max,
     np.min,
     np.sum,
-    np.cumsum,
     np.mean,
     np.var,
     np.std,
     np.prod,
+    np.cumsum,
     np.cumprod,
+    np.argmin,
+    np.argmax,
 ]
 
 __other_functions__ = [np.round, np.real, np.imag, np.clip, np.around, np.angle]
@@ -1166,9 +1168,8 @@ class CSDM:
 
         Args:
             axis: An integer or None or a tuple of `m` integers corresponding to the
-                dimension index/indices along which the max of the dependent
-                variable components is performed. If None, the output is the sum over
-                all dimensions per dependent variable.
+                dimension index/indices along which the operation is performed. If None,
+                the output is over all dimensions per dependent variable.
         Return:
             A CSDM object with `m` dimensions removed, or a numpy array when dimension
             is None.
@@ -1180,7 +1181,21 @@ class CSDM:
         return np.max(self, axis=axis)
 
     def argmax(self, axis=None):
-        raise NotImplementedError("")
+        """Return a csdm object of argmax dependent variable along a given axis.s
+
+        Args:
+            axis: An integer or None or a tuple of `m` integers corresponding to the
+                dimension index/indices along which the operation is performed. If None,
+                the output is over all dimensions per dependent variable.
+        Return:
+            A CSDM object with `m` dimensions removed, or a numpy array when dimension
+            is None.
+
+        Example:
+            >>> data.max()
+            <Quantity 0.95105654>
+        """
+        return np.argmax(self, axis=axis)
 
     def min(self, axis=None):
         """Return a csdm object of minimum dependent variable component along a
@@ -1188,16 +1203,25 @@ class CSDM:
 
         Args:
             axis: An integer or None or a tuple of `m` integers corresponding to the
-                dimension index/indices along which the min of the dependent
-                variable components is performed. If None, the output is over all
-                dimensions per dependent variable.
+                dimension index/indices along which the operation is performed. If
+                None, the output is over all dimensions per dependent variable.
         Return:
             A CSDM object with `m` dimensions removed, or a list when `axis` is None.
         """
         return np.min(self, axis=axis)
 
     def argmin(self, axis=None):
-        raise NotImplementedError("")
+        """Return a csdm object of argmin dependent variable component along a
+        given axis.
+
+        Args:
+            axis: An integer or None or a tuple of `m` integers corresponding to the
+                dimension index/indices along which the operation is performed. If
+                None, the output is over all dimensions per dependent variable.
+        Return:
+            A CSDM object with `m` dimensions removed, or a list when `axis` is None.
+        """
+        return np.argmin(self, axis=axis)
 
     def ptp(self, axis=None):
         raise NotImplementedError("")
@@ -1381,11 +1405,18 @@ class CSDM:
                 for i in range(len(csdm.dimensions))
             )
 
-        # csdm, args_, axis, kwargs = _get_CSDM_object__args__axes(
-        #     *args[0], **args[1], **kwargs
-        # )
-        # nd_array = csdm.y[0].components
-        # return function(nd_array, *args_, **kwargs)
+        # if function in __return_np__:
+        #     if len(self.y) > 1:
+        #         raise NotImplementedError(
+        #             f"Function {function.__name__} is not implemented for multi "
+        #              "dependent variable csdm object."
+        #         )
+        #     csdm, args_, axis, kwargs = _get_CSDM_object__args__axes(
+        #         *args[0], **args[1], **kwargs
+        #     )
+        #     nd_array = csdm.y[0].components
+        #     return function(nd_array, *args_, **kwargs)
+
         raise NotImplementedError(f"Function {function.__name__} is not implemented.")
 
     # def __array_interface__(self, *args, **kwargs):
