@@ -14,6 +14,12 @@ Bugfix
 - Bugfix in CSDM object serializing when using Astropy.units v4.0 and higher. #44
 - Bugfix for incorrect class name. #39
 
+Deprecated
+''''''''''
+
+- `add_x`, `add_y` functions are removed.
+
+
 v0.4.1
 ------
 

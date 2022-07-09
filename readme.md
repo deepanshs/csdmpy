@@ -66,7 +66,7 @@ list, we adopt the data-exchange oriented JSON (JavaScript Object Notation)
 file-serialization format because it is _human-readable_, and _easily integrable_ with any number of programming languages
 and field related application-software.
 
-## Advantage of CSDM file-serializaiton.
+## Advantage of CSDM file-serialization.
 - A generic scientific dataset model capable of serializing multi-dimensional, multi-component datasets along with necessary datasets. In contrast, a CSV or text-based file is not efficient for storing two or higher-dimensional datasets and is not readily parsable for metadata, if any.
 
 - PNG and JPEG are standard file serialization methods for RGBA and RGB images. Although the CSD model supports RGB/RGBA images, its advantage is its ability to serialize not just 2D scalar images but 3D images, 4D volumetric images, and even higher-dimensional images. The model can also support complex-valued images, which PNG or JPEG doesn't.

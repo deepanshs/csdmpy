@@ -30,10 +30,6 @@ CSDM
    .. autosummary::
       :nosignatures:
 
-      ~CSDM.add_dimension
-      ~CSDM.add_x
-      ~CSDM.add_dependent_variable
-      ~CSDM.add_y
       ~CSDM.dict
       ~CSDM.to_dict
       ~CSDM.dumps
@@ -93,10 +89,6 @@ CSDM
 
    .. rubric:: Methods documentation
 
-   .. automethod:: add_dimension
-   .. automethod:: add_x
-   .. automethod:: add_dependent_variable
-   .. automethod:: add_y
    .. automethod:: dict
    .. automethod:: to_dict
    .. automethod:: dumps

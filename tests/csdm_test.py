@@ -15,7 +15,7 @@ import csdmpy as cp
 
 def get_test(np_type):
     out = np.random.rand(10).astype(np_type)
-    a_test = cp.CSDM(
+    _test = cp.CSDM(
         dimensions=[cp.LinearDimension(count=10, increment="1s")],
         dependent_variables=[
             cp.DependentVariable(
@@ -24,7 +24,7 @@ def get_test(np_type):
         ],
     )
 
-    return out, a_test
+    return out, _test
 
 
 def get_test_2d(np_type):
@@ -106,7 +106,7 @@ def test_csdm():
         json.dumps(structure, ensure_ascii=False, sort_keys=False, indent=2)
     )
 
-    assert data.dict() == structure
+    assert data.dict(read_only=True) == structure
 
     # equality check
     new_data = data.copy()
