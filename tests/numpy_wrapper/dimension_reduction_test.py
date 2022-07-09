@@ -39,24 +39,24 @@ def test_sum_cumsum():
         )
         assert np.allclose(np_fn(test_1, 0).y[0].components, np_fn(data, axis=-1))
         assert np.allclose(np_fn(test_1, 1).y[0].components, np_fn(data, axis=-2))
-        for i_, dimension in zip(i, dimensions):
-            b = np_fn(test_1, axis=dimension)
-            components = b.y[0].components[0]
+        for index, dimension in zip(i, dimensions):
+            res = np_fn(test_1, axis=dimension)
+            components = res.y[0].components[0]
             assert np.allclose(components, np_fn(data, axis=-dimension - 1))
-            assert b.dimensions[0] == test_1.dimensions[i_[0]]
-            assert b.dimensions[1] == test_1.dimensions[i_[1]]
+            assert res.dimensions[0] == test_1.dimensions[index[0]]
+            assert res.dimensions[1] == test_1.dimensions[index[1]]
 
     dimensions = [(0, 1), [0, 2], (1, 2)]
     i = [2, 1, 0]
-    for i_, dimension in zip(i, dimensions):
-        b = np.sum(test_1, axis=dimension)
-        components = b.y[0].components[0]
+    for index, dimension in zip(i, dimensions):
+        res = np.sum(test_1, axis=dimension)
+        components = res.y[0].components[0]
         dim_ = tuple(-i - 1 for i in dimension)
         assert np.allclose(components, np.sum(data, axis=dim_))
-        assert b.dimensions[0] == test_1.dimensions[i_]
+        assert res.dimensions[0] == test_1.dimensions[index]
 
-    b = test_1.sum()
-    assert np.allclose(b, data.sum())
+    res = test_1.sum()
+    assert np.allclose(res, data.sum())
 
     assert np.allclose(test_1.sum(-1).y[0].components, data.sum(axis=0))
 
@@ -67,25 +67,25 @@ def test_reduction_multi_axis():
     for fn_np, fn_cp in zip(np_fn, cp_fn):
         dimensions = [0, 1, 2]
         i = [[1, 2], [0, 2], [0, 1]]
-        for i_, dimension in zip(i, dimensions):
-            b = fn_np(test_1, axis=dimension)
-            components = b.y[0].components[0]
+        for index, dimension in zip(i, dimensions):
+            res = fn_np(test_1, axis=dimension)
+            components = res.y[0].components[0]
             print(dimension)
             assert np.allclose(components, fn_np(data, axis=-dimension - 1))
-            assert b.dimensions[0] == test_1.dimensions[i_[0]]
-            assert b.dimensions[1] == test_1.dimensions[i_[1]]
+            assert res.dimensions[0] == test_1.dimensions[index[0]]
+            assert res.dimensions[1] == test_1.dimensions[index[1]]
 
         dimensions = [(0, 1), [0, 2], (1, 2)]
         i = [2, 1, 0]
-        for i_, dimension in zip(i, dimensions):
-            b = test_1.__getattribute__(fn_cp)(axis=dimension)
-            components = b.y[0].components[0]
+        for index, dimension in zip(i, dimensions):
+            res = test_1.__getattribute__(fn_cp)(axis=dimension)
+            components = res.y[0].components[0]
             dim_ = tuple(-i - 1 for i in dimension)
             assert np.allclose(components, fn_np(data, axis=dim_))
-            assert b.dimensions[0] == test_1.dimensions[i_]
+            assert res.dimensions[0] == test_1.dimensions[index]
 
-        b = test_1.__getattribute__(fn_cp)()
-        assert np.allclose(b, fn_np(data))
+        res = test_1.__getattribute__(fn_cp)()
+        assert np.allclose(res, fn_np(data))
 
 
 def test_reduction_single_axis():
@@ -94,12 +94,12 @@ def test_reduction_single_axis():
     cp_fn = ["cumprod", "cumsum", "argmin", "argmax"]
     np_fn = [np.cumprod, np.cumsum, np.argmin, np.argmax]
     for fn_np, fn_cp in zip(np_fn, cp_fn):
-        for i_, dimension in zip(i, dimensions):
-            b = fn_np(test_1, axis=dimension)
-            components = b.y[0].components[0]
+        for index, dimension in zip(i, dimensions):
+            res = fn_np(test_1, axis=dimension)
+            components = res.y[0].components[0]
             assert np.allclose(components, fn_np(data, axis=-dimension - 1))
-            assert b.dimensions[0] == test_1.dimensions[i_[0]]
-            assert b.dimensions[1] == test_1.dimensions[i_[1]]
+            assert res.dimensions[0] == test_1.dimensions[index[0]]
+            assert res.dimensions[1] == test_1.dimensions[index[1]]
 
-        b = test_1.__getattribute__(fn_cp)()
-        assert np.allclose(b, fn_np(data))
+        res = test_1.__getattribute__(fn_cp)()
+        assert np.allclose(res, fn_np(data))

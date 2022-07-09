@@ -12,15 +12,15 @@ sparse_sampling = {
 
 
 def test_01():
-    sp = SparseSampling(**sparse_sampling)
-    assert sp.dimension_indexes == [0]
+    s_p = SparseSampling(**sparse_sampling)
+    assert s_p.dimension_indexes == [0]
 
-    assert np.all(sp.sparse_grid_vertexes == [0, 5, 10, 15, 20, 25])
+    assert np.all(s_p.sparse_grid_vertexes == [0, 5, 10, 15, 20, 25])
 
-    assert sp.description == ""
-    assert sp.encoding == "none"
-    assert sp.unsigned_integer_type.value == "uint16"
-    assert sp.application is None
+    assert s_p.description == ""
+    assert s_p.encoding == "none"
+    assert s_p.unsigned_integer_type.value == "uint16"
+    assert s_p.application is None
 
 
 def test_02():

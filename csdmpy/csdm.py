@@ -354,10 +354,10 @@ class CSDM:
     def __add__(self, other):
         """Add two objects (z=x+y)"""
 
-        def fn(a, b):
+        def function(a, b):
             return a * b
 
-        return self._default_addition_(other, fn, "+")
+        return self._default_addition_(other, function, "+")
 
     def __radd__(self, other):
         """Right add two objects. See __add__ for details."""
@@ -370,10 +370,10 @@ class CSDM:
     def __sub__(self, other):
         """Subtract two objects (z=x+y)"""
 
-        def fn(a, b):
+        def function(a, b):
             return -a * b
 
-        return self._default_addition_(other, fn, "-")
+        return self._default_addition_(other, function, "-")
 
     def __rsub__(self, other):
         """Right subtract two objects. See __sub__ for details."""
@@ -821,11 +821,6 @@ class CSDM:
 
         self._dimensions += [Dimension(*args, **kwargs)]
 
-    # deprecated
-    # def add_x(self, *args, **kwargs):
-    #     """Alias to the ``add_dimension`` method."""
-    #     self.add_dimension(*args, **kwargs)
-
     def add_dependent_variable(self, *args, **kwargs):
         """Add a new :ref:`dv_api` instance to the :ref:`csdm_api` instance.
 
@@ -901,10 +896,6 @@ class CSDM:
 
         self._dependent_variables += [d_v]
 
-    # def add_y(self, *args, **kwargs):
-    #     """Alias for ``add_dependent_variable`` method."""
-    #     return self.add_dependent_variable(*args, **kwargs)
-
     def to_dict(self, update_timestamp=False, read_only=False):
         """Alias to the `dict()` method of the class."""
         return self.dict(update_timestamp, read_only)
@@ -926,13 +917,13 @@ class CSDM:
         self,
         filename=None,
         update_timestamp=False,
-        read_only=False,
-        version=__latest_CSDM_version__,
+        read_only=None,
+        version=None,
         for_display=False,
     ):
         obj = {}
-        obj["version"] = self.version
-        obj["read_only"] = self.read_only
+        obj["version"] = self.version if version is None else version
+        obj["read_only"] = self.read_only if read_only is None else read_only
         obj["timestamp"] = (
             datetime.datetime.utcnow().isoformat()[:-7] + "Z"
             if update_timestamp
@@ -953,39 +944,25 @@ class CSDM:
 
         return {"csdm": obj}
 
-    def dumps(
-        self,
-        update_timestamp=False,
-        read_only=False,
-        version=__latest_CSDM_version__,
-        **kwargs,
-    ):
+    def dumps(self, update_timestamp=False, read_only=False, **kwargs):
         """Serialize the :ref:`CSDM_api` instance as a JSON data-exchange string.
 
         Args:
             update_timestamp(bool): If True, timestamp is updated to current time.
             read_only (bool): If true, the file is serialized as read_only.
-            version (str): The file is serialized with the given CSD model version.
 
         Example:
             >>> data.dumps()[:63] # first 63 characters
             '{"csdm": {"version": "1.0", "timestamp": "1994-11-05T13:15:30Z"'
         """
         dict_ = self._dict(
-            update_timestamp=update_timestamp, read_only=read_only, version=version
+            update_timestamp=update_timestamp, read_only=read_only, version=self.version
         )
         return json.dumps(
             dict_, ensure_ascii=False, sort_keys=False, allow_nan=False, **kwargs
         )
 
-    def save(
-        self,
-        filename="",
-        read_only=False,
-        version=__latest_CSDM_version__,
-        output_device=None,
-        indent=0,
-    ):
+    def save(self, filename="", read_only=False, output_device=None, indent=0):
         """Serialize the :ref:`CSDM_api` instance as a JSON data-exchange file.
 
         There are two types of file serialization extensions, `.csdf` and
@@ -1017,7 +994,6 @@ class CSDM:
         Args:
             filename (str): The filename of the serialized file.
             read_only (bool): If true, the file is serialized as read_only.
-            version (str): The file is serialized with the given CSD model version.
             output_device(object): Object where the data is written. If provided,
                 the argument `filename` become irrelevant.
 
@@ -1030,7 +1006,7 @@ class CSDM:
 
             os.remove("my_file.csdf")
         """
-        dictionary = self._dict(filename=filename, version=version)
+        dictionary = self._dict(filename=filename, version=self.version)
 
         timestamp = datetime.datetime.utcnow().isoformat()[:-7] + "Z"
         dictionary["csdm"]["timestamp"] = timestamp
@@ -1489,13 +1465,13 @@ def _get_new_csdm_object_after_applying_ufunc(
     new._dimensions = deepcopy(csdm.dimensions)
 
     for i, variable in enumerate(csdm.dependent_variables):
-        y = func(variable.components * factor[i], *inputs, **kwargs)
+        res = func(variable.components * factor[i], *inputs, **kwargs)
 
         obj = empty_dependent_variable(
-            numeric_type=y.dtype, quantity_type=variable.quantity_type
+            numeric_type=res.dtype, quantity_type=variable.quantity_type
         )
         obj._copy_metadata(variable)
-        obj.subtype._components = y
+        obj.subtype._components = res
         new._dependent_variables += [obj]
         # obj = as_dependent_variable(y, quantity_type=variable.quantity_type)
         # obj._copy_metadata(variable)
