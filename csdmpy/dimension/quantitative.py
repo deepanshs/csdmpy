@@ -144,8 +144,8 @@ class BaseQuantitativeDimension(BaseDimension):
         if self._origin_offset.value != 0.0:
             obj["origin_offset"] = str(ScalarQuantity(self._origin_offset))
 
-        if self._quantity_name not in [None, "unknown", "dimensionless"]:
-            obj["quantity_name"] = self._quantity_name
+        if self.quantity_name not in [None, "unknown", "dimensionless"]:
+            obj["quantity_name"] = self.quantity_name
 
         if self._period.value not in [0.0, np.inf]:
             obj["period"] = str(ScalarQuantity(self._period))

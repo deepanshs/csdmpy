@@ -233,7 +233,7 @@ class BaseDependentVariable:
             if str(self._unit) != ""
             else ""
         )
-        obj["quantity_name"] = self._quantity_name
+        obj["quantity_name"] = self.quantity_name
         obj["encoding"] = str(self._encoding)
         obj["numeric_type"] = str(self._numeric_type)
         obj["quantity_type"] = str(self._quantity_type)
