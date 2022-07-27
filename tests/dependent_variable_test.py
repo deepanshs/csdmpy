@@ -283,3 +283,18 @@ def test_missing_component_url():
     error = "Missing a required `components_url` key"
     with pytest.raises(KeyError, match=f".*{error}.*"):
         _ = cp.CSDM(dependent_variables=[d_v])
+
+
+def test_c_f_contiguous_array():
+    arr_c = np.random.rand(1028 * 1028).reshape(1028, 1028)
+    arr_f = np.asfortranarray(arr_c.copy())
+
+    assert arr_c.flags["C_CONTIGUOUS"] is True
+    assert arr_c.flags["F_CONTIGUOUS"] is False
+    assert arr_f.flags["C_CONTIGUOUS"] is False
+    assert arr_f.flags["F_CONTIGUOUS"] is True
+
+    dv_c = cp.as_dependent_variable(arr_c)
+    dv_f = cp.as_dependent_variable(arr_f)
+
+    assert np.allclose(dv_c.components, dv_f.components)

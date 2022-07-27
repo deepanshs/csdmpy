@@ -50,7 +50,8 @@ class Decoder:
     def decode_raw(components, dtype, component_len=None):
         """Read components form a binary buffer"""
         components = np.frombuffer(components, dtype=dtype)
-        components.shape = component_len, int(components.size / component_len)
+        size = int(components.size / component_len)
+        components = components.reshape(component_len, size)
         return components
 
 
