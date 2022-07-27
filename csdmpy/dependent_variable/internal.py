@@ -50,7 +50,7 @@ class InternalDataset(BaseDependentVariable):
 
         size = self._components.size
         p_1 = self.quantity_type.p
-        self._components.shape = (p_1, int(size / p_1))
+        self._components = self._components.reshape(p_1, int(size / p_1))
 
     def dict(self, filename=None, dataset_index=None, for_display=False):
         """Return InternalDataset object as a python dictionary."""
