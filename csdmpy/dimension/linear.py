@@ -202,7 +202,7 @@ class LinearDimension(BaseQuantitativeDimension):
     #                                 Methods                                 #
     # ----------------------------------------------------------------------- #
 
-    def _copy_metadata(self, obj):
+    def copy_metadata(self, obj):
         """Copy LinearDimension metadata."""
         obj = obj.subtype if hasattr(obj, "subtype") else obj
         if isinstance(obj, LinearDimension):

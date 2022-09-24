@@ -510,7 +510,7 @@ class CSDM:
                     coordinates = dim.coordinates[idx]
                     new_dim = as_dimension(coordinates)
 
-                new_dim._copy_metadata(dim_)
+                new_dim.copy_metadata(dim_)
                 if hasattr(new_dim, "complex_fft"):
                     new_dim.complex_fft = False
 
@@ -523,13 +523,13 @@ class CSDM:
                 variable.numeric_type, variable.quantity_type
             )
             dv_obj.subtype._components = components
-            dv_obj._copy_metadata(variable)
+            dv_obj.copy_metadata(variable)
             csdm._dependent_variables += [dv_obj]
 
-        csdm._copy_metadata(self)
+        csdm.copy_metadata(self)
         return csdm
 
-    def _copy_metadata(self, other):
+    def copy_metadata(self, other):
         self._version = other._version
         self._description = other._description
         self._read_only = other._read_only
@@ -727,12 +727,12 @@ class CSDM:
     def T(self):
         """Return a csdm object with a transpose of the dataset."""
         new = CSDM()
-        new._copy_metadata(self)
+        new.copy_metadata(self)
         new._dimensions += self._dimensions[::-1]
 
         for item in self.dependent_variables:
             dv_obj = empty_dependent_variable(item.numeric_type, item.quantity_type)
-            dv_obj._copy_metadata(item)
+            dv_obj.copy_metadata(item)
             dv_obj.subtype._components = np.moveaxis(item.subtype._components.T, -1, 0)
             new._dependent_variables += [dv_obj]
 
@@ -1474,14 +1474,14 @@ def _get_new_csdm_object_after_applying_ufunc(
         obj = empty_dependent_variable(
             numeric_type=res.dtype, quantity_type=variable.quantity_type
         )
-        obj._copy_metadata(variable)
+        obj.copy_metadata(variable)
         obj.subtype._components = res
         new._dependent_variables += [obj]
         # obj = as_dependent_variable(y, quantity_type=variable.quantity_type)
-        # obj._copy_metadata(variable)
+        # obj.copy_metadata(variable)
         # new.add_dependent_variable(obj)
 
-    new._copy_metadata(csdm)
+    new.copy_metadata(csdm)
     return new
 
 
@@ -1507,11 +1507,11 @@ def _get_new_csdm_object_after_applying_function(func, *args, **kwargs):
         obj = empty_dependent_variable(
             numeric_type=components.dtype, quantity_type=variable.quantity_type
         )
-        obj._copy_metadata(variable)
+        obj.copy_metadata(variable)
         obj.subtype._components = components
         new._dependent_variables += [obj]
 
-    new._copy_metadata(csdm)
+    new.copy_metadata(csdm)
     return new
 
 
@@ -1554,20 +1554,19 @@ def _get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
         obj = empty_dependent_variable(
             numeric_type=components.dtype, quantity_type=variable.quantity_type
         )
-        obj._copy_metadata(variable)
+        obj.copy_metadata(variable)
         obj.subtype._components = components
         new._dependent_variables += [obj]
 
         # obj = as_dependent_variable(y, quantity_type=variable.quantity_type)
-        # obj._copy_metadata(variable)
+        # obj.copy_metadata(variable)
         # new.add_dependent_variable(obj)
 
-    new._copy_metadata(csdm)
+    new.copy_metadata(csdm)
     return new
 
 
 def _get_CSDM_object__args__axes(*args, **kwargs):
-    # print(args)
     axis = None
     args_ = []
     if args != ():
@@ -1612,23 +1611,21 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
             obj = empty_dependent_variable(
                 numeric_type=components.dtype, quantity_type=variable.quantity_type
             )
-            obj._copy_metadata(variable)
+            obj.copy_metadata(variable)
             obj.subtype._components = components
             new._dependent_variables += [obj]
 
             # obj = as_dependent_variable(y, quantity_type=variable.quantity_type)
-            # obj._copy_metadata(variable)
+            # obj.copy_metadata(variable)
             # new.add_dependent_variable(obj)
         else:
             lst.append(components * variable.unit)
 
     if axis is None:
         del new
-        # if len(lst) > 1:
-        #     return lst
         return lst if len(lst) > 1 else lst[0]
 
-    new._copy_metadata(csdm)
+    new.copy_metadata(csdm)
     return new
 
 

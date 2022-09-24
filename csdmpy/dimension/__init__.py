@@ -726,10 +726,10 @@ class Dimension:
     #                           Dimension Methods                             #
     # ======================================================================= #
 
-    def _copy_metadata(self, obj):
+    def copy_metadata(self, obj):
         """Copy Dimension metadata"""
         self.subtype._type = obj.subtype._type
-        self.subtype._copy_metadata(obj)
+        self.subtype.copy_metadata(obj)
 
     def to_dict(self):
         """Alias to the `dict()` method of the class."""

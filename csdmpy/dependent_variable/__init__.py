@@ -743,7 +743,7 @@ class DependentVariable:
         else:
             item._components = fill_sparse_space(item, sub_shape, dtype)
 
-    def _copy_metadata(self, obj, copy=False):
+    def copy_metadata(self, obj, copy=False):
         """Copy DependentVariable metadata"""
 
         self.type = obj.type
