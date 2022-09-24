@@ -1102,8 +1102,8 @@ class CSDM:
         return self.T
 
     def fft(self, axis=0):
-        """Perform a FFT along the given `dimension=axis`, for linear dimension, assuming
-        Nyquist-Shannon relation.
+        """Perform a FFT along the given `dimension=axis`, for linear dimension,
+        assuming Nyquist-Shannon relation.
 
         Args:
             axis: dimension index along which the FFT is performed.
