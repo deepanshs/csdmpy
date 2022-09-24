@@ -138,22 +138,22 @@ class CSDM:
         self._dimensions = DimensionList([])
         if "dimensions" in kwargs_keys:
             if not isinstance(kwargs["dimensions"], (list, DimensionList)):
-                t_ = type(kwargs["dimensions"])
+                dim_type = type(kwargs["dimensions"])
                 raise ValueError(
                     "A list of valid Dimension or equivalent dictionary objects is "
-                    f"required, found {t_}."
+                    f"required, found {dim_type}."
                 )
             _ = [self.dimensions.append(item) for item in kwargs["dimensions"]]
 
         self._dependent_variables = DependentVariableList([])
         if "dependent_variables" in kwargs_keys:
-            t_ = type(kwargs["dependent_variables"])
+            dv_type = type(kwargs["dependent_variables"])
             if not isinstance(
                 kwargs["dependent_variables"], (list, DependentVariableList)
             ):
                 raise ValueError(
                     "A list of valid DependentVariable or equivalent dictionary "
-                    f"objects is required, found {t_}."
+                    f"objects is required, found {dv_type}."
                 )
             for item in kwargs["dependent_variables"]:
                 if isinstance(item, dict):
@@ -318,7 +318,7 @@ class CSDM:
                 f_n(factor * other.value)
         return self
 
-    def _default_addition_(self, other, fn, operation):
+    def _default_addition_(self, other, f_n, operation):
         """Operate on two objects (z=x+/-y), if the other object is a
             1) csdm or scalar object,
             2) with identical dimension objects,
@@ -327,35 +327,35 @@ class CSDM:
 
         Args:
             other: the object to add/subtract
-            fn: addition/subtraction function
+            f_n: addition/subtraction function
             operation: "+" or "-"
         """
         if isinstance(other, CSDM):
             self.__check_csdm_object_additive_compatibility(other)
 
-            d1 = self.copy()
-            for i, item in enumerate(d1.dependent_variables):
+            obj = self.copy()
+            for i, item in enumerate(obj.dependent_variables):
                 factor = other.dependent_variables[i].unit.to(item.unit)
-                item.components = item.components + fn(
+                item.components = item.components + f_n(
                     factor, other.dependent_variables[i].components
                 )
-            return d1
+            return obj
 
         other = check_scalar_object(other, operation)
-        d1 = self.copy()
-        for i, item in enumerate(d1.dependent_variables):
+        obj = self.copy()
+        for i, item in enumerate(obj.dependent_variables):
             item.components = (
-                item.components + fn(1, other)
+                item.components + f_n(1, other)
                 if not isinstance(other, Quantity)
-                else item.components + fn(1, other.unit.to(item.unit) * other.value)
+                else item.components + f_n(1, other.unit.to(item.unit) * other.value)
             )
-        return d1
+        return obj
 
     def __add__(self, other):
         """Add two objects (z=x+y)"""
 
-        def function(a, b):
-            return a * b
+        def function(val_1, val_2):
+            return val_1 * val_2
 
         return self._default_addition_(other, function, "+")
 
@@ -370,8 +370,8 @@ class CSDM:
     def __sub__(self, other):
         """Subtract two objects (z=x+y)"""
 
-        def function(a, b):
-            return -a * b
+        def function(val_1, val_2):
+            return -val_1 * val_2
 
         return self._default_addition_(other, function, "-")
 
@@ -387,15 +387,15 @@ class CSDM:
         """Multiply the components of the CSDM object by a scalar."""
         other = check_scalar_object(other, "*")
 
-        d1 = self.copy()
-        for item in d1.dependent_variables:
+        obj = self.copy()
+        for item in obj.dependent_variables:
             if not isinstance(other, Quantity):
                 item.components = item.components * other
             else:
                 value = 1 * item.subtype._unit * other
                 item.subtype._unit = value.unit
                 item.components = item.components * value.value
-        return d1
+        return obj
 
     def __rmul__(self, other):
         """Right multiply the components of the CSDM object by a scalar."""
@@ -419,15 +419,15 @@ class CSDM:
         """Divide the components of the CSDM object by a scalar."""
         other = check_scalar_object(other, "/")
 
-        d1 = self.copy()
-        for item in d1.dependent_variables:
+        obj = self.copy()
+        for item in obj.dependent_variables:
             if not isinstance(other, Quantity):
                 item.components = item.components / other
             else:
                 value = (1 * item.subtype._unit) / other
                 item.subtype._unit = value.unit
                 item.components = item.components * value.value
-        return d1
+        return obj
 
     def __rtruediv__(self, other):
         """Right divide the components of the CSDM object by a scalar."""
@@ -461,9 +461,9 @@ class CSDM:
 
     def _get_indices(self, indices):
         if isinstance(indices, tuple):
-            l_ = len(indices)
+            size = len(indices)
             indices = indices + tuple(
-                slice(0, _.count, 1) for _ in self.dimensions[l_:]
+                slice(0, _.count, 1) for _ in self.dimensions[size:]
             )
         if isinstance(indices, (int, slice)):
             indices = (indices,) + tuple(
@@ -490,23 +490,25 @@ class CSDM:
         indices = self._get_indices(indices)
         csdm = CSDM()
         for i, dim in enumerate(self.dimensions):
-            s_ = indices[i]
+            idx = indices[i]
 
             dim_ = dim.subtype if hasattr(dim, "subtype") else dim
 
-            length_ = dim.coordinates[s_].size
+            length_ = dim.coordinates[idx].size
             if length_ > 1:
                 if hasattr(dim_, "_equivalencies"):
                     equivalencies_ = dim_._equivalencies
                     dim_._equivalencies = None
-                    x = dim.coordinates[s_]
-                    new_dim = as_dimension(x.value, unit=str(x.unit))
+                    coordinates = dim.coordinates[idx]
+                    new_dim = as_dimension(
+                        coordinates.value, unit=str(coordinates.unit)
+                    )
                     dim_._equivalencies = equivalencies_
                     new_dim._equivalencies = equivalencies_
 
                 else:
-                    x = dim.coordinates[s_]
-                    new_dim = as_dimension(x)
+                    coordinates = dim.coordinates[idx]
+                    new_dim = as_dimension(coordinates)
 
                 new_dim._copy_metadata(dim_)
                 if hasattr(new_dim, "complex_fft"):
@@ -516,11 +518,13 @@ class CSDM:
 
         for variable in self.dependent_variables:
             section = (slice(0, len(variable.components), 1),) + indices[::-1]
-            y = variable.components[section]
-            dv = empty_dependent_variable(variable.numeric_type, variable.quantity_type)
-            dv.subtype._components = y
-            dv._copy_metadata(variable)
-            csdm._dependent_variables += [dv]
+            components = variable.components[section]
+            dv_obj = empty_dependent_variable(
+                variable.numeric_type, variable.quantity_type
+            )
+            dv_obj.subtype._components = components
+            dv_obj._copy_metadata(variable)
+            csdm._dependent_variables += [dv_obj]
 
         csdm._copy_metadata(self)
         return csdm
@@ -727,10 +731,10 @@ class CSDM:
         new._dimensions += self._dimensions[::-1]
 
         for item in self.dependent_variables:
-            dv = empty_dependent_variable(item.numeric_type, item.quantity_type)
-            dv._copy_metadata(item)
-            dv.subtype._components = np.moveaxis(item.subtype._components.T, -1, 0)
-            new._dependent_variables += [dv]
+            dv_obj = empty_dependent_variable(item.numeric_type, item.quantity_type)
+            dv_obj._copy_metadata(item)
+            dv_obj.subtype._components = np.moveaxis(item.subtype._components.T, -1, 0)
+            new._dependent_variables += [dv_obj]
 
         return new
 
@@ -1499,12 +1503,12 @@ def _get_new_csdm_object_after_applying_function(func, *args, **kwargs):
     new._dimensions = deepcopy(csdm.dimensions)
 
     for variable in csdm.dependent_variables:
-        y = func(variable.components, *args_, **kwargs)
+        components = func(variable.components, *args_, **kwargs)
         obj = empty_dependent_variable(
-            numeric_type=y.dtype, quantity_type=variable.quantity_type
+            numeric_type=components.dtype, quantity_type=variable.quantity_type
         )
         obj._copy_metadata(variable)
-        obj.subtype._components = y
+        obj.subtype._components = components
         new._dependent_variables += [obj]
 
     new._copy_metadata(csdm)
@@ -1545,13 +1549,13 @@ def _get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
     new._dimensions = deepcopy(csdm.dimensions)
 
     for variable in csdm.dependent_variables:
-        y = variable.components * apodization_vector_nd
+        components = variable.components * apodization_vector_nd
 
         obj = empty_dependent_variable(
-            numeric_type=y.dtype, quantity_type=variable.quantity_type
+            numeric_type=components.dtype, quantity_type=variable.quantity_type
         )
         obj._copy_metadata(variable)
-        obj.subtype._components = y
+        obj.subtype._components = components
         new._dependent_variables += [obj]
 
         # obj = as_dependent_variable(y, quantity_type=variable.quantity_type)
@@ -1602,21 +1606,21 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
                 new.dimensions.append(variable.copy())
 
     for variable in csdm.dependent_variables:
-        y = func(variable.components, *args_, **kwargs)
+        components = func(variable.components, *args_, **kwargs)
 
         if axis is not None:
             obj = empty_dependent_variable(
-                numeric_type=y.dtype, quantity_type=variable.quantity_type
+                numeric_type=components.dtype, quantity_type=variable.quantity_type
             )
             obj._copy_metadata(variable)
-            obj.subtype._components = y
+            obj.subtype._components = components
             new._dependent_variables += [obj]
 
             # obj = as_dependent_variable(y, quantity_type=variable.quantity_type)
             # obj._copy_metadata(variable)
             # new.add_dependent_variable(obj)
         else:
-            lst.append(y * variable.unit)
+            lst.append(components * variable.unit)
 
     if axis is None:
         del new

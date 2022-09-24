@@ -12,7 +12,7 @@ __all__ = ["Decoder"]
 class Decoder:
     """Decoder class"""
 
-    def __new__(self, encoding, quantity_type, components, dtype):
+    def __new__(cls, encoding, quantity_type, components, dtype):
         """Decode the components based on the encoding key value.
 
         The valid encodings are 'base64', 'none' (text), and 'raw' (binary).
@@ -20,7 +20,7 @@ class Decoder:
         if encoding != "raw":
             check_number_of_components_and_encoding_type(len(components), quantity_type)
         component_len = quantity_type.p
-        method = getattr(self, "decode_" + encoding)
+        method = getattr(cls, "decode_" + encoding)
         return method(components, dtype, component_len)
 
     @staticmethod

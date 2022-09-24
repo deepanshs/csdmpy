@@ -27,17 +27,7 @@ class SparseSampling:
         "_application",
     )
 
-    def __init__(
-        self,
-        # dimension_indexes,
-        # sparse_grid_vertexes,
-        # encoding="none",
-        # quantity_type="scalar",
-        # unsigned_integer_type="int64",
-        # description="",
-        # application={},
-        **kwargs,
-    ):
+    def __init__(self, **kwargs):
         """Initialize a SparseDimension class."""
         default = {
             "encoding": "none",
