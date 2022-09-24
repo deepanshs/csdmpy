@@ -171,7 +171,7 @@ def test_internal_new():
 def test_external_new():
     domain = "https://www.ssnmr.org/sites/default/files/CSDM"
 
-    d_v = cp.DependentVariable(
+    dv_obj = cp.DependentVariable(
         type="external",
         components_url=f"{domain}/GC/cinnamon_raw_cinnamon stick.dat",
         component_labels=["monotonic"],
@@ -179,49 +179,49 @@ def test_external_new():
         numeric_type="float32",
         quantity_type="scalar",
     )
-    data = cp.CSDM(dependent_variables=[d_v, d_v.copy()])
+    data = cp.CSDM(dependent_variables=[dv_obj, dv_obj.copy()])
 
-    for dv in data.y:
+    for dv_obj in data.y:
         # check type
-        assert dv.type == "internal"
-        dv.type = "external"
-        assert dv.type == "external"
+        assert dv_obj.type == "internal"
+        dv_obj.type = "external"
+        assert dv_obj.type == "external"
 
         # check components
-        assert dv.numeric_type == "float32"
+        assert dv_obj.numeric_type == "float32"
 
         # assign and check components
-        dv.numeric_type = "int32"
-        assert dv.numeric_type == "int32"
-        assert dv.components.dtype == "int32"
+        dv_obj.numeric_type = "int32"
+        assert dv_obj.numeric_type == "int32"
+        assert dv_obj.components.dtype == "int32"
 
         # check name
-        assert dv.name == "Headspace from cinnamon stick"
+        assert dv_obj.name == "Headspace from cinnamon stick"
 
         # check unit
-        assert dv.unit == ""
+        assert dv_obj.unit == ""
 
         # check component_url
-        assert dv.components_url == f"{domain}/GC/cinnamon_raw_cinnamon stick.dat"
+        assert dv_obj.components_url == f"{domain}/GC/cinnamon_raw_cinnamon stick.dat"
 
         # component names
-        assert dv.component_labels == ["monotonic"]
+        assert dv_obj.component_labels == ["monotonic"]
 
         # quantity type
-        assert dv.quantity_type == "scalar"
+        assert dv_obj.quantity_type == "scalar"
 
         # encoding
-        assert dv.encoding == "base64"
-        dv.encoding = "raw"
-        assert dv.encoding == "raw"
+        assert dv_obj.encoding == "base64"
+        dv_obj.encoding = "raw"
+        assert dv_obj.encoding == "raw"
 
         # description
-        assert dv.description == ""
-        dv.description = "This is also a test"
-        assert dv.description == "This is also a test"
+        assert dv_obj.description == ""
+        dv_obj.description = "This is also a test"
+        assert dv_obj.description == "This is also a test"
 
         # application
-        assert dv.application is None
+        assert dv_obj.application is None
 
     dict_1 = {
         "type": "internal",
