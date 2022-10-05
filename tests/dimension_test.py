@@ -265,6 +265,13 @@ def test_monotonic_new():
         description="Far far away.",
         coordinates=["1 m", "100 m", "1 km", "1 Gm", "0.25 lyr"],
     )
+    # mult
+    dim_x2 = dim_x * 4
+    assert np.allclose(dim_x2.coordinates, 4 * dim_x.coordinates)
+
+    dim_x2 = 4 * dim_x
+    assert np.allclose(dim_x2.coordinates, 4 * dim_x.coordinates)
+
     data = cp.CSDM(dimensions=[dim_x, dim_x.copy()])
 
     for dim in data.dimensions:
@@ -622,6 +629,13 @@ def test_as_dimension():
     dim = cp.as_dimension(array, unit="s")
     assert np.allclose(dim.coordinates.value, array)
     assert np.allclose(dim.coords.value, array)
+
+    # dim mult
+    dim2 = 4 * dim
+    assert dim2.increment == dim.increment * 4
+
+    dim2 = dim * 4
+    assert dim2.increment == dim.increment * 4
 
     # linear
     error = "Invalid array for Dimension object."

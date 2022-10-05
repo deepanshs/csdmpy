@@ -84,7 +84,11 @@ class MonotonicDimension(BaseQuantitativeDimension):
         return f"MonotonicDimension({self.coordinates.__str__()})"
 
     def __mul__(self, other):
-        """Multiply the MonotonicDimension object by a scalar."""
+        """Multiply the MonotonicDimension object by a right scalar."""
+        return _update_monotonic_dimension_object_by_scalar(self.copy(), other, "mul")
+
+    def __rmul__(self, other):
+        """Multiply the MonotonicDimension object by a left scalar."""
         return _update_monotonic_dimension_object_by_scalar(self.copy(), other, "mul")
 
     def __imul__(self, other):

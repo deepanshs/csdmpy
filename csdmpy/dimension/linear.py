@@ -75,7 +75,11 @@ class LinearDimension(BaseQuantitativeDimension):
         return np.all(check)
 
     def __mul__(self, other):
-        """Multiply the LinearDimension object by a scalar."""
+        """Multiply the LinearDimension object by a right scalar."""
+        return _update_linear_dimension_object_by_scalar(self.copy(), other, "mul")
+
+    def __rmul__(self, other):
+        """Multiply the LinearDimension object by a left scalar."""
         return _update_linear_dimension_object_by_scalar(self.copy(), other, "mul")
 
     def __imul__(self, other):
