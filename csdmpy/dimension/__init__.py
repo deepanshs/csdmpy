@@ -175,8 +175,12 @@ class Dimension:
         return True if self.subtype == other else False
 
     def __mul__(self, other):
-        """Multiply the Dimension object by a scalar."""
+        """Multiply the Dimension object by a right scalar."""
         return self.subtype.__mul__(other)
+
+    def __rmul__(self, other):
+        """Multiply the Dimension object by a left scalar."""
+        return self.subtype.__rmul__(other)
 
     def __imul__(self, other):
         """Multiply the Dimension object by a scalar, in-place."""
