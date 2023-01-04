@@ -14,7 +14,7 @@ with open("csdmpy/__init__.py") as f:
 
 # What packages are required for this module to be executed?
 required = [
-    "numpy>=1.17",
+    "numpy>=1.20",
     "setuptools>=27.3",
     "astropy>=3.0",
     "requests>=2.21.0",
@@ -42,7 +42,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Deepansh Srivastava",
     author_email="srivastava.89@osu.edu",
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     url="https://github.com/DeepanshS/csdmpy/",
     packages=find_packages(),
     install_requires=required,
@@ -61,7 +61,6 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
