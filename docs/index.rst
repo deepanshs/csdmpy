@@ -19,8 +19,8 @@ Welcome to the csdmpy documentation
             :alt: PyPI - Python Version
 
       * - Build Status
-        - .. image:: https://img.shields.io/github/workflow/status/deepanshs/csdmpy/CI%20(pip)?logo=GitHub
-            :target: https://github.com/DeepanshS/csdmpy/actions
+        - .. image:: https://img.shields.io/github/actions/workflow/status/deepanshs/csdmpy/continuous-integration-pip.yml?logo=GitHub
+            :target: https://github.com/DeepanshS/csdmpy/actions/workflow/continuous-integration-pip.yml
             :alt: GitHub Workflow Status
 
           .. image:: https://readthedocs.org/projects/csdmpy/badge/?version=stable
@@ -33,19 +33,10 @@ Welcome to the csdmpy documentation
             :alt: License
 
       * - Metrics
-        - .. image:: https://img.shields.io/lgtm/alerts/g/DeepanshS/csdmpy.svg?logo=lgtm
-            :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/alerts/
-            :alt: Total alerts
-
-          .. image:: https://img.shields.io/lgtm/grade/python/g/DeepanshS/csdmpy.svg?logo=lgtm
-            :target: https://lgtm.com/projects/g/DeepanshS/csdmpy/context:python
-            :alt: Language grade: Python
-
-          .. image:: https://codecov.io/gh/DeepanshS/csdmpy/branch/master/graph/badge.svg
+        - .. image:: https://codecov.io/gh/DeepanshS/csdmpy/branch/master/graph/badge.svg
             :target: https://codecov.io/gh/DeepanshS/csdmpy
 
-      * - GitHub
-        - .. image:: https://img.shields.io/github/issues-raw/deepanshs/csdmpy?logo=github
+          .. image:: https://img.shields.io/github/issues-raw/deepanshs/csdmpy?logo=github
             :target: https://github.com/DeepanshS/csdmpy/issues
             :alt: GitHub issues
 
