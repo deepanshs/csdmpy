@@ -609,3 +609,47 @@ def test_not_implemented_error():
             _ = fn_n(a_test)
         with pytest.raises(NotImplementedError, match=""):
             a_test.__getattribute__(fn_c)()
+
+
+def test_neg_to_pos_inc1():
+    x = [
+        cp.MonotonicDimension(coordinates=["1m", "10m", "100m"]),
+        cp.LinearDimension(count=10, increment="-1", coordinates_offset="2"),
+        cp.LinearDimension(count=5, increment="-3", coordinates_offset="2"),
+        cp.LabeledDimension(labels=["a", "b", "c"]),
+    ]
+    y = [cp.as_dependent_variable(array=[np.random.rand(3, 5, 10, 3)])]
+    obj = cp.CSDM(dimensions=x, dependent_variables=y)
+
+    new_obj = obj.to_positive_inc()
+    for i in [1, 2]:
+        np.testing.assert_allclose(
+            new_obj.x[i].coordinates.value[::-1], obj.x[i].coordinates.value
+        )
+    for i in [0, 4]:
+        np.testing.assert_allclose(
+            new_obj.x[0].coordinates.value, obj.x[0].coordinates.value
+        )
+    np.testing.assert_allclose(
+        new_obj.y[0].components[0][:, ::-1, ::-1, :], obj.y[0].components[0]
+    )
+
+
+def test_neg_to_pos_inc2():
+    x = [
+        cp.MonotonicDimension(coordinates=["1", "-10", "-100"]),
+        cp.LinearDimension(count=5, increment="3", coordinates_offset="2"),
+    ]
+    y = [cp.as_dependent_variable(array=[np.random.rand(5, 3)])]
+    obj = cp.CSDM(dimensions=x, dependent_variables=y)
+
+    new_obj = obj.to_positive_inc()
+    np.testing.assert_allclose(
+        new_obj.x[0].coordinates.value[::-1], obj.x[0].coordinates.value
+    )
+    np.testing.assert_allclose(
+        new_obj.x[1].coordinates.value, obj.x[1].coordinates.value
+    )
+    np.testing.assert_allclose(
+        new_obj.y[0].components[0][:, ::-1], obj.y[0].components[0]
+    )
