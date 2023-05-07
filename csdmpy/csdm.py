@@ -1437,6 +1437,47 @@ class CSDM:
         """
         return _preview(self, reverse_axis, range, **kwargs)
 
+    def to_positive_inc(self):
+        """Convert the csdm object with negative increment dimensions to positive
+        increments.
+
+        Args:
+            csdm_obj: CSDM object
+        """
+        reverse_index = []
+        new_dimensions = []
+        for i, dim in enumerate(self.dimensions):
+            if dim.type in ["linear", "monotonic"]:
+                diff = dim.coordinates[1] - dim.coordinates[0]
+                if diff.value < 0:
+                    reverse_index.append(-i - 1)
+                    coords = dim.coordinates
+                    array, unit = coords.value[::-1], coords.unit
+                    new_axis = as_dimension(array=array, unit=str(unit))
+                    new_axis.copy_metadata(dim)
+                    new_dimensions.append(new_axis)
+                else:
+                    new_dimensions.append(dim)
+            else:
+                new_dimensions.append(dim)
+
+        new_dvs = []
+        for d_v in self.dependent_variables:
+            datum = d_v.components
+            datum = (
+                datum
+                if reverse_index == []
+                else np.flip(datum, axis=tuple(reverse_index))
+            )
+            new_dv = as_dependent_variable(array=datum)
+            new_dv.copy_metadata(d_v)
+            new_dvs.append(new_dv)
+
+        new_csdm = CSDM(dimensions=new_dimensions, dependent_variables=new_dvs)
+        new_csdm.copy_metadata(self)
+
+        return new_csdm
+
 
 def _check_for_out(csdm, **kwargs):
     out = kwargs.get("out", None)
