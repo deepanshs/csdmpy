@@ -34,9 +34,13 @@ CSDM
       ~CSDM.to_dict
       ~CSDM.dumps
       ~CSDM.astype
+      ~CSDM.to_list
       ~CSDM.save
       ~CSDM.copy
       ~CSDM.split
+      ~CSDM.transpose
+      ~CSDM.fft
+      ~CSDM.to_positive_inc
 
    .. rubric:: Numpy compatible attributes summary
    .. autosummary::
@@ -99,6 +103,7 @@ CSDM
    .. automethod:: split
    .. automethod:: transpose
    .. automethod:: fft
+   .. automethod:: to_positive_inc
 
    .. rubric:: Numpy compatible method documentation
 
