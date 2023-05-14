@@ -37,6 +37,7 @@ CSDM
       ~CSDM.save
       ~CSDM.copy
       ~CSDM.split
+      ~CSDM.reshape
 
    .. rubric:: Numpy compatible attributes summary
    .. autosummary::
@@ -99,6 +100,7 @@ CSDM
    .. automethod:: split
    .. automethod:: transpose
    .. automethod:: fft
+   .. automethod:: reshape
 
    .. rubric:: Numpy compatible method documentation
 

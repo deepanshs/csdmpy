@@ -733,7 +733,11 @@ class CSDM:
         return len(self.dimensions)
 
     def reshape(self, shape):
-        """Return a new csdm object with shape."""
+        """Reshape the csdm object to shape.
+
+        Args:
+            shape: A list of dimension objects or integers.
+        """
         size = self.y[0].components[0].size
 
         shape_int = [item if isinstance(item, int) else item.size for item in shape]
