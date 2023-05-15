@@ -194,6 +194,31 @@ class Dimension:
         """Divide the Dimension object by a scalar, in-place."""
         return self.subtype.__itruediv__(other)
 
+    def __getitem__(self, indices):
+        """Return a dimension object corresponding to given indices."""
+        dim_ = self.subtype if hasattr(self, "subtype") else self
+
+        length_ = self.coordinates[indices].size
+        if length_ <= 1:
+            return self.coordinates[indices]
+
+        if hasattr(dim_, "_equivalencies"):
+            equivalencies_ = dim_._equivalencies
+            dim_._equivalencies = None
+            coordinates = self.coordinates[indices]
+            new_dim = as_dimension(coordinates.value, unit=str(coordinates.unit))
+            dim_._equivalencies = equivalencies_
+            new_dim._equivalencies = equivalencies_
+
+        else:
+            coordinates = self.coordinates[indices]
+            new_dim = as_dimension(coordinates)
+
+        new_dim.copy_metadata(dim_)
+        if hasattr(new_dim, "complex_fft"):
+            new_dim.complex_fft = False
+        return new_dim
+
     # ======================================================================= #
     #                          Dimension Attributes                           #
     # ======================================================================= #
@@ -535,6 +560,11 @@ class Dimension:
     @label.setter
     def label(self, label=""):
         self.subtype.label = label
+
+    @property
+    def size(self):
+        """Return the dimension count"""
+        return self.count
 
     @property
     def count(self):

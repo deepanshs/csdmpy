@@ -72,8 +72,10 @@ def test_linear_new():
 
     # count
     assert data.dimensions[0].count == 10
+    assert data.dimensions[0].size == 10
     data.dimensions[0].count = 12
     assert data.dimensions[0].count == 12
+    assert data.dimensions[0].size == 12
     assert np.all(data.dimensions[0].coordinates.value == np.arange(12) * 10.0 + 5.0)
     assert np.all(data.x[0].coords.value == np.arange(12) * 10.0 + 5.0)
     assert np.all(
@@ -314,6 +316,7 @@ def test_monotonic_new():
 
         # count
         assert dim.count == 5
+        assert dim.size == 5
         error = "Cannot set the count,"
         with pytest.raises(ValueError, match=f".*{error}.*"):
             dim.count = 12
@@ -532,6 +535,7 @@ def test_labeled_new():
     data.dimensions.append(dim)
 
     assert data.dimensions[0].is_quantitative() is False
+    assert data.dimensions[0].size == 4
 
     # description
     assert data.dimensions[0].description == "Far far away."

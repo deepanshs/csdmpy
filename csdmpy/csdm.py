@@ -490,30 +490,9 @@ class CSDM:
         indices = self._get_indices(indices)
         csdm = CSDM()
         for i, dim in enumerate(self.dimensions):
-            idx = indices[i]
-
-            dim_ = dim.subtype if hasattr(dim, "subtype") else dim
-
-            length_ = dim.coordinates[idx].size
-            if length_ > 1:
-                if hasattr(dim_, "_equivalencies"):
-                    equivalencies_ = dim_._equivalencies
-                    dim_._equivalencies = None
-                    coordinates = dim.coordinates[idx]
-                    new_dim = as_dimension(
-                        coordinates.value, unit=str(coordinates.unit)
-                    )
-                    dim_._equivalencies = equivalencies_
-                    new_dim._equivalencies = equivalencies_
-
-                else:
-                    coordinates = dim.coordinates[idx]
-                    new_dim = as_dimension(coordinates)
-
-                new_dim.copy_metadata(dim_)
-                if hasattr(new_dim, "complex_fft"):
-                    new_dim.complex_fft = False
-
+            dim_ = Dimension(**dim.dict()) if not hasattr(self, "subtype") else self
+            new_dim = dim_[indices[i]]
+            if new_dim.size > 1:
                 csdm._dimensions += [new_dim]
 
         for variable in self.dependent_variables:
@@ -752,6 +731,30 @@ class CSDM:
     def ndim(self):
         """Return the total number of dimensions."""
         return len(self.dimensions)
+
+    def reshape(self, shape):
+        """Reshape the csdm object to shape.
+
+        Args:
+            shape: A list of dimension objects or integers.
+        """
+        size = self.y[0].components[0].size
+
+        shape_int = [item if isinstance(item, int) else item.size for item in shape]
+        new_dim = []
+        for index in shape:
+            sh = int(-size / np.prod(shape_int)) if index == -1 else index
+            dim = as_dimension(np.arange(sh)) if isinstance(sh, int) else sh
+            new_dim.append(dim)
+
+        for d_v in self.y:
+            new_shape = (d_v.components.shape[0],) + tuple(shape_int[::-1])
+            new_dv = as_dependent_variable(array=d_v.components.reshape(new_shape))
+            new_dv.copy_metadata(d_v)
+
+        new_csdm = CSDM(dimensions=new_dim, dependent_variables=[new_dv])
+        new_csdm.copy_metadata(self)
+        return new_csdm
 
     # ----------------------------------------------------------------------- #
     #                                  Methods                                #

@@ -611,6 +611,17 @@ def test_not_implemented_error():
             a_test.__getattribute__(fn_c)()
 
 
+def test_reshape():
+    out, test_csdm = get_test_2d(int)
+    new_test = test_csdm.reshape(shape=(25, 2))
+    np.testing.assert_allclose(new_test.y[0].components[0], out.reshape(2, 25))
+
+    d1 = cp.as_dimension(array=np.arange(2))
+    d2 = cp.as_dimension(array=np.arange(25) - 12)
+    new_test = test_csdm.reshape(shape=(d1, d2))
+    np.testing.assert_allclose(new_test.y[0].components[0], out.reshape(25, 2))
+
+
 def test_neg_to_pos_inc1():
     x = [
         cp.MonotonicDimension(coordinates=["1m", "10m", "100m"]),

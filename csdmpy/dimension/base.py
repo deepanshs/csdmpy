@@ -70,6 +70,11 @@ class BaseDimension:
         self.coordinates = value
 
     @property
+    def size(self):
+        """Return the dimension count"""
+        return self.coordinates.size
+
+    @property
     def axis_label(self):
         """Return a formatted string for displaying label along the dimension axis."""
         return self.label

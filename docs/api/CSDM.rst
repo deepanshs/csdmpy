@@ -38,6 +38,7 @@ CSDM
       ~CSDM.save
       ~CSDM.copy
       ~CSDM.split
+      ~CSDM.reshape
       ~CSDM.transpose
       ~CSDM.fft
       ~CSDM.to_positive_inc
@@ -103,6 +104,7 @@ CSDM
    .. automethod:: split
    .. automethod:: transpose
    .. automethod:: fft
+   .. automethod:: reshape
    .. automethod:: to_positive_inc
 
    .. rubric:: Numpy compatible method documentation
