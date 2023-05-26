@@ -37,19 +37,39 @@ def fft(csdm, axis=0):
     ndim = len(csdm_new.dimensions)
 
     if dimension_object._complex_fft:
+        scale_factor = 1.0 if np.isfinite(dimension_object.reciprocal.period) else 2.0
         phase = np.exp(2j * np.pi * coordinates_offset_res * coordinates)
         phase_grid = _get_broadcast_shape(phase, ndim, axis=index)
         for item in csdm_new.dependent_variables:
+            comp_shape_len = len(item.subtype._components.shape)
+            slice_ = tuple(
+                [
+                    slice(None, 1, None) if i == -index - 1 else slice(None)
+                    for i in range(comp_shape_len)
+                ][::-1]
+            )
+
             phased_signal = item.subtype._components * phase_grid
             ft_shift = np.fft.ifftshift(phased_signal, axes=index)
             signal_ft = np.fft.ifft(ft_shift, axis=index)
+            signal_ft[slice_] *= scale_factor
 
             item.subtype._components = signal_ft
         dimension_object._complex_fft = False
     else:  # FFT is false
+        scale_factor = 1.0 if np.isfinite(dimension_object.period) else 2.0
         phase = np.exp(-2j * np.pi * coordinates_offset * coordinates_res)
         phase_grid = _get_broadcast_shape(phase, ndim, axis=index)
         for item in csdm_new.dependent_variables:
+            comp_shape_len = len(item.subtype._components.shape)
+            slice_ = tuple(
+                [
+                    slice(None, 1, None) if i == -index - 1 else slice(None)
+                    for i in range(comp_shape_len)
+                ][::-1]
+            )
+            item.subtype._components[slice_] /= scale_factor
+
             ft = np.fft.fft(item.subtype._components, axis=index)
             ft_shift = np.fft.fftshift(ft, axes=index)
             signal_ft = ft_shift * phase_grid
