@@ -1674,6 +1674,7 @@ def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
 
 
 def empty_dependent_variable(numeric_type, quantity_type="scalar"):
+    """Create an empty dependent variable object"""
     return DependentVariable(
         type="internal",
         components=np.empty(0),
