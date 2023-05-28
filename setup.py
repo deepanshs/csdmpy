@@ -16,7 +16,6 @@ with open("csdmpy/__init__.py") as f:
 required = [
     "numpy>=1.20",
     "setuptools>=27.3",
-    "astropy>=3.0",
     "requests>=2.21.0",
     "numexpr>=2.7.0",
 ]
