@@ -29,8 +29,11 @@ def test_unit():
     b = a * ScalarQuantity("1 m / s").quantity
     assert str(a) == "5.0 kg m / s"
     assert str(ScalarQuantity(a)) == "5.0 kg * m * s^-1"
-    assert str(ScalarQuantity(b)) == "5.0 kg * m^2 * s^-2"
-    assert ScalarQuantity(b).__format__("unit") == "kg * m^2 * s^-2"
+    assert str(ScalarQuantity(b)) in ["5.0 kg * m^2 * s^-2", "5.0 m^2 * kg * s^-2"]
+    assert ScalarQuantity(b).__format__("unit") in [
+        "kg * m^2 * s^-2",
+        "m^2 * kg * s^-2",
+    ]
     assert str(b.to("J")) == "5.0 J"
 
     a = ScalarQuantity("5e-7 s").quantity
