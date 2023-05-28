@@ -4,8 +4,7 @@ setuptools>=27.3
 numexpr>=2.7.0
 
 # for units
-astropy>=4.0
-astropy<=5.1 ; python_version >= '3.8'
+astropy<=5.1
 
 # Dependencies of requests package
 requests>=2.21.0
