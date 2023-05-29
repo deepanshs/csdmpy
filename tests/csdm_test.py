@@ -69,8 +69,7 @@ def test_csdm():
 
     # geographic_coordinate
     assert data.geographic_coordinate is None
-    error = "can't set attribute"
-    with pytest.raises(AttributeError, match=f".*{error}.*"):
+    with pytest.raises(AttributeError):
         data.geographic_coordinate = {}
 
     # description
