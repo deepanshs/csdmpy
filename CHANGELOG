@@ -1,3 +1,22 @@
+v0.6.0
+------
+
+Feature
+'''''''
+
+- Convert negative increment CSDM object to positive increment CSDM object.
+- Accepts both C and F contiguous numpy array to convert to CSDM object. #57
+- Add `csdm.reshape(dim1, dim2)` to CSDM object to reshape a CSDM object to the
+  given list dimension object---`dim1`, `dim2`.
+
+Bugfix
+''''''
+
+- fft and ifft scale the first point by 2 when the dimension is non-periodic.
+- Bugfix in serializing csdm #54
+- You can multiply CSDM objects by a scalar to the right (`csdm * scalar`). The fix
+  now allows the multiplication of CSDM objects by a scalar to the left (`scalar * csdm`). #62
+
 v0.5.0
 ------
 
