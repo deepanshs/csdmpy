@@ -25,10 +25,10 @@ def integral(csdm):
         >>> import csdmpy.statistics as stat
         >>> x = np.arange(100) * 2 - 100.0
         >>> gauss = np.exp(-((x - 5.) ** 2) / (2 * 4. ** 2))
-        >>> csdm = cp.as_csdm(gauss, unit='T')
+        >>> csdm = cp.as_csdm(gauss, unit='T/m')
         >>> csdm.dimensions[0] = cp.as_dimension(x, unit="m")
         >>> stat.integral(csdm)
-        <Quantity 10.0265131 m T>
+        <Quantity 10.0265131 T>
     """
     dim_l = len(csdm.dimensions)
     _check_dimension_type(csdm)

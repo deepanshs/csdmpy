@@ -51,7 +51,7 @@ def test_02():
     # integration
     int_csdm = stat.integral(csdm)
     assert np.allclose(int_csdm.value, gauss_integral)
-    assert str(int_csdm.unit) == "deg K s"
+    assert str(int_csdm.unit) in ["deg K s", "K deg s"]
 
     # mean
     mean_csdm = stat.mean(csdm)

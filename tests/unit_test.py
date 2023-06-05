@@ -22,15 +22,18 @@ def test_unit():
 
     a = ScalarQuantity("(54.3/2) (µHz/Hz)").quantity
     assert str(a) == "27.15 uHz / Hz"
-    assert str(ScalarQuantity(a)) == "27.15 Hz^-1 * µHz"
+    assert str(ScalarQuantity(a)) in ["27.15 Hz^-1 * µHz", "27.15 µHz * Hz^-1"]
     assert str(a.to("ppm")) == "27.15 ppm"
 
     a = ScalarQuantity("5 kg * m / s").quantity
     b = a * ScalarQuantity("1 m / s").quantity
     assert str(a) == "5.0 kg m / s"
     assert str(ScalarQuantity(a)) == "5.0 kg * m * s^-1"
-    assert str(ScalarQuantity(b)) == "5.0 kg * m^2 * s^-2"
-    assert ScalarQuantity(b).__format__("unit") == "kg * m^2 * s^-2"
+    assert str(ScalarQuantity(b)) in ["5.0 kg * m^2 * s^-2", "5.0 m^2 * kg * s^-2"]
+    assert ScalarQuantity(b).__format__("unit") in [
+        "kg * m^2 * s^-2",
+        "m^2 * kg * s^-2",
+    ]
     assert str(b.to("J")) == "5.0 J"
 
     a = ScalarQuantity("5e-7 s").quantity

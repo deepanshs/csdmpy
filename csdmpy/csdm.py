@@ -508,7 +508,9 @@ class CSDM:
 
         csdm.copy_metadata(self)
         if len(csdm.dimensions) == 0 and len(csdm.dependent_variables) == 1:
-            return np.squeeze(csdm.dependent_variables[0].components)
+            value = np.squeeze(csdm.dependent_variables[0].components)
+            unit = csdm.dependent_variables[0].unit
+            return value * unit
         return csdm
 
     def copy_metadata(self, other):

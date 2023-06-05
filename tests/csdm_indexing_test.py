@@ -130,15 +130,13 @@ def test_index_6():
 def test_index_7():
     l_test = a_obj[1, 3, 9]
     assert l_test.shape == ()
-    assert np.allclose(l_test.y[0].components[0], array[9, 3, 1])
-    assert str(l_test.y[0].unit) == "A"
-    save_and_load(l_test)
+    assert np.allclose(l_test.value, array[9, 3, 1])
+    assert str(l_test.unit) == "A"
 
     l_test = a_obj[(1, 3, 19)]
     assert l_test.shape == ()
-    assert np.allclose(l_test.y[0].components[0], array[19, 3, 1])
-    assert str(l_test.y[0].unit) == "A"
-    save_and_load(l_test)
+    assert np.allclose(l_test.value, array[19, 3, 1])
+    assert str(l_test.unit) == "A"
 
 
 def test_index_8():

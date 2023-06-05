@@ -192,11 +192,6 @@ class DependentVariable:
         Here, `quantity_name`, `component_labels`, and `unit`are the attributes of the
         :ref:`dv_api` instance. For example,
 
-        .. doctest::
-
-            >>> y.axis_label
-            ['energy / (s W)', 'energy / (s W)', 'energy / (s W)']
-
         Returns:
             A list of formatted component label strings.
 
@@ -347,30 +342,6 @@ class DependentVariable:
         variable object. For convenience, the values from the `components` attribute
         are truncated to the first and the last two numbers per component.
         The `encoding` keyword is also hidden from this view.
-
-        .. doctest::
-
-            >>> print(y.data_structure)
-            {
-              "type": "internal",
-              "description": "A test image",
-              "name": "star",
-              "unit": "s * W",
-              "quantity_name": "energy",
-              "numeric_type": "float32",
-              "quantity_type": "pixel_3",
-              "components": [
-                [
-                  "0.0, 1.0, ..., 8.0, 9.0"
-                ],
-                [
-                  "10.0, 11.0, ..., 18.0, 19.0"
-                ],
-                [
-                  "20.0, 21.0, ..., 28.0, 29.0"
-                ]
-              ]
-            }
 
         Returns:
             A json serialized string of the dependent variable object.
@@ -633,11 +604,6 @@ class DependentVariable:
             :meth:`~csdmpy.DependentVariable.to` method of
             the class instance.
 
-        .. doctest::
-
-            >>> y.unit
-            Unit("s W")
-
         Returns:
             A `Unit` object from astropy.unit package.
 
@@ -666,8 +632,6 @@ class DependentVariable:
 
         .. doctest::
 
-            >>> y.unit
-            Unit("s W")
             >>> print(y.components[0, 5])
             5.0
             >>> y.to("mJ")
