@@ -321,6 +321,14 @@ def check_scalar_object(other, operator=""):
     if isinstance(other, numpy_scalars):
         return other
 
+    if other.__class__.__name__ == "CSDM":
+        if len(other.y) > 1:
+            raise TypeError(
+                f"unsupported operand type(s) {operator}: 'CSDM' and "
+                f"multi dependent variable CSDM."
+            )
+        return other.y[0].components
+
     if not isinstance(
         other, (int, float, complex, np.ndarray, Quantity, ScalarQuantity)
     ):
