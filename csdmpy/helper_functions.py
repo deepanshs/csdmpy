@@ -469,7 +469,7 @@ def twoD_scalar(x, y, ax, range_, **kwargs):
 
         cs = NonUniformImage(ax, **kwargs)
         cs.set_data(x0, x1, y00)
-        ax.images.append(cs)
+        ax.add_artist(cs)
 
     cbar = ax.figure.colorbar(cs, ax=ax)
     cbar.ax.minorticks_off()
