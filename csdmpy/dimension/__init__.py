@@ -762,7 +762,6 @@ class Dimension:
 
     def copy_metadata(self, obj):
         """Copy Dimension metadata"""
-        self.subtype._type = obj.subtype._type
         self.subtype.copy_metadata(obj)
 
     def to_dict(self):

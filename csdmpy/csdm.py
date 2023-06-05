@@ -490,7 +490,8 @@ class CSDM:
         indices = self._get_indices(indices)
         csdm = CSDM()
         for i, dim in enumerate(self.dimensions):
-            dim_ = Dimension(**dim.dict()) if not hasattr(self, "subtype") else self
+            dim_ = Dimension(**dim.dict()) if not hasattr(self, "subtype") else dim
+            dim_.copy_metadata(dim)
             new_dim = dim_[indices[i]]
             if new_dim.size > 1:
                 csdm._dimensions += [new_dim]
@@ -506,6 +507,8 @@ class CSDM:
             csdm._dependent_variables += [dv_obj]
 
         csdm.copy_metadata(self)
+        if len(csdm.dimensions) == 0 and len(csdm.dependent_variables) == 1:
+            return np.squeeze(csdm.dependent_variables[0].components)
         return csdm
 
     def copy_metadata(self, other):
@@ -744,7 +747,11 @@ class CSDM:
         new_dim = []
         for index in shape:
             sh = int(-size / np.prod(shape_int)) if index == -1 else index
-            dim = as_dimension(np.arange(sh)) if isinstance(sh, int) else sh
+            dim = (
+                Dimension(type="linear", count=sh, increment="1")
+                if isinstance(sh, int)
+                else sh
+            )
             new_dim.append(dim)
 
         for d_v in self.y:
