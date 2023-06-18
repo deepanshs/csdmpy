@@ -57,6 +57,8 @@ __ufunc_list_unit_independent__ = [
     np.sign,
     np.conj,
     np.conjugate,
+    np.multiply,
+    np.divide,
 ]
 
 __ufunc_list_applies_to_unit__ = [np.sqrt, np.square, np.cbrt, np.reciprocal, np.power]
@@ -1338,6 +1340,11 @@ class CSDM:
         return np.cumprod(self, axis=axis)
 
     def __array_ufunc__(self, function, method, *inputs, **kwargs):
+        if function == np.multiply:
+            return inputs[1] * inputs[0]
+        if function == np.divide:
+            return (1.0 / inputs[1]) * inputs[0]
+
         csdm = inputs[0]
         input_ = []
         if len(inputs) > 1:
@@ -1353,17 +1360,17 @@ class CSDM:
                     )
                 factor[i] = variable.unit.to("")
             return _get_new_csdm_object_after_applying_ufunc(
-                inputs[0], function, method, factor, *input_, **kwargs
+                csdm, function, method, factor, *input_, **kwargs
             )
 
         if function in __ufunc_list_unit_independent__:
             return _get_new_csdm_object_after_applying_ufunc(
-                inputs[0], function, method, None, *input_, **kwargs
+                csdm, function, method, None, *input_, **kwargs
             )
 
         if function in __ufunc_list_applies_to_unit__:
             obj = _get_new_csdm_object_after_applying_ufunc(
-                inputs[0], function, method, None, *input_, **kwargs
+                csdm, function, method, None, *input_, **kwargs
             )
             for i, variable in enumerate(obj.dependent_variables):
                 scalar = function(1 * variable.unit, *input_)

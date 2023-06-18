@@ -205,7 +205,7 @@ def new(description=""):
     return CSDM(description=description)
 
 
-def as_csdm(array, unit="", quantity_type="scalar", shape=None):
+def as_csdm(array, unit="", quantity_type="scalar"):
     """Generate and return a view of the nD numpy array as a csdm object.
     The nD array is the dependent variable of the csdm object of the given quantity
     type. The shape of the nD array is used to generate Dimension object of `linear`
@@ -248,10 +248,7 @@ def as_csdm(array, unit="", quantity_type="scalar", shape=None):
         unit=unit,
         quantity_type=quantity_type,
     )
-    new_csdm = CSDM(dimensions=dim, dependent_variables=[dv])
-    if shape is not None:
-        new_csdm = new_csdm.reshape(shape)
-    return new_csdm
+    return CSDM(dimensions=dim, dependent_variables=[dv])
 
 
 def plot(csdm_object, reverse_axis=None, range=None, **kwargs):
