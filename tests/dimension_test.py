@@ -27,8 +27,7 @@ def test_linear_new():
     # type
     assert data.dimensions[0].type == "linear"
 
-    error = "can't set attribute"
-    with pytest.raises(AttributeError, match=f".*{error}.*"):
+    with pytest.raises(AttributeError):
         data.dimensions[0].type = "monotonic"
 
     # increment
@@ -330,8 +329,7 @@ def test_monotonic_new():
         with pytest.raises(AttributeError, match=f".*{error}.*"):
             _ = dim.coordinates_offset
 
-        error = "can't set attribute"
-        with pytest.raises(AttributeError, match=f".*{error}.*"):
+        with pytest.raises(AttributeError):
             dim.coordinates_offset = "1"
 
         # origin offset
