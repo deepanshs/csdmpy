@@ -57,6 +57,8 @@ __ufunc_list_unit_independent__ = [
     np.sign,
     np.conj,
     np.conjugate,
+    np.multiply,
+    np.divide,
 ]
 
 __ufunc_list_applies_to_unit__ = [np.sqrt, np.square, np.cbrt, np.reciprocal, np.power]
@@ -490,7 +492,8 @@ class CSDM:
         indices = self._get_indices(indices)
         csdm = CSDM()
         for i, dim in enumerate(self.dimensions):
-            dim_ = Dimension(**dim.dict()) if not hasattr(self, "subtype") else self
+            dim_ = Dimension(**dim.dict()) if not hasattr(self, "subtype") else dim
+            dim_.copy_metadata(dim)
             new_dim = dim_[indices[i]]
             if new_dim.size > 1:
                 csdm._dimensions += [new_dim]
@@ -506,6 +509,10 @@ class CSDM:
             csdm._dependent_variables += [dv_obj]
 
         csdm.copy_metadata(self)
+        if len(csdm.dimensions) == 0 and len(csdm.dependent_variables) == 1:
+            value = np.squeeze(csdm.dependent_variables[0].components)
+            unit = csdm.dependent_variables[0].unit
+            return value * unit
         return csdm
 
     def copy_metadata(self, other):
@@ -744,7 +751,11 @@ class CSDM:
         new_dim = []
         for index in shape:
             sh = int(-size / np.prod(shape_int)) if index == -1 else index
-            dim = as_dimension(np.arange(sh)) if isinstance(sh, int) else sh
+            dim = (
+                Dimension(type="linear", count=sh, increment="1")
+                if isinstance(sh, int)
+                else sh
+            )
             new_dim.append(dim)
 
         for d_v in self.y:
@@ -1329,6 +1340,11 @@ class CSDM:
         return np.cumprod(self, axis=axis)
 
     def __array_ufunc__(self, function, method, *inputs, **kwargs):
+        if function == np.multiply:
+            return inputs[1] * inputs[0]
+        if function == np.divide:
+            return (1.0 / inputs[1]) * inputs[0]
+
         csdm = inputs[0]
         input_ = []
         if len(inputs) > 1:
@@ -1344,17 +1360,17 @@ class CSDM:
                     )
                 factor[i] = variable.unit.to("")
             return _get_new_csdm_object_after_applying_ufunc(
-                inputs[0], function, method, factor, *input_, **kwargs
+                csdm, function, method, factor, *input_, **kwargs
             )
 
         if function in __ufunc_list_unit_independent__:
             return _get_new_csdm_object_after_applying_ufunc(
-                inputs[0], function, method, None, *input_, **kwargs
+                csdm, function, method, None, *input_, **kwargs
             )
 
         if function in __ufunc_list_applies_to_unit__:
             obj = _get_new_csdm_object_after_applying_ufunc(
-                inputs[0], function, method, None, *input_, **kwargs
+                csdm, function, method, None, *input_, **kwargs
             )
             for i, variable in enumerate(obj.dependent_variables):
                 scalar = function(1 * variable.unit, *input_)

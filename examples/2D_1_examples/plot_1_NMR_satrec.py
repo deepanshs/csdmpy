@@ -100,7 +100,7 @@ im = NonUniformImage(ax, interpolation="nearest", extent=extent, cmap="bone_r")
 im.set_data(x0, x1, y00.real / y00.real.max())
 
 # Set up the grid lines.
-ax.images.append(im)
+ax.add_artist(im)
 for i in range(x1.size):
     ax.plot(x0, np.ones(x0.size) * x1[i], "k--", linewidth=0.5)
 ax.grid(axis="x", color="k", linestyle="--", linewidth=0.5, which="both")

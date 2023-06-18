@@ -17,6 +17,7 @@ from .dependent_variable import download  # lgtm [py/import-own-module] # NOQA
 from .helper_functions import _preview  # lgtm [py/import-own-module] # NOQA
 from .numpy_wrapper import apodize  # lgtm [py/import-own-module] # NOQA
 from .tests import *  # lgtm [py/import-own-module] # NOQA
+from .units import Quantity  # lgtm [py/import-own-module] # NOQA
 from .units import ScalarQuantity  # lgtm [py/import-own-module] # NOQA
 from .units import string_to_quantity  # lgtm [py/import-own-module] # NOQA
 from .utils import QuantityType  # lgtm [py/import-own-module] # NOQA
@@ -239,8 +240,8 @@ def as_csdm(array, unit="", quantity_type="scalar"):
             f"is equal to the number of components supported by {quantity_type}."
         )
 
-    shape = array.shape[::-1][:-1]
-    dim = [LinearDimension(count=i, increment="1") for i in shape]
+    ar_shape = array.shape[::-1][:-1]
+    dim = [Dimension(type="linear", count=i, increment="1") for i in ar_shape]
     dv = DependentVariable(
         type="internal",
         components=array,

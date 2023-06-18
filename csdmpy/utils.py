@@ -321,6 +321,17 @@ def check_scalar_object(other, operator=""):
     if isinstance(other, numpy_scalars):
         return other
 
+    if other.__class__.__name__ == "CSDM":
+        if len(other.y) > 1:
+            raise TypeError(
+                f"unsupported operand type(s) {operator}: 'CSDM' and "
+                f"multi dependent variable CSDM."
+            )
+        return other.y[0].components
+
+    if isinstance(other, np.ndarray):
+        return other.T[np.newaxis]
+
     if not isinstance(
         other, (int, float, complex, np.ndarray, Quantity, ScalarQuantity)
     ):
@@ -328,9 +339,6 @@ def check_scalar_object(other, operator=""):
             f"unsupported operand type(s) {operator}: 'CSDM' and "
             f"'{other.__class__.__name__}'."
         )
-    if isinstance(other, np.ndarray):
-        if other.ndim != 0:
-            raise ValueError("Only scalar multiplication or division is allowed.")
 
     if isinstance(other, ScalarQuantity):
         return other.quantity
