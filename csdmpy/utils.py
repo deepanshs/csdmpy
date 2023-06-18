@@ -339,9 +339,6 @@ def check_scalar_object(other, operator=""):
             f"unsupported operand type(s) {operator}: 'CSDM' and "
             f"'{other.__class__.__name__}'."
         )
-    if isinstance(other, np.ndarray):
-        if other.ndim != 0:
-            raise ValueError("Only scalar multiplication or division is allowed.")
 
     if isinstance(other, ScalarQuantity):
         return other.quantity
