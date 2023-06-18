@@ -5,23 +5,23 @@ from urllib.parse import urlparse
 
 import numpy as np
 
-from .csdm import as_dependent_variable  # lgtm [py/import-own-module] # NOQA
-from .csdm import as_dimension  # lgtm [py/import-own-module] # NOQA
-from .csdm import CSDM  # lgtm [py/import-own-module] # NOQA
-from .csdm import DependentVariable  # lgtm [py/import-own-module] # NOQA
-from .csdm import Dimension  # lgtm [py/import-own-module] # NOQA
-from .csdm import LabeledDimension  # lgtm [py/import-own-module] # NOQA
-from .csdm import LinearDimension  # lgtm [py/import-own-module] # NOQA
-from .csdm import MonotonicDimension  # lgtm [py/import-own-module] # NOQA
-from .dependent_variable import download  # lgtm [py/import-own-module] # NOQA
-from .helper_functions import _preview  # lgtm [py/import-own-module] # NOQA
-from .numpy_wrapper import apodize  # lgtm [py/import-own-module] # NOQA
-from .tests import *  # lgtm [py/import-own-module] # NOQA
-from .units import Quantity  # lgtm [py/import-own-module] # NOQA
-from .units import ScalarQuantity  # lgtm [py/import-own-module] # NOQA
-from .units import string_to_quantity  # lgtm [py/import-own-module] # NOQA
-from .utils import QuantityType  # lgtm [py/import-own-module] # NOQA
-from .utils import validate  # lgtm [py/import-own-module] # NOQA
+from .csdm import as_dependent_variable  # NOQA
+from .csdm import as_dimension  # NOQA
+from .csdm import CSDM  # NOQA
+from .csdm import DependentVariable  # NOQA
+from .csdm import Dimension  # NOQA
+from .csdm import LabeledDimension  # NOQA
+from .csdm import LinearDimension  # NOQA
+from .csdm import MonotonicDimension  # NOQA
+from .dependent_variable import download  # NOQA
+from .helper_functions import _preview  # NOQA
+from .numpy_wrapper import apodize  # NOQA
+from .tests import *  # NOQA
+from .units import Quantity  # NOQA
+from .units import ScalarQuantity  # NOQA
+from .units import string_to_quantity  # NOQA
+from .utils import QuantityType  # NOQA
+from .utils import validate  # NOQA
 
 now = datetime.datetime.now()
 year = now.year

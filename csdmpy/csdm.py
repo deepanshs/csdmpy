@@ -7,79 +7,35 @@ from copy import deepcopy
 import numpy as np
 from astropy.units.quantity import Quantity
 
-from .abstract_list import __dimensions_list__  # lgtm [py/import-own-module]
-from .abstract_list import DependentVariableList  # lgtm [py/import-own-module]
-from .abstract_list import DimensionList  # lgtm [py/import-own-module]
+from .abstract_list import __dimensions_list__
+from .abstract_list import DependentVariableList
+from .abstract_list import DimensionList
 from .dependent_variable import as_dependent_variable  # noqa: F401
-from .dependent_variable import DependentVariable  # lgtm [py/import-own-module]
-from .dimension import as_dimension  # lgtm [py/import-own-module]
-from .dimension import Dimension  # lgtm [py/import-own-module] # noqa: F401
-from .dimension import LabeledDimension  # lgtm [py/import-own-module] # noqa: F401
-from .dimension import LinearDimension  # lgtm [py/import-own-module] # noqa: F401
-from .dimension import MonotonicDimension  # lgtm [py/import-own-module] # noqa: F401
-from .helper_functions import _preview  # lgtm [py/import-own-module]
+from .dependent_variable import DependentVariable
+from .dimension import as_dimension
+from .dimension import Dimension  # noqa: F401
+from .dimension import LabeledDimension  # noqa: F401
+from .dimension import LinearDimension  # noqa: F401
+from .dimension import MonotonicDimension  # noqa: F401
+from .helper_functions import _preview
+from .numpy_wrapper import __array_manipulation__
+from .numpy_wrapper import __function_reduction_list__
+from .numpy_wrapper import __other_functions__
+from .numpy_wrapper import __shape_manipulation_functions__
+from .numpy_wrapper import __ufunc_list_applies_to_unit__
+from .numpy_wrapper import __ufunc_list_dimensionless_unit__
+from .numpy_wrapper import __ufunc_list_unit_independent__
 from .numpy_wrapper import fft
-from .units import string_to_quantity  # lgtm [py/import-own-module]
-from .utils import _check_dimension_indices  # lgtm [py/import-own-module]
-from .utils import _get_broadcast_shape  # lgtm [py/import-own-module]
-from .utils import check_scalar_object  # lgtm [py/import-own-module]
-from .utils import validate  # lgtm [py/import-own-module]
+from .units import string_to_quantity
+from .utils import _check_dimension_indices
+from .utils import _get_broadcast_shape
+from .utils import check_scalar_object
+from .utils import get_CSDM_object__args__axes
+from .utils import np_check_for_out
+from .utils import np_check_pads
+from .utils import validate
 
 __all__ = ["CSDM"]
-__ufunc_list_dimensionless_unit__ = [
-    np.sin,
-    np.cos,
-    np.tan,
-    np.arcsin,
-    np.arccos,
-    np.arctan,
-    np.sinh,
-    np.cosh,
-    np.tanh,
-    np.arcsinh,
-    np.arccosh,
-    np.arctanh,
-    np.exp,
-    np.exp2,
-    np.log,
-    np.log2,
-    np.log10,
-    np.expm1,
-    np.log1p,
-]
-
-__ufunc_list_unit_independent__ = [
-    np.negative,
-    np.positive,
-    np.absolute,
-    np.fabs,
-    np.rint,
-    np.sign,
-    np.conj,
-    np.conjugate,
-    np.multiply,
-    np.divide,
-]
-
-__ufunc_list_applies_to_unit__ = [np.sqrt, np.square, np.cbrt, np.reciprocal, np.power]
-
-__function_reduction_list__ = [
-    np.max,
-    np.min,
-    np.sum,
-    np.mean,
-    np.var,
-    np.std,
-    np.prod,
-    np.cumsum,
-    np.cumprod,
-    np.argmin,
-    np.argmax,
-]
-
-__other_functions__ = [np.round, np.real, np.imag, np.clip, np.around, np.angle]
-
-__shape_manipulation_functions__ = [np.transpose]
 
 
 class CSDM:
@@ -299,7 +255,6 @@ class CSDM:
     #     raise NotImplementedError()
 
     def __ifunction__(self, function, symbol, other):
-
         if isinstance(other, CSDM):
             self.__check_csdm_object_additive_compatibility(other)
 
@@ -1359,17 +1314,17 @@ class CSDM:
                         f"type `{variable.unit.physical_type}`."
                     )
                 factor[i] = variable.unit.to("")
-            return _get_new_csdm_object_after_applying_ufunc(
+            return get_new_csdm_object_after_applying_ufunc(
                 csdm, function, method, factor, *input_, **kwargs
             )
 
         if function in __ufunc_list_unit_independent__:
-            return _get_new_csdm_object_after_applying_ufunc(
+            return get_new_csdm_object_after_applying_ufunc(
                 csdm, function, method, None, *input_, **kwargs
             )
 
         if function in __ufunc_list_applies_to_unit__:
-            obj = _get_new_csdm_object_after_applying_ufunc(
+            obj = get_new_csdm_object_after_applying_ufunc(
                 csdm, function, method, None, *input_, **kwargs
             )
             for i, variable in enumerate(obj.dependent_variables):
@@ -1382,13 +1337,25 @@ class CSDM:
 
     def __array_function__(self, function, _, *args, **kwargs):
         if function in __function_reduction_list__:
-            return _get_new_csdm_object_after_dimension_reduction_func(
+            return get_new_csdm_object_after_dimension_reduction_func(
                 function, *args[0], **args[1], **kwargs
             )
         if function in __other_functions__:
-            return _get_new_csdm_object_after_applying_function(
+            return get_new_csdm_object_after_applying_function(
                 function, *args[0], **args[1], **kwargs
             )
+        if function in __array_manipulation__:
+            csdm = args[0][0]
+            args_ = ()
+            if len(args[0]) > 1:
+                args_ = args[0][1:]
+            args_kw = args[1]
+            return get_new_csdm_object_after_applying_ufunc(
+                csdm, function, None, None, *args_, **args_kw
+            )
+        if function in [np.pad]:
+            return apply_np_padding(function, *args, **kwargs)
+
         if function in __shape_manipulation_functions__:
             if "axes" in args[1].keys():
                 args[1]["axes"] = (0,) + tuple(np.asarray(args[1]["axes"]) + 1)
@@ -1396,13 +1363,14 @@ class CSDM:
                 dim_len = len(args[0][0].dimensions)
                 args[1]["axes"] = (0,) + tuple(-i - 1 for i in range(dim_len))
 
-            csdm = _get_new_csdm_object_after_applying_function(
+            csdm = get_new_csdm_object_after_applying_function(
                 function, *args[0], **args[1], **kwargs
             )
             csdm._dimensions = tuple(
                 csdm.dimensions[args[1]["axes"][1:][i]]
                 for i in range(len(csdm.dimensions))
             )
+            return csdm
 
         # if function in __return_np__:
         #     if len(self.y) > 1:
@@ -1410,7 +1378,7 @@ class CSDM:
         #             f"Function {function.__name__} is not implemented for multi "
         #              "dependent variable csdm object."
         #         )
-        #     csdm, args_, axis, kwargs = _get_CSDM_object__args__axes(
+        #     csdm, args_, axis, kwargs = get_CSDM_object__args__axes(
         #         *args[0], **args[1], **kwargs
         #     )
         #     nd_array = csdm.y[0].components
@@ -1498,17 +1466,7 @@ class CSDM:
         return new_csdm
 
 
-def _check_for_out(csdm, **kwargs):
-    out = kwargs.get("out", None)
-    if out is not None:
-        if len(csdm.dependent_variables) > 1:
-            raise NotImplementedError(
-                "Keyword `out` is not implemented for csdm objects with more that "
-                "one dependent variables."
-            )
-
-
-def _get_new_csdm_object_after_applying_ufunc(
+def get_new_csdm_object_after_applying_ufunc(
     csdm, func, method=None, factor=None, *inputs, **kwargs
 ):
     """Perform the operation, func, on the components of the dependent variables, and
@@ -1520,7 +1478,7 @@ def _get_new_csdm_object_after_applying_ufunc(
     if axis is not None:
         kwargs["axis"] = _check_dimension_indices(len(csdm.dimensions), axis)
 
-    _check_for_out(csdm, **kwargs)
+    np_check_for_out(csdm, **kwargs)
 
     new = CSDM()
 
@@ -1545,7 +1503,7 @@ def _get_new_csdm_object_after_applying_ufunc(
     return new
 
 
-def _get_new_csdm_object_after_applying_function(func, *args, **kwargs):
+def get_new_csdm_object_after_applying_function(func, *args, **kwargs):
     """Perform the operation, func, on the components of the dependent variables, and
     return the corresponding CSDM object.
     """
@@ -1554,7 +1512,7 @@ def _get_new_csdm_object_after_applying_function(func, *args, **kwargs):
     if len(args) > 1:
         args_ = args[1:]
 
-    _check_for_out(csdm, **kwargs)
+    np_check_for_out(csdm, **kwargs)
 
     new = CSDM()
 
@@ -1575,7 +1533,7 @@ def _get_new_csdm_object_after_applying_function(func, *args, **kwargs):
     return new
 
 
-def _get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
+def get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
     """Perform the operation, func, on the components of the dependent variables, and
     return the corresponding CSDM object.
     """
@@ -1626,32 +1584,11 @@ def _get_new_csdm_object_after_apodization(csdm, func, arg, index=-1):
     return new
 
 
-def _get_CSDM_object__args__axes(*args, **kwargs):
-    axis = None
-    args_ = []
-    if args != ():
-        csdm = args[0]
-        args_ = list(args[1:])
-        if len(args) > 1:
-            args_[0] = _check_dimension_indices(len(csdm.dimensions), args[1])
-            axis = args_[0]
-    if "a" in kwargs.keys():
-        csdm = kwargs["a"]
-        kwargs.pop("a")
-    if "axis" in kwargs.keys():
-        if kwargs["axis"] is not None:
-            axis = _check_dimension_indices(len(csdm.dimensions), kwargs["axis"])
-            kwargs["axis"] = axis
-
-    _check_for_out(csdm, **kwargs)
-    return csdm, args_, axis, kwargs
-
-
-def _get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
+def get_new_csdm_object_after_dimension_reduction_func(func, *args, **kwargs):
     """Perform the operation, func, on the components of the dependent variables, and
     return the corresponding CSDM object.
     """
-    csdm, args_, axis, kwargs = _get_CSDM_object__args__axes(*args, **kwargs)
+    csdm, args_, axis, kwargs = get_CSDM_object__args__axes(*args, **kwargs)
 
     new = CSDM()
     lst = []
@@ -1697,3 +1634,34 @@ def empty_dependent_variable(numeric_type, quantity_type="scalar"):
         quantity_type=quantity_type,
         numeric_type=numeric_type,
     )
+
+
+def apply_np_padding(function, *args, **kwargs):
+    """Apply numpy padding"""
+    args0 = list(args[0])
+    n_dims = len(args0[0].x)
+    if "pad_width" in args[1].keys():
+        pads = np_check_pads(args[1]["pad_width"], n_dims)
+        pads = ((0, 0),) + tuple(pads)[::-1]
+        args[1]["pad_width"] = pads
+    else:
+        pads = np_check_pads(args0[1], n_dims)
+        pads = ((0, 0),) + tuple(pads)[::-1]
+        args0[1] = pads
+
+    for key, val in kwargs.items():
+        if key in ["stat_length", "constant_values", "end_values"]:
+            kwargs[key] = ((0, 0),) + tuple(np_check_pads(val))[::-1]
+
+    csdm = get_new_csdm_object_after_applying_function(
+        function, *args0, **args[1], **kwargs
+    )
+    for dim, pads in zip(csdm.dimensions, pads[::-1][:-1]):
+        if dim.type == "linear":
+            dim.count += int(np.sum(pads))
+            offset = int(pads[0] / 2 - 1) if dim.complex_fft else pads[0]
+            dim.coordinates_offset -= dim.increment * offset
+        if dim.type == "monotonic":
+            dim.count += int(np.sum(pads))
+            dim.coordinates_offset -= dim.increment * pads[0]
+    return csdm

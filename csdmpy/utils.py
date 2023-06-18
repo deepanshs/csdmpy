@@ -382,3 +382,52 @@ def _check_dimension_indices(d, index=-1):
     if isinstance(index, int):
         return _correct_index(index, d)
     raise TypeError(f"{message}, found {type(index)}")
+
+
+def np_check_for_out(csdm, **kwargs):
+    out = kwargs.get("out", None)
+    if out is not None:
+        if len(csdm.dependent_variables) > 1:
+            raise NotImplementedError(
+                "Keyword `out` is not implemented for csdm objects with more that "
+                "one dependent variables."
+            )
+
+
+def get_CSDM_object__args__axes(*args, **kwargs):
+    axis = None
+    args_ = []
+    if args != ():
+        csdm = args[0]
+        args_ = list(args[1:])
+        if len(args) > 1:
+            args_[0] = _check_dimension_indices(len(csdm.dimensions), args[1])
+            axis = args_[0]
+    if "a" in kwargs.keys():
+        csdm = kwargs["a"]
+        kwargs.pop("a")
+    if "axis" in kwargs.keys():
+        if kwargs["axis"] is not None:
+            axis = _check_dimension_indices(len(csdm.dimensions), kwargs["axis"])
+            kwargs["axis"] = axis
+
+    np_check_for_out(csdm, **kwargs)
+    return csdm, args_, axis, kwargs
+
+
+def np_check_pads(pads, n_dims):
+    """Check and fix pads compatible with csdm"""
+    if isinstance(pads, int):
+        return tuple([(pads, pads) for _ in range(n_dims)])
+
+    if isinstance(pads, tuple):
+        if len(pads) == 2:
+            if isinstance(pads[0], int):
+                return tuple([pads for _ in range(n_dims)])
+        if len(pads) == 1:
+            if isinstance(pads[0], int):
+                return tuple([(pads[0], pads[0]) for _ in range(n_dims)])
+            if isinstance(pads[0], tuple):
+                return tuple([pads[0] for _ in range(n_dims)])
+
+    return pads

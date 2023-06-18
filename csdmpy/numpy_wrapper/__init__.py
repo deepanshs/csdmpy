@@ -1,8 +1,63 @@
 import numpy as np
 
 import csdmpy as cp
-from csdmpy.utils import _check_dimension_indices  # lgtm [py/import-own-module]
-from csdmpy.utils import _get_broadcast_shape  # lgtm [py/import-own-module]
+from csdmpy.utils import _check_dimension_indices
+from csdmpy.utils import _get_broadcast_shape
+
+
+__ufunc_list_dimensionless_unit__ = [
+    np.sin,
+    np.cos,
+    np.tan,
+    np.arcsin,
+    np.arccos,
+    np.arctan,
+    np.sinh,
+    np.cosh,
+    np.tanh,
+    np.arcsinh,
+    np.arccosh,
+    np.arctanh,
+    np.exp,
+    np.exp2,
+    np.log,
+    np.log2,
+    np.log10,
+    np.expm1,
+    np.log1p,
+]
+
+__ufunc_list_unit_independent__ = [
+    np.negative,
+    np.positive,
+    np.absolute,
+    np.fabs,
+    np.rint,
+    np.sign,
+    np.conj,
+    np.conjugate,
+]
+
+__ufunc_list_applies_to_unit__ = [np.sqrt, np.square, np.cbrt, np.reciprocal, np.power]
+
+__function_reduction_list__ = [
+    np.max,
+    np.min,
+    np.sum,
+    np.mean,
+    np.var,
+    np.std,
+    np.prod,
+    np.cumsum,
+    np.cumprod,
+    np.argmin,
+    np.argmax,
+]
+
+__other_functions__ = [np.round, np.real, np.imag, np.clip, np.around, np.angle]
+
+__shape_manipulation_functions__ = [np.transpose]
+__array_manipulation__ = [np.flip]
 
 
 def fft(csdm, axis=0):

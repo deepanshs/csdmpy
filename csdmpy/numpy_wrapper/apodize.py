@@ -16,7 +16,7 @@ The list of supported functions are:
 """
 import numpy as np
 
-from csdmpy.csdm import _get_new_csdm_object_after_apodization
+from csdmpy.csdm import get_new_csdm_object_after_apodization
 
 __all__ = ("sin", "cos", "tan", "arcsin", "arccos", "arctan", "exp")
 
@@ -37,7 +37,7 @@ def sin(csdm, arg, dimension=0):
         A CSDM object with `d-m` dimensions, where `d` is the total
         number of dimensions from the original `csdm` object.
     """
-    return _get_new_csdm_object_after_apodization(csdm, np.sin, arg, dimension)
+    return get_new_csdm_object_after_apodization(csdm, np.sin, arg, dimension)
 
 
 def cos(csdm, arg, dimension=0):
@@ -53,7 +53,7 @@ def cos(csdm, arg, dimension=0):
         A CSDM object with `d-m` dimensions, where `d` is the total
         number of dimensions from the original `csdm` object.
     """
-    return _get_new_csdm_object_after_apodization(csdm, np.cos, arg, dimension)
+    return get_new_csdm_object_after_apodization(csdm, np.cos, arg, dimension)
 
 
 def tan(csdm, arg, dimension=0):
@@ -69,7 +69,7 @@ def tan(csdm, arg, dimension=0):
         A CSDM object with `d-m` dimensions, where `d` is the total
         number of dimensions from the original `csdm` object.
     """
-    return _get_new_csdm_object_after_apodization(csdm, np.tan, arg, dimension)
+    return get_new_csdm_object_after_apodization(csdm, np.tan, arg, dimension)
 
 
 def arcsin(csdm, arg, dimension=0):
@@ -85,7 +85,7 @@ def arcsin(csdm, arg, dimension=0):
         A CSDM object with `d-m` dimensions, where `d` is the total
         number of dimensions from the original `csdm` object.
     """
-    return _get_new_csdm_object_after_apodization(csdm, np.arcsin, arg, dimension)
+    return get_new_csdm_object_after_apodization(csdm, np.arcsin, arg, dimension)
 
 
 def arccos(csdm, arg, dimension=0):
@@ -101,7 +101,7 @@ def arccos(csdm, arg, dimension=0):
         A CSDM object with `d-m` dimensions, where `d` is the total
         number of dimensions from the original `csdm` object.
     """
-    return _get_new_csdm_object_after_apodization(csdm, np.arccos, arg, dimension)
+    return get_new_csdm_object_after_apodization(csdm, np.arccos, arg, dimension)
 
 
 def arctan(csdm, arg, dimension=0):
@@ -117,7 +117,7 @@ def arctan(csdm, arg, dimension=0):
         A CSDM object with `d-m` dimensions, where `d` is the total
         number of dimensions from the original `csdm` object.
     """
-    return _get_new_csdm_object_after_apodization(csdm, np.arctan, arg, dimension)
+    return get_new_csdm_object_after_apodization(csdm, np.arctan, arg, dimension)
 
 
 def exp(csdm, arg, dimension=0):
@@ -133,4 +133,4 @@ def exp(csdm, arg, dimension=0):
         A CSDM object with `d-m` dimensions, where `d` is the total
         number of dimensions from the original `csdm` object.
     """
-    return _get_new_csdm_object_after_apodization(csdm, np.exp, arg, dimension)
+    return get_new_csdm_object_after_apodization(csdm, np.exp, arg, dimension)
