@@ -329,6 +329,9 @@ def check_scalar_object(other, operator=""):
             )
         return other.y[0].components
 
+    if isinstance(other, np.ndarray):
+        return other.T[np.newaxis]
+
     if not isinstance(
         other, (int, float, complex, np.ndarray, Quantity, ScalarQuantity)
     ):

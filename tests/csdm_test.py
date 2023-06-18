@@ -388,17 +388,9 @@ def test_mul_truediv_pow():
     with pytest.raises(TypeError, match=f".*{error}.*"):
         res = a_test * "3"
 
-    error = "Only scalar multiplication or division is allowed."
-    with pytest.raises(ValueError, match=f".*{error}.*"):
-        res = a_test * np.asarray([1, 2])
-
     error = r"unsupported operand type\(s\) /: 'CSDM' and 'str'."
     with pytest.raises(TypeError, match=f".*{error}.*"):
         res = a_test / "3"
-
-    error = "Only scalar multiplication or division is allowed."
-    with pytest.raises(ValueError, match=f".*{error}.*"):
-        res = a_test / np.asarray([1, 2])
 
     # pow
     res = b1_test**2
