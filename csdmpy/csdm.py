@@ -1664,7 +1664,6 @@ def apply_np_padding(function, *args, **kwargs):
         if key in ["stat_length", "constant_values", "end_values"]:
             args[1][key] = ((0, 0),) + tuple(np_check_pads(val, n_dims))[::-1]
 
-    print(kwargs, args[1])
     csdm = get_new_csdm_object_after_applying_function(
         function, *args0, **args[1], **kwargs
     )
