@@ -15,11 +15,13 @@ def test_1():
     np.testing.assert_allclose(csdm_pad.x[1].coordinates, np.arange(15) - 1)
     np.testing.assert_allclose(csdm_pad.x[0].coordinates, np.arange(45) - 2)
 
-    csdm_pad = np.pad(
-        csdm, pad_width=((2, 3), (1, 4)), constant_values=((500, -500), (1000, -1000))
-    )
+    csdm_pad = np.pad(csdm, pad_width=5, constant_values=((500, -500), (1000, -1000)))
     np.testing.assert_allclose(csdm_pad[0, 0], 500)
-    np.testing.assert_allclose(csdm_pad[44, 9], -500)
+    np.testing.assert_allclose(csdm_pad[49, 19], -500)
+
+    csdm_pad = np.pad(csdm, pad_width=(5,))
+    np.testing.assert_allclose(csdm_pad[0, 0], 0)
+    np.testing.assert_allclose(csdm_pad[49, 19], 0)
 
 
 def test_flip():
