@@ -171,7 +171,7 @@ class LinearDimension(BaseQuantitativeDimension):
             return coordinates.to(self._unit)
 
         if equivalent_fn == "nmr_frequency_ratio":
-            denominator = self.origin_offset - self.get_nmr_reference_offset()
+            denominator = self.origin_offset  # - self.get_nmr_reference_offset()
             if denominator.value == 0:
                 raise ZeroDivisionError("Cannot convert the coordinates to ppm.")
             return coordinates.to(equivalent_unit, frequency_ratio(denominator))
