@@ -389,7 +389,7 @@ def np_check_for_out(csdm, **kwargs):
     if out is not None:
         if len(csdm.dependent_variables) > 1:
             raise NotImplementedError(
-                "Keyword `out` is not implemented for csdm objects with more that "
+                "Keyword `out` is not implemented for csdm objects with more than "
                 "one dependent variables."
             )
 

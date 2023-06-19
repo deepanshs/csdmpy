@@ -1,7 +1,10 @@
+import numpy
 import pytest
 
+import csdmpy
 from csdmpy.utils import check_and_assign_bool
 from csdmpy.utils import check_encoding
+from csdmpy.utils import np_check_for_out
 from csdmpy.utils import NumericType
 from csdmpy.utils import QuantityType
 
@@ -83,3 +86,14 @@ def test_boolean():
     error = "Expecting an instance of type"
     with pytest.raises(TypeError, match=f".*{error}.*"):
         check_and_assign_bool("True")
+
+
+def test_numpy_check_for_out():
+    # Two dependent variables
+    arr = numpy.arange(15 * 30).reshape(15, 30)
+    csdm = csdmpy.as_csdm(arr)
+    csdm.add_dependent_variable(csdmpy.as_dependent_variable(numpy.arange(15 * 30)))
+
+    error = "Keyword `out` is not implemented for csdm objects with more than one"
+    with pytest.raises(NotImplementedError, match=f".*{error}.*"):
+        np_check_for_out(csdm, out=csdm.copy())
