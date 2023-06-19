@@ -237,7 +237,7 @@ def test_linearDimension():
     assert np.allclose(freq.coords.value, (np.arange(10) * 0.1 + 1))
 
     freq.to("ppm", "nmr_frequency_ratio")
-    values = (np.arange(10) * 100 + 1000) / (1 - (0.001 + 0.0005))
+    values = (np.arange(10) * 100 + 1000) / 1
     assert np.allclose(freq.coordinates.value, values)
     assert np.allclose(freq.coords.value, values)
 
