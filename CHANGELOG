@@ -9,6 +9,7 @@ Feature
 - Add `csdm.reshape(dim1, dim2)` to CSDM object to reshape a CSDM object to the
   given list dimension object---`dim1`, `dim2`.
 - Numpy broadcasing mulipllication can now be applied to csdm objects.
+- Support for additional numpy methods `np.pad` and `np.flip`.
 
 Bugfix
 ''''''
