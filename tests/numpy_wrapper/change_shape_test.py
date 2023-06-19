@@ -66,3 +66,21 @@ def test_indexing():
     test_1 = obj_1[0, :, 0]
     assert len(test_1.x) == 1
     assert test_1.x[0] == dim2
+
+
+def test_transpose():
+    test_1 = np.transpose(obj_1)
+    assert test_1.T == obj_1
+    assert test_1.shape == (4, 3, 2)
+
+    test_1 = np.transpose(obj_1, (1, 0, 2))
+    np.testing.assert_allclose(
+        test_1.y[0].components[0], np.transpose(obj_1.y[0].components[0], (1, 2, 0))
+    )
+    assert test_1.shape == (3, 2, 4)
+
+    test_1 = np.transpose(obj_1, axes=(1, 2, 0))
+    np.testing.assert_allclose(
+        test_1.y[0].components[0], np.transpose(obj_1.y[0].components[0], (1, 0, 2))
+    )
+    assert test_1.shape == (3, 4, 2)

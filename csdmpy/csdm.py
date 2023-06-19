@@ -1357,18 +1357,29 @@ class CSDM:
             return apply_np_padding(function, *args, **kwargs)
 
         if function in __shape_manipulation_functions__:
+            dim_len = len(args[0][0].dimensions)
             if "axes" in args[1].keys():
-                args[1]["axes"] = (0,) + tuple(np.asarray(args[1]["axes"]) + 1)
+                axes = (0,) + tuple(-np.asarray(args[1]["axes"]) - 1)
+                axes_dim = args[1]["axes"]
+                args[1]["axes"] = axes
+
+            elif len(args[0]) == 2:
+                args = list(args)
+                args[0] = list(args[0])
+                axes = (0,) + tuple(-np.asarray(args[0][1]) - 1)
+                axes_dim = args[0][1]
+                args[0][1] = axes
             else:
-                dim_len = len(args[0][0].dimensions)
-                args[1]["axes"] = (0,) + tuple(-i - 1 for i in range(dim_len))
+                axes = (0,) + tuple(-i - 1 for i in range(dim_len))
+                axes_dim = np.arange(dim_len)[::-1]
+                args[1]["axes"] = axes
 
             csdm = get_new_csdm_object_after_applying_function(
                 function, *args[0], **args[1], **kwargs
             )
+
             csdm._dimensions = tuple(
-                csdm.dimensions[args[1]["axes"][1:][i]]
-                for i in range(len(csdm.dimensions))
+                csdm.dimensions[axes_dim[i]] for i in range(len(csdm.dimensions))
             )
             return csdm
 
