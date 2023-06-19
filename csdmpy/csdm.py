@@ -1663,6 +1663,14 @@ def apply_np_padding(function, *args, **kwargs):
             offset = int(pads[0] / 2 - 1) if dim.complex_fft else pads[0]
             dim.coordinates_offset -= dim.increment * offset
         if dim.type == "monotonic":
-            dim.count += int(np.sum(pads))
-            dim.coordinates_offset -= dim.increment * pads[0]
+            inc = dim.coordinates[1] - dim.coordinates[0]
+            left = inc * (np.arange(pads[0]) - pads[0]) + dim.coordinates[0]
+            right = inc * np.arange(pads[1]) + dim.coordinates[0]
+            coords = np.concatenate((left, dim.coordinates, right))
+            dim.coordinates = coords
+        if dim.type == "labeled":
+            left = ["0"] * pads[0]
+            right = ["0"] * pads[1]
+            coords = left + list(dim.labels) + right
+            dim.labels = coords
     return csdm
