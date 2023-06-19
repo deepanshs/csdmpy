@@ -7,8 +7,8 @@ import numpy as np
 
 from csdmpy.dependent_variable.external import ExternalDataset
 from csdmpy.dependent_variable.internal import InternalDataset
-from csdmpy.utils import _axis_label  # lgtm [py/import-own-module]
-from csdmpy.utils import _get_dictionary  # lgtm [py/import-own-module]
+from csdmpy.utils import _axis_label
+from csdmpy.utils import _get_dictionary
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"

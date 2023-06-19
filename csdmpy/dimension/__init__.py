@@ -7,9 +7,9 @@ import numpy as np
 from csdmpy.dimension.labeled import LabeledDimension
 from csdmpy.dimension.linear import LinearDimension
 from csdmpy.dimension.monotonic import MonotonicDimension
-from csdmpy.units import string_to_quantity  # lgtm [py/import-own-module]
-from csdmpy.utils import _get_dictionary  # lgtm [py/import-own-module]
-from csdmpy.utils import validate  # lgtm [py/import-own-module]
+from csdmpy.units import string_to_quantity
+from csdmpy.utils import _get_dictionary
+from csdmpy.utils import validate
 
 __author__ = "Deepansh J. Srivastava"
 __email__ = "srivastava.89@osu.edu"
