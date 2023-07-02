@@ -18,6 +18,7 @@ Bugfix
 - Bugfix in serializing csdm #54
 - You can multiply CSDM objects by a scalar to the right (`csdm * scalar`). The fix
   now allows the multiplication of CSDM objects by a scalar to the left (`scalar * csdm`). #62
+- Bugfix where csdm objects `.csdfe` files were immutable.
 
 v0.5.0
 ------
