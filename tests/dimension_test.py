@@ -704,4 +704,4 @@ def test_dimension_scale():
     dim2 = dim / 2.4
     assert np.allclose(dim2.coordinates.value, np.arange(10) / 2.4)
     assert dim2.quantity_name == "length"
-    assert type(dim2.quantity_name) == str
+    assert type(dim2.quantity_name) is str
