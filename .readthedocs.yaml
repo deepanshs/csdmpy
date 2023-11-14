@@ -21,8 +21,8 @@ formats: [pdf]
 #   environment: environment-doc.yml
 
 # Optionally set the version of Python and requirements required to build your docs
-# python:
-#   install:
-#     - requirements: docs/requirements.txt
-#     - method: pip
-#       path: .
+python:
+  install:
+    - requirements: requirements-dev.txt
+    - method: pip
+      path: .
