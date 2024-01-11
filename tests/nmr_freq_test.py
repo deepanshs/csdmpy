@@ -15,7 +15,7 @@ def setup_reference_offset(offset):
     assert np.allclose(b.coordinates, array)
     assert b.get_nmr_reference_offset() == offset
 
-    b = cp.LinearDimension(count=6, increment="-1", coordinates_offset=f"{2+offset}")
+    b = cp.LinearDimension(count=6, increment="-1", coordinates_offset=f"{2 + offset}")
     assert np.allclose(b.coordinates, np.asarray([2, 1, 0, -1, -2, -3]) + offset)
     assert b.get_nmr_reference_offset() == offset
 
