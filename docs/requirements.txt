@@ -1,6 +1,6 @@
 numpy>=1.20
 matplotlib>=3.3.3
-astropy>=6.0
+astropy>=5.1
 numexpr==2.8.4
 
 setuptools>=27.3
