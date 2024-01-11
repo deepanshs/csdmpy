@@ -30,8 +30,8 @@ If applicable, add screenshots to help explain your problem.
 **Desktop (please complete the following information):**
 
 - OS: [e.g. macOS]
-- Python version: [e.g. 3.7.1]
-- `csdmpy` version: [e.g. 0.3]
+- Python version: [e.g. 3.10.1]
+- `csdmpy` version: [e.g. 0.6]
 
 **Additional context**
 
