@@ -1,7 +1,7 @@
 numpy>=1.20
 matplotlib>=3.3.3
 astropy>=5.1
-numexpr==2.8.4
+numexpr==2.9.0
 
 setuptools>=27.3
 requests>=2.21.0
