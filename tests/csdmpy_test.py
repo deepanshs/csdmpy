@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 import csdmpy as cp
 
@@ -26,8 +27,13 @@ def test_append():
     obj2 = cp.CSDM(dimensions=[d_0, d_1], dependent_variables=[dv[1]])
     obj3 = cp.CSDM(dimensions=[d_0, d_1], dependent_variables=[dv[2]])
     obj4 = cp.CSDM(dimensions=[d_0, d_1], dependent_variables=dv[::-1])
+    obj5 = cp.CSDM(dimensions=[d_1, d_0], dependent_variables=[dv[2]])
 
     new = cp.join([obj, obj1, obj2, obj3, obj4])
 
     assert len(new.y) == 8
     assert list(new.y) == [dv[0], dv[1], dv[2], dv[1], dv[2], dv[2], dv[1], dv[0]]
+
+    error = "Cannot join CSDM objects with different dimensions"
+    with pytest.raises(Exception, match=f".*{error}.*"):
+        _ = cp.join([obj, obj5])

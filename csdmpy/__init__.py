@@ -294,5 +294,7 @@ def join(objects):
         if item.dimensions == new_obj.dimensions:
             for dv in item.dependent_variables:
                 new_obj.add_dependent_variable(dv)
+        else:
+            raise Exception("Cannot join CSDM objects with different dimensions.")
 
     return new_obj
