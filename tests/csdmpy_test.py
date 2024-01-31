@@ -4,7 +4,7 @@ import pytest
 import csdmpy as cp
 
 
-def test_append():
+def test_join():
     out = (np.random.rand(50).reshape(10, 5) * 10000).astype(int)
     out1 = np.random.rand(50).astype(float).reshape(10, 5)
     out2 = np.random.rand(50).astype(complex).reshape(10, 5)
