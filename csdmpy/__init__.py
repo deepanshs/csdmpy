@@ -280,3 +280,21 @@ def plot(csdm_object, reverse_axis=None, range=None, **kwargs):
         >>> cp.plot(data_object) # doctest: +SKIP
     """
     return _preview(csdm_object, reverse_axis, range, **kwargs)
+
+
+def join(objects):
+    """Join dependent-variables of CSDM objects sharing the same dimensions
+    into one CSDM object.
+
+    Args:
+        objects: A list of CSDM objects with same dimensions.
+    """
+    new_obj = objects[0].copy()
+    for item in objects[1:]:
+        if item.dimensions == new_obj.dimensions:
+            for dv in item.dependent_variables:
+                new_obj.add_dependent_variable(dv)
+        else:
+            raise Exception("Cannot join CSDM objects with different dimensions.")
+
+    return new_obj

@@ -1,3 +1,12 @@
+upcoming
+--------
+
+Feature
+'''''''
+
+- ``cp.join`` function to join multiple CSDM objects with same dimensions into
+  one CSDM object with multiple dependent variables.
+
 v0.6.0
 ------
 
