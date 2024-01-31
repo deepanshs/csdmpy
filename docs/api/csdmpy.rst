@@ -41,6 +41,7 @@ Methods
     ~as_dependent_variable
     ~as_csdm
     ~plot
+    ~join
 
 .. rubric:: Method Documentation
 
@@ -52,3 +53,4 @@ Methods
 .. autofunction:: as_dimension
 .. autofunction:: as_dependent_variable
 .. autofunction:: plot
+.. autofunction:: join
