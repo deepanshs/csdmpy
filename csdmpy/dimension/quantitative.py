@@ -34,6 +34,8 @@ class BaseQuantitativeDimension(BaseDimension):
         "_equivalencies",
     )
 
+    unit_attributes = ["increment", "coordinates_offset", "origin_offset", "period"]
+
     def __init__(
         self,
         description="",
@@ -159,9 +161,13 @@ class BaseQuantitativeDimension(BaseDimension):
         """
         return True
 
-    def to(self, unit="", equivalencies=None):
+    def to(self, unit="", equivalencies=None, update_attrs=False):
         """Convert the unit to given value `unit`."""
         unit = validate(unit, "unit", str)
+
+        if update_attrs and equivalencies is None:
+            self.update_attribute_units(self.unit_attributes, unit)
+
         if equivalencies is None:
             self._unit = ScalarQuantity(unit, self._unit).quantity.unit
             self._equivalent_unit = None
@@ -171,6 +177,13 @@ class BaseQuantitativeDimension(BaseDimension):
         # self._unit = ScalarQuantity(unit).quantity.unit
         self._equivalent_unit = ScalarQuantity(unit).quantity.unit
         self._equivalencies = equivalencies
+
+    def update_attribute_units(self, attrs, unit):
+        """Update instance attribute units"""
+        for item in attrs:
+            if hasattr(self, item):
+                value = getattr(self, item)
+                setattr(self, item, value.to(unit))
 
 
 # =========================================================================== #
