@@ -180,6 +180,8 @@ class BaseQuantitativeDimension(BaseDimension):
 
     def update_attribute_units(self, attrs, unit):
         """Update instance attribute units"""
+        if self.type == "monotonic":
+            attrs += ["_coordinates"]
         for item in attrs:
             if hasattr(self, item):
                 value = getattr(self, item)

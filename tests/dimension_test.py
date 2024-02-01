@@ -707,7 +707,7 @@ def test_dimension_scale():
     assert type(dim2.quantity_name) is str
 
 
-def test_attribute_unit_update():
+def test_attribute_unit_update_linear():
     """Test attribute units"""
     d1 = cp.as_dimension(
         np.arange(100) + 10, unit="Hz", origin_offset="135 MHz", period="235 Hz"
@@ -737,3 +737,25 @@ def test_attribute_unit_update():
     assert str(d2.coordinates_offset.unit) == unitless
     assert str(d2.origin_offset.unit) == unitless
     assert str(d2.period.unit) == unitless
+
+
+def test_attribute_unit_update_monotonic():
+    """Test attribute units"""
+    d1 = cp.as_dimension([1, 3, 6, 10, 20, 100], unit="A", origin_offset="1.1 A")
+
+    d2 = d1 * cp.ScalarQuantity("ohm")
+
+    unit1 = str(u.Unit("A ohm"))
+
+    assert str(d2.coordinates.unit) == unit1
+    assert str(d2.origin_offset.unit) == unit1
+
+    # convert to unitless without attribute unit updates
+    d2.to("V")
+    assert str(d2.origin_offset.unit) == unit1
+
+    # convert to unitless with attribute unit update
+    unit2 = str(u.Unit("V"))
+    d2.to("V", update_attrs=True)
+    assert str(d2.coordinates.unit) == unit2
+    assert str(d2.origin_offset.unit) == unit2
