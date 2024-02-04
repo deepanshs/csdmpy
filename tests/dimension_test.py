@@ -705,3 +705,16 @@ def test_dimension_scale():
     assert np.allclose(dim2.coordinates.value, np.arange(10) / 2.4)
     assert dim2.quantity_name == "length"
     assert type(dim2.quantity_name) is str
+
+
+def test_dimension_equality_within_precision():
+    """Test dimension equality within precision"""
+    dim_1 = cp.as_dimension([1, 10], type="monotonic", unit="s")
+    dim_2 = cp.as_dimension([1 - 1e-8, 10 + 1e-12], type="monotonic", unit="s")
+
+    assert dim_2 == dim_1
+
+    dim_1 = cp.as_dimension([1, 10], type="monotonic", unit="s")
+    dim_2 = cp.as_dimension([1 - 1e-8, 10 + 1e-12], type="monotonic", unit="m")
+
+    assert dim_2 != dim_1

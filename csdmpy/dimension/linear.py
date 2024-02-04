@@ -7,6 +7,7 @@ from csdmpy.dimension.quantitative import BaseQuantitativeDimension
 from csdmpy.dimension.quantitative import ReciprocalDimension
 from csdmpy.units import frequency_ratio
 from csdmpy.units import ScalarQuantity
+from csdmpy.utils import assert_params
 from csdmpy.utils import check_and_assign_bool
 from csdmpy.utils import check_scalar_object
 from csdmpy.utils import validate
@@ -70,7 +71,10 @@ class LinearDimension(BaseQuantitativeDimension):
         other = other.subtype if hasattr(other, "subtype") else other
         if not isinstance(other, LinearDimension):
             return False
-        check = [getattr(self, _) == getattr(other, _) for _ in __class__.__slots__[:4]]
+
+        non_quantitative = ["reciprocal", "_complex_fft"]
+        quantitative = ["_count", "_increment"]
+        check = assert_params(self, other, quantitative, non_quantitative)
         check += [super().__eq__(other)]
         return np.all(check)
 

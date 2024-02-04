@@ -8,6 +8,7 @@ from csdmpy.dimension.base import BaseDimension
 from csdmpy.units import check_quantity_name
 from csdmpy.units import ScalarQuantity
 from csdmpy.utils import _axis_label
+from csdmpy.utils import assert_params
 from csdmpy.utils import type_error
 from csdmpy.utils import validate
 
@@ -62,7 +63,14 @@ class BaseQuantitativeDimension(BaseDimension):
         self._equivalencies = None
 
     def __eq__(self, other):
-        check = [getattr(self, _) == getattr(other, _) for _ in __class__.__slots__]
+        non_quantitative = [
+            "_quantity_name",
+            "_unit",
+            "_equivalent_unit",
+            "_equivalencies",
+        ]
+        quantitative = ["_coordinates_offset", "_origin_offset", "_period"]
+        check = assert_params(self, other, quantitative, non_quantitative)
         check += [super().__eq__(other)]
         return np.all(check)
 

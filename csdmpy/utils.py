@@ -2,6 +2,7 @@
 from copy import deepcopy
 
 import numpy as np
+from astropy import units as u
 from astropy.units.quantity import Quantity
 
 from .units import ScalarQuantity
@@ -431,3 +432,28 @@ def np_check_pads(pads, n_dims):
                 return tuple([pads[0] for _ in range(n_dims)])
 
     return pads
+
+
+def assert_params(obj_1, obj_2, quantitative, non_quantitative):
+    """Assert close quantitaive and exact non-quantitative values"""
+    check = [getattr(obj_1, _) == getattr(obj_2, _) for _ in non_quantitative]
+    for _ in quantitative:
+        a = getattr(obj_1, _)
+        b = getattr(obj_2, _)
+        if a is None or b is None:
+            check += [a == b]
+        else:
+            check += [is_quantity_equal(a, b)]
+    return check
+
+
+def is_quantity_equal(quantity_a, quantity_b):
+    """Check if two quantities are within number precision."""
+    try:
+        if isinstance(quantity_a, u.Quantity):
+            quantity_a = quantity_a.to(quantity_b.unit).value
+            quantity_b = quantity_b.value
+        res = np.allclose(quantity_a, quantity_b, equal_nan=True)
+    except u.UnitConversionError:
+        res = False
+    return res

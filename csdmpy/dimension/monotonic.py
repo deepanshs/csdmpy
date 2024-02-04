@@ -9,6 +9,7 @@ from csdmpy.dimension.quantitative import ReciprocalDimension
 from csdmpy.units import frequency_ratio
 from csdmpy.units import scalar_quantity_format
 from csdmpy.units import ScalarQuantity
+from csdmpy.utils import assert_params
 from csdmpy.utils import check_scalar_object
 
 
@@ -63,12 +64,10 @@ class MonotonicDimension(BaseQuantitativeDimension):
         if not isinstance(other, MonotonicDimension):
             return False
 
-        check = [
-            self._count == other._count,
-            np.all(self._coordinates == other._coordinates),
-            self.reciprocal == other.reciprocal,
-            super().__eq__(other),
-        ]
+        non_quantitative = ["reciprocal"]
+        quantitative = ["_count", "_coordinates"]
+        check = assert_params(self, other, quantitative, non_quantitative)
+        check += [super().__eq__(other)]
         return np.all(check)
 
     def __repr__(self):

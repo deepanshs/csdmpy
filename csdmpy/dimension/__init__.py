@@ -172,7 +172,7 @@ class Dimension:
     def __eq__(self, other):
         """Overrides the default implementation."""
         other = other.subtype if isinstance(other, Dimension) else other
-        return True if self.subtype == other else False
+        return self.subtype == other
 
     def __mul__(self, other):
         """Multiply the Dimension object by a right scalar."""
