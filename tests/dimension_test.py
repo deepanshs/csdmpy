@@ -707,6 +707,19 @@ def test_dimension_scale():
     assert type(dim2.quantity_name) is str
 
 
+def test_dimension_equality_within_precision():
+    """Test dimension equality within precision"""
+    dim_1 = cp.as_dimension([1, 10], type="monotonic", unit="s")
+    dim_2 = cp.as_dimension([1 - 1e-8, 10 + 1e-12], type="monotonic", unit="s")
+
+    assert dim_2 == dim_1
+
+    dim_1 = cp.as_dimension([1, 10], type="monotonic", unit="s")
+    dim_2 = cp.as_dimension([1 - 1e-8, 10 + 1e-12], type="monotonic", unit="m")
+
+    assert dim_2 != dim_1
+
+
 def test_attribute_unit_update_linear():
     """Test attribute units"""
     d1 = cp.as_dimension(

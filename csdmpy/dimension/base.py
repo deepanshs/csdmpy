@@ -3,6 +3,8 @@ import json
 import warnings
 from copy import deepcopy
 
+import numpy as np
+
 from csdmpy.utils import validate
 
 
@@ -23,7 +25,7 @@ class BaseDimension:
     def __eq__(self, other):
         """Check if two objects are equal"""
         check = [getattr(self, _) == getattr(other, _) for _ in __class__.__slots__]
-        return False if False in check else True
+        return np.all(check)
 
     @property
     def label(self):
