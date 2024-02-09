@@ -6,6 +6,8 @@ Feature
 
 - ``cp.join`` function to join multiple CSDM objects with same dimensions into
   one CSDM object with multiple dependent variables.
+- Ability to update dimension attribute units using the ``.to(unit, update_attrs=True)``
+  function. The default is the current behavior with ``update_attrs=False``
 
 v0.6.0
 ------

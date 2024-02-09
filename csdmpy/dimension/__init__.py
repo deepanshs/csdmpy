@@ -789,7 +789,7 @@ class Dimension:
         """
         return self.subtype.is_quantitative()
 
-    def to(self, unit="", equivalencies=None):
+    def to(self, unit="", equivalencies=None, update_attrs=False):
         r"""Convert the coordinates along the dimension to the unit, `unit`.
 
         This method is a wrapper of the `to` method from the
@@ -805,13 +805,15 @@ class Dimension:
             [10.  10.5 11.  11.5 12.  12.5 13.  13.5 14.  14.5] mT
 
         Args:
-            `unit` : A string containing a unit with the same dimensionality as the
+            unit : A string containing a unit with the same dimensionality as the
                      coordinates along the dimension.
+            equivalencies: Convert to equivalent units
+            update_attrs: Update attribute units if equivalencies is None.
 
         Raises:
             AttributeError: For `labeled` dimensions.
         """
-        self.subtype.to(unit, equivalencies)
+        self.subtype.to(unit, equivalencies, update_attrs)
 
     def copy(self):
         """Return a copy of the Dimension object."""
