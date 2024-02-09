@@ -219,7 +219,7 @@ def type_error(types, attr, value):
 
 def _axis_label(label, unit=None):
     """Return a formatted label with units."""
-    return f"{label} / ({unit})" if unit not in [None, ""] else label
+    return f"{label} / ({unit})" if str(unit) not in [None, ""] else label
 
 
 def _get_dictionary(*arg, **kwargs):
