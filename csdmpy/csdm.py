@@ -1356,6 +1356,9 @@ class CSDM:
         if function in [np.pad]:
             return apply_np_padding(function, *args, **kwargs)
 
+        if function in [np.tile]:
+            return apply_np_tile(function, *args, **kwargs)
+
         if function in __shape_manipulation_functions__:
             dim_len = len(args[0][0].dimensions)
             if "axes" in args[1].keys():
@@ -1683,4 +1686,68 @@ def apply_np_padding(function, *args, **kwargs):
             right = ["0"] * pads[1]
             coords = left + list(dim.labels) + right
             dim.labels = coords
+    return csdm
+
+
+def apply_np_tile(function, *args, **kwargs):
+    """Apply numpy tile"""
+    args0 = list(args[0])
+    use_arg_1 = "reps" in args[1].keys()
+    if use_arg_1:
+        reps = list(args[1]["reps"])
+    else:
+        reps = list(args0[1])
+
+    reps_int = np.array(
+        [
+            item.coordinates.size if isinstance(item, __dimensions_list__) else item
+            for item in reps
+        ],
+        dtype=int,
+    )
+
+    rep_size = reps_int.size
+    ori_size = len(args0[0].x)
+    ori_count = [
+        item.coordinates.size if isinstance(reps[i], __dimensions_list__) else 1
+        for i, item in enumerate(args0[0].x)
+    ]
+
+    ori_count = np.pad(
+        ori_count, pad_width=(0, rep_size - ori_size), constant_values=1
+    ).astype(int)
+    reps_int = (reps_int / ori_count).astype(int)
+
+    args_to_use = np.concatenate(([1], reps_int[::-1]))
+    if use_arg_1:
+        args[1]["reps"] = args_to_use
+    else:
+        args0[1] = args_to_use
+
+    csdm = get_new_csdm_object_after_applying_function(
+        function, *args0, **args[1], **kwargs
+    )
+
+    for _ in range(rep_size - ori_size):
+        if isinstance(reps[ori_size + _], __dimensions_list__):
+            csdm.x.append(reps[ori_size + _])
+        else:
+            csdm.x.append(LinearDimension(count=reps[rep_size + _], increment="1"))
+
+    for idx in range(ori_size):
+        dim = csdm.x[idx]
+        if isinstance(reps[idx], __dimensions_list__):
+            csdm.x[idx] = reps[idx]
+        else:
+            if dim.type == "linear":
+                dim.count *= int(reps[idx])
+            elif dim.type == "monotonic":
+                inc = dim.coordinates[1] - dim.coordinates[0]
+                right = inc * np.arange(int(reps[idx])) + dim.coordinates[1]
+                coords = np.concatenate((dim.coordinates, right))
+                dim.coordinates = coords
+            if dim.type == "labeled":
+                right = ["0"] * int(reps[idx])
+                coords = list(dim.labels) + right
+                dim.labels = coords
     return csdm
