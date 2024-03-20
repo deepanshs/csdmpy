@@ -1091,7 +1091,7 @@ class CSDM:
         .. code:: python
 
             phase = np.exp(-2j * np.pi * coordinates_offset * reciprocal_coordinates)
-            x_fft = np.fft.fftshift(np.fft.fft(x)) * phase
+            x_fft = sp.fft.fftshift(sp.fft.fft(x)) * phase
 
         over all components for every dependent variable.
 
@@ -1100,7 +1100,7 @@ class CSDM:
         .. code:: python
 
             phase = np.exp(2j * np.pi * reciprocal_coordinates_offset * coordinates)
-            x = np.fft.ifft(np.fft.ifftshift(x_fft * phase))
+            x = sp.fft.ifft(sp.fft.ifftshift(x_fft * phase))
 
         over all components for every dependent variable.
 

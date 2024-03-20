@@ -8,7 +8,8 @@ Feature
   one CSDM object with multiple dependent variables.
 - Ability to update dimension attribute units using the ``.to(unit, update_attrs=True)``
   function. The default is the current behavior with ``update_attrs=False``
-- ``np.tile`` can tile csdm objects
+- ``np.tile`` can tile csdm objects.
+- Replace ``np.fft`` function calls with faster ``sp.fft`` calls.
 
 
 v0.6.0
