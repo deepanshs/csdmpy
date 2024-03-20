@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 import numpy as np
+import scipy as sp
 
 import csdmpy as cp
 
@@ -16,7 +17,7 @@ def fft_process(csdm):
     phase = np.exp(-2j * np.pi * coordinates_offset * reciprocal_coordinates)
     y_copy = deepcopy(y)
     y_copy[0] /= scale
-    y_fft = np.fft.fftshift(np.fft.fft(y_copy)) * phase
+    y_fft = sp.fft.fftshift(sp.fft.fft(y_copy)) * phase
     csdm_fft = csdm.fft(axis=0)
     assert np.allclose(y_fft, csdm_fft.y[0].components[0])
 
@@ -25,7 +26,7 @@ def fft_process(csdm):
     coordinates = csdm_fft.dimensions[0].coordinates
 
     phase = np.exp(2j * np.pi * reciprocal_coordinates_offset * coordinates)
-    y2 = np.fft.ifft(np.fft.ifftshift(y_fft * phase))
+    y2 = sp.fft.ifft(sp.fft.ifftshift(y_fft * phase))
     y2[0] *= scale
     csdm_2 = csdm_fft.fft(axis=0)
 
@@ -44,7 +45,7 @@ def ifft_process(csdm):
     scale = 1.0 if np.isfinite(csdm.dimensions[0].period) else 2.0
     phase = np.exp(2j * np.pi * reciprocal_coordinates_offset * coordinates)
 
-    y_fft = np.fft.ifft(np.fft.ifftshift(y * phase))
+    y_fft = sp.fft.ifft(sp.fft.ifftshift(y * phase))
     y_fft[0] *= scale
     csdm_fft = csdm.fft(axis=0)
 
@@ -56,7 +57,7 @@ def ifft_process(csdm):
 
     phase = np.exp(-2j * np.pi * coordinates_offset * reciprocal_coordinates)
     y_fft[0] /= scale
-    y2 = np.fft.fftshift(np.fft.fft(y_fft)) * phase
+    y2 = sp.fft.fftshift(sp.fft.fft(y_fft)) * phase
     csdm_2 = csdm_fft.fft(axis=0)
 
     assert np.allclose(y, y2)

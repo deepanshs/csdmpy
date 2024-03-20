@@ -62,7 +62,7 @@ def test_02():
 
 #     dat1 = dataset1.y[0].components[0]
 #     dat2 = dataset2.y[0].components[0]
-#     assert np.all(np.fft.fftshift(dat1) == dat2)
+#     assert np.all(sp.fft.fftshift(dat1) == dat2)
 
 
 def test04():

@@ -1,4 +1,5 @@
 import numpy as np
+import scipy as sp
 
 import csdmpy as cp
 from csdmpy.utils import _check_dimension_indices
@@ -100,8 +101,8 @@ def fft(csdm, axis=0):
             slice_ = get_cross_section_slice(index, comp_shape_len)
 
             phased_signal = item.subtype._components * phase_grid
-            ft_shift = np.fft.ifftshift(phased_signal, axes=index)
-            signal_ft = np.fft.ifft(ft_shift, axis=index)
+            ft_shift = sp.fft.ifftshift(phased_signal, axes=index)
+            signal_ft = sp.fft.ifft(ft_shift, axis=index)
             signal_ft[slice_] *= scale_factor
 
             item.subtype._components = signal_ft
@@ -117,8 +118,8 @@ def fft(csdm, axis=0):
 
             item.subtype._components[slice_] /= scale_factor
 
-            ft = np.fft.fft(item.subtype._components, axis=index)
-            ft_shift = np.fft.fftshift(ft, axes=index)
+            ft = sp.fft.fft(item.subtype._components, axis=index)
+            ft_shift = sp.fft.fftshift(ft, axes=index)
             signal_ft = ft_shift * phase_grid
 
             item.subtype._components = signal_ft
