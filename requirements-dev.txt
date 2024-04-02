@@ -2,7 +2,7 @@
 numpy>=1.20
 scipy>=1.10
 setuptools>=27.3
-numexpr==2.8.4
+numexpr==2.10.0
 
 # for units
 astropy>=5.1
