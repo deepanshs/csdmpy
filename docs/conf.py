@@ -115,7 +115,7 @@ sphinx_gallery_conf = {
     "gallery_dirs": [
         "auto_examples",
         "auto_tutorials",
-    ],  # path to where to save gallery generated output
+    ],  # path to where to save gallery-generated output
     "within_subsection_order": FileNameSortKey,
     "subsection_order": ExplicitOrder(
         [
