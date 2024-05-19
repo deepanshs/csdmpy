@@ -23,7 +23,7 @@ codecov
 
 # doc build
 sphinxjp.themes.basicstrap
-sphinx<7.0
+sphinx<6.0
 sphinx-gallery>=0.6.2
 pillow>=7.1.2  # for sphinx-gallery images
 sphinx_copybutton>=0.3.0
