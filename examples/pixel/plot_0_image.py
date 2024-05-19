@@ -92,8 +92,10 @@ print(y[0].component_labels[2], y[0].components[2].shape)
 # Now, to visualize the dataset as an RGB image,
 import matplotlib.pyplot as plt
 
+img_float = ImageData.astype(float)
+img_float /= 256.0  # convert int8 values to [0, 1] range for image plot
 ax = plt.subplot(projection="csdm")
-ax.imshow(ImageData, origin="upper")
+ax.imshow(img_float, origin="upper")
 plt.tight_layout()
 
 plt.show()
