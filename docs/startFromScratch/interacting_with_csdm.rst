@@ -370,7 +370,7 @@ Dimension reduction methods
     >>> minimum = np.min(new_csdm1)
     >>> print(minimum)
     0.0 K
-    >>> np.min(new_csdm1) == new_csdm1.min()
+    >>> bool(np.min(new_csdm1) == new_csdm1.min())
     True
 
 .. note:: See the list of all supported :ref:`numpy_support`.

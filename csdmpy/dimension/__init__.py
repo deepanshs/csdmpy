@@ -709,7 +709,7 @@ class Dimension:
 
             >>> x2 = Dimension(type="labeled", labels=["Cu", "Ag", "Au"])
 
-        then the labels along the labeled dimension are
+        then the labels along the labeled dimensions are
 
         .. doctest::
 
@@ -723,7 +723,7 @@ class Dimension:
 
             .. doctest::
 
-                >>> np.all(x2.coordinates == x2.labels)
+                >>> bool(np.all(x2.coordinates == x2.labels))
                 True
 
         In the above example, ``x2`` is an instance of the :ref:`dim_api` class with
