@@ -12,7 +12,7 @@ def _check_dimension_type(csdm):
 
 
 def integral(csdm):
-    """Evaluate the integral of the dependent variables over all dimensions.
+    """Evaluate the integral of the dependent variables over all the dimensions.
 
     Args:
         csdm: A csdm object.

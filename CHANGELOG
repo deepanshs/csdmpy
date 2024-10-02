@@ -1,5 +1,5 @@
-upcoming
---------
+v0.7.0
+------
 
 Feature
 '''''''
@@ -11,6 +11,16 @@ Feature
 - ``np.tile`` can tile csdm objects.
 - Replace ``np.fft`` function calls with faster ``sp.fft`` calls.
 
+
+Bugfix
+''''''
+
+- Check dimension equality within tolerance to avoid failure from machine precision error.
+
+Others
+''''''
+
+- Remove support for python 3.7 and 3.8, and added support for python 3.12
 
 v0.6.0
 ------
