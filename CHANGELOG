@@ -20,7 +20,7 @@ Bugfix
 Others
 ''''''
 
-- Remove support for python 3.7 and 3.8, and added support for python 3.12
+- Remove support for python 3.7 and 3.8, and added support for python 3.12 and 3.13
 
 v0.6.0
 ------
