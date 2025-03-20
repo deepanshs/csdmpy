@@ -9,7 +9,7 @@ requests>=2.21.0
 
 # Building Docs requirements
 sphinxjp.themes.basicstrap
-sphinx<6.0
+sphinx<8.0
 sphinx-gallery>0.6.2
 pillow>=7.1.2
 breathe>=4.34.0
