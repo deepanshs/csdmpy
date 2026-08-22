@@ -344,5 +344,15 @@ epub_title = project
 epub_exclude_files = ["search.html"]
 
 
+def _fix_basicstrap_asset_lists(app, pagename, templatename, context, doctree):
+    # Sphinx>=7 wraps css/script assets in objects instead of plain filename
+    # strings, but the basicstrap theme templates still expect strings.
+    for key in ("css_files", "script_files"):
+        assets = context.get(key)
+        if assets:
+            context[key] = [getattr(asset, "filename", asset) for asset in assets]
+
+
 def setup(app):
     app.add_css_file("style.css")
+    app.connect("html-page-context", _fix_basicstrap_asset_lists)

@@ -9,7 +9,7 @@ requests>=2.21.0
 
 # Building Docs requirements
 sphinxjp.themes.basicstrap
-sphinx>=4,<8
+sphinx>=4
 standard-imghdr; python_version >= "3.13"
 sphinx-gallery>0.6.2
 pillow>=7.1.2
