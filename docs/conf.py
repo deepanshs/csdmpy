@@ -249,6 +249,10 @@ html_theme_options = {
 
 # Theme options
 html_style = "style.css"
+# Sphinx>=7 stopped injecting `style` into the template context automatically.
+# The basicstrap theme's layout.html still references `{{ style }}` directly,
+# so restore it via html_context to avoid "'style' is undefined" theme errors.
+html_context = {"style": html_style}
 html_title = f"csdmpy: doc v{__version__}"
 html_logo = "_static/csdmpy.png"
 html_last_updated_fmt = ""
