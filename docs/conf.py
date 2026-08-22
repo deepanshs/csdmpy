@@ -17,7 +17,7 @@ import warnings
 from sphinx_gallery.sorting import ExplicitOrder
 from sphinx_gallery.sorting import FileNameSortKey
 
-sys.path.insert(0, os.path.abspath("../.."))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # -- Project information -----------------------------------------------------
 now = datetime.datetime.now()
@@ -249,7 +249,11 @@ html_theme_options = {
 
 # Theme options
 html_style = "style.css"
-html_title = f"csdmpy:doc v{__version__}"
+# Sphinx>=7 stopped injecting `style` into the template context automatically.
+# The basicstrap theme's layout.html still references `{{ style }}` directly,
+# so restore it via html_context to avoid "'style' is undefined" theme errors.
+html_context = {"style": html_style}
+html_title = f"csdmpy: doc v{__version__}"
 html_logo = "_static/csdmpy.png"
 html_last_updated_fmt = ""
 html_sidebars = {
@@ -340,5 +344,15 @@ epub_title = project
 epub_exclude_files = ["search.html"]
 
 
+def _fix_basicstrap_asset_lists(app, pagename, templatename, context, doctree):
+    # Sphinx>=7 wraps css/script assets in objects instead of plain filename
+    # strings, but the basicstrap theme templates still expect strings.
+    for key in ("css_files", "script_files"):
+        assets = context.get(key)
+        if assets:
+            context[key] = [getattr(asset, "filename", asset) for asset in assets]
+
+
 def setup(app):
     app.add_css_file("style.css")
+    app.connect("html-page-context", _fix_basicstrap_asset_lists)

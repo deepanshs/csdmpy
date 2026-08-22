@@ -1,11 +1,11 @@
 # required
-numpy>=1.20
+numpy>=2.2.6
 scipy>=1.10
-setuptools>=27.3
-numexpr>=2.10.0
+setuptools>=84.0.0
+numexpr>=2.14.1
 
 # for units
-astropy>=5.1
+astropy>=6.1.7
 
 # Dependencies of requests package
 requests>=2.21.0
@@ -23,7 +23,8 @@ codecov
 
 # doc build
 sphinxjp.themes.basicstrap
-sphinx<9.0
+sphinx>=4
+standard-imghdr; python_version >= "3.13"
 sphinx-gallery>=0.6.2
 pillow>=7.1.2  # for sphinx-gallery images
 sphinx_copybutton>=0.3.0
