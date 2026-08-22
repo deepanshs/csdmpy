@@ -32,7 +32,7 @@ Feature
 - Accepts both C and F contiguous numpy array to convert to CSDM object. #57
 - Add `csdm.reshape(dim1, dim2)` to CSDM object to reshape a CSDM object to the
   given list dimension object---`dim1`, `dim2`.
-- Numpy broadcasing mulipllication can now be applied to csdm objects.
+- Numpy broadcasting multiplication can now be applied to csdm objects.
 - Support for additional numpy methods `np.pad` and `np.flip`.
 
 Bugfix
