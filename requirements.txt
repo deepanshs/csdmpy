@@ -5,7 +5,7 @@ setuptools>=84.0.0
 numexpr>=2.14.1
 
 # for units
-astropy>=5.1
+astropy>=6.1.7
 
 # Dependencies of requests package
 requests>=2.21.0
