@@ -1,7 +1,7 @@
 # required
 numpy>=2.2.6
 scipy>=1.10
-setuptools>=27.3
+setuptools>=84.0.0
 numexpr>=2.10.0
 
 # for units
