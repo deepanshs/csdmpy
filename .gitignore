@@ -15,6 +15,7 @@ Test_files/**
 docs/_build/**
 docs/auto_examples/**
 docs/auto_tutorials/**
+old_dist/**
 
 # Compiled source #
 ###################

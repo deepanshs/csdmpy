@@ -17,7 +17,7 @@ import warnings
 from sphinx_gallery.sorting import ExplicitOrder
 from sphinx_gallery.sorting import FileNameSortKey
 
-sys.path.insert(0, os.path.abspath("../.."))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # -- Project information -----------------------------------------------------
 now = datetime.datetime.now()
@@ -249,7 +249,7 @@ html_theme_options = {
 
 # Theme options
 html_style = "style.css"
-html_title = f"csdmpy:doc v{__version__}"
+html_title = f"csdmpy: doc v{__version__}"
 html_logo = "_static/csdmpy.png"
 html_last_updated_fmt = ""
 html_sidebars = {
