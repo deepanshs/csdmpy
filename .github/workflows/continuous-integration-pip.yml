@@ -14,13 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9, "3.10", "3.11", "3.12"]
+        python-version: ["3.12", "3.13"]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
@@ -40,4 +40,4 @@ jobs:
       - name: Test with pytest
         run: pytest --cov=./ --cov-report=xml
       - name: Upload coverage
-        uses: codecov/codecov-action@v5.5.1
+        uses: codecov/codecov-action@v7.0.0

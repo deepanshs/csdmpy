@@ -127,8 +127,8 @@ def plot_vector(yx):
     magnitude = np.sqrt(yx.components[0] ** 2 + yx.components[1] ** 2)
 
     cf = ax.quiver(
-        x[0].coordinates,
-        x[1].coordinates,
+        x[0].coordinates.value,
+        x[1].coordinates.value,
         yx.components[0],
         yx.components[1],
         magnitude,
