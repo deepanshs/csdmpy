@@ -898,7 +898,7 @@ class CSDM:
         obj["version"] = self.version if version is None else version
         obj["read_only"] = self.read_only if read_only is None else read_only
         obj["timestamp"] = (
-            datetime.datetime.utcnow().isoformat()[:-7] + "Z"
+            datetime.datetime.now(datetime.timezone.utc).isoformat()[:-13] + "Z"
             if update_timestamp
             else self.timestamp
         )
@@ -981,7 +981,7 @@ class CSDM:
         """
         dictionary = self._dict(filename=filename, version=self.version)
 
-        timestamp = datetime.datetime.utcnow().isoformat()[:-7] + "Z"
+        timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()[:-13] + "Z"
         dictionary["csdm"]["timestamp"] = timestamp
 
         if read_only:
