@@ -5,7 +5,7 @@ astropy>=6.1.7
 numexpr>=2.14.1
 
 setuptools>=84.0.0
-requests>=2.21.0
+requests>=2.34.2
 
 # Building Docs requirements
 sphinxjp.themes.basicstrap

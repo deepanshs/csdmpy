@@ -8,7 +8,7 @@ numexpr>=2.14.1
 astropy>=6.1.7
 
 # Dependencies of requests package
-requests>=2.21.0
+requests>=2.34.2
 
 # Additional packages
 matplotlib>=3.3.3
