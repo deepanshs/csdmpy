@@ -12,7 +12,7 @@ sphinxjp.themes.basicstrap
 sphinx>=4
 standard-imghdr; python_version >= "3.13"
 sphinx-gallery>=0.21.0
-pillow>=7.1.2
+pillow>=12.3.0
 sphinx_copybutton>=0.3.0
 sphinx_tabs>3.0
 recommonmark
