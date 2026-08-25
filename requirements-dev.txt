@@ -14,7 +14,7 @@ requests>=2.34.2
 matplotlib>=3.10.9
 
 # development packages
-pytest-runner>=5.0
+pytest-runner>=6.0.1
 pytest>=9.1.1
 pre-commit>=4.6.2
 coverage>=7.15.4
