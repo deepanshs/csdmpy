@@ -27,4 +27,4 @@ sphinx>=4
 standard-imghdr; python_version >= "3.13"
 sphinx-gallery>=0.21.0
 pillow>=12.3.0  # for sphinx-gallery images
-sphinx_copybutton>=0.3.0
+sphinx_copybutton>=0.5.2
