@@ -1,6 +1,6 @@
 # required
 numpy>=2.2.6
-scipy>=1.10
+scipy>=1.15.3
 setuptools>=84.0.0
 numexpr>=2.14.1
 
