@@ -11,7 +11,7 @@ astropy>=6.1.7
 requests>=2.34.2
 
 # Additional packages
-matplotlib>=3.0
+matplotlib>=3.10.9
 
 # development packages
 pytest-runner>=5.0
