@@ -14,6 +14,6 @@ standard-imghdr; python_version >= "3.13"
 sphinx-gallery>=0.21.0
 pillow>=12.3.0
 sphinx_copybutton>=0.5.2
-sphinx_tabs>3.0
+sphinx_tabs>=3.5.0
 recommonmark
 sphinx-version-warning
